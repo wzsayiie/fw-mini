@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e -u
+
+cd `dirname $0`
+
+mkdir -p "BUILD"
+rm    -f "BUILD/mini"
+cc    -o "BUILD/mini" -I"appsrc" appsrc/*.cpp host_console/*.cpp

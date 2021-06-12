@@ -1,0 +1,5 @@
+# macos finder cache files:
+.DS_Store
+
+# the framework local files:
+BUILD/*
