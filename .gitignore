@@ -1,5 +1,20 @@
 # macos finder cache files:
 .DS_Store
 
+# android studio local files:
+host_android/**/*.iml
+host_android/**/.cxx/
+host_android/**/.externalNativeBuild/
+host_android/**/.gradle/
+host_android/**/.idea/
+host_android/**/build/
+host_android/**/local.properties
+
+# xcode local files:
+host_ios/**/build/
+host_ios/**/xcuserdata/
+host_osx/**/build/
+host_osx/**/xcuserdata/
+
 # the framework local files:
 BUILD/*

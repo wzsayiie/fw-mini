@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# sometimes, android studio can't work normally for variety of reasons,
+# use this script to clean the project.
+
+set -e -u
+
+cd `dirname $0`
+
+rm -rf *.iml
+rm -rf .gradle
+rm -rf .idea
+rm -rf local.properties
+
+rm -rf app/*.iml
+rm -rf app/.cxx
+rm -rf app/.externalNativeBuild
+rm -rf app/build
