@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CE107D7F2674C5E900823730 /* host.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = host.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE107D7F2674C5E900823730 /* mini.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mini.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE107D882674C5EA00823730 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE107D8D2674C5EA00823730 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE107D8E2674C5EA00823730 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -48,7 +48,7 @@
 			children = (
 				CE107D9F2674C77C00823730 /* appres */,
 				CE107DA12674C77C00823730 /* appsrc */,
-				CE107D812674C5E900823730 /* host */,
+				CE107D812674C5E900823730 /* mini */,
 				CE107D802674C5E900823730 /* products */,
 			);
 			sourceTree = "<group>";
@@ -56,12 +56,12 @@
 		CE107D802674C5E900823730 /* products */ = {
 			isa = PBXGroup;
 			children = (
-				CE107D7F2674C5E900823730 /* host.app */,
+				CE107D7F2674C5E900823730 /* mini.app */,
 			);
 			name = products;
 			sourceTree = "<group>";
 		};
-		CE107D812674C5E900823730 /* host */ = {
+		CE107D812674C5E900823730 /* mini */ = {
 			isa = PBXGroup;
 			children = (
 				CE107D882674C5EA00823730 /* Assets.xcassets */,
@@ -75,7 +75,7 @@
 				CE107D962674C6A400823730 /* MWindowController.h */,
 				CE107D982674C6A400823730 /* MWindowController.m */,
 			);
-			path = host;
+			path = mini;
 			sourceTree = "<group>";
 		};
 		CE107D9F2674C77C00823730 /* appres */ = {
@@ -99,9 +99,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CE107D7E2674C5E900823730 /* host */ = {
+		CE107D7E2674C5E900823730 /* mini */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CE107D932674C5EA00823730 /* Build configuration list for PBXNativeTarget "host" */;
+			buildConfigurationList = CE107D932674C5EA00823730 /* Build configuration list for PBXNativeTarget "mini" */;
 			buildPhases = (
 				CE107D7B2674C5E900823730 /* Sources */,
 				CE107D7C2674C5E900823730 /* Frameworks */,
@@ -111,9 +111,9 @@
 			);
 			dependencies = (
 			);
-			name = host;
+			name = mini;
 			productName = host;
-			productReference = CE107D7F2674C5E900823730 /* host.app */;
+			productReference = CE107D7F2674C5E900823730 /* mini.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -129,7 +129,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CE107D7A2674C5E900823730 /* Build configuration list for PBXProject "host_osx" */;
+			buildConfigurationList = CE107D7A2674C5E900823730 /* Build configuration list for PBXProject "mini_osx" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -142,7 +142,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CE107D7E2674C5E900823730 /* host */,
+				CE107D7E2674C5E900823730 /* mini */,
 			);
 		};
 /* End PBXProject section */
@@ -295,7 +295,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../appsrc";
-				INFOPLIST_FILE = host/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/mini/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -314,7 +314,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../appsrc";
-				INFOPLIST_FILE = host/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/mini/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -327,7 +327,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CE107D7A2674C5E900823730 /* Build configuration list for PBXProject "host_osx" */ = {
+		CE107D7A2674C5E900823730 /* Build configuration list for PBXProject "mini_osx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE107D912674C5EA00823730 /* Debug */,
@@ -336,7 +336,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CE107D932674C5EA00823730 /* Build configuration list for PBXNativeTarget "host" */ = {
+		CE107D932674C5EA00823730 /* Build configuration list for PBXNativeTarget "mini" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE107D942674C5EA00823730 /* Debug */,
