@@ -8,7 +8,7 @@ pushd %~dp0
             set target=.gradle
 call :rmp & set target=.idea
 call :rmp & set target=local.properties
-call :rmp & set target=program_android.iml
+call :rmp & set target=host_android.iml
 
 call :rmp & set target=app\.cxx
 call :rmp & set target=app\.externalNativeBuild
