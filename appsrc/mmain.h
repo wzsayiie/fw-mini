@@ -1,3 +1,3 @@
 #pragma once
 
-void MMain(void);
+void MMain();
