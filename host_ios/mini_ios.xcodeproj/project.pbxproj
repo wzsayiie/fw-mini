@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		CE107D552674C11400823730 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE107D542674C11400823730 /* Assets.xcassets */; };
 		CE107D5B2674C11400823730 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D5A2674C11400823730 /* main.m */; };
-		CE107D662674C19500823730 /* MAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D612674C19500823730 /* MAppDelegate.m */; };
-		CE107D672674C19500823730 /* MViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D622674C19500823730 /* MViewController.m */; };
+		CE107D662674C19500823730 /* MAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D612674C19500823730 /* MAppDelegate.mm */; };
+		CE107D672674C19500823730 /* MViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D622674C19500823730 /* MViewController.mm */; };
 		CE107D682674C19500823730 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE107D652674C19500823730 /* LaunchScreen.storyboard */; };
 		CE107D6F2674C42C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107D6A2674C42C00823730 /* README.cpp */; };
 		CE107D752674C4B900823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107D742674C4B900823730 /* mini.bundle */; };
@@ -21,8 +21,8 @@
 		CE107D542674C11400823730 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE107D592674C11400823730 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE107D5A2674C11400823730 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		CE107D612674C19500823730 /* MAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAppDelegate.m; sourceTree = "<group>"; };
-		CE107D622674C19500823730 /* MViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MViewController.m; sourceTree = "<group>"; };
+		CE107D612674C19500823730 /* MAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MAppDelegate.mm; sourceTree = "<group>"; };
+		CE107D622674C19500823730 /* MViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MViewController.mm; sourceTree = "<group>"; };
 		CE107D632674C19500823730 /* MAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAppDelegate.h; sourceTree = "<group>"; };
 		CE107D642674C19500823730 /* MViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MViewController.h; sourceTree = "<group>"; };
 		CE107D652674C19500823730 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -67,9 +67,9 @@
 				CE107D652674C19500823730 /* LaunchScreen.storyboard */,
 				CE107D5A2674C11400823730 /* main.m */,
 				CE107D632674C19500823730 /* MAppDelegate.h */,
-				CE107D612674C19500823730 /* MAppDelegate.m */,
+				CE107D612674C19500823730 /* MAppDelegate.mm */,
 				CE107D642674C19500823730 /* MViewController.h */,
-				CE107D622674C19500823730 /* MViewController.m */,
+				CE107D622674C19500823730 /* MViewController.mm */,
 			);
 			path = mini;
 			sourceTree = "<group>";
@@ -161,9 +161,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE107D672674C19500823730 /* MViewController.m in Sources */,
+				CE107D672674C19500823730 /* MViewController.mm in Sources */,
 				CE107D6F2674C42C00823730 /* README.cpp in Sources */,
-				CE107D662674C19500823730 /* MAppDelegate.m in Sources */,
+				CE107D662674C19500823730 /* MAppDelegate.mm in Sources */,
 				CE107D5B2674C11400823730 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

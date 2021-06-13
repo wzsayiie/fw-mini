@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		CE107D892674C5EA00823730 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE107D882674C5EA00823730 /* Assets.xcassets */; };
 		CE107D8F2674C5EA00823730 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D8E2674C5EA00823730 /* main.m */; };
-		CE107D9C2674C6A400823730 /* MAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D972674C6A400823730 /* MAppDelegate.m */; };
-		CE107D9D2674C6A400823730 /* MWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D982674C6A400823730 /* MWindowController.m */; };
-		CE107D9E2674C6A400823730 /* MViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D992674C6A400823730 /* MViewController.m */; };
+		CE107D9C2674C6A400823730 /* MAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D972674C6A400823730 /* MAppDelegate.mm */; };
+		CE107D9D2674C6A400823730 /* MWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D982674C6A400823730 /* MWindowController.mm */; };
+		CE107D9E2674C6A400823730 /* MViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D992674C6A400823730 /* MViewController.mm */; };
 		CE107DA72674C77C00823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107DA02674C77C00823730 /* mini.bundle */; };
 		CE107DA82674C77C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107DA22674C77C00823730 /* README.cpp */; };
 /* End PBXBuildFile section */
@@ -23,9 +23,9 @@
 		CE107D8E2674C5EA00823730 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CE107D902674C5EA00823730 /* host.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = host.entitlements; sourceTree = "<group>"; };
 		CE107D962674C6A400823730 /* MWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWindowController.h; sourceTree = "<group>"; };
-		CE107D972674C6A400823730 /* MAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAppDelegate.m; sourceTree = "<group>"; };
-		CE107D982674C6A400823730 /* MWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWindowController.m; sourceTree = "<group>"; };
-		CE107D992674C6A400823730 /* MViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MViewController.m; sourceTree = "<group>"; };
+		CE107D972674C6A400823730 /* MAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MAppDelegate.mm; sourceTree = "<group>"; };
+		CE107D982674C6A400823730 /* MWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWindowController.mm; sourceTree = "<group>"; };
+		CE107D992674C6A400823730 /* MViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MViewController.mm; sourceTree = "<group>"; };
 		CE107D9A2674C6A400823730 /* MAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAppDelegate.h; sourceTree = "<group>"; };
 		CE107D9B2674C6A400823730 /* MViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MViewController.h; sourceTree = "<group>"; };
 		CE107DA02674C77C00823730 /* mini.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mini.bundle; sourceTree = "<group>"; };
@@ -69,11 +69,11 @@
 				CE107D8D2674C5EA00823730 /* Info.plist */,
 				CE107D8E2674C5EA00823730 /* main.m */,
 				CE107D9A2674C6A400823730 /* MAppDelegate.h */,
-				CE107D972674C6A400823730 /* MAppDelegate.m */,
+				CE107D972674C6A400823730 /* MAppDelegate.mm */,
 				CE107D9B2674C6A400823730 /* MViewController.h */,
-				CE107D992674C6A400823730 /* MViewController.m */,
+				CE107D992674C6A400823730 /* MViewController.mm */,
 				CE107D962674C6A400823730 /* MWindowController.h */,
-				CE107D982674C6A400823730 /* MWindowController.m */,
+				CE107D982674C6A400823730 /* MWindowController.mm */,
 			);
 			path = mini;
 			sourceTree = "<group>";
@@ -164,9 +164,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE107D9E2674C6A400823730 /* MViewController.m in Sources */,
-				CE107D9D2674C6A400823730 /* MWindowController.m in Sources */,
-				CE107D9C2674C6A400823730 /* MAppDelegate.m in Sources */,
+				CE107D9E2674C6A400823730 /* MViewController.mm in Sources */,
+				CE107D9D2674C6A400823730 /* MWindowController.mm in Sources */,
+				CE107D9C2674C6A400823730 /* MAppDelegate.mm in Sources */,
 				CE107D8F2674C5EA00823730 /* main.m in Sources */,
 				CE107DA82674C77C00823730 /* README.cpp in Sources */,
 			);
