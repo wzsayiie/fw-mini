@@ -14,7 +14,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    MMain();
+    _MMain();
 }
 
 @end

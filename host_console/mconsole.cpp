@@ -1,5 +1,5 @@
 #include "mmain.h"
 
 int main() {
-    MMain();
+    _MMain();
 }

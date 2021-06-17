@@ -1,3 +1,3 @@
 #pragma once
 
-extern "C" void MMain();
+extern "C" void _MMain();

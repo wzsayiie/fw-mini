@@ -3,7 +3,7 @@
 void CCppMain();
 void CJsMain();
 
-void MMain() {
+void _MMain() {
     CCppMain();
     CJsMain();
 }
