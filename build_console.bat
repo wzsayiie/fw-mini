@@ -14,7 +14,7 @@ pushd %TMPDIR%
 if not exist %OUTDIR% (md  %OUTDIR%)
 if exist     %OUTEXE% (del %OUTEXE%)
 
-cl /nologo /Fe%OUTEXE% /I%INCDIR% %CPPSRC%
+cl /nologo /EHsc /Fe%OUTEXE% /I%INCDIR% %CPPSRC%
 
 popd
 rmdir /s /q %TMPDIR%
