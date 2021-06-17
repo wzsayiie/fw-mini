@@ -5,6 +5,9 @@
 
 typedef int MKey;
 
+const MKey MKey_BACK  = 0x08;
+const MKey MKey_ENTER = 0x0D;
+const MKey MKey_SPACE = 0x20;
 const MKey MKey_Left  = 0x25;
 const MKey MKey_Up    = 0x26;
 const MKey MKey_Right = 0x27;
@@ -14,91 +17,84 @@ const MKey MKey_W     = 'W';
 const MKey MKey_D     = 'D';
 const MKey MKey_S     = 'S';
 
-typedef int MAlign;
+typedef int MAligns;
 
-const MAlign MAlign_Left   = 1;
-const MAlign MAlign_Center = 2;
-const MAlign MAlign_Right  = 3;
+const MAligns MAlign_Left    =  1;
+const MAligns MAlign_HCenter =  2;
+const MAligns MAlign_Right   =  4;
+const MAligns MAlign_Top     =  8;
+const MAligns MAlign_VCenter = 16;
+const MAligns MAlign_Bottom  = 32;
 
 typedef int MColor;
 
-MColor MColorMake(float r, float g, float b, float a);
+extern "C" void _MWindowOnLoad();
+extern "C" void _MWindowOnShow();
+extern "C" void _MWindowOnHide();
 
-float MColorRed  (MColor color);
-float MColorGreen(MColor color);
-float MColorBlue (MColor color);
-float MColorAlpha(MColor color);
+extern "C" void _MWindowOnResize(float width, float height);
+extern "C" void _MWindowOnUpdate();
+extern "C" void _MWindowOnDraw  ();
 
-MEXPORT(MColorMake )
-MEXPORT(MColorRed  )
-MEXPORT(MColorGreen)
-MEXPORT(MColorBlue )
-MEXPORT(MColorAlpha)
+extern "C" void _MWindowOnTouchBegin(float x, float y);
+extern "C" void _MWindowOnTouchMove (float x, float y);
+extern "C" void _MWindowOnTouchEnd  (float x, float y);
+extern "C" void _MWindowOnTextBox   (MString *string, bool enter);
+extern "C" void _MWindowOnKeyDown   (MKey key);
 
-extern "C" void MWindowOnLoad  ();
-extern "C" void MWindowOnShow  ();
-extern "C" void MWindowOnHide  ();
-extern "C" void MWindowOnUnload();
+extern "C" int    _MWindowTriangleCount  ();
+extern "C" float  _MWindowTriangleVertexX(int index, int vertexIndex);
+extern "C" float  _MWindowTriangleVertexY(int index, int vertexIndex);
+extern "C" MColor _MWindowTriangleColor  (int index);
 
-extern "C" void MWindowOnResize(float width, float height);
-extern "C" void MWindowOnUpdate();
-extern "C" void MWindowOnDraw  ();
+extern "C" int      _MWindowLabelCount   ();
+extern "C" MString *_MWindowLabelString  (int index);
+extern "C" MColor   _MWindowLabelColor   (int index);
+extern "C" float    _MWindowLabelFontSize(int index);
+extern "C" MAligns  _MWindowLabelAligns  (int index);
+extern "C" float    _MWindowLabelX       (int index);
+extern "C" float    _MWindowLabelY       (int index);
+extern "C" float    _MWindowLabelWidth   (int index);
+extern "C" float    _MWindowLabelHeight  (int index);
 
-extern "C" void MWindowOnTouchBegin(float x, float y);
-extern "C" void MWindowOnTouchMove (float x, float y);
-extern "C" void MWindowOnTouchEnd  (float x, float y);
-
-extern "C" void MWindowOnText(int textId, bool enter);
-
-extern "C" void MWindowOnKey(MKey key);
-
-extern "C" int  MWindowTriangleCount();
-extern "C" void MWindowSelectTriangle(int index);
-
-extern "C" int  MWindowLabelCount();
-extern "C" void MWindowSelectLabel(int index);
-
-extern "C" int  MWindowDirtyTextCount();
-extern "C" void MWindowSelectDirtyText(int index);
-extern "C" int  MWindowObsoleteTextCount();
-extern "C" void MWindowSelectObsoleteText(int index);
-
-extern "C" int      MWindowSelectedId    ();
-extern "C" MColor   MWindowSelectedColor ();
-extern "C" MString *MWindowSelectedString();
-extern "C" MAlign   MWindowSelectedAlign ();
-extern "C" float    MWindowSelectedX     ();
-extern "C" float    MWindowSelectedY     ();
-extern "C" float    MWindowSelectedWidth ();
-extern "C" float    MWindowSelectedHeight();
+extern "C" bool   _MWindowTextBoxDirty   ();
+extern "C" bool   _MWindowTextBoxEnabled ();
+extern "C" MColor _MWindowTextBoxColor   ();
+extern "C" float  _MWindowTextBoxFontSize();
+extern "C" float  _MWindowTextBoxX       ();
+extern "C" float  _MWindowTextBoxY       ();
+extern "C" float  _MWindowTextBoxWidth   ();
+extern "C" float  _MWindowTextBoxHeight  ();
+extern "C" void   _MWindowSetTextBoxClean();
 
 typedef int MWindowEvent;
 
 const MWindowEvent MWindowEvent_Load       = 'L';
 const MWindowEvent MWindowEvent_Show       = 'S';
 const MWindowEvent MWindowEvent_Hide       = 'H';
-const MWindowEvent MWindowEvent_Unload     = 'U';
 const MWindowEvent MWindowEvent_Resize     = 'R';
-const MWindowEvent MWindowEvent_Update     = 'P';
+const MWindowEvent MWindowEvent_Update     = 'U';
 const MWindowEvent MWindowEvent_Draw       = 'D';
 const MWindowEvent MWindowEvent_TouchBegin = 'B';
 const MWindowEvent MWindowEvent_TouchMove  = 'M';
 const MWindowEvent MWindowEvent_TouchEnd   = 'E';
-const MWindowEvent MWindowEvent_Key        = 'K';
-const MWindowEvent MWindowEvent_Text       = 'T';
+const MWindowEvent MWindowEvent_TextBox    = 'T';
+const MWindowEvent MWindowEvent_KeyDown    = 'K';
 
 void MWindowAddListener(MLambda *listener);
 
-float MWindowWidth    ();
-float MWindowHeight   ();
-float MWindowTouchX   ();
-float MWindowTouchY   ();
-int   MWindowFocusText();
-MKey  MWindowActiveKey();
+float MWindowWidth ();
+float MWindowHeight();
 
-void MWindowSelectColor (MColor   color );
-void MWindowSelectString(MString *string);
-void MWindowSelectAlign (MAlign   align );
+float MWindowTouchX();
+float MWindowTouchY();
+
+MKey MWindowActiveKey();
+
+void MWindowSelectString  (MString *string);
+void MWindowSelectColor   (MColor   color );
+void MWindowSelectFontSize(float    size  );
+void MWindowSelectAligns  (MAligns  aligns);
 
 void MWindowPinPoint(float x, float y);
 void MWindowAddPoint(float x, float y);
@@ -106,29 +102,28 @@ void MWindowAddPoint(float x, float y);
 void MWindowDrawTriangle();
 void MWindowDrawLabel();
 
-int MWindowAddText();
+void     MWindowEnableTextBox  (bool enabled);
+void     MWindowSetTextBoxColor(MColor color);
+void     MWindowSetTextBoxFrame(float x, float y, float w, float h);
+MString *MWindowTextBoxString  ();
+bool     MWindowTextBoxEnter   ();
 
-void     MWindowRemoveText   (int textId);
-void     MWindowSetTextOrigin(int textId, float x, float y);
-void     MWindowSetTextSize  (int textId, float w, float h);
-MString *MWindowTextString   (int textId);
-
-MEXPORT(MWindowAddListener  )
-MEXPORT(MWindowWidth        )
-MEXPORT(MWindowHeight       )
-MEXPORT(MWindowTouchX       )
-MEXPORT(MWindowTouchY       )
-MEXPORT(MWindowFocusText    )
-MEXPORT(MWindowActiveKey    )
-MEXPORT(MWindowSelectColor  )
-MEXPORT(MWindowSelectString )
-MEXPORT(MWindowSelectAlign  )
-MEXPORT(MWindowPinPoint     )
-MEXPORT(MWindowAddPoint     )
-MEXPORT(MWindowDrawTriangle )
-MEXPORT(MWindowDrawLabel    )
-MEXPORT(MWindowAddText      )
-MEXPORT(MWindowRemoveText   )
-MEXPORT(MWindowSetTextOrigin)
-MEXPORT(MWindowSetTextSize  )
-MEXPORT(MWindowTextString   )
+MEXPORT(MWindowAddListener    )
+MEXPORT(MWindowWidth          )
+MEXPORT(MWindowHeight         )
+MEXPORT(MWindowTouchX         )
+MEXPORT(MWindowTouchY         )
+MEXPORT(MWindowActiveKey      )
+MEXPORT(MWindowSelectString   )
+MEXPORT(MWindowSelectColor    )
+MEXPORT(MWindowSelectFontSize )
+MEXPORT(MWindowSelectAligns   )
+MEXPORT(MWindowPinPoint       )
+MEXPORT(MWindowAddPoint       )
+MEXPORT(MWindowDrawTriangle   )
+MEXPORT(MWindowDrawLabel      )
+MEXPORT(MWindowEnableTextBox  )
+MEXPORT(MWindowSetTextBoxColor)
+MEXPORT(MWindowSetTextBoxFrame)
+MEXPORT(MWindowTextBoxString  )
+MEXPORT(MWindowTextBoxEnter   )

@@ -19,10 +19,10 @@ const MApi MApi_PathExist       = 406;   //bool (string path);
 const MApi MApi_FolderExist     = 407;   //bool (string path);
 const MApi MApi_FileExist       = 408;   //bool (string path);
 
-typedef MObject *(*MApiFunc)(MArray *params);
+typedef MObject *(*MApiCopyFunc)(MArray *params);
 
 //the host need registering apis by this function.
-extern "C" void MApiSetFunc(MApi api, MApiFunc func);
+extern "C" void _MApiSetFunc(MApi api, MApiCopyFunc func);
 
 //to call host api by this function.
 MObject *MApiCopyCall(MApi api, MArray *params);

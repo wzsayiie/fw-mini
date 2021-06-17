@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 #include "mexport.h"
@@ -167,3 +168,20 @@ extern "C" int MDataSize(MData *data);
 MEXPORT(MDataCreate)
 MEXPORT(MDataBytes )
 MEXPORT(MDataSize  )
+
+//shared ptrs:
+
+template<class T>
+std::shared_ptr<T> MMakeShared(T *ptr) {
+    MRetain(ptr);
+    return std::shared_ptr<T>(ptr, MRelease);
+}
+
+typedef std::shared_ptr<MObject> MObjectRef;
+typedef std::shared_ptr<MBool  > MBoolRef  ;
+typedef std::shared_ptr<MInt   > MIntRef   ;
+typedef std::shared_ptr<MFloat > MFloatRef ;
+typedef std::shared_ptr<MString> MStringRef;
+typedef std::shared_ptr<MArray > MArrayRef ;
+typedef std::shared_ptr<MLambda> MLambdaRef;
+typedef std::shared_ptr<MData  > MDataRef  ;
