@@ -24,10 +24,10 @@ int NWriteGBK(void *dst, char32_t chr) {
     return 0;
 }
 
-std::string MU8stringFromU16s(const char16_t *u16chars) {
+std::string MU8StringFromU16(const char16_t *u16chars) {
     return "";
 }
 
-std::u16string MU16stringFromU8s(const char *u8chars) {
+std::u16string MU16StringFromU8(const char *u8chars) {
     return u"";
 }
