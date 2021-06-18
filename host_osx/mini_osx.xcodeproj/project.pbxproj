@@ -21,7 +21,7 @@
 		CE107D882674C5EA00823730 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE107D8D2674C5EA00823730 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE107D8E2674C5EA00823730 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		CE107D902674C5EA00823730 /* host.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = host.entitlements; sourceTree = "<group>"; };
+		CE107D902674C5EA00823730 /* mini.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = mini.entitlements; sourceTree = "<group>"; };
 		CE107D962674C6A400823730 /* MWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWindowController.h; sourceTree = "<group>"; };
 		CE107D972674C6A400823730 /* MAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MAppDelegate.mm; sourceTree = "<group>"; };
 		CE107D982674C6A400823730 /* MWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MWindowController.mm; sourceTree = "<group>"; };
@@ -65,11 +65,11 @@
 			isa = PBXGroup;
 			children = (
 				CE107D882674C5EA00823730 /* Assets.xcassets */,
-				CE107D902674C5EA00823730 /* host.entitlements */,
 				CE107D8D2674C5EA00823730 /* Info.plist */,
 				CE107D8E2674C5EA00823730 /* main.m */,
 				CE107D9A2674C6A400823730 /* MAppDelegate.h */,
 				CE107D972674C6A400823730 /* MAppDelegate.mm */,
+				CE107D902674C5EA00823730 /* mini.entitlements */,
 				CE107D9B2674C6A400823730 /* MViewController.h */,
 				CE107D992674C6A400823730 /* MViewController.mm */,
 				CE107D962674C6A400823730 /* MWindowController.h */,
@@ -291,7 +291,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = host/host.entitlements;
+				CODE_SIGN_ENTITLEMENTS = mini/mini.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../appsrc";
@@ -310,7 +310,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = host/host.entitlements;
+				CODE_SIGN_ENTITLEMENTS = mini/mini.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../appsrc";
