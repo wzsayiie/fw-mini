@@ -1,5 +1,0 @@
-void CJsAppLaunch() {
-}
-
-void CJsAppUpdate() {
-}

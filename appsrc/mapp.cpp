@@ -3,17 +3,17 @@
 void CAppLaunch();
 void CAppUpdate();
 
-void CJsAppLaunch();
-void CJsAppUpdate();
+void JsAppLaunch();
+void JsAppUpdate();
 
 void _MAppLaunch() {
     
-    CAppLaunch  ();
-    CJsAppLaunch();
+    CAppLaunch ();
+    JsAppLaunch();
 }
 
 void _MAppUpdate() {
     
-    CAppUpdate  ();
-    CJsAppUpdate();
+    CAppUpdate ();
+    JsAppUpdate();
 }

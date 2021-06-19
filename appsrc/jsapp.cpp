@@ -1,0 +1,5 @@
+void JsAppLaunch() {
+}
+
+void JsAppUpdate() {
+}
