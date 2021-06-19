@@ -5,14 +5,14 @@
 
 struct MFuncInfo {
     //internal data fields:
-    int Index = 0;
-    std::string Name;
+    int index = 0;
+    std::string name;
 
     //need external assignment:
-    void *FuncPtr   = nullptr;
-    MType RetType   = 0;
-    bool  RetRetain = false;
-    std::vector<MType> ArgTypes;
+    void *funcPtr   = nullptr;
+    MType retType   = 0;
+    bool  retRetain = false;
+    std::vector<MType> argTypes;
 };
 
 void MFuncAdd(const MFuncInfo &info);

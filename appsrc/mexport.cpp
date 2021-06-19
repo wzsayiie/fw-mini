@@ -3,10 +3,10 @@
 #include "mexport.h"
 #include "mdebug.h"
 
-struct MFuncAdder {
+struct FuncAdder {
 
     template<typename R, typename... A>
-    MFuncAdder(const char *name, R (*func)(A... a)) {
+    FuncAdder(const char *name, R (*func)(A... a)) {
     }
 };
 
