@@ -1,5 +1,5 @@
-#include "mmain.h"
+#include "mapp.h"
 
 int main() {
-    _MMain();
+    _MAppLaunch();
 }

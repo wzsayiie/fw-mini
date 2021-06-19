@@ -1,5 +1,5 @@
 #import "MViewController.h"
-#import "mmain.h"
+#import "mapp.h"
 
 @interface MViewController ()
 @end
@@ -10,7 +10,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithRed:0.4 green:0.6 blue:1 alpha:1];
     
-    _MMain();
+    _MAppLaunch();
 }
 
 @end

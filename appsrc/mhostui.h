@@ -33,7 +33,6 @@ extern "C" void _MWindowOnShow();
 extern "C" void _MWindowOnHide();
 
 extern "C" void _MWindowOnResize(float width, float height);
-extern "C" void _MWindowOnUpdate();
 extern "C" void _MWindowOnDraw  ();
 
 extern "C" void _MWindowOnTouchBegin(float x, float y);
@@ -73,7 +72,6 @@ const MWindowEvent MWindowEvent_Load       = 'L';
 const MWindowEvent MWindowEvent_Show       = 'S';
 const MWindowEvent MWindowEvent_Hide       = 'H';
 const MWindowEvent MWindowEvent_Resize     = 'R';
-const MWindowEvent MWindowEvent_Update     = 'U';
 const MWindowEvent MWindowEvent_Draw       = 'D';
 const MWindowEvent MWindowEvent_TouchBegin = 'B';
 const MWindowEvent MWindowEvent_TouchMove  = 'M';

@@ -1,0 +1,5 @@
+void CAppLaunch() {
+}
+
+void CAppUpdate() {
+}

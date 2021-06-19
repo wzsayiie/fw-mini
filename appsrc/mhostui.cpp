@@ -103,11 +103,6 @@ void _MWindowOnResize(float width, float height) {
     }
 }
 
-void _MWindowOnUpdate() {
-    WindowBuffer *buffer = GetWindowBuffer();
-    SendEvent(buffer, MWindowEvent_Update);
-}
-
 void _MWindowOnDraw() {
     WindowBuffer *buffer = GetWindowBuffer();
 

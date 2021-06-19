@@ -1,6 +1,6 @@
 ﻿#include <cstdio>
 #include <windows.h>
-#include "mmain.h"
+#include "mapp.h"
 
 static void OpenConsole(void)
 {
@@ -25,7 +25,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
     if (msg == WM_CREATE)
     {
         OpenConsole();
-        _MMain();
+        _MAppLaunch();
         return 0;
     }
     else if (msg == WM_PAINT)

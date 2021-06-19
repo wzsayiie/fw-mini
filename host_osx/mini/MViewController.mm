@@ -1,5 +1,5 @@
 #import "MViewController.h"
-#import "mmain.h"
+#import "mapp.h"
 
 @interface MViewController ()
 @end
@@ -14,7 +14,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _MMain();
+    _MAppLaunch();
 }
 
 @end
