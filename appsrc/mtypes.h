@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <initializer_list>
 #include <memory>
 #include <string>
 #include <vector>
@@ -81,8 +82,7 @@ MEXPORT(MGetType)
 
 //MBool & MInt & MFloat:
 
-template<typename T, int ID>
-class _MNumber : public MObject {
+template<typename T, int ID> class _MNumber : public MObject {
 
 public:
     static _MNumber *create(T value) {
@@ -170,7 +170,7 @@ public:
 private:
     MString(const char *chars) : MObject(MType_MString) {
         if (chars) {
-            mU8String = chars;
+            mU8String  = chars;
             mU16String = MU16StringFromU8(chars);
         }
     }
@@ -321,8 +321,8 @@ typedef std::shared_ptr<class MArray> MArrayRef;
 class MArray : public MObject {
     
 public:
-    static MArray *create();
-    static MArrayRef make();
+    static MArray *create(const std::initializer_list<MObject *> &items);
+    static MArrayRef make(const std::initializer_list<MObject *> &items);
 
     void     append(MObject *item);
     int      length();
@@ -331,14 +331,13 @@ public:
     ~MArray();
 
 private:
-    MArray() : MObject(MType_MArray) {
-    }
+    MArray(const std::initializer_list<MObject *> &items);
 
     std::vector<MObject *> mItems;
 };
 
 extern "C" inline MArray *MArrayCreate() {
-    return MArray::create();
+    return MArray::create({});
 }
 
 extern "C" inline void MArrayAppend(MArray *array, MObject *item) {
@@ -362,11 +361,16 @@ MEXPORT(MArrayItem  )
 
 //MObject* to MObjectRef:
 
-MObjectRef MMakeShared(MObject *value);
-MBoolRef   MMakeShared(MBool   *value);
-MIntRef    MMakeShared(MInt    *value);
-MFloatRef  MMakeShared(MFloat  *value);
-MStringRef MMakeShared(MString *value);
-MLambdaRef MMakeShared(MLambda *value);
-MDataRef   MMakeShared(MData   *value);
-MArrayRef  MMakeShared(MArray  *value);
+template<typename T> std::shared_ptr<T> _MMakeShared(T *value) {
+    MRetain(value);
+    return std::shared_ptr<T>(value, MRelease);
+}
+
+inline MObjectRef MMakeShared(MObject *val) {return _MMakeShared(val);}
+inline MBoolRef   MMakeShared(MBool   *val) {return _MMakeShared(val);}
+inline MIntRef    MMakeShared(MInt    *val) {return _MMakeShared(val);}
+inline MFloatRef  MMakeShared(MFloat  *val) {return _MMakeShared(val);}
+inline MStringRef MMakeShared(MString *val) {return _MMakeShared(val);}
+inline MLambdaRef MMakeShared(MLambda *val) {return _MMakeShared(val);}
+inline MDataRef   MMakeShared(MData   *val) {return _MMakeShared(val);}
+inline MArrayRef  MMakeShared(MArray  *val) {return _MMakeShared(val);}
