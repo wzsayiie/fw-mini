@@ -113,13 +113,13 @@ typedef std::shared_ptr<MBool > MBoolRef ;
 typedef std::shared_ptr<MInt  > MIntRef  ;
 typedef std::shared_ptr<MFloat> MFloatRef;
 
-extern "C" inline MBool  *MBoolCreate (bool  val) {return MBool ::create(val);}
-extern "C" inline MInt   *MIntCreate  (int   val) {return MInt  ::create(val);}
-extern "C" inline MFloat *MFloatCreate(float val) {return MFloat::create(val);}
+extern "C" inline MBool  *MBoolCreate (bool  v) { return MBool ::create(v); }
+extern "C" inline MInt   *MIntCreate  (int   v) { return MInt  ::create(v); }
+extern "C" inline MFloat *MFloatCreate(float v) { return MFloat::create(v); }
 
-extern "C" inline bool  MBoolValue (MBool  *obj) {return obj ? obj->value() : 0;}
-extern "C" inline int   MIntValue  (MInt   *obj) {return obj ? obj->value() : 0;}
-extern "C" inline float MFloatValue(MFloat *obj) {return obj ? obj->value() : 0;}
+extern "C" inline bool  MBoolValue (MBool  *a) { return a ? a->value() : 0; }
+extern "C" inline int   MIntValue  (MInt   *a) { return a ? a->value() : 0; }
+extern "C" inline float MFloatValue(MFloat *a) { return a ? a->value() : 0; }
 
 MEXPORT(MBoolCreate )
 MEXPORT(MIntCreate  )
@@ -366,11 +366,11 @@ template<typename T> std::shared_ptr<T> _MMakeShared(T *value) {
     return std::shared_ptr<T>(value, MRelease);
 }
 
-inline MObjectRef MMakeShared(MObject *val) {return _MMakeShared(val);}
-inline MBoolRef   MMakeShared(MBool   *val) {return _MMakeShared(val);}
-inline MIntRef    MMakeShared(MInt    *val) {return _MMakeShared(val);}
-inline MFloatRef  MMakeShared(MFloat  *val) {return _MMakeShared(val);}
-inline MStringRef MMakeShared(MString *val) {return _MMakeShared(val);}
-inline MLambdaRef MMakeShared(MLambda *val) {return _MMakeShared(val);}
-inline MDataRef   MMakeShared(MData   *val) {return _MMakeShared(val);}
-inline MArrayRef  MMakeShared(MArray  *val) {return _MMakeShared(val);}
+inline MObjectRef MMakeShared(MObject *v) { return _MMakeShared(v); }
+inline MBoolRef   MMakeShared(MBool   *v) { return _MMakeShared(v); }
+inline MIntRef    MMakeShared(MInt    *v) { return _MMakeShared(v); }
+inline MFloatRef  MMakeShared(MFloat  *v) { return _MMakeShared(v); }
+inline MStringRef MMakeShared(MString *v) { return _MMakeShared(v); }
+inline MLambdaRef MMakeShared(MLambda *v) { return _MMakeShared(v); }
+inline MDataRef   MMakeShared(MData   *v) { return _MMakeShared(v); }
+inline MArrayRef  MMakeShared(MArray  *v) { return _MMakeShared(v); }
