@@ -1,8 +1,8 @@
 #include <jni.h>
-#include "mmain.h"
+#include "mapp.h"
 
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MainActivity_startupMain(JNIEnv *, jobject)
 {
-    _MMain();
+    _MAppLaunch();
 }
