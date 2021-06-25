@@ -5,9 +5,9 @@
 
 typedef int MKey;
 
-const MKey MKey_BACK  = 0x08;
-const MKey MKey_ENTER = 0x0D;
-const MKey MKey_SPACE = 0x20;
+const MKey MKey_Back  = 0x08;
+const MKey MKey_Enter = 0x0D;
+const MKey MKey_Space = 0x20;
 const MKey MKey_Left  = 0x25;
 const MKey MKey_Up    = 0x26;
 const MKey MKey_Right = 0x27;
