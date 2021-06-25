@@ -23,22 +23,11 @@ struct Label {
 };
 
 struct TextBox {
-
-    bool   dirty    = false;
-    bool   enabled  = false;
-    MColor color    = 0;
-    float  fontSize = 0;
-
-    float x      = 0;
-    float y      = 0;
-    float width  = 0;
-    float height = 0;
-
     MStringRef string;
-    bool enter = false;
-};
 
-const int MaxSelectablePointNumber = 3;
+    bool enabled = false;
+    bool enter   = false;
+};
 
 struct WindowBuffer {
     bool  loaded = false;
@@ -52,9 +41,8 @@ struct WindowBuffer {
     MColor     selectedColor      = 0;
     float      selectedFontSize   = 0;
     MAligns    selectedAligns     = 0;
-    int        selectedPointCount = 0;
-    float      selectedPointX[MaxSelectablePointNumber] = {0};
-    float      selectedPointY[MaxSelectablePointNumber] = {0};
+    float      selectedPointX[3]  = {0};
+    float      selectedPointY[3]  = {0};
 
     std::vector<Triangle> triangles;
     std::vector<Label> labels;
@@ -69,6 +57,21 @@ static WindowBuffer *GetWindowBuffer() {
         buffer = new WindowBuffer;
     }
     return buffer;
+}
+
+static Triangle *TriangleAt(int index) {
+    WindowBuffer *buffer = GetWindowBuffer();
+    return &buffer->triangles[index];
+}
+
+static Label *LabelAt(int index) {
+    WindowBuffer *buffer = GetWindowBuffer();
+    return &buffer->labels[index];
+}
+
+static TextBox *GetTextBox() {
+    WindowBuffer *buffer = GetWindowBuffer();
+    return &buffer->textBox;
 }
 
 static void SendEvent(WindowBuffer *buffer, MWindowEvent event) {
@@ -151,11 +154,6 @@ int _MWindowTriangleCount() {
     return (int)buffer->triangles.size();
 }
 
-static Triangle *TriangleAt(int index) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return &buffer->triangles[index];
-}
-
 float _MWindowTriangleVertexX(int index, int vertexIndex) {
     return TriangleAt(index)->x[vertexIndex];
 }
@@ -171,11 +169,6 @@ MColor _MWindowTriangleColor(int index) {
 int _MWindowLabelCount() {
     WindowBuffer *buffer = GetWindowBuffer();
     return (int)buffer->labels.size();
-}
-
-static Label *LabelAt(int index) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return &buffer->labels[index];
 }
 
 MString *_MWindowLabelString(int index) {
@@ -210,46 +203,8 @@ float _MWindowLabelHeight(int index) {
     return LabelAt(index)->height;
 }
 
-static TextBox *GetTextBox() {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return &buffer->textBox;
-}
-
-bool _MWindowTextBoxDirty() {
-    return GetTextBox()->dirty;
-}
-
 bool _MWindowTextBoxEnabled() {
     return GetTextBox()->enabled;
-}
-
-MColor _MWindowTextBoxColor() {
-    return GetTextBox()->color;
-}
-
-float _MWindowTextBoxFontSize() {
-    return GetTextBox()->fontSize;
-}
-
-float _MWindowTextBoxX() {
-    return GetTextBox()->x;
-}
-
-float _MWindowTextBoxY() {
-    return GetTextBox()->y;
-}
-
-float _MWindowTextBoxWidth() {
-    return GetTextBox()->width;
-}
-
-float _MWindowTextBoxHeight() {
-    return GetTextBox()->height;
-}
-
-void _MWindowSetTextBoxClean() {
-    TextBox *textBox = GetTextBox();
-    textBox->dirty = false;
 }
 
 void MWindowAddListener(MLambda *listener) {
@@ -299,41 +254,30 @@ void MWindowSelectAligns(MAligns aligns) {
     buffer->selectedAligns = aligns;
 }
 
-void MWindowPinPoint(float x, float y) {
+static void SelectPoint(int index, float x, float y) {
     WindowBuffer *buffer = GetWindowBuffer();
 
-    buffer->selectedPointX[0]  = x;
-    buffer->selectedPointY[0]  = y;
-    buffer->selectedPointCount = 1;
+    buffer->selectedPointX[index]  = x;
+    buffer->selectedPointY[index]  = y;
 }
 
-void MWindowAddPoint(float x, float y) {
-    WindowBuffer *buffer = GetWindowBuffer();
-
-    if ((buffer->selectedPointCount) >= MaxSelectablePointNumber) {
-        return;
-    }
-
-    int n = (buffer->selectedPointCount)++;
-    buffer->selectedPointX[n] = x;
-    buffer->selectedPointY[n] = y;
-}
+void MWindowSelectPoint0(float x, float y) { SelectPoint(0, x, y); }
+void MWindowSelectPoint1(float x, float y) { SelectPoint(1, x, y); }
+void MWindowSelectPoint2(float x, float y) { SelectPoint(2, x, y); }
 
 void MWindowDrawTriangle() {
     WindowBuffer *buffer = GetWindowBuffer();
 
-    if (buffer->selectedPointCount < 3) {
-        return;
-    }
-
     Triangle triangle;
+    
     triangle.color = buffer->selectedColor;
-    triangle.x[0]  = buffer->selectedPointX[0];
-    triangle.y[0]  = buffer->selectedPointY[0];
-    triangle.x[1]  = buffer->selectedPointX[1];
-    triangle.y[1]  = buffer->selectedPointY[1];
-    triangle.x[2]  = buffer->selectedPointX[2];
-    triangle.y[2]  = buffer->selectedPointY[2];
+
+    triangle.x[0] = buffer->selectedPointX[0];
+    triangle.y[0] = buffer->selectedPointY[0];
+    triangle.x[1] = buffer->selectedPointX[1];
+    triangle.y[1] = buffer->selectedPointY[1];
+    triangle.x[2] = buffer->selectedPointX[2];
+    triangle.y[2] = buffer->selectedPointY[2];
 
     buffer->triangles.push_back(triangle);
 }
@@ -341,61 +285,29 @@ void MWindowDrawTriangle() {
 void MWindowDrawLabel() {
     WindowBuffer *buffer = GetWindowBuffer();
 
-    if (buffer->selectedPointCount < 2) {
-        return;
-    }
-
     float x0 = buffer->selectedPointX[0];
     float y0 = buffer->selectedPointY[0];
     float x1 = buffer->selectedPointX[1];
     float y1 = buffer->selectedPointY[1];
 
     Label label;
+
     label.string   = buffer->selectedString  ;
     label.color    = buffer->selectedColor   ;
     label.fontSize = buffer->selectedFontSize;
     label.aligns   = buffer->selectedAligns  ;
-    label.x        = x0;
-    label.y        = y0;
-    label.width    = x1 - x0;
-    label.height   = y1 - y0;
+    
+    label.x      = x0;
+    label.y      = y0;
+    label.width  = x1 - x0;
+    label.height = y1 - y0;
 
     buffer->labels.push_back(label);
 }
 
 void MWindowEnableTextBox(bool enabled) {
     TextBox *textBox = GetTextBox();
-
-    if (textBox->enabled != enabled) {
-        textBox->enabled = enabled;
-        textBox->dirty = true;
-    }
-}
-
-void MWindowSetTextBoxColor(MColor color) {
-    TextBox *textBox = GetTextBox();
-
-    if (textBox->color != color) {
-        textBox->color = color;
-        textBox->dirty = true;
-    }
-}
-
-void MWindowSetTextBoxFrame(float x, float y, float w, float h) {
-    TextBox *textBox = GetTextBox();
-
-    if (textBox->x      != x ||
-        textBox->y      != y ||
-        textBox->width  != w ||
-        textBox->height != h)
-    {
-        textBox->x      = x;
-        textBox->y      = y;
-        textBox->width  = w;
-        textBox->height = h;
-
-        textBox->dirty = true;
-    }
+    textBox->enabled = enabled;
 }
 
 MString *MWindowTextBoxString() {

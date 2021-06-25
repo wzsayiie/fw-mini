@@ -56,15 +56,7 @@ extern "C" float    _MWindowLabelY       (int index);
 extern "C" float    _MWindowLabelWidth   (int index);
 extern "C" float    _MWindowLabelHeight  (int index);
 
-extern "C" bool   _MWindowTextBoxDirty   ();
-extern "C" bool   _MWindowTextBoxEnabled ();
-extern "C" MColor _MWindowTextBoxColor   ();
-extern "C" float  _MWindowTextBoxFontSize();
-extern "C" float  _MWindowTextBoxX       ();
-extern "C" float  _MWindowTextBoxY       ();
-extern "C" float  _MWindowTextBoxWidth   ();
-extern "C" float  _MWindowTextBoxHeight  ();
-extern "C" void   _MWindowSetTextBoxClean();
+extern "C" bool _MWindowTextBoxEnabled();
 
 typedef int MWindowEvent;
 
@@ -94,17 +86,16 @@ void MWindowSelectColor   (MColor   color );
 void MWindowSelectFontSize(float    size  );
 void MWindowSelectAligns  (MAligns  aligns);
 
-void MWindowPinPoint(float x, float y);
-void MWindowAddPoint(float x, float y);
+void MWindowSelectPoint0(float x, float y);
+void MWindowSelectPoint1(float x, float y);
+void MWindowSelectPoint2(float x, float y);
 
 void MWindowDrawTriangle();
 void MWindowDrawLabel();
 
-void     MWindowEnableTextBox  (bool enabled);
-void     MWindowSetTextBoxColor(MColor color);
-void     MWindowSetTextBoxFrame(float x, float y, float w, float h);
-MString *MWindowTextBoxString  ();
-bool     MWindowTextBoxEnter   ();
+void     MWindowEnableTextBox(bool enabled);
+MString *MWindowTextBoxString();
+bool     MWindowTextBoxEnter ();
 
 MEXPORT(MWindowAddListener    )
 MEXPORT(MWindowWidth          )
@@ -116,12 +107,11 @@ MEXPORT(MWindowSelectString   )
 MEXPORT(MWindowSelectColor    )
 MEXPORT(MWindowSelectFontSize )
 MEXPORT(MWindowSelectAligns   )
-MEXPORT(MWindowPinPoint       )
-MEXPORT(MWindowAddPoint       )
+MEXPORT(MWindowSelectPoint0   )
+MEXPORT(MWindowSelectPoint1   )
+MEXPORT(MWindowSelectPoint2   )
 MEXPORT(MWindowDrawTriangle   )
 MEXPORT(MWindowDrawLabel      )
 MEXPORT(MWindowEnableTextBox  )
-MEXPORT(MWindowSetTextBoxColor)
-MEXPORT(MWindowSetTextBoxFrame)
 MEXPORT(MWindowTextBoxString  )
 MEXPORT(MWindowTextBoxEnter   )
