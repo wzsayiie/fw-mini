@@ -75,13 +75,14 @@ const MWindowEvent MWindowEvent_KeyDown    = 'K';
 
 void MWindowAddListener(MLambda *listener);
 
+MWindowEvent MWindowCurrentEvent();
+
 float MWindowWidth ();
 float MWindowHeight();
 
 float MWindowTouchX();
 float MWindowTouchY();
-
-MKey MWindowActiveKey();
+MKey  MWindowActiveKey();
 
 void MWindowSelectString  (MString *string);
 void MWindowSelectColor   (MColor   color );
@@ -100,6 +101,7 @@ MString *MWindowTextBoxString();
 bool     MWindowTextBoxEnter ();
 
 MEXPORT(MWindowAddListener    )
+MEXPORT(MWindowCurrentEvent   )
 MEXPORT(MWindowWidth          )
 MEXPORT(MWindowHeight         )
 MEXPORT(MWindowTouchX         )

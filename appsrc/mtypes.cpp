@@ -28,7 +28,7 @@ MObject *MArray::item(int index) {
     if (0 <= index && index < length()) {
         return mItems[index];
     }
-    return NULL;
+    return nullptr;
 }
 
 MArray::~MArray() {

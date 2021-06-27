@@ -33,6 +33,8 @@ struct WindowBuffer {
     bool loaded = false;
     bool shown  = false;
     
+    MWindowEvent event = 0;
+    
     float width  = 0;
     float height = 0;
     float touchX = 0;
@@ -77,8 +79,9 @@ static TextBox *GetTextBox() {
 }
 
 static void SendEvent(WindowBuffer *buffer, MWindowEvent event) {
+    buffer->event = event;
     for (const MLambdaRef &listener : buffer->listeners) {
-        MLambdaCall(listener.get(), NULL);
+        MLambdaCall(listener.get(), nullptr);
     }
 }
 
@@ -230,6 +233,10 @@ void MWindowAddListener(MLambda *listener) {
         WindowBuffer *buffer = GetWindowBuffer();
         buffer->listeners.push_back(MMakeShared(listener));
     }
+}
+
+MWindowEvent MWindowCurrentEvent() {
+    return GetWindowBuffer()->event;
 }
 
 float MWindowWidth() {

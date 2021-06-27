@@ -22,7 +22,7 @@ MObject *MApiCopyCall(MApi api, MArray *params) {
     auto pair = funcs->find(api);
     if (pair == funcs->end()) {
         D("ERROR: not found api %d", api);
-        return NULL;
+        return nullptr;
     }
 
     MApiCopyFunc func = pair->second;
