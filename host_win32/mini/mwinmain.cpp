@@ -39,7 +39,7 @@ static LRESULT OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     _MWindowOnResize(clientW, clientH);
     _MWindowOnLoad();
 
-    SetTimer(hwnd, TimerID, (UINT)(1000 * _MAPP_UPADETE_INTERVAL), NULL);
+    SetTimer(hwnd, TimerID, (UINT)(1000 * _MAppUpdateInterval), NULL);
 
     return 0;
 }
