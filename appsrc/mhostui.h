@@ -12,10 +12,10 @@ const MKey MKey_Left  = 0x25;
 const MKey MKey_Up    = 0x26;
 const MKey MKey_Right = 0x27;
 const MKey MKey_Down  = 0x28;
-const MKey MKey_A     = 'A';
-const MKey MKey_W     = 'W';
-const MKey MKey_D     = 'D';
-const MKey MKey_S     = 'S';
+const MKey MKey_A     = 'A' ;
+const MKey MKey_W     = 'W' ;
+const MKey MKey_D     = 'D' ;
+const MKey MKey_S     = 'S' ;
 
 typedef int MAligns;
 
@@ -27,6 +27,8 @@ const MAligns MAlign_VCenter = 16;
 const MAligns MAlign_Bottom  = 32;
 
 typedef int MColor;
+
+const float _MWindowDrawInterval = 0.1f;
 
 extern "C" void _MWindowOnLoad();
 extern "C" void _MWindowOnShow();

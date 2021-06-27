@@ -30,7 +30,9 @@ struct TextBox {
 };
 
 struct WindowBuffer {
-    bool  loaded = false;
+    bool loaded = false;
+    bool shown  = false;
+    
     float width  = 0;
     float height = 0;
     float touchX = 0;
@@ -82,22 +84,38 @@ static void SendEvent(WindowBuffer *buffer, MWindowEvent event) {
 
 void _MWindowOnLoad() {
     WindowBuffer *buffer = GetWindowBuffer();
-    buffer->loaded = true;
-    SendEvent(buffer, MWindowEvent_Load);
+    
+    if (!buffer->loaded) {
+        buffer->loaded = true;
+        SendEvent(buffer, MWindowEvent_Load);
+    }
 }
 
 void _MWindowOnShow() {
     WindowBuffer *buffer = GetWindowBuffer();
-    SendEvent(buffer, MWindowEvent_Show);
+    
+    if (buffer->loaded && !buffer->shown) {
+        buffer->shown = true;
+        SendEvent(buffer, MWindowEvent_Show);
+    }
 }
 
 void _MWindowOnHide() {
     WindowBuffer *buffer = GetWindowBuffer();
-    SendEvent(buffer, MWindowEvent_Hide);
+    
+    if (buffer->shown) {
+        buffer->shown = false;
+        SendEvent(buffer, MWindowEvent_Hide);
+    }
 }
 
 void _MWindowOnResize(float width, float height) {
     WindowBuffer *buffer = GetWindowBuffer();
+    
+    if (buffer->width == width && buffer->height == height) {
+        return;
+    }
+    
     buffer->width  = width ;
     buffer->height = height;
 
