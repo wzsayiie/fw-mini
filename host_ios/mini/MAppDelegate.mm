@@ -1,9 +1,6 @@
 #import "MAppDelegate.h"
 #import "MViewController.h"
 
-@interface MAppDelegate ()
-@end
-
 @implementation MAppDelegate
 
 - (BOOL) /* ====== */ application:(UIApplication *)application
