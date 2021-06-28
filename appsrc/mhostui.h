@@ -28,6 +28,16 @@ const MAligns MAlign_Bottom  = 32;
 
 typedef int MColor;
 
+struct MColorPattern {
+    union {
+        uint8_t red  ;
+        uint8_t green;
+        uint8_t blue ;
+        uint8_t alpha;
+    };
+    MColor rgba;
+};
+
 const float _MWindowDrawInterval = 0.1f;
 
 extern "C" void _MWindowOnLoad();

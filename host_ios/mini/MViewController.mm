@@ -20,18 +20,20 @@
     }
 }
 
-- (void)makeContext:(CGContextRef)context setFillColorWithRGBA:(int)RGBA {
-    float red   = (RGBA >> 24 & 0xff) / 255.f;
-    float green = (RGBA >> 16 & 0xff) / 255.f;
-    float blue  = (RGBA >>  8 & 0xff) / 255.f;
-    float alpha = (RGBA       & 0xff) / 255.f;
+- (void)makeContext:(CGContextRef)context setFillColorWithRGBA:(MColor)rgba {
+    auto color = (MColorPattern *)&rgba;
+    
+    float red   = color->red   / 255.f;
+    float green = color->green / 255.f;
+    float blue  = color->blue  / 255.f;
+    float alpha = color->alpha / 255.f;
     
     CGContextSetRGBFillColor(context, red, green, blue, alpha);
 }
 
 - (void)makeContext:(CGContextRef)context drawTriangleWithIndex:(int)index {
-    int RGBA = _MWindowTriangleColor(index);
-    [self makeContext:context setFillColorWithRGBA:RGBA];
+    MColor rgba = _MWindowTriangleColor(index);
+    [self makeContext:context setFillColorWithRGBA:rgba];
     
     float x0 = _MWindowTriangleVertexX(index, 0);
     float y0 = _MWindowTriangleVertexY(index, 0);
