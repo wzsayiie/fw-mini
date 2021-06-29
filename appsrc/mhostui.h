@@ -28,12 +28,12 @@ const MAligns MAlign_Bottom  = 32;
 
 typedef int MColor;
 
-struct MColorPattern {
-    union {
-        uint8_t red  ;
-        uint8_t green;
-        uint8_t blue ;
+union MColorPattern {
+    struct {
         uint8_t alpha;
+        uint8_t blue ;
+        uint8_t green;
+        uint8_t red  ;
     };
     MColor rgba;
 };
@@ -110,22 +110,22 @@ void     MWindowEnableTextBox(bool enabled);
 MString *MWindowTextBoxString();
 bool     MWindowTextBoxEnter ();
 
-MEXPORT(MWindowAddListener    )
-MEXPORT(MWindowCurrentEvent   )
-MEXPORT(MWindowWidth          )
-MEXPORT(MWindowHeight         )
-MEXPORT(MWindowTouchX         )
-MEXPORT(MWindowTouchY         )
-MEXPORT(MWindowActiveKey      )
-MEXPORT(MWindowSelectString   )
-MEXPORT(MWindowSelectColor    )
-MEXPORT(MWindowSelectFontSize )
-MEXPORT(MWindowSelectAligns   )
-MEXPORT(MWindowSelectPoint0   )
-MEXPORT(MWindowSelectPoint1   )
-MEXPORT(MWindowSelectPoint2   )
-MEXPORT(MWindowDrawTriangle   )
-MEXPORT(MWindowDrawLabel      )
-MEXPORT(MWindowEnableTextBox  )
-MEXPORT(MWindowTextBoxString  )
-MEXPORT(MWindowTextBoxEnter   )
+MEXPORT(MWindowAddListener   )
+MEXPORT(MWindowCurrentEvent  )
+MEXPORT(MWindowWidth         )
+MEXPORT(MWindowHeight        )
+MEXPORT(MWindowTouchX        )
+MEXPORT(MWindowTouchY        )
+MEXPORT(MWindowActiveKey     )
+MEXPORT(MWindowSelectString  )
+MEXPORT(MWindowSelectColor   )
+MEXPORT(MWindowSelectFontSize)
+MEXPORT(MWindowSelectAligns  )
+MEXPORT(MWindowSelectPoint0  )
+MEXPORT(MWindowSelectPoint1  )
+MEXPORT(MWindowSelectPoint2  )
+MEXPORT(MWindowDrawTriangle  )
+MEXPORT(MWindowDrawLabel     )
+MEXPORT(MWindowEnableTextBox )
+MEXPORT(MWindowTextBoxString )
+MEXPORT(MWindowTextBoxEnter  )

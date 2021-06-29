@@ -22,9 +22,10 @@ static void OpenConsole(void)
     SetWindowPos(hWnd, HWND_TOP, 300, 100, 0, 0, SWP_NOSIZE);
 }
 
-const UINT_PTR TimerID = 0;
+const UINT_PTR UpdateTimerID = 1;
+const UINT_PTR DrawTimerID   = 2;
 
-static LRESULT OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     OpenConsole();
 
@@ -33,20 +34,21 @@ static LRESULT OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     //window events.
     RECT rect = {0};
-    GetClientRect(hwnd, &rect);
-    auto clientW = (float)(rect.right - rect.left);
-    auto clientH = (float)(rect.bottom - rect.top);
-    _MWindowOnResize(clientW, clientH);
+    GetClientRect(wnd, &rect);
+    auto width  = (float)(rect.right - rect.left);
+    auto height = (float)(rect.bottom - rect.top);
+    _MWindowOnResize(width, height);
     _MWindowOnLoad();
 
-    SetTimer(hwnd, TimerID, (UINT)(1000 * _MAppUpdateInterval), NULL);
+    SetTimer(wnd, UpdateTimerID, (UINT)(1000 * _MAppUpdateInterval ), NULL);
+    SetTimer(wnd, DrawTimerID  , (UINT)(1000 * _MWindowDrawInterval), NULL);
 
     return 0;
 }
 
-static LRESULT OnShowWindow(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnShowWindow(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    BOOL shown = (BOOL)wParam;
+    auto shown = (BOOL)wParam;
     if (shown)
     {
         _MWindowOnShow();
@@ -59,75 +61,134 @@ static LRESULT OnShowWindow(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-static LRESULT OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnDestroy(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    KillTimer(hwnd, TimerID);
+    KillTimer(wnd, UpdateTimerID);
+    KillTimer(wnd, DrawTimerID);
+
     PostQuitMessage(0);
     return 0;
 }
 
-static LRESULT OnTimer(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    _MAppUpdate();
+    UINT_PTR timerID = wParam;
+    if (timerID == UpdateTimerID)
+    {
+        _MAppUpdate();
+    }
+    else if (timerID == DrawTimerID)
+    {
+        InvalidateRect(wnd, NULL, TRUE);
+    }
+
     return 0;
 }
 
-static LRESULT OnSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnSize(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    float clientW = LOWORD(lParam);
-    float clientH = HIWORD(lParam);
-    _MWindowOnResize(clientW, clientH);
+    LPARAM clientSize = lParam;
+    float width  = LOWORD(clientSize);
+    float height = HIWORD(clientSize);
+    _MWindowOnResize(width, height);
     return 0;
 }
 
-static LRESULT OnPaint(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static void PaintTriangle(HDC dc, int index)
+{
+    MColorPattern rgba = {0};
+    rgba.rgba = _MWindowTriangleColor(index);
+
+    //the gdi interface doesn't support the alpha channel.
+    if (rgba.alpha == 0)
+    {
+        return;
+    }
+
+    POINT vertices[3] = {0};
+    for (int n = 0; n < 3; ++n)
+    {
+        vertices[n].x = (LONG)_MWindowTriangleVertexX(index, n);
+        vertices[n].y = (LONG)_MWindowTriangleVertexY(index, n);
+    }
+
+    COLORREF color = RGB(rgba.red, rgba.green, rgba.blue);
+    HBRUSH brush = CreateSolidBrush(color);
+    HPEN pen = CreatePen(PS_SOLID, 0, color);
+    SelectBrush(dc, brush);
+    SelectPen(dc, pen);
+    Polygon(dc, vertices, 3);
+    DeleteBrush(brush);
+    DeletePen(pen);
+}
+
+static void PaintLabel(HDC dc, int index)
+{
+}
+
+static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     _MWindowOnDraw();
 
-    PAINTSTRUCT paint;
-    BeginPaint(hwnd, &paint);
-    EndPaint(hwnd, &paint);
+    PAINTSTRUCT paint = {0};
+    HDC dc = BeginPaint(wnd, &paint);
+
+    int triangleCount = _MWindowTriangleCount();
+    for (int index = 0; index < triangleCount; ++index) {
+        PaintTriangle(dc, index);
+    }
+
+    int labelCount = _MWindowLabelCount();
+    for (int index = 0; index < labelCount; ++index) {
+        PaintLabel(dc, index);
+    }
+
+    EndPaint(wnd, &paint);
     return 0;
 }
 
 static bool sLButtonDowned = false;
 
-static LRESULT OnLButtonDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     sLButtonDowned = true;
     
-    auto clientX = (float)GET_X_LPARAM(lParam);
-    auto clientY = (float)GET_Y_LPARAM(lParam);
-    _MWindowOnTouchBegin(clientX, clientY);
+    LPARAM clientPoint = lParam;
+    auto x = (float)GET_X_LPARAM(clientPoint);
+    auto y = (float)GET_Y_LPARAM(clientPoint);
+    _MWindowOnTouchBegin(x, y);
 
     return 0;
 }
 
-static LRESULT OnMouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     if (sLButtonDowned)
     {
-        auto clientX = (float)GET_X_LPARAM(lParam);
-        auto clientY = (float)GET_Y_LPARAM(lParam);
-        _MWindowOnTouchMove(clientX, clientY);
+        LPARAM clientPoint = lParam;
+        auto x = (float)GET_X_LPARAM(clientPoint);
+        auto y = (float)GET_Y_LPARAM(clientPoint);
+        _MWindowOnTouchMove(x, y);
     }
     return 0;
 }
 
-static LRESULT OnLButtonUp(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    auto clientX = (float)GET_X_LPARAM(lParam);
-    auto clientY = (float)GET_Y_LPARAM(lParam);
-    _MWindowOnTouchEnd(clientX, clientY);
+    LPARAM clientPoint = lParam;
+    auto x = (float)GET_X_LPARAM(clientPoint);
+    auto y = (float)GET_Y_LPARAM(clientPoint);
+    _MWindowOnTouchEnd(x, y);
 
     sLButtonDowned = false;
 
     return 0;
 }
 
-static LRESULT OnKeyDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    switch (wParam)
+    WPARAM virutalKey = wParam;
+    switch (virutalKey)
     {
         case VK_BACK  : _MWindowOnKeyDown(MKey_Back ); break;
         case VK_RETURN: _MWindowOnKeyDown(MKey_Enter); break;
@@ -145,22 +206,22 @@ static LRESULT OnKeyDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
-        case WM_CREATE     : return OnCreate     (hwnd, wParam, lParam);
-        case WM_SHOWWINDOW : return OnShowWindow (hwnd, wParam, lParam);
-        case WM_DESTROY    : return OnDestroy    (hwnd, wParam, lParam);
-        case WM_TIMER      : return OnTimer      (hwnd, wParam, lParam);
-        case WM_SIZE       : return OnSize       (hwnd, wParam, lParam);
-        case WM_PAINT      : return OnPaint      (hwnd, wParam, lParam);
-        case WM_LBUTTONDOWN: return OnLButtonDown(hwnd, wParam, lParam);
-        case WM_MOUSEMOVE  : return OnMouseMove  (hwnd, wParam, lParam);
-        case WM_LBUTTONUP  : return OnLButtonUp  (hwnd, wParam, lParam);
-        case WM_KEYDOWN    : return OnKeyDown    (hwnd, wParam, lParam);
+        case WM_CREATE     : return OnCreate     (wnd, wParam, lParam);
+        case WM_SHOWWINDOW : return OnShowWindow (wnd, wParam, lParam);
+        case WM_DESTROY    : return OnDestroy    (wnd, wParam, lParam);
+        case WM_TIMER      : return OnTimer      (wnd, wParam, lParam);
+        case WM_SIZE       : return OnSize       (wnd, wParam, lParam);
+        case WM_PAINT      : return OnPaint      (wnd, wParam, lParam);
+        case WM_LBUTTONDOWN: return OnLButtonDown(wnd, wParam, lParam);
+        case WM_MOUSEMOVE  : return OnMouseMove  (wnd, wParam, lParam);
+        case WM_LBUTTONUP  : return OnLButtonUp  (wnd, wParam, lParam);
+        case WM_KEYDOWN    : return OnKeyDown    (wnd, wParam, lParam);
 
-        default: return DefWindowProcW(hwnd, msg, wParam, lParam);
+        default: return DefWindowProcW(wnd, msg, wParam, lParam);
     }
 }
 
@@ -168,7 +229,7 @@ int APIENTRY wWinMain(
     _In_     HINSTANCE instance,
     _In_opt_ HINSTANCE prevInst,
     _In_     LPWSTR    cmdLine ,
-    _In_     int       cmdShow )
+    _In_     int       showCmd )
 {
     //register window class.
     LPCWSTR className = L"MWindow";
@@ -188,7 +249,7 @@ int APIENTRY wWinMain(
     RegisterClassW(&wndClass);
 
     //show window.
-    HWND hwnd = CreateWindowExW(
+    HWND wnd = CreateWindowExW(
         /* dwExStyle    */ 0,
         /* lpClassName  */ className,
         /* lpWindowName */ L"Mini",
@@ -201,8 +262,8 @@ int APIENTRY wWinMain(
         /* lpParam      */ NULL
     );
 
-    ShowWindow(hwnd, cmdShow);
-    UpdateWindow(hwnd);
+    ShowWindow(wnd, showCmd);
+    UpdateWindow(wnd);
 
     //message loop.
     MSG msg;
