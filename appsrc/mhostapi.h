@@ -7,7 +7,7 @@ typedef int MApi;
 
 const MApi MApi_Print             = 101;    //void (string text);
 const MApi MApi_RunThread         = 201;    //void (lambda proc);
-const MApi MApi_ThreaSleep        = 202;    //void (float seconds);
+const MApi MApi_ThreadSleep       = 202;    //void (float seconds);
 const MApi MApi_CopyResource      = 301;    //data (string path);
 const MApi MApi_CopyDocumentPath  = 401;    //string ();
 const MApi MApi_CopyCachePath     = 402;    //string ();
