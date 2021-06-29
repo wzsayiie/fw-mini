@@ -1,5 +1,4 @@
-void CAppLaunch() {
-}
+#include "mdebug.h"
 
-void CAppUpdate() {
+void CAppLaunch() {
 }
