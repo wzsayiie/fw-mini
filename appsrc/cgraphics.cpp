@@ -4,10 +4,6 @@ CColor::CColor(float red, float green, float blue, float alpha) {
     set(red, blue, green, alpha);
 }
 
-CColor::CColor(const char *string) {
-    set(string);
-}
-
 CColor::CColor() {
 }
 
@@ -16,36 +12,6 @@ void CColor::set(float red, float green, float blue, float alpha) {
     mGreen = green;
     mBlue  = blue ;
     mAlpha = alpha;
-}
-
-static int HexFromString(const char *string) {
-    int n = 0;
-    for (int i = 0; i < 8; ++i) {
-        char c = string[i];
-        
-        if      ('0' <= c && c <= '9') { n = n * 16 + c - '0'     ; }
-        else if ('A' <= c && c <= 'F') { n = n * 16 + c - 'A' + 10; }
-        else if ('a' <= c && c <= 'f') { n = n * 16 + c - 'a' + 10; }
-        else {
-            break;
-        }
-    }
-    return n;
-}
-
-void CColor::set(const char *string) {
-    MColorPattern color = {0};
-    if (string) {
-        if (*string == '#') {
-            string += 1;
-        }
-        color.rgba = HexFromString(string);
-    }
-    
-    mRed   = color.rgba  / 255.f;
-    mGreen = color.green / 255.f;
-    mBlue  = color.blue  / 255.f;
-    mAlpha = color.alpha / 255.f;
 }
 
 float CColor::red  () const { return mRed  ; }
@@ -62,4 +28,40 @@ MColor CColor::rgba() const {
     color.alpha = (uint8_t)(mAlpha * 255);
     
     return color.rgba;
+}
+
+static float sOffsetX = 0;
+static float sOffsetY = 0;
+
+static CColor sColor;
+
+void CContextSetOffset(float x, float y) {
+    sOffsetX = x;
+    sOffsetY = y;
+}
+
+void CContextSelectColor(const CColor &color) {
+    sColor = color;
+}
+
+void CContextDrawEllipse(float x, float y, float width, float height) {
+}
+
+void CContextDrawRect(float x, float y, float width, float height) {
+    MWindowSelectColor(sColor.rgba());
+    
+    float top    = sOffsetY + y;
+    float bottom = sOffsetY + y + height;
+    float left   = sOffsetX + x;
+    float right  = sOffsetX + x + width;
+    
+    MWindowSelectPoint0(left , top);
+    MWindowSelectPoint1(right, top);
+    MWindowSelectPoint2(right, bottom);
+    MWindowDrawTriangle();
+    
+    MWindowSelectPoint0(left , top);
+    MWindowSelectPoint1(right, bottom);
+    MWindowSelectPoint2(left , bottom);
+    MWindowDrawTriangle();
 }

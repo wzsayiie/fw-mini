@@ -7,11 +7,9 @@ class CColor {
     
 public:
     CColor(float red, float green, float blue, float alpha = 1);
-    CColor(const char *string);
     CColor();
     
     void set(float red, float green, float blue, float alpha = 1);
-    void set(const char *string);
     
     float red  () const;
     float green() const;
@@ -30,8 +28,6 @@ private:
 void CContextSetOffset(float x, float y);
 
 void CContextSelectColor(const CColor &color);
-void CContextSelectFontSize(int size);
 
-void CContextDrawString (const std::string &string, float x, float y, float width, float height);
 void CContextDrawEllipse(float x, float y, float width, float height);
 void CContextDrawRect   (float x, float y, float width, float height);
