@@ -1,5 +1,8 @@
 #include "cview.h"
 
+static MLambda *sWindowListener = nullptr;
+static CView *sRootView = nullptr;
+
 CView::CView(float x, float y, float width, float height) {
     mX = x;
     mY = y;
@@ -7,16 +10,33 @@ CView::CView(float x, float y, float width, float height) {
     mHeight = height;
 }
 
-CView::CView() {
+CView::~CView() {
+    if (this == sRootView) {
+        sRootView = nullptr;
+    }
 }
 
-void CView::setBackgroundColor(CColor color) {
-    mBackgroundColor = color;
+void CView::asRootView() {
+    if (!sWindowListener) {
+        sWindowListener = MLambdaCreate(handleWindowEvent, nullptr);
+        MWindowAddListener(sWindowListener);
+    }
+
+    sRootView = this;
+    setSupersOffset(0, 0);
 }
 
 void CView::setOrigin(float x, float y) {
+    if (mX == x && mY == y) {
+        return;
+    }
+
     mX = x;
     mY = y;
+
+    for (const CViewRef &subview : mSubviews) {
+        subview->setSupersOffset(mSupersX + mX, mSupersY + y);
+    }
 }
 
 void CView::setSize(float width, float height) {
@@ -24,10 +44,62 @@ void CView::setSize(float width, float height) {
     mHeight = height;
 }
 
+float CView::windowX() { return mSupersX + mX; }
+float CView::windowY() { return mSupersY + mY; }
+
+float CView::x() { return mX; }
+float CView::y() { return mY; }
+
+float CView::width () { return mWidth ; }
+float CView::height() { return mHeight; }
+
+void CView::setBackgroundColor(const CColor &color) {
+    mBackgroundColor = color;
+}
+
+void CView::setVisible(bool visible) {
+    mVisible = visible;
+}
+
+bool CView::visible() {
+    return mVisible;
+}
+
+static void RemoveSubview(std::vector<CViewRef> *subviews, CView *view) {
+    for (auto it = subviews->begin(); it != subviews->end(); ++it) {
+        if (it->get() == view) {
+            subviews->erase(it);
+            break;
+        }
+    }
+}
+
 void CView::addSubview(CViewRef subview) {
+    if (!subview) {
+        return;
+    }
+    if (subview->mSuperview == this) {
+        return;
+    }
+
+    if (subview->mSuperview) {
+        RemoveSubview(&subview->mSuperview->mSubviews, subview.get());
+    }
+    mSubviews.push_back(subview);
+    subview->mSuperview = this;
+
+    subview->setSupersOffset(mSupersX + mX, mSupersY + mY);
 }
 
 void CView::removeFromSuperview() {
+    if (!mSuperview) {
+        return;
+    }
+
+    RemoveSubview(&mSuperview->mSubviews, this);
+    mSuperview = nullptr;
+
+    setSupersOffset(0, 0);
 }
 
 const std::vector<CViewRef> &CView::subviews() {
@@ -38,8 +110,62 @@ CView *CView::superview() {
     return mSuperview;
 }
 
-void CView::drawViews() {
+void CView::onDrawBackground(float width, float height) {
+    CContextSelectColor(mBackgroundColor);
+    CContextDrawRect(0, 0, width, height);
 }
 
-void CView::drawSize(float width, float height) {
+void CView::setSupersOffset(float x, float y) {
+    if (mSupersX == x || mSupersY == y) {
+        return;
+    }
+
+    mSupersX = x;
+    mSupersY = y;
+
+    for (const CViewRef &subview : mSubviews) {
+        subview->setSupersOffset(mSupersX + mX, mSupersY + mY);
+    }
+}
+
+void CView::handleWindowEvent(MObject *, MObject *) {
+    if (!sRootView) {
+        return;
+    }
+
+    MWindowEvent event = MWindowCurrentEvent();
+    switch (event) {
+        case MWindowEvent_Resize: {
+            float width  = MWindowWidth ();
+            float height = MWindowHeight();
+            sRootView->handleResize(width, height);
+            break;
+        }
+        case MWindowEvent_Draw: {
+            sRootView->handleDraw();
+            break;
+        }
+        default:;
+    }
+}
+
+void CView::handleResize(float width, float height) {
+    mWidth  = width ;
+    mHeight = height;
+}
+
+void CView::handleDraw() {
+    if (!mVisible) {
+        return;
+    }
+
+    float x = windowX();
+    float y = windowY();
+    CContextSetOffset(x, y);
+
+    onDrawBackground(mWidth, mHeight);
+    onDraw(mWidth, mHeight);
+    for (const CViewRef &subview : mSubviews) {
+        subview->handleDraw();
+    }
 }

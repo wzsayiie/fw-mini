@@ -13,32 +13,37 @@ public:
     
     void asRootResponder();
     
-    virtual void becomeFirstResponder();
-    virtual void resignFirstResponder();
+    void becomeFirstResponder();
+    void resignFirstResponder();
+    bool isFirstResponder();
     
-    virtual bool canRespondTouch() { return false; }
+    virtual bool canRespondTouch(float x, float y) { return false; }
     virtual bool canRespondText () { return false; }
     virtual bool canRespondKey  () { return false; }
     
-    virtual CUIResponder *findTouchResponder(float x, float y) { return nullptr; }
-    virtual CUIResponder *findTextResponder () { return nullptr; }
-    virtual CUIResponder *findKeyResponder  () { return nullptr; }
+    virtual CUIResponder *findResponderForTouch(float x, float y) { return nullptr; }
+    virtual CUIResponder *findResponderForText () { return nullptr; }
+    virtual CUIResponder *findResponderForKey  () { return nullptr; }
     
 protected:
-    virtual void touchBegin(float x, float y) {}
-    virtual void touchMove (float x, float y) {}
-    virtual void touchEnd  (float x, float y) {}
+    virtual void onBecomeFirstResponder() {}
+    virtual void onResignFirstResponder() {}
+
+    //NOTE: here "x" and "y" are the coordinates of the window.
+    virtual void onWindowTouchBegin(float x, float y) {}
+    virtual void onWindowTouchMove (float x, float y) {}
+    virtual void onWindowTouchEnd  (float x, float y) {}
     
-    virtual void textInput(const std::string &string, bool enter) {}
+    virtual void onTextInput(const std::string &string, bool enter) {}
     
-    virtual void keyDown(MKey key) {}
+    virtual void onKeyDown(MKey key) {}
     
 private:
     static void handleWindowEvent(MObject *, MObject *);
     
-    void handleTouchBegin();
-    void handleTouchMove();
-    void handleTouchEnd();
-    void handleKeyDown();
-    void handleText();
+    static void handleWindowTouchBegin();
+    static void handleWindowTouchMove();
+    static void handleWindowTouchEnd();
+    static void handleWindowText();
+    static void handleWindowKeyDown();
 };

@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
 #include "cview.h"
-#include "mtypes.h"
 
 typedef std::shared_ptr<class CViewController> CViewControllerRef;
 
@@ -11,7 +9,7 @@ class CViewController : public CUIResponder {
 public:
     ~CViewController();
     
-    void asMainController();
+    void asRootController();
     
     void addChildController(CViewControllerRef childController);
     void removeFromParentController();
@@ -19,34 +17,25 @@ public:
     CViewController *parentController();
     
     CViewRef view();
+
+protected:
     virtual CViewRef loadView();
     
-    virtual void viewLoad();
-    virtual void viewShow();
-    virtual void viewHide();
-    
-    virtual void viewResize(float width, float height);
+    virtual void onViewLoad() {}
+    virtual void onViewAppear() {}
+    virtual void onViewDisappear() {}
     
 private:
-    void handleViewLoad();
-    void handleViewShow();
-    void handleViewHide();
-    
     static void handleWindowEvent(MObject *, MObject *);
     
-    void handleWindowLoad();
-    void handleWindowResize();
-    void handleWindowDraw();
-    void handleWindowTouchBegin();
-    void handleWindowTouchMove();
-    void handleWindowTouchEnd();
-    void handleWindowTextBox();
-    void handleWindowKeyDown();
-    
+    void handleLoad();
+    void handleAppear();
+    void handleDisappear();
+
     std::vector<CViewControllerRef> mChildControllers;
     CViewController *mParentController = nullptr;
     
-    bool mViewLoaded = false;
-    bool mViewShown = false;
+    bool mViewLoaded   = false;
+    bool mViewAppeared = false;
     CViewRef mView;
 };

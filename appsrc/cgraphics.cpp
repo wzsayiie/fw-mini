@@ -4,9 +4,6 @@ CColor::CColor(float red, float green, float blue, float alpha) {
     set(red, blue, green, alpha);
 }
 
-CColor::CColor() {
-}
-
 void CColor::set(float red, float green, float blue, float alpha) {
     mRed   = red  ;
     mGreen = green;
@@ -33,7 +30,7 @@ MColor CColor::rgba() const {
 static float sOffsetX = 0;
 static float sOffsetY = 0;
 
-static CColor sColor;
+static CColor sColor {0, 0, 0};
 
 void CContextSetOffset(float x, float y) {
     sOffsetX = x;

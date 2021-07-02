@@ -90,6 +90,9 @@ MWindowEvent MWindowCurrentEvent();
 float MWindowWidth ();
 float MWindowHeight();
 
+bool MWindowLoaded();
+bool MWindowShown ();
+
 float MWindowTouchX();
 float MWindowTouchY();
 MKey  MWindowActiveKey();
@@ -114,6 +117,8 @@ MEXPORT(MWindowAddListener   )
 MEXPORT(MWindowCurrentEvent  )
 MEXPORT(MWindowWidth         )
 MEXPORT(MWindowHeight        )
+MEXPORT(MWindowLoaded        )
+MEXPORT(MWindowShown         )
 MEXPORT(MWindowTouchX        )
 MEXPORT(MWindowTouchY        )
 MEXPORT(MWindowActiveKey     )

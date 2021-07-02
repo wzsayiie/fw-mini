@@ -7,7 +7,6 @@ class CColor {
     
 public:
     CColor(float red, float green, float blue, float alpha = 1);
-    CColor();
     
     void set(float red, float green, float blue, float alpha = 1);
     

@@ -239,21 +239,14 @@ MWindowEvent MWindowCurrentEvent() {
     return GetWindowBuffer()->event;
 }
 
-float MWindowWidth() {
-    return GetWindowBuffer()->width;
-}
+float MWindowWidth () { return GetWindowBuffer()->width ; }
+float MWindowHeight() { return GetWindowBuffer()->height; }
 
-float MWindowHeight() {
-    return GetWindowBuffer()->height;
-}
+bool MWindowLoaded() { return GetWindowBuffer()->loaded; }
+bool MWindowShown () { return GetWindowBuffer()->shown ; }
 
-float MWindowTouchX() {
-    return GetWindowBuffer()->touchX;
-}
-
-float MWindowTouchY() {
-    return GetWindowBuffer()->touchY;
-}
+float MWindowTouchX() { return GetWindowBuffer()->touchX; }
+float MWindowTouchY() { return GetWindowBuffer()->touchY; }
 
 MKey MWindowActiveKey() {
     return GetWindowBuffer()->key;
