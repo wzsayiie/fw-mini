@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "mhostui.h"
 
 class CColor {

@@ -1,6 +1,4 @@
 #include "cviewcontroller.h"
-#include "mdebug.h"
-#include "mhostui.h"
 
 static CViewController *sRootController = nullptr;
 static MLambda *sWindowListener = nullptr;
