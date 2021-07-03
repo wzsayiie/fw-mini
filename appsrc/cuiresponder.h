@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
 #include "mhostui.h"
@@ -17,13 +18,11 @@ public:
     void resignFirstResponder();
     bool isFirstResponder();
     
-    virtual bool canRespondTouch(float x, float y) { return false; }
-    virtual bool canRespondText () { return false; }
-    virtual bool canRespondKey  () { return false; }
+    virtual bool canRespondWindowTouch(float x, float y) { return false; }
+    virtual bool canRespondText() { return false; }
+    virtual bool canRespondKey () { return false; }
     
-    virtual CUIResponder *findResponderForTouch(float x, float y) { return nullptr; }
-    virtual CUIResponder *findResponderForText () { return nullptr; }
-    virtual CUIResponder *findResponderForKey  () { return nullptr; }
+    virtual CUIResponder *findResponder(std::function<bool (CUIResponder *)> fit) { return nullptr; }
     
 protected:
     virtual void onBecomeFirstResponder() {}
@@ -40,6 +39,8 @@ protected:
     
 private:
     static void handleWindowEvent(MObject *, MObject *);
+    
+    static CUIResponder *findFirstResponder(std::function<bool (CUIResponder *)> fit);
     
     static void handleWindowTouchBegin();
     static void handleWindowTouchMove();

@@ -17,6 +17,8 @@ void CViewController::asRootController() {
         MWindowAddListener(sWindowListener);
     }
     sRootController = this;
+    
+    asRootResponder();
     view()->asRootView();
 
     if (MWindowLoaded()) {
@@ -87,13 +89,65 @@ CViewController *CViewController::parentController() {
 CViewRef CViewController::view() {
     if (!mView) {
         mView = loadView();
-        onViewLoad();
     }
     return mView;
 }
 
+bool CViewController::canRespondWindowTouch(float x, float y) {
+    float left   = mView->windowX();
+    float top    = mView->windowY();
+    float right  = left + mView->width ();
+    float bottom = top  + mView->height();
+    
+    if (left <= x && x <= right && top <= y && y <= bottom) {
+        return true;
+    }
+    return false;
+}
+
+CUIResponder *CViewController::findResponder(std::function<bool (CUIResponder *)> fit) {
+    //is there a suitable child controller.
+    for (auto it = mChildControllers.rbegin(); it != mChildControllers.rend(); ++it) {
+        CUIResponder *responder = it->get()->findResponder(fit);
+        if (responder) {
+            return responder;
+        }
+    }
+    
+    //is there a suitable view.
+    CUIResponder *responder = mView->findResponder(fit);
+    if (responder) {
+        return responder;
+    }
+    
+    //is self suitable.
+    if (fit(this)) {
+        return this;
+    }
+    
+    return nullptr;
+}
+
 CViewRef CViewController::loadView() {
     return CViewRef(new CView(0, 0, 0, 0));
+}
+
+void CViewController::onWindowTouchBegin(float x, float y) {
+    float viewX = x - mView->windowX();
+    float viewY = y - mView->windowY();
+    onTouchBegin(viewX, viewY);
+}
+
+void CViewController::onWindowTouchMove(float x, float y) {
+    float viewX = x - mView->windowX();
+    float viewY = y - mView->windowY();
+    onTouchMove(viewX, viewY);
+}
+
+void CViewController::onWindowTouchEnd(float x, float y) {
+    float viewX = x - mView->windowX();
+    float viewY = y - mView->windowY();
+    onTouchEnd(viewX, viewY);
 }
 
 void CViewController::handleWindowEvent(MObject *, MObject *) {

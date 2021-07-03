@@ -26,6 +26,9 @@ public:
     
     void setBackgroundColor(const CColor &color);
     
+    void setTouchable(bool touchable);
+    bool touchable();
+    
     void setVisible(bool visible);
     bool visible();
 
@@ -33,10 +36,21 @@ public:
     void removeFromSuperview();
     const std::vector<CViewRef> &subviews();
     CView *superview();
+    
+    bool canRespondWindowTouch(float x, float y) override;
+    CUIResponder *findResponder(std::function<bool (CUIResponder *)> fit) override;
 
 protected:
     virtual void onDrawBackground(float width, float height);
     virtual void onDraw(float width, float height) {}
+    
+    virtual void onTouchBegin(float x, float y) {}
+    virtual void onTouchMove (float x, float y) {}
+    virtual void onTouchEnd  (float x, float y) {}
+    
+    void onWindowTouchBegin(float x, float y) override;
+    void onWindowTouchMove (float x, float y) override;
+    void onWindowTouchEnd  (float x, float y) override;
 
 private:
     void setSupersOffset(float x, float y);
@@ -54,6 +68,7 @@ private:
     float mHeight  = 0;
 
     CColor mBackgroundColor {1, 1, 1};
+    bool mTouchable = false;
     bool mVisible = true;
     
     std::vector<CViewRef> mSubviews;

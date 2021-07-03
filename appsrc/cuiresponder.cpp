@@ -56,20 +56,28 @@ void CUIResponder::handleWindowEvent(MObject *, MObject *) {
     }
 }
 
-void CUIResponder::handleWindowTouchBegin() {
-    float x = MWindowTouchX();
-    float y = MWindowTouchY();
-
+CUIResponder *CUIResponder::findFirstResponder(std::function<bool (CUIResponder *)> fit) {
     CUIResponder *responder = nullptr;
-    if (sFirstResponder && sFirstResponder->canRespondTouch(x, y)) {
+    if (sFirstResponder && fit(sFirstResponder)) {
         responder = sFirstResponder;
 
     } else if (sRootResponder) {
-        responder = sRootResponder->findResponderForTouch(x, y);
+        responder = sRootResponder->findResponder(fit);
         if (responder) {
             responder->becomeFirstResponder();
         }
     }
+    
+    return responder;
+}
+
+void CUIResponder::handleWindowTouchBegin() {
+    float x = MWindowTouchX();
+    float y = MWindowTouchY();
+
+    CUIResponder *responder = findFirstResponder([x, y](CUIResponder *candidate) {
+        return candidate->canRespondWindowTouch(x, y);
+    });
 
     if (responder) {
         sActiveResponder = responder;
@@ -94,22 +102,15 @@ void CUIResponder::handleWindowTouchEnd() {
 
     float x = MWindowTouchX();
     float y = MWindowTouchY();
-    sActiveResponder->onWindowTouchMove(x, y);
+    sActiveResponder->onWindowTouchEnd(x, y);
 
     sActiveResponder = nullptr;
 }
 
 void CUIResponder::handleWindowText() {
-    CUIResponder *responder = nullptr;
-    if (sFirstResponder && sFirstResponder->canRespondText()) {
-        responder = sFirstResponder;
-
-    } else if (sRootResponder) {
-        responder = sRootResponder->findResponderForText();
-        if (responder) {
-            responder->becomeFirstResponder();
-        }
-    }
+    CUIResponder *responder = findFirstResponder([](CUIResponder *candidate) {
+        return candidate->canRespondText();
+    });
 
     if (responder) {
         MString *string = MWindowTextBoxString();
@@ -119,16 +120,9 @@ void CUIResponder::handleWindowText() {
 }
 
 void CUIResponder::handleWindowKeyDown() {
-    CUIResponder *responder = nullptr;
-    if (sFirstResponder && sFirstResponder->canRespondKey()) {
-        responder = sFirstResponder;
-
-    } else if (sRootResponder) {
-        responder = sRootResponder->findResponderForKey();
-        if (responder) {
-            responder->becomeFirstResponder();
-        }
-    }
+    CUIResponder *responder = findFirstResponder([](CUIResponder *candidate) {
+        return candidate->canRespondKey();
+    });
 
     if (responder) {
         MKey key = MWindowActiveKey();

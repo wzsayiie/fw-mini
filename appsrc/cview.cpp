@@ -57,6 +57,14 @@ void CView::setBackgroundColor(const CColor &color) {
     mBackgroundColor = color;
 }
 
+void CView::setTouchable(bool touchable) {
+    mTouchable = touchable;
+}
+
+bool CView::touchable() {
+    return mTouchable;
+}
+
 void CView::setVisible(bool visible) {
     mVisible = visible;
 }
@@ -110,9 +118,60 @@ CView *CView::superview() {
     return mSuperview;
 }
 
+bool CView::canRespondWindowTouch(float x, float y) {
+    if (!mTouchable) {
+        return false;
+    }
+    
+    float left   = windowX();
+    float top    = windowY();
+    float right  = left + mWidth ;
+    float bottom = top  + mHeight;
+    if (left <= x && x <= right && top <= y && y <= bottom) {
+        return true;
+    }
+    
+    return false;
+}
+
+CUIResponder *CView::findResponder(std::function<bool (CUIResponder *)> fit) {
+    //is there a suitable subview.
+    for (auto it = mSubviews.rbegin(); it != mSubviews.rend(); ++it) {
+        CUIResponder *responder = it->get()->findResponder(fit);
+        if (responder) {
+            return responder;
+        }
+    }
+    
+    //is self suitable.
+    if (fit(this)) {
+        return this;
+    }
+    
+    return nullptr;
+}
+
 void CView::onDrawBackground(float width, float height) {
     CContextSelectColor(mBackgroundColor);
     CContextDrawRect(0, 0, width, height);
+}
+
+void CView::onWindowTouchBegin(float x, float y) {
+    float viewX = x - windowX();
+    float viewY = y - windowY();
+    onTouchBegin(viewX, viewY);
+}
+
+void CView::onWindowTouchMove(float x, float y) {
+    float viewX = x - windowX();
+    float viewY = y - windowY();
+    onTouchMove(viewX, viewY);
+}
+
+void CView::onWindowTouchEnd(float x, float y) {
+    float viewX = x - windowX();
+    float viewY = y - windowY();
+    onTouchEnd(viewX, viewY);
 }
 
 void CView::setSupersOffset(float x, float y) {
