@@ -20,7 +20,7 @@
     }
 }
 
-- (void)makeContext:(CGContextRef)context setFillColorWithRGBA:(MColor)rgba {
+- (void)makeContext:(CGContextRef)context setFillStrokeColorWithRGBA:(MColor)rgba {
     auto color = (MColorPattern *)&rgba;
     
     float red   = color->red   / 255.f;
@@ -28,12 +28,14 @@
     float blue  = color->blue  / 255.f;
     float alpha = color->alpha / 255.f;
     
-    CGContextSetRGBFillColor(context, red, green, blue, alpha);
+    CGContextSetRGBFillColor  (context, red, green, blue, alpha);
+    CGContextSetRGBStrokeColor(context, red, green, blue, alpha);
 }
 
 - (void)makeContext:(CGContextRef)context drawTriangleWithIndex:(int)index {
     MColor rgba = _MWindowTriangleColor(index);
-    [self makeContext:context setFillColorWithRGBA:rgba];
+    [self makeContext:context setFillStrokeColorWithRGBA:rgba];
+    CGContextSetLineWidth(context, 1);
     
     float x0 = _MWindowTriangleVertexX(index, 0);
     float y0 = _MWindowTriangleVertexY(index, 0);
@@ -46,7 +48,7 @@
     CGContextAddLineToPoint(context, x1, y1);
     CGContextAddLineToPoint(context, x2, y2);
     
-    CGContextFillPath(context);
+    CGContextDrawPath(context, kCGPathFillStroke);
 }
 
 - (void)makeContext:(CGContextRef)context drawLabelWithIndex:(int)index {
@@ -71,10 +73,7 @@
     }];
     
     //window events:
-    CGSize size = self.view.frame.size;
-    _MWindowOnResize(size.width, size.height);
     _MWindowOnLoad();
-    _MWindowOnShow();
     
     __weak UIView *weakView = self.view;
     [NSTimer scheduledTimerWithTimeInterval:_MWindowDrawInterval repeats:YES block:^(NSTimer *timer) {
@@ -90,6 +89,12 @@
                selector:@selector(handleApplicationWillResignActive)
                    name:UIApplicationWillResignActiveNotification
                  object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    CGSize size = self.view.frame.size;
+    _MWindowOnResize(size.width, size.height);
+    _MWindowOnShow();
 }
 
 - (void)handleApplicationWillEnterForeground {
