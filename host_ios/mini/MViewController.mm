@@ -11,16 +11,16 @@
     
     int triangleCount = _MWindowTriangleCount();
     for (int index = 0; index < triangleCount; ++index) {
-        [self makeContext:context drawTriangleWithIndex:index];
+        [self context:context drawTriangle:index];
     }
     
     int labelCount = _MWindowLabelCount();
     for (int index = 0; index < labelCount; ++index) {
-        [self makeContext:context drawLabelWithIndex:index];
+        [self context:context drawLabel:index];
     }
 }
 
-- (void)makeContext:(CGContextRef)context setFillStrokeColorWithRGBA:(MColor)rgba {
+- (void)context:(CGContextRef)context setFillStrokeRGBA:(MColor)rgba {
     auto color = (MColorPattern *)&rgba;
     
     float red   = color->red   / 255.f;
@@ -32,9 +32,9 @@
     CGContextSetRGBStrokeColor(context, red, green, blue, alpha);
 }
 
-- (void)makeContext:(CGContextRef)context drawTriangleWithIndex:(int)index {
+- (void)context:(CGContextRef)context drawTriangle:(int)index {
     MColor rgba = _MWindowTriangleColor(index);
-    [self makeContext:context setFillStrokeColorWithRGBA:rgba];
+    [self context:context setFillStrokeRGBA:rgba];
     CGContextSetLineWidth(context, 1);
     
     float x0 = _MWindowTriangleVertexX(index, 0);
@@ -51,7 +51,7 @@
     CGContextDrawPath(context, kCGPathFillStroke);
 }
 
-- (void)makeContext:(CGContextRef)context drawLabelWithIndex:(int)index {
+- (void)context:(CGContextRef)context drawLabel:(int)index {
 }
 
 @end
@@ -73,6 +73,8 @@
     }];
     
     //window events:
+    CGSize size = UIScreen.mainScreen.bounds.size;
+    _MWindowOnResize(size.width, size.height);
     _MWindowOnLoad();
     
     __weak UIView *weakView = self.view;
@@ -81,54 +83,30 @@
     }];
     
     NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
-    [center addObserver:self
-               selector:@selector(handleApplicationWillEnterForeground)
-                   name:UIApplicationWillEnterForegroundNotification
-                 object:nil];
-    [center addObserver:self
-               selector:@selector(handleApplicationWillResignActive)
-                   name:UIApplicationWillResignActiveNotification
-                 object:nil];
+    [center addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [center addObserver:self selector:@selector(appWillResignActive)    name:UIApplicationWillResignActiveNotification    object:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    CGSize size = self.view.frame.size;
-    _MWindowOnResize(size.width, size.height);
+- (void)appWillEnterForeground {
     _MWindowOnShow();
 }
 
-- (void)handleApplicationWillEnterForeground {
-    _MWindowOnShow();
-}
-
-- (void)handleApplicationWillResignActive {
+- (void)appWillResignActive {
     _MWindowOnHide();
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size
-       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
-{
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     _MWindowOnResize(size.width, size.height);
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touches:(NSSet<UITouch *> *)touches func:(void (*)(float x, float y))func {
     CGPoint point = [touches.anyObject locationInView:self.view];
-    _MWindowOnTouchBegin(point.x, point.y);
+    func(point.x, point.y);
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    CGPoint point = [touches.anyObject locationInView:self.view];
-    _MWindowOnTouchMove(point.x, point.y);
-}
-
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    CGPoint point = [touches.anyObject locationInView:self.view];
-    _MWindowOnTouchEnd(point.x, point.y);
-}
-
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    CGPoint point = [touches.anyObject locationInView:self.view];
-    _MWindowOnTouchEnd(point.x, point.y);
-}
+- (void)touchesBegan    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:_MWindowOnTouchBegin]; }
+- (void)touchesMoved    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:_MWindowOnTouchMove ]; }
+- (void)touchesEnded    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:_MWindowOnTouchEnd  ]; }
+- (void)touchesCancelled:(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:_MWindowOnTouchEnd  ]; }
 
 @end
