@@ -27,7 +27,7 @@ struct TextBox {
     bool enter   = false;
 };
 
-struct WindowBuffer {
+struct Window {
     bool loaded = false;
     bool shown  = false;
     
@@ -53,92 +53,92 @@ struct WindowBuffer {
     std::vector<MLambdaRef> listeners;
 };
 
-static WindowBuffer *GetWindowBuffer() {
-    static WindowBuffer *buffer = nullptr;
-    if (!buffer) {
-        buffer = new WindowBuffer;
+static Window *GetWindow() {
+    static Window *window = nullptr;
+    if (!window) {
+        window = new Window;
     }
-    return buffer;
+    return window;
 }
 
 static Triangle *TriangleAt(int index) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return &buffer->triangles[index];
+    Window *window = GetWindow();
+    return &window->triangles[index];
 }
 
 static Label *LabelAt(int index) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return &buffer->labels[index];
+    Window *window = GetWindow();
+    return &window->labels[index];
 }
 
 static TextBox *GetTextBox() {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return &buffer->textBox;
+    Window *window = GetWindow();
+    return &window->textBox;
 }
 
-static void SendEvent(WindowBuffer *buffer, MWindowEvent event) {
-    buffer->event = event;
-    for (const MLambdaRef &listener : buffer->listeners) {
+static void SendEvent(Window *window, MWindowEvent event) {
+    window->event = event;
+    for (const MLambdaRef &listener : window->listeners) {
         MLambdaCall(listener.get(), nullptr);
     }
 }
 
 void _MWindowOnLoad() {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
     
-    if (!buffer->loaded) {
-        buffer->loaded = true;
-        SendEvent(buffer, MWindowEvent_Load);
+    if (!window->loaded) {
+        window->loaded = true;
+        SendEvent(window, MWindowEvent_Load);
     }
 }
 
 void _MWindowOnShow() {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
     
-    if (buffer->loaded && !buffer->shown) {
-        buffer->shown = true;
-        SendEvent(buffer, MWindowEvent_Show);
+    if (window->loaded && !window->shown) {
+        window->shown = true;
+        SendEvent(window, MWindowEvent_Show);
     }
 }
 
 void _MWindowOnHide() {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
     
-    if (buffer->shown) {
-        buffer->shown = false;
-        SendEvent(buffer, MWindowEvent_Hide);
+    if (window->shown) {
+        window->shown = false;
+        SendEvent(window, MWindowEvent_Hide);
     }
 }
 
 void _MWindowOnResize(float width, float height) {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
     
-    if (buffer->width == width && buffer->height == height) {
+    if (window->width == width && window->height == height) {
         return;
     }
     
-    buffer->width  = width ;
-    buffer->height = height;
+    window->width  = width ;
+    window->height = height;
 
-    if (buffer->loaded) {
-        SendEvent(buffer, MWindowEvent_Resize);
+    if (window->loaded) {
+        SendEvent(window, MWindowEvent_Resize);
     }
 }
 
 void _MWindowOnDraw() {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
 
-    buffer->triangles.clear();
-    buffer->labels.clear();
-    SendEvent(buffer, MWindowEvent_Draw);
+    window->triangles.clear();
+    window->labels.clear();
+    SendEvent(window, MWindowEvent_Draw);
 }
 
 static void WindowOnTouch(MWindowEvent event, float x, float y) {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
 
-    buffer->touchX = x;
-    buffer->touchY = y;
-    SendEvent(buffer, event);
+    window->touchX = x;
+    window->touchY = y;
+    SendEvent(window, event);
 }
 
 void _MWindowOnTouchBegin(float x, float y) {
@@ -154,23 +154,23 @@ void _MWindowOnTouchEnd(float x, float y) {
 }
 
 void _MWindowOnTextBox(MString *string, bool enter) {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
 
-    buffer->textBox.string = MMakeShared(string);
-    buffer->textBox.enter = enter;
-    SendEvent(buffer, MWindowEvent_TextBox);
+    window->textBox.string = MMakeShared(string);
+    window->textBox.enter = enter;
+    SendEvent(window, MWindowEvent_TextBox);
 }
 
 void _MWindowOnKeyDown(MKey key) {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
 
-    buffer->key = key;
-    SendEvent(buffer, MWindowEvent_KeyDown);
+    window->key = key;
+    SendEvent(window, MWindowEvent_KeyDown);
 }
 
 int _MWindowTriangleCount() {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return (int)buffer->triangles.size();
+    Window *window = GetWindow();
+    return (int)window->triangles.size();
 }
 
 float _MWindowTriangleVertexX(int index, int vertexIndex) {
@@ -186,8 +186,8 @@ MColor _MWindowTriangleColor(int index) {
 }
 
 int _MWindowLabelCount() {
-    WindowBuffer *buffer = GetWindowBuffer();
-    return (int)buffer->labels.size();
+    Window *window = GetWindow();
+    return (int)window->labels.size();
 }
 
 MString *_MWindowLabelString(int index) {
@@ -228,53 +228,53 @@ bool _MWindowTextBoxEnabled() {
 
 void MWindowAddListener(MLambda *listener) {
     if (listener) {
-        WindowBuffer *buffer = GetWindowBuffer();
-        buffer->listeners.push_back(MMakeShared(listener));
+        Window *window = GetWindow();
+        window->listeners.push_back(MMakeShared(listener));
     }
 }
 
 MWindowEvent MWindowCurrentEvent() {
-    return GetWindowBuffer()->event;
+    return GetWindow()->event;
 }
 
-float MWindowWidth () { return GetWindowBuffer()->width ; }
-float MWindowHeight() { return GetWindowBuffer()->height; }
+float MWindowWidth () { return GetWindow()->width ; }
+float MWindowHeight() { return GetWindow()->height; }
 
-bool MWindowLoaded() { return GetWindowBuffer()->loaded; }
-bool MWindowShown () { return GetWindowBuffer()->shown ; }
+bool MWindowLoaded() { return GetWindow()->loaded; }
+bool MWindowShown () { return GetWindow()->shown ; }
 
-float MWindowTouchX() { return GetWindowBuffer()->touchX; }
-float MWindowTouchY() { return GetWindowBuffer()->touchY; }
+float MWindowTouchX() { return GetWindow()->touchX; }
+float MWindowTouchY() { return GetWindow()->touchY; }
 
 MKey MWindowActiveKey() {
-    return GetWindowBuffer()->key;
+    return GetWindow()->key;
 }
 
 void MWindowSelectString(MString *string) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    buffer->selectedString = MMakeShared(string);
+    Window *window = GetWindow();
+    window->selectedString = MMakeShared(string);
 }
 
 void MWindowSelectColor(MColor color) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    buffer->selectedColor = color;
+    Window *window = GetWindow();
+    window->selectedColor = color;
 }
 
 void MWindowSelectFontSize(float size) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    buffer->selectedFontSize = size;
+    Window *window = GetWindow();
+    window->selectedFontSize = size;
 }
 
 void MWindowSelectAligns(MAligns aligns) {
-    WindowBuffer *buffer = GetWindowBuffer();
-    buffer->selectedAligns = aligns;
+    Window *window = GetWindow();
+    window->selectedAligns = aligns;
 }
 
 static void SelectPoint(int index, float x, float y) {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
 
-    buffer->selectedPointX[index]  = x;
-    buffer->selectedPointY[index]  = y;
+    window->selectedPointX[index]  = x;
+    window->selectedPointY[index]  = y;
 }
 
 void MWindowSelectPoint0(float x, float y) { SelectPoint(0, x, y); }
@@ -282,43 +282,43 @@ void MWindowSelectPoint1(float x, float y) { SelectPoint(1, x, y); }
 void MWindowSelectPoint2(float x, float y) { SelectPoint(2, x, y); }
 
 void MWindowDrawTriangle() {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
 
     Triangle triangle;
     
-    triangle.color = buffer->selectedColor;
+    triangle.color = window->selectedColor;
 
-    triangle.x[0] = buffer->selectedPointX[0];
-    triangle.y[0] = buffer->selectedPointY[0];
-    triangle.x[1] = buffer->selectedPointX[1];
-    triangle.y[1] = buffer->selectedPointY[1];
-    triangle.x[2] = buffer->selectedPointX[2];
-    triangle.y[2] = buffer->selectedPointY[2];
+    triangle.x[0] = window->selectedPointX[0];
+    triangle.y[0] = window->selectedPointY[0];
+    triangle.x[1] = window->selectedPointX[1];
+    triangle.y[1] = window->selectedPointY[1];
+    triangle.x[2] = window->selectedPointX[2];
+    triangle.y[2] = window->selectedPointY[2];
 
-    buffer->triangles.push_back(triangle);
+    window->triangles.push_back(triangle);
 }
 
 void MWindowDrawLabel() {
-    WindowBuffer *buffer = GetWindowBuffer();
+    Window *window = GetWindow();
 
-    float x0 = buffer->selectedPointX[0];
-    float y0 = buffer->selectedPointY[0];
-    float x1 = buffer->selectedPointX[1];
-    float y1 = buffer->selectedPointY[1];
+    float x0 = window->selectedPointX[0];
+    float y0 = window->selectedPointY[0];
+    float x1 = window->selectedPointX[1];
+    float y1 = window->selectedPointY[1];
 
     Label label;
 
-    label.string   = buffer->selectedString  ;
-    label.color    = buffer->selectedColor   ;
-    label.fontSize = buffer->selectedFontSize;
-    label.aligns   = buffer->selectedAligns  ;
+    label.string   = window->selectedString  ;
+    label.color    = window->selectedColor   ;
+    label.fontSize = window->selectedFontSize;
+    label.aligns   = window->selectedAligns  ;
     
     label.x      = x0;
     label.y      = y0;
     label.width  = x1 - x0;
     label.height = y1 - y0;
 
-    buffer->labels.push_back(label);
+    window->labels.push_back(label);
 }
 
 void MWindowEnableTextBox(bool enabled) {
