@@ -118,6 +118,10 @@
 - (void)mouseUp     :(NSEvent *)event { [self mouseEvent:event func:_MWindowOnTouchEnd  ]; }
 
 - (void)keyboardKeyDown:(NSEvent *)event {
+    if (event.modifierFlags & NSEventModifierFlagDeviceIndependentFlagsMask) {
+        return;
+    }
+    
     switch (event.keyCode) {
         case  51: _MWindowOnKeyDown(MKey_Back ); break;
         case  36: _MWindowOnKeyDown(MKey_Enter); break;
