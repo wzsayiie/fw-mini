@@ -1,9 +1,4 @@
 #import "MAppDelegate.h"
-#import "MWindowController.h"
-
-@interface MAppDelegate ()
-@property (nonatomic) MWindowController *windowController;
-@end
 
 @implementation MAppDelegate
 
