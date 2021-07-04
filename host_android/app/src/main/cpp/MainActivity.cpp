@@ -27,6 +27,12 @@ Java_src_app_mini_MainActivity_appUpdate(JNIEnv *, jobject)
 }
 
 extern "C" JNIEXPORT void JNICALL
+Java_src_app_mini_MainActivity_windowSetPixelDensity(JNIEnv *, jobject, jfloat density)
+{
+    _MWindowSetPixelDensity(density);
+}
+
+extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MainActivity_windowOnLoad(JNIEnv *, jobject)
 {
     _MWindowOnLoad();

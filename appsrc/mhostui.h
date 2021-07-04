@@ -2,6 +2,8 @@
 
 #include "mtypes.h"
 
+const float _MWindowDrawInterval = 0.1f;
+
 typedef int MKey;
 
 const MKey MKey_Back  = 0x08;
@@ -37,35 +39,38 @@ union MColorPattern {
     MColor rgba;
 };
 
-const float _MWindowDrawInterval = 0.1f;
+//this type is used to mark the graphics size of the host ui.
+typedef float _WPIXEL;
+
+extern "C" void _MWindowSetPixelDensity(float density);
 
 extern "C" void _MWindowOnLoad();
 extern "C" void _MWindowOnShow();
 extern "C" void _MWindowOnHide();
 
-extern "C" void _MWindowOnResize(float width, float height);
+extern "C" void _MWindowOnResize(_WPIXEL width, _WPIXEL height);
 extern "C" void _MWindowOnDraw  ();
 
-extern "C" void _MWindowOnTouchBegin(float x, float y);
-extern "C" void _MWindowOnTouchMove (float x, float y);
-extern "C" void _MWindowOnTouchEnd  (float x, float y);
+extern "C" void _MWindowOnTouchBegin(_WPIXEL x, _WPIXEL y);
+extern "C" void _MWindowOnTouchMove (_WPIXEL x, _WPIXEL y);
+extern "C" void _MWindowOnTouchEnd  (_WPIXEL x, _WPIXEL y);
 extern "C" void _MWindowOnTextBox   (MString *string, bool enter);
 extern "C" void _MWindowOnKeyDown   (MKey key);
 
-extern "C" int    _MWindowTriangleCount  ();
-extern "C" float  _MWindowTriangleVertexX(int index, int vertexIndex);
-extern "C" float  _MWindowTriangleVertexY(int index, int vertexIndex);
-extern "C" MColor _MWindowTriangleColor  (int index);
+extern "C" int     _MWindowTriangleCount  ();
+extern "C" _WPIXEL _MWindowTriangleVertexX(int index, int vertexIndex);
+extern "C" _WPIXEL _MWindowTriangleVertexY(int index, int vertexIndex);
+extern "C" MColor  _MWindowTriangleColor  (int index);
 
 extern "C" int      _MWindowLabelCount   ();
 extern "C" MString *_MWindowLabelString  (int index);
 extern "C" MColor   _MWindowLabelColor   (int index);
-extern "C" float    _MWindowLabelFontSize(int index);
+extern "C" _WPIXEL  _MWindowLabelFontSize(int index);
 extern "C" MAligns  _MWindowLabelAligns  (int index);
-extern "C" float    _MWindowLabelX       (int index);
-extern "C" float    _MWindowLabelY       (int index);
-extern "C" float    _MWindowLabelWidth   (int index);
-extern "C" float    _MWindowLabelHeight  (int index);
+extern "C" _WPIXEL  _MWindowLabelX       (int index);
+extern "C" _WPIXEL  _MWindowLabelY       (int index);
+extern "C" _WPIXEL  _MWindowLabelWidth   (int index);
+extern "C" _WPIXEL  _MWindowLabelHeight  (int index);
 
 extern "C" bool _MWindowTextBoxEnabled();
 

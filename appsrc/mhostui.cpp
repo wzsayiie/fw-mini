@@ -83,6 +83,15 @@ static void SendEvent(Window *window, MWindowEvent event) {
     }
 }
 
+static float sPixelDensity = 1.f;
+
+static float PointFromPixel(float pixel) { return pixel / sPixelDensity; }
+static float PixelFromPoint(float point) { return point * sPixelDensity; }
+
+void _MWindowSetPixelDensity(float density) {
+    sPixelDensity = density;
+}
+
 void _MWindowOnLoad() {
     Window *window = GetWindow();
     
@@ -110,16 +119,17 @@ void _MWindowOnHide() {
     }
 }
 
-void _MWindowOnResize(float width, float height) {
-    Window *window = GetWindow();
+void _MWindowOnResize(_WPIXEL width, _WPIXEL height) {
+    float pointW = PointFromPixel(width );
+    float pointH = PointFromPixel(height);
     
-    if (window->width == width && window->height == height) {
+    Window *window = GetWindow();
+    if (window->width == pointW && window->height == pointH) {
         return;
     }
     
-    window->width  = width ;
-    window->height = height;
-
+    window->width  = pointW;
+    window->height = pointH;
     if (window->loaded) {
         SendEvent(window, MWindowEvent_Resize);
     }
@@ -133,25 +143,20 @@ void _MWindowOnDraw() {
     SendEvent(window, MWindowEvent_Draw);
 }
 
-static void WindowOnTouch(MWindowEvent event, float x, float y) {
+static void WindowOnTouch(MWindowEvent event, _WPIXEL x, _WPIXEL y) {
+    float pointX = PointFromPixel(x);
+    float pointY = PointFromPixel(y);
+    
     Window *window = GetWindow();
 
-    window->touchX = x;
-    window->touchY = y;
+    window->touchX = pointX;
+    window->touchY = pointY;
     SendEvent(window, event);
 }
 
-void _MWindowOnTouchBegin(float x, float y) {
-    WindowOnTouch(MWindowEvent_TouchBegin, x, y);
-}
-
-void _MWindowOnTouchMove(float x, float y) {
-    WindowOnTouch(MWindowEvent_TouchMove, x, y);
-}
-
-void _MWindowOnTouchEnd(float x, float y) {
-    WindowOnTouch(MWindowEvent_TouchEnd, x, y);
-}
+void _MWindowOnTouchBegin(_WPIXEL x, _WPIXEL y) { WindowOnTouch(MWindowEvent_TouchBegin, x, y); }
+void _MWindowOnTouchMove (_WPIXEL x, _WPIXEL y) { WindowOnTouch(MWindowEvent_TouchMove , x, y); }
+void _MWindowOnTouchEnd  (_WPIXEL x, _WPIXEL y) { WindowOnTouch(MWindowEvent_TouchEnd  , x, y); }
 
 void _MWindowOnTextBox(MString *string, bool enter) {
     Window *window = GetWindow();
@@ -173,13 +178,8 @@ int _MWindowTriangleCount() {
     return (int)window->triangles.size();
 }
 
-float _MWindowTriangleVertexX(int index, int vertexIndex) {
-    return TriangleAt(index)->x[vertexIndex];
-}
-
-float _MWindowTriangleVertexY(int index, int vertexIndex) {
-    return TriangleAt(index)->y[vertexIndex];
-}
+_WPIXEL _MWindowTriangleVertexX(int index, int v) { return PixelFromPoint(TriangleAt(index)->x[v]); }
+_WPIXEL _MWindowTriangleVertexY(int index, int v) { return PixelFromPoint(TriangleAt(index)->y[v]); }
 
 MColor _MWindowTriangleColor(int index) {
     return TriangleAt(index)->color;
@@ -198,29 +198,20 @@ MColor _MWindowLabelColor(int index) {
     return LabelAt(index)->color;
 }
 
-float _MWindowLabelFontSize(int index) {
-    return LabelAt(index)->fontSize;
+_WPIXEL _MWindowLabelFontSize(int index) {
+    float size = LabelAt(index)->fontSize;
+    return PixelFromPoint(size);
 }
 
 MAligns _MWindowLabelAligns(int index) {
     return LabelAt(index)->aligns;
 }
 
-float _MWindowLabelX(int index) {
-    return LabelAt(index)->x;
-}
+_WPIXEL _MWindowLabelX(int index) { return PixelFromPoint(LabelAt(index)->x); }
+_WPIXEL _MWindowLabelY(int index) { return PixelFromPoint(LabelAt(index)->y); }
 
-float _MWindowLabelY(int index) {
-    return LabelAt(index)->y;
-}
-
-float _MWindowLabelWidth(int index) {
-    return LabelAt(index)->width;
-}
-
-float _MWindowLabelHeight(int index) {
-    return LabelAt(index)->height;
-}
+_WPIXEL _MWindowLabelWidth (int index) { return PixelFromPoint(LabelAt(index)->width ); }
+_WPIXEL _MWindowLabelHeight(int index) { return PixelFromPoint(LabelAt(index)->height); }
 
 bool _MWindowTextBoxEnabled() {
     return GetTextBox()->enabled;

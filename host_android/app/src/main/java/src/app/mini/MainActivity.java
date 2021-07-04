@@ -3,6 +3,7 @@ package src.app.mini;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
 import java.util.Timer;
@@ -28,6 +29,10 @@ public class MainActivity extends Activity {
         scheduleTimer(constAppUpdateInterval(), this::appUpdate);
 
         //window event:
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        windowSetPixelDensity(metrics.density);
+
         windowOnLoad();
 
         mMainView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
@@ -86,6 +91,8 @@ public class MainActivity extends Activity {
 
     private native void appLaunch();
     private native void appUpdate();
+
+    private native void windowSetPixelDensity(float density);
 
     private native void windowOnLoad();
     private native void windowOnShow();
