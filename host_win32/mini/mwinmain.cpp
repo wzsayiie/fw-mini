@@ -8,9 +8,9 @@ static void OpenConsole(void)
 {
     AllocConsole();
 
-    FILE* newStdin  = NULL;
-    FILE* newStdout = NULL;
-    FILE* newStderr = NULL;
+    FILE* newStdin  = nullptr;
+    FILE* newStdout = nullptr;
+    FILE* newStderr = nullptr;
     _wfreopen_s(&newStdin , L"conin$" , L"r", stdin );
     _wfreopen_s(&newStdout, L"conout$", L"w", stdout);
     _wfreopen_s(&newStderr, L"conout$", L"w", stderr);
@@ -18,7 +18,7 @@ static void OpenConsole(void)
     WCHAR title[MAX_PATH];
     GetConsoleTitleW(title, MAX_PATH);
 
-    HWND hWnd = FindWindowW(NULL, title);
+    HWND hWnd = FindWindowW(nullptr, title);
     SetWindowPos(hWnd, HWND_TOP, 0, 100, 0, 0, SWP_NOSIZE);
 }
 
@@ -39,7 +39,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     //application events.
     _MAppLaunch();
-    SetTimer(wnd, UpdateTimerID, (UINT)(1000 * _MAppUpdateInterval), NULL);
+    SetTimer(wnd, UpdateTimerID, (UINT)(1000 * _MAppUpdateInterval), nullptr);
 
     //window events:
     LONG width  = 0;
@@ -49,7 +49,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     _MWindowOnLoad();
 
-    SetTimer(wnd, DrawTimerID, (UINT)(1000 * _MWindowDrawInterval), NULL);
+    SetTimer(wnd, DrawTimerID, (UINT)(1000 * _MWindowDrawInterval), nullptr);
 
     return 0;
 }
@@ -87,7 +87,7 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
     }
     else if (timerID == DrawTimerID)
     {
-        InvalidateRect(wnd, NULL, TRUE);
+        InvalidateRect(wnd, nullptr, TRUE);
     }
 
     return 0;
@@ -260,10 +260,10 @@ int APIENTRY wWinMain(
     wndClass.cbClsExtra    = 0;
     wndClass.cbWndExtra    = 0;
     wndClass.hInstance     = instance;
-    wndClass.hIcon         = NULL;
-    wndClass.hCursor       = NULL;
+    wndClass.hIcon         = nullptr;
+    wndClass.hCursor       = LoadCursorW(nullptr, IDC_ARROW);
     wndClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
-    wndClass.lpszMenuName  = NULL;
+    wndClass.lpszMenuName  = nullptr;
     wndClass.lpszClassName = className;
 
     RegisterClassW(&wndClass);
@@ -276,10 +276,10 @@ int APIENTRY wWinMain(
         /* dwStyle      */ WS_OVERLAPPEDWINDOW,
         /* x,y          */ 1000, 100,
         /* width,height */  376, 679,
-        /* hWndParent   */ NULL,
-        /* hMenu        */ NULL,
+        /* hWndParent   */ nullptr,
+        /* hMenu        */ nullptr,
         /* hInstance    */ instance,
-        /* lpParam      */ NULL
+        /* lpParam      */ nullptr
     );
 
     ShowWindow(wnd, showCmd);
@@ -287,7 +287,7 @@ int APIENTRY wWinMain(
 
     //message loop.
     MSG msg;
-    while (GetMessageW(&msg, NULL, 0, 0))
+    while (GetMessageW(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
