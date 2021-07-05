@@ -19,11 +19,19 @@ static void OpenConsole(void)
     GetConsoleTitleW(title, MAX_PATH);
 
     HWND hWnd = FindWindowW(NULL, title);
-    SetWindowPos(hWnd, HWND_TOP, 300, 100, 0, 0, SWP_NOSIZE);
+    SetWindowPos(hWnd, HWND_TOP, 0, 100, 0, 0, SWP_NOSIZE);
 }
 
 const UINT_PTR UpdateTimerID = 1;
 const UINT_PTR DrawTimerID   = 2;
+
+static void GetClientSize(HWND wnd, LONG *width, LONG *height) {
+    RECT rect = {0};
+    GetClientRect(wnd, &rect);
+
+    *width  = rect.right  - rect.left;
+    *height = rect.bottom - rect.top ;
+}
 
 static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
@@ -31,17 +39,17 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     //application events.
     _MAppLaunch();
+    SetTimer(wnd, UpdateTimerID, (UINT)(1000 * _MAppUpdateInterval), NULL);
 
-    //window events.
-    RECT rect = {0};
-    GetClientRect(wnd, &rect);
-    auto width  = (float)(rect.right - rect.left);
-    auto height = (float)(rect.bottom - rect.top);
-    _MWindowOnResize(width, height);
+    //window events:
+    LONG width  = 0;
+    LONG height = 0;
+    GetClientSize(wnd, &width, &height);
+    _MWindowOnResize((_WPIXEL)width, (_WPIXEL)height);
+
     _MWindowOnLoad();
 
-    SetTimer(wnd, UpdateTimerID, (UINT)(1000 * _MAppUpdateInterval ), NULL);
-    SetTimer(wnd, DrawTimerID  , (UINT)(1000 * _MWindowDrawInterval), NULL);
+    SetTimer(wnd, DrawTimerID, (UINT)(1000 * _MWindowDrawInterval), NULL);
 
     return 0;
 }
@@ -130,19 +138,31 @@ static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     _MWindowOnDraw();
 
+    LONG width  = 0;
+    LONG height = 0;
+    GetClientSize(wnd, &width, &height);
+
     PAINTSTRUCT paint = {0};
-    HDC dc = BeginPaint(wnd, &paint);
+    BeginPaint(wnd, &paint);
+    {
+        HDC dc = CreateCompatibleDC(paint.hdc);
+        HBITMAP bmp = CreateCompatibleBitmap(paint.hdc, width, height);
+        SelectBitmap(dc, bmp);
 
-    int triangleCount = _MWindowTriangleCount();
-    for (int index = 0; index < triangleCount; ++index) {
-        PaintTriangle(dc, index);
+        int triangleCount = _MWindowTriangleCount();
+        for (int index = 0; index < triangleCount; ++index) {
+            PaintTriangle(dc, index);
+        }
+
+        int labelCount = _MWindowLabelCount();
+        for (int index = 0; index < labelCount; ++index) {
+            PaintLabel(dc, index);
+        }
+
+        BitBlt(paint.hdc, 0, 0, width, height, dc, 0, 0, SRCCOPY);
+        DeleteDC(dc);
+        DeleteBitmap(bmp);
     }
-
-    int labelCount = _MWindowLabelCount();
-    for (int index = 0; index < labelCount; ++index) {
-        PaintLabel(dc, index);
-    }
-
     EndPaint(wnd, &paint);
     return 0;
 }
@@ -254,8 +274,8 @@ int APIENTRY wWinMain(
         /* lpClassName  */ className,
         /* lpWindowName */ L"Mini",
         /* dwStyle      */ WS_OVERLAPPEDWINDOW,
-        /* x,y          */   0, 100,
-        /* width,height */ 300, 300,
+        /* x,y          */ 1000, 100,
+        /* width,height */  376, 679,
         /* hWndParent   */ NULL,
         /* hMenu        */ NULL,
         /* hInstance    */ instance,
