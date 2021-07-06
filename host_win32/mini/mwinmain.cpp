@@ -3,6 +3,7 @@
 #include <windowsx.h>
 #include "mapp.h"
 #include "mhostui.h"
+#include "mpaint.h"
 
 static void OpenConsole(void)
 {
@@ -36,6 +37,7 @@ static void GetClientSize(HWND wnd, LONG *width, LONG *height) {
 static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     OpenConsole();
+    MPaintStart();
 
     //application events.
     _MAppLaunch();
@@ -71,6 +73,8 @@ static LRESULT OnShowWindow(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnDestroy(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
+    MPaintStop();
+
     KillTimer(wnd, UpdateTimerID);
     KillTimer(wnd, DrawTimerID);
 
@@ -102,42 +106,8 @@ static LRESULT OnSize(HWND wnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-static void PaintTriangle(HDC dc, int index)
-{
-    MColorPattern rgba = {0};
-    rgba.rgba = _MWindowTriangleColor(index);
-
-    //the gdi interface doesn't support the alpha channel.
-    if (rgba.alpha == 0)
-    {
-        return;
-    }
-
-    POINT vertices[3] = {0};
-    for (int n = 0; n < 3; ++n)
-    {
-        vertices[n].x = (LONG)_MWindowTriangleVertexX(index, n);
-        vertices[n].y = (LONG)_MWindowTriangleVertexY(index, n);
-    }
-
-    COLORREF color = RGB(rgba.red, rgba.green, rgba.blue);
-    HBRUSH brush = CreateSolidBrush(color);
-    HPEN pen = CreatePen(PS_SOLID, 0, color);
-    SelectBrush(dc, brush);
-    SelectPen(dc, pen);
-    Polygon(dc, vertices, 3);
-    DeleteBrush(brush);
-    DeletePen(pen);
-}
-
-static void PaintLabel(HDC dc, int index)
-{
-}
-
 static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    _MWindowOnDraw();
-
     LONG width  = 0;
     LONG height = 0;
     GetClientSize(wnd, &width, &height);
@@ -149,15 +119,7 @@ static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
         HBITMAP bmp = CreateCompatibleBitmap(paint.hdc, width, height);
         SelectBitmap(dc, bmp);
 
-        int triangleCount = _MWindowTriangleCount();
-        for (int index = 0; index < triangleCount; ++index) {
-            PaintTriangle(dc, index);
-        }
-
-        int labelCount = _MWindowLabelCount();
-        for (int index = 0; index < labelCount; ++index) {
-            PaintLabel(dc, index);
-        }
+        MPaint(dc);
 
         BitBlt(paint.hdc, 0, 0, width, height, dc, 0, 0, SRCCOPY);
         DeleteDC(dc);
