@@ -15,5 +15,19 @@
     <ClCompile Include="..\..\appsrc\README.cpp">
       <Filter>appsrc</Filter>
     </ClCompile>
+    <ClCompile Include="mapis.cpp">
+      <Filter>mini</Filter>
+    </ClCompile>
+    <ClCompile Include="mpaint.cpp">
+      <Filter>mini</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mapis.h">
+      <Filter>mini</Filter>
+    </ClInclude>
+    <ClInclude Include="mpaint.h">
+      <Filter>mini</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
