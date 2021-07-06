@@ -24,6 +24,7 @@ const MType MType_MString = 'S';    //MString.
 const MType MType_MLambda = 'L';    //MLamdba.
 const MType MType_MData   = 'D';    //MData.
 const MType MType_MArray  = 'A';    //MArray.
+const MType MType_MImage  = 'G';    //MImage.
 
 //MObject:
 
@@ -282,6 +283,12 @@ public:
         return MDataRef(create(bytes, size), MRelease);
     }
 
+    void append(const uint8_t *bytes, int size) {
+        if (bytes && size > 0) {
+            mBytes.insert(mBytes.end(), bytes, bytes + size);
+        }
+    }
+
     const uint8_t *bytes() {
         return &mBytes[0];
     }
@@ -300,6 +307,12 @@ private:
 
 extern "C" inline MData *MDataCreate(uint8_t *bytes, int size) {
     return MData::create(bytes, size);
+}
+
+extern "C" inline void MDataAppend(MData *data, const uint8_t *bytes, int size) {
+    if (data) {
+        data->append(bytes, size);
+    }
 }
 
 extern "C" inline const uint8_t *MDataBytes(MData *data) {
@@ -359,6 +372,52 @@ MEXPORT(MArrayAppend)
 MEXPORT(MArrayLength)
 MEXPORT(MArrayItem  )
 
+//MImage:
+
+typedef void (*MImageDispose)(int id);
+
+typedef std::shared_ptr<class MImage> MImageRef;
+
+class MImage : public MObject {
+    
+public:
+    static MImage *create(int id, MImageDispose dispose) {
+        return (id && dispose) ? new MImage(id, dispose) : nullptr;
+    }
+
+    static MImageRef make(int id, MImageDispose dispose) {
+        return MImageRef(create(id, dispose), MRelease);
+    }
+
+    int id() {
+        return mId;
+    }
+
+private:
+    MImage(int id, MImageDispose dispose) : MObject(MType_MImage) {
+        mId = id;
+        mDispose = dispose;
+    }
+
+    ~MImage() {
+        mDispose(mId);
+    }
+
+    int mId = 0;
+    MImageDispose mDispose = nullptr;
+};
+
+extern "C" inline MImage *MImageCreate(int id, MImageDispose dispose) {
+    return MImage::create(id, dispose);
+}
+
+extern "C" inline int MImageID(MImage *image) {
+    return image ? image->id() : 0;
+}
+
+MEXPORT(MImageCreate);
+MEXPORT(MImageID    );
+
 //MObject* to MObjectRef:
 
 template<typename T> std::shared_ptr<T> _MMakeShared(T *value) {
@@ -374,3 +433,4 @@ inline MStringRef MMakeShared(MString *v) { return _MMakeShared(v); }
 inline MLambdaRef MMakeShared(MLambda *v) { return _MMakeShared(v); }
 inline MDataRef   MMakeShared(MData   *v) { return _MMakeShared(v); }
 inline MArrayRef  MMakeShared(MArray  *v) { return _MMakeShared(v); }
+inline MImageRef  MMakeShared(MImage  *v) { return _MMakeShared(v); }
