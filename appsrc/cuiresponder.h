@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include "mhostui.h"
 
 typedef std::shared_ptr<class CUIResponder> CUIResponderRef;

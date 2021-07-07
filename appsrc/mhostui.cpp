@@ -1,4 +1,5 @@
 #include "mhostui.h"
+#include "mtypeex.h"
 
 struct Triangle {
     MColor color = 0;

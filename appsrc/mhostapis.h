@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mexport.h"
 #include "mtypes.h"
 
 typedef int MApi;

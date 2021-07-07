@@ -1,17 +1,11 @@
 #include "mtypes.h"
 
-MArray *MArray::create(const std::initializer_list<MObject *> &items) {
-    return new MArray(items);
+MArray::MArray() : MObject(MType_MArray) {
 }
 
-MArrayRef MArray::make(const std::initializer_list<MObject *> &items) {
-    return MArrayRef(create(items), MRelease);
-}
-
-MArray::MArray(const std::initializer_list<MObject *> &items) : MObject(MType_MArray) {
-    for (MObject *item : items) {
-        MRetain(item);
-        mItems.push_back(item);
+MArray::~MArray() {
+    for (MObject *item : mItems) {
+        MRelease(item);
     }
 }
 
@@ -29,10 +23,4 @@ MObject *MArray::item(int index) {
         return mItems[index];
     }
     return nullptr;
-}
-
-MArray::~MArray() {
-    for (MObject *item : mItems) {
-        MRelease(item);
-    }
 }

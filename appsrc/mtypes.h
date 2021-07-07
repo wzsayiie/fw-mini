@@ -1,12 +1,9 @@
 #pragma once
 
 #include <cstdint>
-#include <initializer_list>
-#include <memory>
 #include <string>
 #include <vector>
 #include "mencode.h"
-#include "mexport.h"
 
 #define MEnumId(n) (((int)n[0]) | ((int)n[1] << 1) | ((int)n[2] << 2))
 
@@ -29,8 +26,6 @@ const MType MType_MArray  = MEnumId("Arr");     //MArray.
 const MType MType_MImage  = MEnumId("Img");     //MImage.
 
 //MObject:
-
-typedef std::shared_ptr<class MObject> MObjectRef;
 
 class MObject {
 
@@ -79,21 +74,13 @@ extern "C" inline MType MGetType(MObject *object) {
     return object ? object->type() : 0;
 }
 
-MEXPORT(MRetain )
-MEXPORT(MRelease)
-MEXPORT(MGetType)
-
 //MBool & MInt & MFloat:
 
 template<typename T, int ID> class _MNumber : public MObject {
 
 public:
-    static _MNumber *create(T value) {
-        return new _MNumber(value);
-    }
-
-    static std::shared_ptr<_MNumber> make(T value) {
-        return std::shared_ptr<_MNumber>(create(value), MRelease);
+    _MNumber(T value) : MObject(ID) {
+        mValue = value;
     }
 
     T value() {
@@ -101,10 +88,6 @@ public:
     }
 
 private:
-    _MNumber(T value) : MObject(ID) {
-        mValue = value;
-    }
-
     T mValue;
 };
 
@@ -112,65 +95,19 @@ typedef _MNumber<bool , MType_Bool > MBool ;
 typedef _MNumber<int  , MType_Int  > MInt  ;
 typedef _MNumber<float, MType_Float> MFloat;
 
-typedef std::shared_ptr<MBool > MBoolRef ;
-typedef std::shared_ptr<MInt  > MIntRef  ;
-typedef std::shared_ptr<MFloat> MFloatRef;
-
-extern "C" inline MBool  *MBoolCreate (bool  v) { return MBool ::create(v); }
-extern "C" inline MInt   *MIntCreate  (int   v) { return MInt  ::create(v); }
-extern "C" inline MFloat *MFloatCreate(float v) { return MFloat::create(v); }
+extern "C" inline MBool  *MBoolCreate (bool  v) { return new MBool (v); }
+extern "C" inline MInt   *MIntCreate  (int   v) { return new MInt  (v); }
+extern "C" inline MFloat *MFloatCreate(float v) { return new MFloat(v); }
 
 extern "C" inline bool  MBoolValue (MBool  *a) { return a ? a->value() : 0; }
 extern "C" inline int   MIntValue  (MInt   *a) { return a ? a->value() : 0; }
 extern "C" inline float MFloatValue(MFloat *a) { return a ? a->value() : 0; }
 
-MEXPORT(MBoolCreate )
-MEXPORT(MIntCreate  )
-MEXPORT(MFloatCreate)
-MEXPORT(MBoolValue  )
-MEXPORT(MIntValue   )
-MEXPORT(MFloatValue )
-
 //MString:
-
-typedef std::shared_ptr<class MString> MStringRef;
 
 class MString : public MObject {
 
 public:
-    static MString *create(const char *chars) {
-        return new MString(chars);
-    }
-
-    static MStringRef make(const char *chars) {
-        return MStringRef(create(chars), MRelease);
-    }
-
-    static MString *create(const char16_t *chars) {
-        return new MString(chars);
-    }
-
-    static MStringRef make(const char16_t *chars) {
-        return MStringRef(create(chars), MRelease);
-    }
-
-    const char *u8Bytes() {
-        return mU8String.c_str();
-    }
-
-    int u8Size() {
-        return (int)mU8String.size();
-    }
-
-    const char16_t *u16Bytes() {
-        return mU16String.c_str();
-    }
-
-    int u16Size() {
-        return (int)mU16String.size();
-    }
-    
-private:
     MString(const char *chars) : MObject(MType_MString) {
         if (chars) {
             mU8String  = chars;
@@ -185,63 +122,33 @@ private:
         }
     }
 
+    const char     *u8Bytes () { return mU8String .c_str(); }
+    const char16_t *u16Bytes() { return mU16String.c_str(); }
+
+    int u8Size () { return (int)mU8String .size(); }
+    int u16Size() { return (int)mU16String.size(); }
+    
+private:
     std::string    mU8String ;
     std::u16string mU16String;
 };
 
-extern "C" inline MString *MStringCreateU8(const char *chars) {
-    return MString::create(chars);
-}
+extern "C" inline MString *MStringCreateU8 (const char     *s) { return new MString(s); }
+extern "C" inline MString *MStringCreateU16(const char16_t *s) { return new MString(s); }
 
-extern "C" inline MString *MStringCreateU16(const char16_t *chars) {
-    return MString::create(chars);
-}
+extern "C" inline const char     *MStringU8Bytes (MString *s) { return s ? s->u8Bytes () : nullptr; }
+extern "C" inline const char16_t *MStringU16Bytes(MString *s) { return s ? s->u16Bytes() : nullptr; }
 
-extern "C" inline const char *MStringU8Bytes(MString *string) {
-    return string ? string->u8Bytes() : nullptr;
-}
-
-extern "C" inline int MStringU8Size(MString *string) {
-    return string ? string->u8Size() : 0;
-}
-
-extern "C" inline const char16_t *MStringU16Bytes(MString *string) {
-    return string ? string->u16Bytes() : nullptr;
-}
-
-extern "C" inline int MStringU16Size(MString *string) {
-    return string ? string->u16Size() : 0;
-}
-
-MEXPORT(MStringCreateU8 )
-MEXPORT(MStringCreateU16)
-MEXPORT(MStringU8Bytes  )
-MEXPORT(MStringU8Size   )
-MEXPORT(MStringU16Bytes )
-MEXPORT(MStringU16Size  )
+extern "C" inline int MStringU8Size (MString *s) { return s ? s->u8Size () : 0; }
+extern "C" inline int MStringU16Size(MString *s) { return s ? s->u16Size() : 0; }
 
 //MLambda:
 
 typedef void (*MLambdaFunc)(MObject *load, MObject *param);
 
-typedef std::shared_ptr<class MLambda> MLambdaRef;
-
 class MLambda : public MObject {
     
 public:
-    static MLambda *create(MLambdaFunc func, MObject *load) {
-        return func ? new MLambda(func, load) : nullptr;
-    }
-
-    static MLambdaRef make(MLambdaFunc func, MObject *load) {
-        return MLambdaRef(create(func, load), MRelease);
-    }
-
-    void call(MObject *param) {
-        mFunc(mLoad, param);
-    }
-
-private:
     MLambda(MLambdaFunc func, MObject *load) : MObject(MType_MLambda) {
         MRetain(load);
 
@@ -253,12 +160,17 @@ private:
         MRelease(mLoad);
     }
 
+    void call(MObject *param) {
+        mFunc(mLoad, param);
+    }
+
+private:
     MLambdaFunc mFunc;
     MObject *mLoad;
 };
 
 extern "C" inline MLambda *MLambdaCreate(MLambdaFunc func, MObject *load) {
-    return MLambda::create(func, load);
+    return new MLambda(func, load);
 }
 
 extern "C" inline void MLambdaCall(MLambda *lambda, MObject *param) {
@@ -267,22 +179,13 @@ extern "C" inline void MLambdaCall(MLambda *lambda, MObject *param) {
     }
 }
 
-MEXPORT(MLambdaCreate)
-MEXPORT(MLambdaCall  )
-
 //MData:
-
-typedef std::shared_ptr<class MData> MDataRef;
 
 class MData : public MObject {
     
 public:
-    static MData *create(const uint8_t *bytes, int size) {
-        return new MData(bytes, size);
-    }
-
-    static MDataRef make(const uint8_t *bytes, int size) {
-        return MDataRef(create(bytes, size), MRelease);
+    MData(const uint8_t *bytes, int size) : MObject(MType_MData) {
+        append(bytes, size);
     }
 
     void append(const uint8_t *bytes, int size) {
@@ -300,15 +203,11 @@ public:
     }
 
 private:
-    MData(const uint8_t *bytes, int size) : MObject(MType_MData) {
-        mBytes.insert(mBytes.end(), bytes, bytes + size);
-    }
-
     std::vector<uint8_t> mBytes;
 };
 
 extern "C" inline MData *MDataCreate(uint8_t *bytes, int size) {
-    return MData::create(bytes, size);
+    return new MData(bytes, size);
 }
 
 extern "C" inline void MDataAppend(MData *data, const uint8_t *bytes, int size) {
@@ -325,34 +224,24 @@ extern "C" inline int MDataSize(MData *data) {
     return data ? data->size() : 0;
 }
 
-MEXPORT(MDataCreate)
-MEXPORT(MDataBytes )
-MEXPORT(MDataSize  )
-
 //MArray:
-
-typedef std::shared_ptr<class MArray> MArrayRef;
 
 class MArray : public MObject {
     
 public:
-    static MArray *create(const std::initializer_list<MObject *> &items);
-    static MArrayRef make(const std::initializer_list<MObject *> &items);
-
-    void     append(MObject *item);
-    int      length();
-    MObject *item  (int index);
-
+    MArray();
     ~MArray();
 
-private:
-    MArray(const std::initializer_list<MObject *> &items);
+    void append(MObject *item);
+    int length();
+    MObject *item(int index);
 
+private:
     std::vector<MObject *> mItems;
 };
 
 extern "C" inline MArray *MArrayCreate() {
-    return MArray::create({});
+    return new MArray();
 }
 
 extern "C" inline void MArrayAppend(MArray *array, MObject *item) {
@@ -369,33 +258,13 @@ extern "C" inline MObject *MArrayItem(MArray *array, int index) {
     return array ? array->item(index) : 0;
 }
 
-MEXPORT(MArrayCreate)
-MEXPORT(MArrayAppend)
-MEXPORT(MArrayLength)
-MEXPORT(MArrayItem  )
-
 //MImage:
 
 typedef void (*MImageDispose)(int id);
 
-typedef std::shared_ptr<class MImage> MImageRef;
-
 class MImage : public MObject {
     
 public:
-    static MImage *create(int id, MImageDispose dispose) {
-        return (id && dispose) ? new MImage(id, dispose) : nullptr;
-    }
-
-    static MImageRef make(int id, MImageDispose dispose) {
-        return MImageRef(create(id, dispose), MRelease);
-    }
-
-    int id() {
-        return mId;
-    }
-
-private:
     MImage(int id, MImageDispose dispose) : MObject(MType_MImage) {
         mId = id;
         mDispose = dispose;
@@ -405,34 +274,19 @@ private:
         mDispose(mId);
     }
 
+    int id() {
+        return mId;
+    }
+
+private:
     int mId = 0;
     MImageDispose mDispose = nullptr;
 };
 
 extern "C" inline MImage *MImageCreate(int id, MImageDispose dispose) {
-    return MImage::create(id, dispose);
+    return new MImage(id, dispose);
 }
 
-extern "C" inline int MImageID(MImage *image) {
+extern "C" inline int MImageId(MImage *image) {
     return image ? image->id() : 0;
 }
-
-MEXPORT(MImageCreate);
-MEXPORT(MImageID    );
-
-//MObject* to MObjectRef:
-
-template<typename T> std::shared_ptr<T> _MMakeShared(T *value) {
-    MRetain(value);
-    return std::shared_ptr<T>(value, MRelease);
-}
-
-inline MObjectRef MMakeShared(MObject *v) { return _MMakeShared(v); }
-inline MBoolRef   MMakeShared(MBool   *v) { return _MMakeShared(v); }
-inline MIntRef    MMakeShared(MInt    *v) { return _MMakeShared(v); }
-inline MFloatRef  MMakeShared(MFloat  *v) { return _MMakeShared(v); }
-inline MStringRef MMakeShared(MString *v) { return _MMakeShared(v); }
-inline MLambdaRef MMakeShared(MLambda *v) { return _MMakeShared(v); }
-inline MDataRef   MMakeShared(MData   *v) { return _MMakeShared(v); }
-inline MArrayRef  MMakeShared(MArray  *v) { return _MMakeShared(v); }
-inline MImageRef  MMakeShared(MImage  *v) { return _MMakeShared(v); }

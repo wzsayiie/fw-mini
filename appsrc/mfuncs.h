@@ -14,7 +14,7 @@ struct MFuncInfo {
     std::vector<MType> argTypes;
 };
 
-void MFuncAdd(const MFuncInfo &info);
+void _MFuncAdd(const MFuncInfo &info);
 
 extern "C" int MFuncsBegin();
 extern "C" int MFuncsEnd  ();
@@ -37,17 +37,3 @@ extern "C" void     NFuncCallVoid (int index, MArray *params);
 extern "C" bool     NFuncCallBool (int index, MArray *params);
 extern "C" int      NFuncCallInt  (int index, MArray *params);
 extern "C" float    NFuncCallFloat(int index, MArray *params);
-
-MEXPORT(MFuncsBegin   )
-MEXPORT(MFuncsEnd     )
-MEXPORT(MFuncIndex    )
-MEXPORT(MFuncName     )
-MEXPORT(MFuncRetType  )
-MEXPORT(MFuncRetRetain)
-MEXPORT(MFuncArgCount )
-MEXPORT(MFuncArgType  )
-MEXPORT(NFuncCopyCall )
-MEXPORT(NFuncCallVoid )
-MEXPORT(NFuncCallBool )
-MEXPORT(NFuncCallInt  )
-MEXPORT(NFuncCallFloat)

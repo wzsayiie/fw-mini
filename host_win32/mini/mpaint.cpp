@@ -1,5 +1,6 @@
 ﻿#include "mpaint.h"
 #include <gdiplus.h>
+#include <memory>
 #include "mhostui.h"
 
 static ULONG_PTR sGdiplusToken = 0;

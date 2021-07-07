@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mexport.h"
 #include "mtypes.h"
 
 const float _MWindowDrawInterval = 0.1f;
