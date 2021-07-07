@@ -32,7 +32,11 @@ extern "C" bool  MFuncRetRetain(int index);
 extern "C" int   MFuncArgCount (int index);
 extern "C" MType MFuncArgType  (int index, int argIndex);
 
-extern "C" MObject *NFuncCopyCall(int index, MArray *args);
+extern "C" MObject *NFuncCopyCall (int index, MArray *params);
+extern "C" void     NFuncCallVoid (int index, MArray *params);
+extern "C" bool     NFuncCallBool (int index, MArray *params);
+extern "C" int      NFuncCallInt  (int index, MArray *params);
+extern "C" float    NFuncCallFloat(int index, MArray *params);
 
 MEXPORT(MFuncsBegin   )
 MEXPORT(MFuncsEnd     )
@@ -43,3 +47,7 @@ MEXPORT(MFuncRetRetain)
 MEXPORT(MFuncArgCount )
 MEXPORT(MFuncArgType  )
 MEXPORT(NFuncCopyCall )
+MEXPORT(NFuncCallVoid )
+MEXPORT(NFuncCallBool )
+MEXPORT(NFuncCallInt  )
+MEXPORT(NFuncCallFloat)
