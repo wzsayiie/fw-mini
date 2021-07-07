@@ -1,6 +1,6 @@
 ﻿#include <cstdio>
-#include <windows.h>
 #include <windowsx.h>
+#include "mapis.h"
 #include "mapp.h"
 #include "mhostui.h"
 #include "mpaint.h"
@@ -37,6 +37,8 @@ static void GetClientSize(HWND wnd, LONG *width, LONG *height) {
 static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     OpenConsole();
+
+    MRegisterApis();
     MPaintStart();
 
     //application events.
