@@ -8,23 +8,25 @@
 #include "mencode.h"
 #include "mexport.h"
 
+#define MEnumId(n) (((int)n[0]) | ((int)n[1] << 1) | ((int)n[2] << 2))
+
 typedef int MType;
 
-const MType MType_Void    = 'v';    //void.
-const MType MType_Bool    = 'b';    //bool.
-const MType MType_Int     = 'i';    //int.
-const MType MType_Float   = 'f';    //float.
-const MType MType_C8Ptr   = '1';    //char *, uint8_t *.
-const MType MType_C16Ptr  = '2';    //char16_t *.
-const MType MType_MObject = 'O';    //MObject.
-const MType MType_MBool   = 'B';    //MBool.
-const MType MType_MInt    = 'I';    //MInt.
-const MType MType_MFloat  = 'F';    //MFloat.
-const MType MType_MString = 'S';    //MString.
-const MType MType_MLambda = 'L';    //MLamdba.
-const MType MType_MData   = 'D';    //MData.
-const MType MType_MArray  = 'A';    //MArray.
-const MType MType_MImage  = 'G';    //MImage.
+const MType MType_Void    = MEnumId("vid");     //void.
+const MType MType_Bool    = MEnumId("bol");     //bool.
+const MType MType_Int     = MEnumId("int");     //int.
+const MType MType_Float   = MEnumId("flt");     //float.
+const MType MType_C8Ptr   = MEnumId("p08");     //char *, uint8_t *.
+const MType MType_C16Ptr  = MEnumId("p16");     //char16_t *.
+const MType MType_MObject = MEnumId("Obj");     //MObject.
+const MType MType_MBool   = MEnumId("Bol");     //MBool.
+const MType MType_MInt    = MEnumId("Int");     //MInt.
+const MType MType_MFloat  = MEnumId("Flt");     //MFloat.
+const MType MType_MString = MEnumId("Str");     //MString.
+const MType MType_MLambda = MEnumId("Lmd");     //MLamdba.
+const MType MType_MData   = MEnumId("Dat");     //MData.
+const MType MType_MArray  = MEnumId("Arr");     //MArray.
+const MType MType_MImage  = MEnumId("Img");     //MImage.
 
 //MObject:
 

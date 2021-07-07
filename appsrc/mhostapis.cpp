@@ -11,13 +11,21 @@ static std::map<MApi, MApiCopyFunc> *GetFuncs() {
 }
 
 void _MApiSetFunc(MApi api, MApiCopyFunc func) {
-    if (func) {
-        std::map<MApi, MApiCopyFunc> *funcs = GetFuncs();
-        (*funcs)[api] = func;
+    if (!func) {
+        D("ERROR: register a null api");
+        return;
     }
+
+    std::map<MApi, MApiCopyFunc> *funcs = GetFuncs();
+    if (funcs->find(api) != funcs->end()) {
+        D("ERROR: api '%s' already exists.", (const char *)&api);
+        return;
+    }
+
+    (*funcs)[api] = func;
 }
 
-MObject *MApiCopyCall(MApi api, MArray *params) {
+MObject *MApiCopyCall(MApi api, MObject *a, MObject *b) {
     std::map<MApi, MApiCopyFunc> *funcs = GetFuncs();
     auto pair = funcs->find(api);
     if (pair == funcs->end()) {
@@ -26,5 +34,5 @@ MObject *MApiCopyCall(MApi api, MArray *params) {
     }
 
     MApiCopyFunc func = pair->second;
-    return func(params);
+    return func(a, b);
 }
