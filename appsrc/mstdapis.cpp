@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "mstdapis.h"
 #include <cstdio>
 
@@ -8,8 +9,7 @@ MData *MCopyFileContent(MString *path) {
         return nullptr;
     }
 
-    FILE *file = nullptr;
-    fopen_s(&file, path->u8Bytes(), "rb");
+    FILE *file = fopen(path->u8Bytes(), "rb");
     if (!file) {
         return nullptr;
     }
@@ -30,8 +30,7 @@ void MWriteFile(MString *path, MData *content) {
         return;
     }
 
-    FILE *file = nullptr;
-    fopen_s(&file, path->u8Bytes(), "wb");
+    FILE *file = fopen(path->u8Bytes(), "wb");
     if (!file) {
         return;
     }
