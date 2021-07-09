@@ -26,7 +26,8 @@ static void OpenConsole(void)
 const UINT_PTR UpdateTimerID = 1;
 const UINT_PTR DrawTimerID   = 2;
 
-static void GetClientSize(HWND wnd, LONG *width, LONG *height) {
+static void GetClientSize(HWND wnd, LONG *width, LONG *height)
+{
     RECT rect = {0};
     GetClientRect(wnd, &rect);
 

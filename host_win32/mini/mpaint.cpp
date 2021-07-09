@@ -6,12 +6,14 @@
 
 static ULONG_PTR sGdiplusToken = 0;
 
-void MPaintStart() {
+void MPaintStart()
+{
     Gdiplus::GdiplusStartupInput input;
     Gdiplus::GdiplusStartup(&sGdiplusToken, &input, nullptr);
 }
 
-void MPaintStop() {
+void MPaintStop()
+{
     Gdiplus::GdiplusShutdown(sGdiplusToken);
 }
 
@@ -57,17 +59,20 @@ void MPaint(HDC dc)
     std::shared_ptr<Gdiplus::Graphics> graphics(new Gdiplus::Graphics(dc));
 
     int triangleCount = _MWindowTriangleCount();
-    for (int index = 0; index < triangleCount; ++index) {
+    for (int index = 0; index < triangleCount; ++index)
+    {
         PaintTriangle(graphics.get(), index);
     }
 
     int imageCount = _MWindowImageCount();
-    for (int index = 0; index < imageCount; ++index) {
+    for (int index = 0; index < imageCount; ++index)
+    {
         PaintImage(graphics.get(), index);
     }
 
     int labelCount = _MWindowLabelCount();
-    for (int index = 0; index < labelCount; ++index) {
+    for (int index = 0; index < labelCount; ++index)
+    {
         PaintLabel(graphics.get(), index);
     }
 }
