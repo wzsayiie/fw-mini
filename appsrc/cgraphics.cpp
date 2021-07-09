@@ -1,4 +1,6 @@
 #include "cgraphics.h"
+#include "mhostapis.h"
+#include "mstdapis.h"
 
 CColor::CColor(float red, float green, float blue, float alpha) {
     set(red, blue, green, alpha);
@@ -27,10 +29,30 @@ MColor CColor::rgba() const {
     return color.rgba;
 }
 
+CImage::CImage(const std::vector<uint8_t> &data) {
+    MDataRef stream = MAutorelease(MDataCreate(&data[0], (int)data.size()));
+
+    auto nativeImage = (MImage *)MApiCopyCall(MApi_CreateImage, stream.get(), nullptr);
+    mNativeImage = MAutorelease(nativeImage);
+}
+
+CImage::CImage(const std::string &path) {
+    MStringRef name = MAutorelease(MStringCreateU8(path.c_str()));
+    MDataRef data = MAutorelease(MCopyFileContent(name.get()));
+
+    auto nativeImage = (MImage *)MApiCopyCall(MApi_CreateImage, data.get(), nullptr);
+    mNativeImage = MAutorelease(nativeImage);
+}
+
+MImage *CImage::nativeImage() {
+    return mNativeImage.get();
+}
+
 static float sOffsetX = 0;
 static float sOffsetY = 0;
 
 static CColor sColor {0, 0, 0};
+static CImageRef sImage;
 
 void CContextSetOffset(float x, float y) {
     sOffsetX = x;
@@ -39,6 +61,10 @@ void CContextSetOffset(float x, float y) {
 
 void CContextSelectColor(const CColor &color) {
     sColor = color;
+}
+
+void CContextSelectImage(CImageRef image) {
+    sImage = image;
 }
 
 void CContextDrawEllipse(float x, float y, float width, float height) {
@@ -61,4 +87,23 @@ void CContextDrawRect(float x, float y, float width, float height) {
     MWindowSelectPoint1(right, bottom);
     MWindowSelectPoint2(left , bottom);
     MWindowDrawTriangle();
+}
+
+void CContextDrawImage(float x, float y, float width, float height) {
+    if (!sImage) {
+        return;
+    }
+
+    MWindowSelectImage(sImage->nativeImage());
+
+    float top    = sOffsetY + y;
+    float bottom = sOffsetY + y + height;
+    float left   = sOffsetX + x;
+    float right  = sOffsetX + x + width;
+    MWindowSelectPoint0(left , top);
+    MWindowSelectPoint1(right, bottom);
+
+    MWindowDrawImage();
+
+    sImage.reset();
 }

@@ -8,6 +8,15 @@ struct Triangle {
     float y[3] = {0};
 };
 
+struct Image {
+    MImageRef image;
+
+    float x      = 0;
+    float y      = 0;
+    float width  = 0;
+    float height = 0;
+};
+
 struct Label {
     MStringRef string;
 
@@ -41,6 +50,7 @@ struct Window {
     MKey  key    = 0;
 
     MStringRef selectedString;
+    MImageRef  selectedImage ;
     MColor     selectedColor      = 0;
     float      selectedFontSize   = 0;
     MAligns    selectedAligns     = 0;
@@ -48,6 +58,7 @@ struct Window {
     float      selectedPointY[3]  = {0};
 
     std::vector<Triangle> triangles;
+    std::vector<Image> images;
     std::vector<Label> labels;
     TextBox textBox;
 
@@ -65,6 +76,11 @@ static Window *GetWindow() {
 static Triangle *TriangleAt(int index) {
     Window *window = GetWindow();
     return &window->triangles[index];
+}
+
+static Image *ImageAt(int index) {
+    Window *window = GetWindow();
+    return &window->images[index];
 }
 
 static Label *LabelAt(int index) {
@@ -139,8 +155,13 @@ void _MWindowOnResize(_WPIXEL width, _WPIXEL height) {
 void _MWindowOnDraw() {
     Window *window = GetWindow();
 
+    window->selectedString.reset();
+    window->selectedImage.reset();
+
     window->triangles.clear();
+    window->images.clear();
     window->labels.clear();
+    
     SendEvent(window, MWindowEvent_Draw);
 }
 
@@ -185,6 +206,21 @@ _WPIXEL _MWindowTriangleVertexY(int index, int v) { return PixelFromPoint(Triang
 MColor _MWindowTriangleColor(int index) {
     return TriangleAt(index)->color;
 }
+
+int _MWindowImageCount() {
+    Window *window = GetWindow();
+    return (int)window->images.size();
+}
+
+MImage *_MWindowImageObject(int index) {
+    return ImageAt(index)->image.get();
+}
+
+_WPIXEL _MWindowImageX(int index) { return PixelFromPoint(ImageAt(index)->x); }
+_WPIXEL _MWindowImageY(int index) { return PixelFromPoint(ImageAt(index)->y); }
+
+_WPIXEL _MWindowImageWidth (int index) { return PixelFromPoint(ImageAt(index)->width ); }
+_WPIXEL _MWindowImageHeight(int index) { return PixelFromPoint(ImageAt(index)->height); }
 
 int _MWindowLabelCount() {
     Window *window = GetWindow();
@@ -247,6 +283,11 @@ void MWindowSelectString(MString *string) {
     window->selectedString = MMakeShared(string);
 }
 
+void MWindowSelectImage(MImage *image) {
+    Window *window = GetWindow();
+    window->selectedImage = MMakeShared(image);
+}
+
 void MWindowSelectColor(MColor color) {
     Window *window = GetWindow();
     window->selectedColor = color;
@@ -290,8 +331,33 @@ void MWindowDrawTriangle() {
     window->triangles.push_back(triangle);
 }
 
+void MWindowDrawImage() {
+    Window *window = GetWindow();
+    if (!window->selectedImage) {
+        return;
+    }
+
+    float x0 = window->selectedPointX[0];
+    float y0 = window->selectedPointY[0];
+    float x1 = window->selectedPointX[1];
+    float y1 = window->selectedPointY[1];
+
+    Image image;
+
+    image.image  = window->selectedImage;
+    image.x      = x0;
+    image.y      = y0;
+    image.width  = x1 - x0;
+    image.height = y1 - y0;
+
+    window->images.push_back(image);
+}
+
 void MWindowDrawLabel() {
     Window *window = GetWindow();
+    if (!window->selectedString) {
+        return;
+    }
 
     float x0 = window->selectedPointX[0];
     float y0 = window->selectedPointY[0];

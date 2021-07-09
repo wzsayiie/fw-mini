@@ -1,6 +1,7 @@
 ﻿#include "mpaint.h"
 #include <gdiplus.h>
 #include <memory>
+#include "mapis.h"
 #include "mhostui.h"
 
 static ULONG_PTR sGdiplusToken = 0;
@@ -14,7 +15,7 @@ void MPaintStop() {
     Gdiplus::GdiplusShutdown(sGdiplusToken);
 }
 
-static void PaintTriangle(HDC dc, int index)
+static void PaintTriangle(Gdiplus::Graphics *graphics, int index)
 {
     MColorPattern rgba = {0};
     rgba.rgba = _MWindowTriangleColor(index);
@@ -29,11 +30,23 @@ static void PaintTriangle(HDC dc, int index)
         vertices[n].Y = _MWindowTriangleVertexY(index, n);
     }
 
-    std::shared_ptr<Gdiplus::Graphics> graphics(new Gdiplus::Graphics(dc));
     graphics->FillPolygon(brush.get(), vertices, 3);
 }
 
-static void PaintLabel(HDC dc, int index)
+static void PaintImage(Gdiplus::Graphics *graphics, int index)
+{
+    MImage *image = _MWindowImageObject(index);
+    Gdiplus::Image *managedImage = MManagedImage(MImageManagedId(image));
+
+    float x = _MWindowImageX(index);
+    float y = _MWindowImageY(index);
+    float width  = _MWindowImageWidth (index);
+    float height = _MWindowImageHeight(index);
+
+    graphics->DrawImage(managedImage, x, y, width, height);
+}
+
+static void PaintLabel(Gdiplus::Graphics *graphics, int index)
 {
 }
 
@@ -41,13 +54,20 @@ void MPaint(HDC dc)
 {
     _MWindowOnDraw();
 
+    std::shared_ptr<Gdiplus::Graphics> graphics(new Gdiplus::Graphics(dc));
+
     int triangleCount = _MWindowTriangleCount();
     for (int index = 0; index < triangleCount; ++index) {
-        PaintTriangle(dc, index);
+        PaintTriangle(graphics.get(), index);
+    }
+
+    int imageCount = _MWindowImageCount();
+    for (int index = 0; index < imageCount; ++index) {
+        PaintImage(graphics.get(), index);
     }
 
     int labelCount = _MWindowLabelCount();
     for (int index = 0; index < labelCount; ++index) {
-        PaintLabel(dc, index);
+        PaintLabel(graphics.get(), index);
     }
 }

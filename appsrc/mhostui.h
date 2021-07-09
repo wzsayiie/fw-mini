@@ -63,6 +63,13 @@ extern "C" _WPIXEL _MWindowTriangleVertexX(int index, int vertexIndex);
 extern "C" _WPIXEL _MWindowTriangleVertexY(int index, int vertexIndex);
 extern "C" MColor  _MWindowTriangleColor  (int index);
 
+extern "C" int     _MWindowImageCount ();
+extern "C" MImage *_MWindowImageObject(int index);
+extern "C" _WPIXEL _MWindowImageX     (int index);
+extern "C" _WPIXEL _MWindowImageY     (int index);
+extern "C" _WPIXEL _MWindowImageWidth (int index);
+extern "C" _WPIXEL _MWindowImageHeight(int index);
+
 extern "C" int      _MWindowLabelCount   ();
 extern "C" MString *_MWindowLabelString  (int index);
 extern "C" MColor   _MWindowLabelColor   (int index);
@@ -103,6 +110,7 @@ float MWindowTouchY();
 MKey  MWindowActiveKey();
 
 void MWindowSelectString  (MString *string);
+void MWindowSelectImage   (MImage  *image );
 void MWindowSelectColor   (MColor   color );
 void MWindowSelectFontSize(float    size  );
 void MWindowSelectAligns  (MAligns  aligns);
@@ -112,6 +120,7 @@ void MWindowSelectPoint1(float x, float y);
 void MWindowSelectPoint2(float x, float y);
 
 void MWindowDrawTriangle();
+void MWindowDrawImage();
 void MWindowDrawLabel();
 
 void     MWindowEnableTextBox(bool enabled);

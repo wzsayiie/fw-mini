@@ -30,17 +30,17 @@ const MType MType_MImage  = MEnumId("Img");     //MImage.
 class MObject {
 
 public:
-    void retain() {
+    void _retain() {
         mRefCount += 1;
     }
 
-    void release() {
+    void _release() {
         if (--mRefCount == 0) {
             delete this;
         }
     }
 
-    MType type() {
+    MType _type() {
         return mType;
     }
 
@@ -60,18 +60,18 @@ private:
 
 extern "C" inline void MRetain(MObject *object) {
     if (object) {
-        object->retain();
+        object->_retain();
     }
 }
 
 extern "C" inline void MRelease(MObject *object) {
     if (object) {
-        object->release();
+        object->_release();
     }
 }
 
 extern "C" inline MType MGetType(MObject *object) {
-    return object ? object->type() : 0;
+    return object ? object->_type() : 0;
 }
 
 //MBool & MInt & MFloat:
@@ -83,7 +83,7 @@ public:
         mValue = value;
     }
 
-    T value() {
+    T _value() {
         return mValue;
     }
 
@@ -99,9 +99,9 @@ extern "C" inline MBool  *MBoolCreate (bool  v) { return new MBool (v); }
 extern "C" inline MInt   *MIntCreate  (int   v) { return new MInt  (v); }
 extern "C" inline MFloat *MFloatCreate(float v) { return new MFloat(v); }
 
-extern "C" inline bool  MBoolValue (MBool  *a) { return a ? a->value() : 0; }
-extern "C" inline int   MIntValue  (MInt   *a) { return a ? a->value() : 0; }
-extern "C" inline float MFloatValue(MFloat *a) { return a ? a->value() : 0; }
+extern "C" inline bool  MBoolValue (MBool  *a) { return a ? a->_value() : 0; }
+extern "C" inline int   MIntValue  (MInt   *a) { return a ? a->_value() : 0; }
+extern "C" inline float MFloatValue(MFloat *a) { return a ? a->_value() : 0; }
 
 //MString:
 
@@ -122,11 +122,11 @@ public:
         }
     }
 
-    const char     *u8Bytes () { return mU8String .c_str(); }
-    const char16_t *u16Bytes() { return mU16String.c_str(); }
+    const char     *_u8Bytes () { return mU8String .c_str(); }
+    const char16_t *_u16Bytes() { return mU16String.c_str(); }
 
-    int u8Size () { return (int)mU8String .size(); }
-    int u16Size() { return (int)mU16String.size(); }
+    int _u8Size () { return (int)mU8String .size(); }
+    int _u16Size() { return (int)mU16String.size(); }
     
 private:
     std::string    mU8String ;
@@ -136,11 +136,11 @@ private:
 extern "C" inline MString *MStringCreateU8 (const char     *s) { return new MString(s); }
 extern "C" inline MString *MStringCreateU16(const char16_t *s) { return new MString(s); }
 
-extern "C" inline const char     *MStringU8Bytes (MString *s) { return s ? s->u8Bytes () : nullptr; }
-extern "C" inline const char16_t *MStringU16Bytes(MString *s) { return s ? s->u16Bytes() : nullptr; }
+extern "C" inline const char     *MStringU8Bytes (MString *s) { return s ? s->_u8Bytes () : nullptr; }
+extern "C" inline const char16_t *MStringU16Bytes(MString *s) { return s ? s->_u16Bytes() : nullptr; }
 
-extern "C" inline int MStringU8Size (MString *s) { return s ? s->u8Size () : 0; }
-extern "C" inline int MStringU16Size(MString *s) { return s ? s->u16Size() : 0; }
+extern "C" inline int MStringU8Size (MString *s) { return s ? s->_u8Size () : 0; }
+extern "C" inline int MStringU16Size(MString *s) { return s ? s->_u16Size() : 0; }
 
 //MLambda:
 
@@ -160,7 +160,7 @@ public:
         MRelease(mLoad);
     }
 
-    void call(MObject *param) {
+    void _call(MObject *param) {
         mFunc(mLoad, param);
     }
 
@@ -175,7 +175,7 @@ extern "C" inline MLambda *MLambdaCreate(MLambdaFunc func, MObject *load) {
 
 extern "C" inline void MLambdaCall(MLambda *lambda, MObject *param) {
     if (lambda) {
-        lambda->call(param);
+        lambda->_call(param);
     }
 }
 
@@ -185,20 +185,20 @@ class MData : public MObject {
     
 public:
     MData(const uint8_t *bytes, int size) : MObject(MType_MData) {
-        append(bytes, size);
+        _append(bytes, size);
     }
 
-    void append(const uint8_t *bytes, int size) {
+    void _append(const uint8_t *bytes, int size) {
         if (bytes && size > 0) {
             mBytes.insert(mBytes.end(), bytes, bytes + size);
         }
     }
 
-    const uint8_t *bytes() {
+    const uint8_t *_bytes() {
         return &mBytes[0];
     }
 
-    int size() {
+    int _size() {
         return (int)mBytes.size();
     }
 
@@ -206,22 +206,22 @@ private:
     std::vector<uint8_t> mBytes;
 };
 
-extern "C" inline MData *MDataCreate(uint8_t *bytes, int size) {
+extern "C" inline MData *MDataCreate(const uint8_t *bytes, int size) {
     return new MData(bytes, size);
 }
 
 extern "C" inline void MDataAppend(MData *data, const uint8_t *bytes, int size) {
     if (data) {
-        data->append(bytes, size);
+        data->_append(bytes, size);
     }
 }
 
 extern "C" inline const uint8_t *MDataBytes(MData *data) {
-    return data ? data->bytes() : nullptr;
+    return data ? data->_bytes() : nullptr;
 }
 
 extern "C" inline int MDataSize(MData *data) {
-    return data ? data->size() : 0;
+    return data ? data->_size() : 0;
 }
 
 //MArray:
@@ -232,9 +232,9 @@ public:
     MArray();
     ~MArray();
 
-    void append(MObject *item);
-    int length();
-    MObject *item(int index);
+    void _append(MObject *item);
+    int _length();
+    MObject *_item(int index);
 
 private:
     std::vector<MObject *> mItems;
@@ -246,16 +246,16 @@ extern "C" inline MArray *MArrayCreate() {
 
 extern "C" inline void MArrayAppend(MArray *array, MObject *item) {
     if (array) {
-        array->append(item);
+        array->_append(item);
     }
 }
 
 extern "C" inline int MArrayLength(MArray *array) {
-    return array ? array->length() : 0;
+    return array ? array->_length() : 0;
 }
 
 extern "C" inline MObject *MArrayItem(MArray *array, int index) {
-    return array ? array->item(index) : 0;
+    return array ? array->_item(index) : 0;
 }
 
 //MImage:
@@ -265,28 +265,28 @@ typedef void (*MImageDispose)(int id);
 class MImage : public MObject {
     
 public:
-    MImage(int id, MImageDispose dispose) : MObject(MType_MImage) {
-        mId = id;
+    MImage(int managedId, MImageDispose dispose) : MObject(MType_MImage) {
+        mManagedId = managedId;
         mDispose = dispose;
     }
 
     ~MImage() {
-        mDispose(mId);
+        mDispose(mManagedId);
     }
 
-    int id() {
-        return mId;
+    int _managedId() {
+        return mManagedId;
     }
 
 private:
-    int mId = 0;
+    int mManagedId = 0;
     MImageDispose mDispose = nullptr;
 };
 
-extern "C" inline MImage *MImageCreate(int id, MImageDispose dispose) {
-    return new MImage(id, dispose);
+extern "C" inline MImage *MImageCreate(int managedId, MImageDispose dispose) {
+    return new MImage(managedId, dispose);
 }
 
-extern "C" inline int MImageId(MImage *image) {
-    return image ? image->id() : 0;
+extern "C" inline int MImageManagedId(MImage *image) {
+    return image ? image->_managedId() : 0;
 }

@@ -9,7 +9,7 @@ MData *MCopyFileContent(MString *path) {
         return nullptr;
     }
 
-    FILE *file = fopen(path->u8Bytes(), "rb");
+    FILE *file = fopen(MStringU8Bytes(path), "rb");
     if (!file) {
         return nullptr;
     }
@@ -30,13 +30,13 @@ void MWriteFile(MString *path, MData *content) {
         return;
     }
 
-    FILE *file = fopen(path->u8Bytes(), "wb");
+    FILE *file = fopen(MStringU8Bytes(path), "wb");
     if (!file) {
         return;
     }
 
-    const uint8_t *bytes = content->bytes();
-    auto size = (int)content->size();
+    const uint8_t *bytes = MDataBytes(content);
+    int size = MDataSize(content);
     fwrite(bytes, 1, size, file);
 
     fclose(file);

@@ -9,17 +9,17 @@ MArray::~MArray() {
     }
 }
 
-void MArray::append(MObject *item) {
+void MArray::_append(MObject *item) {
     MRetain(item);
     mItems.push_back(item);
 }
 
-int MArray::length() {
+int MArray::_length() {
     return (int)mItems.size();
 }
 
-MObject *MArray::item(int index) {
-    if (0 <= index && index < length()) {
+MObject *MArray::_item(int index) {
+    if (0 <= index && index < _length()) {
         return mItems[index];
     }
     return nullptr;
