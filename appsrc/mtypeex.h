@@ -10,14 +10,23 @@ template<typename T> T *_MAsObject(MObject *object, MType type) {
     return nullptr;
 }
 
-inline MBool   *MAsBool  (MObject *a) { return _MAsObject<MBool  >(a, MType_MBool  ); };
-inline MInt    *MAsInt   (MObject *a) { return _MAsObject<MInt   >(a, MType_MInt   ); };
-inline MFloat  *MAsFloat (MObject *a) { return _MAsObject<MFloat >(a, MType_MFloat ); };
-inline MString *MAsString(MObject *a) { return _MAsObject<MString>(a, MType_MString); };
-inline MLambda *MAsLambda(MObject *a) { return _MAsObject<MLambda>(a, MType_MLambda); };
-inline MData   *MAsData  (MObject *a) { return _MAsObject<MData  >(a, MType_MData  ); };
-inline MArray  *MAsArray (MObject *a) { return _MAsObject<MArray >(a, MType_MArray ); };
-inline MImage  *MAsImage (MObject *a) { return _MAsObject<MImage >(a, MType_MImage ); };
+struct _MAsBoolHelper   { MBool   *operator<<(MObject *a) { return _MAsObject<MBool  >(a, MType_MBool  ); } };
+struct _MAsIntHelper    { MInt    *operator<<(MObject *a) { return _MAsObject<MInt   >(a, MType_MInt   ); } };
+struct _MAsFloatHelper  { MFloat  *operator<<(MObject *a) { return _MAsObject<MFloat >(a, MType_MFloat ); } };
+struct _MAsStringHelper { MString *operator<<(MObject *a) { return _MAsObject<MString>(a, MType_MString); } };
+struct _MAsLambdaHelper { MLambda *operator<<(MObject *a) { return _MAsObject<MLambda>(a, MType_MLambda); } };
+struct _MAsDataHelper   { MData   *operator<<(MObject *a) { return _MAsObject<MData  >(a, MType_MData  ); } };
+struct _MAsArrayHelper  { MArray  *operator<<(MObject *a) { return _MAsObject<MArray >(a, MType_MArray ); } };
+struct _MAsImageHelper  { MImage  *operator<<(MObject *a) { return _MAsObject<MImage >(a, MType_MImage ); } };
+
+#define m_as_bool   _MAsBoolHelper  ()<<
+#define m_as_int    _MAsIntHelper   ()<<
+#define m_as_float  _MAsFloatHelper ()<<
+#define m_as_string _MAsStringHelper()<<
+#define m_as_lambda _MAsLambdaHelper()<<
+#define m_as_data   _MAsDataHelper  ()<<
+#define m_as_array  _MAsArrayHelper ()<<
+#define m_as_image  _MAsImageHelper ()<<
 
 typedef std::shared_ptr<MObject> MObjectRef;
 typedef std::shared_ptr<MBool  > MBoolRef  ;
@@ -29,31 +38,45 @@ typedef std::shared_ptr<MData  > MDataRef  ;
 typedef std::shared_ptr<MArray > MArrayRef ;
 typedef std::shared_ptr<MImage > MImageRef ;
 
-template<typename T> std::shared_ptr<T> _MMakeShared(T *value) {
-    MRetain(value);
-    return std::shared_ptr<T>(value, MRelease);
-}
+class _MMakeSharedHelper {
 
-inline MObjectRef MMakeShared(MObject *v) { return _MMakeShared(v); }
-inline MBoolRef   MMakeShared(MBool   *v) { return _MMakeShared(v); }
-inline MIntRef    MMakeShared(MInt    *v) { return _MMakeShared(v); }
-inline MFloatRef  MMakeShared(MFloat  *v) { return _MMakeShared(v); }
-inline MStringRef MMakeShared(MString *v) { return _MMakeShared(v); }
-inline MLambdaRef MMakeShared(MLambda *v) { return _MMakeShared(v); }
-inline MDataRef   MMakeShared(MData   *v) { return _MMakeShared(v); }
-inline MArrayRef  MMakeShared(MArray  *v) { return _MMakeShared(v); }
-inline MImageRef  MMakeShared(MImage  *v) { return _MMakeShared(v); }
+public:
+    MObjectRef operator<<(MObject *a) { return makeShared(a); }
+    MBoolRef   operator<<(MBool   *a) { return makeShared(a); }
+    MIntRef    operator<<(MInt    *a) { return makeShared(a); }
+    MFloatRef  operator<<(MFloat  *a) { return makeShared(a); }
+    MStringRef operator<<(MString *a) { return makeShared(a); }
+    MLambdaRef operator<<(MLambda *a) { return makeShared(a); }
+    MDataRef   operator<<(MData   *a) { return makeShared(a); }
+    MArrayRef  operator<<(MArray  *a) { return makeShared(a); }
+    MImageRef  operator<<(MImage  *a) { return makeShared(a); }
 
-template<typename T> std::shared_ptr<T> _MAutorelease(T *value) {
-    return std::shared_ptr<T>(value, MRelease);
-}
+private:
+    template<typename T> std::shared_ptr<T> makeShared(T *object) {
+        MRetain(object);
+        return std::shared_ptr<T>(object, MRelease);
+    }
+};
 
-inline MObjectRef MAutorelease(MObject *v) { return _MAutorelease(v); }
-inline MBoolRef   MAutorelease(MBool   *v) { return _MAutorelease(v); }
-inline MIntRef    MAutorelease(MInt    *v) { return _MAutorelease(v); }
-inline MFloatRef  MAutorelease(MFloat  *v) { return _MAutorelease(v); }
-inline MStringRef MAutorelease(MString *v) { return _MAutorelease(v); }
-inline MLambdaRef MAutorelease(MLambda *v) { return _MAutorelease(v); }
-inline MDataRef   MAutorelease(MData   *v) { return _MAutorelease(v); }
-inline MArrayRef  MAutorelease(MArray  *v) { return _MAutorelease(v); }
-inline MImageRef  MAutorelease(MImage  *v) { return _MAutorelease(v); }
+#define m_make_shared _MMakeSharedHelper()<<
+
+class _MAutoReleaseHelper {
+
+public:
+    MObjectRef operator<<(MObject *a) { return autoRelease(a); }
+    MBoolRef   operator<<(MBool   *a) { return autoRelease(a); }
+    MIntRef    operator<<(MInt    *a) { return autoRelease(a); }
+    MFloatRef  operator<<(MFloat  *a) { return autoRelease(a); }
+    MStringRef operator<<(MString *a) { return autoRelease(a); }
+    MLambdaRef operator<<(MLambda *a) { return autoRelease(a); }
+    MDataRef   operator<<(MData   *a) { return autoRelease(a); }
+    MArrayRef  operator<<(MArray  *a) { return autoRelease(a); }
+    MImageRef  operator<<(MImage  *a) { return autoRelease(a); }
+
+private:
+    template<typename T> std::shared_ptr<T> autoRelease(T *object) {
+        return std::shared_ptr<T>(object, MRelease);
+    }
+};
+
+#define m_auto_release _MAutoReleaseHelper()<<

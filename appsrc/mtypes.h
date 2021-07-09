@@ -260,7 +260,7 @@ extern "C" inline MObject *MArrayItem(MArray *array, int index) {
 
 //MImage:
 
-typedef void (*MImageDispose)(int id);
+typedef void (*MImageDispose)(int managedId);
 
 class MImage : public MObject {
     

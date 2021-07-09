@@ -183,7 +183,7 @@ void _MWindowOnTouchEnd  (_WPIXEL x, _WPIXEL y) { WindowOnTouch(MWindowEvent_Tou
 void _MWindowOnTextBox(MString *string, bool enter) {
     Window *window = GetWindow();
 
-    window->textBox.string = MMakeShared(string);
+    window->textBox.string = m_make_shared string;
     window->textBox.enter = enter;
     SendEvent(window, MWindowEvent_TextBox);
 }
@@ -257,7 +257,7 @@ bool _MWindowTextBoxEnabled() {
 void MWindowAddListener(MLambda *listener) {
     if (listener) {
         Window *window = GetWindow();
-        window->listeners.push_back(MMakeShared(listener));
+        window->listeners.push_back(m_make_shared listener);
     }
 }
 
@@ -280,12 +280,12 @@ MKey MWindowActiveKey() {
 
 void MWindowSelectString(MString *string) {
     Window *window = GetWindow();
-    window->selectedString = MMakeShared(string);
+    window->selectedString = m_make_shared string;
 }
 
 void MWindowSelectImage(MImage *image) {
     Window *window = GetWindow();
-    window->selectedImage = MMakeShared(image);
+    window->selectedImage = m_make_shared image;
 }
 
 void MWindowSelectColor(MColor color) {

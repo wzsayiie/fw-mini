@@ -44,7 +44,7 @@ static ManagedPool<Gdiplus::Image> *ManagedImagePool()
 
 static MObject *CreateImage(MObject *a, MObject *)
 {
-    MData *data = MAsData(a);
+    MData *data = m_as_data a;
     if (MDataSize(data) == 0)
     {
         return nullptr;
