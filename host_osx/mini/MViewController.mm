@@ -1,4 +1,5 @@
 #import "MViewController.h"
+#import "MAPIs.h"
 #import "MView.h"
 #import "mapp.h"
 #import "mhostui.h"
@@ -12,6 +13,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    MRegisterAPIs();
     
     //application events.
     _MAppLaunch();
