@@ -30,18 +30,16 @@ MColor CColor::rgba() const {
 }
 
 CImage::CImage(const std::vector<uint8_t> &data) {
-    MDataRef stream = m_auto_release MDataCreate(&data[0], (int)data.size());
+    MDataRef imageData = m_auto_release MDataCreate(&data[0], (int)data.size());
 
-    auto nativeImage = (MImage *)MApiCopyCall(MApi_CreateImage, stream.get(), nullptr);
-    mNativeImage = m_auto_release nativeImage;
+    mNativeImage = m_auto_release MCreateImage(imageData.get());
 }
 
 CImage::CImage(const std::string &path) {
-    MStringRef name = m_auto_release MStringCreateU8(path.c_str());
-    MDataRef data = m_auto_release MCopyFileContent(name.get());
-
-    auto nativeImage = (MImage *)MApiCopyCall(MApi_CreateImage, data.get(), nullptr);
-    mNativeImage = m_auto_release nativeImage;
+    MStringRef imagePath = m_auto_release MStringCreateU8(path.c_str());
+    MDataRef   imageData = m_auto_release MCopyFileContent(imagePath.get());
+    
+    mNativeImage = m_auto_release MCreateImage(imageData.get());
 }
 
 MImage *CImage::nativeImage() {

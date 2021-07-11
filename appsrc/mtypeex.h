@@ -3,31 +3,6 @@
 #include <memory>
 #include "mtypes.h"
 
-template<typename T> T *_MAsObject(MObject *object, MType type) {
-    if (object && MGetType(object) == type) {
-        return (T *)object;
-    }
-    return nullptr;
-}
-
-struct _MAsBoolHelper   { MBool   *operator<<(MObject *a) { return _MAsObject<MBool  >(a, MType_MBool  ); } };
-struct _MAsIntHelper    { MInt    *operator<<(MObject *a) { return _MAsObject<MInt   >(a, MType_MInt   ); } };
-struct _MAsFloatHelper  { MFloat  *operator<<(MObject *a) { return _MAsObject<MFloat >(a, MType_MFloat ); } };
-struct _MAsStringHelper { MString *operator<<(MObject *a) { return _MAsObject<MString>(a, MType_MString); } };
-struct _MAsLambdaHelper { MLambda *operator<<(MObject *a) { return _MAsObject<MLambda>(a, MType_MLambda); } };
-struct _MAsDataHelper   { MData   *operator<<(MObject *a) { return _MAsObject<MData  >(a, MType_MData  ); } };
-struct _MAsArrayHelper  { MArray  *operator<<(MObject *a) { return _MAsObject<MArray >(a, MType_MArray ); } };
-struct _MAsImageHelper  { MImage  *operator<<(MObject *a) { return _MAsObject<MImage >(a, MType_MImage ); } };
-
-#define m_as_bool   _MAsBoolHelper  ()<<
-#define m_as_int    _MAsIntHelper   ()<<
-#define m_as_float  _MAsFloatHelper ()<<
-#define m_as_string _MAsStringHelper()<<
-#define m_as_lambda _MAsLambdaHelper()<<
-#define m_as_data   _MAsDataHelper  ()<<
-#define m_as_array  _MAsArrayHelper ()<<
-#define m_as_image  _MAsImageHelper ()<<
-
 typedef std::shared_ptr<MObject> MObjectRef;
 typedef std::shared_ptr<MBool  > MBoolRef  ;
 typedef std::shared_ptr<MInt   > MIntRef   ;

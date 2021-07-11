@@ -3,26 +3,50 @@
 #include "mexport.h"
 #include "mtypes.h"
 
-typedef int MApi;
+typedef void     (*_MApiPrintMessage     )(MString *text);
+typedef MData   *(*_MApiCopyResource     )(MString *path);
+typedef MImage  *(*_MApiCreateImage      )(MData   *data);
+typedef MString *(*_MApiCopyDocumentPath )();
+typedef MString *(*_MApiCopyCachePath    )();
+typedef MString *(*_MApiCopyTemporaryPath)();
+typedef bool     (*_MApiMakeDirectory    )(MString *path);
+typedef void     (*_MApiRemovePath       )(MString *path);
+typedef bool     (*_MApiPathExists       )(MString *path);
+typedef bool     (*_MApiDirectoryExists  )(MString *path);
+typedef bool     (*_MApiFileExists       )(MString *path);
 
-const MApi MApi_Print             = MEnumId("Prt"); //void (string text);
-const MApi MApi_CopyResource      = MEnumId("CpR"); //data (string path);
-const MApi MApi_CreateImage       = MEnumId("CrI"); //image (data content);
-const MApi MApi_CopyDocumentPath  = MEnumId("DcP"); //string ();
-const MApi MApi_CopyCachePath     = MEnumId("CcP"); //string ();
-const MApi MApi_CopyTemporaryPath = MEnumId("TmP"); //string ();
-const MApi MApi_MakeDirectory     = MEnumId("MkD"); //bool (string path);
-const MApi MApi_RemovePath        = MEnumId("RmD"); //void (string path);
-const MApi MApi_PathExists        = MEnumId("PEx"); //bool (string path);
-const MApi MApi_DirectoryExists   = MEnumId("DEx"); //bool (string path);
-const MApi MApi_FileExists        = MEnumId("FEx"); //bool (string path);
+extern "C" void _MSetApiPrintMessage     (_MApiPrintMessage      func);
+extern "C" void _MSetApiCopyResource     (_MApiCopyResource      func);
+extern "C" void _MSetApiCreateImage      (_MApiCreateImage       func);
+extern "C" void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func);
+extern "C" void _MSetApiCopyCachePath    (_MApiCopyCachePath     func);
+extern "C" void _MSetApiCopyTemporaryPath(_MApiCopyTemporaryPath func);
+extern "C" void _MSetApiMakeDirectory    (_MApiMakeDirectory     func);
+extern "C" void _MSetApiRemovePath       (_MApiRemovePath        func);
+extern "C" void _MSetApiPathExists       (_MApiPathExists        func);
+extern "C" void _MSetApiDirectoryExists  (_MApiDirectoryExists   func);
+extern "C" void _MSetApiFileExists       (_MApiFileExists        func);
 
-typedef MObject *(*MApiCopyFunc)(MObject *a, MObject *b);
+void     MPrintMessage     (MString *text);
+MData   *MCopyResource     (MString *path);
+MImage  *MCreateImage      (MData   *data);
+MString *MCopyDocumentPath ();
+MString *MCopyCachePath    ();
+MString *MCopyTemporaryPath();
+bool     MMakeDirectory    (MString *path);
+void     MRemovePath       (MString *path);
+bool     MPathExists       (MString *path);
+bool     MDirectoryExists  (MString *path);
+bool     MFileExists       (MString *path);
 
-//the host need registering apis by this function.
-extern "C" void _MApiSetFunc(MApi api, MApiCopyFunc func);
-
-//to call host api by this function.
-MObject *MApiCopyCall(MApi api, MObject *a, MObject *b);
-
-MEXPORT(MApiCopyCall);
+MEXPORT(MPrintMessage     )
+MEXPORT(MCopyResource     )
+MEXPORT(MCreateImage      )
+MEXPORT(MCopyDocumentPath )
+MEXPORT(MCopyCachePath    )
+MEXPORT(MCopyTemporaryPath)
+MEXPORT(MMakeDirectory    )
+MEXPORT(MRemovePath       )
+MEXPORT(MPathExists       )
+MEXPORT(MDirectoryExists  )
+MEXPORT(MFileExists       )
