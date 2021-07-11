@@ -2,38 +2,24 @@
 
 #include "mtypes.h"
 
-struct MFuncInfo {
-    //internal data fields:
-    int index = 0;
-    std::string name;
-
-    //need external assignment:
-    void *funcPtr   = nullptr;
+struct _MFuncInfo {
+    void *address   = nullptr;
     MType retType   = 0;
     bool  retRetain = false;
-    std::vector<MType> argTypes;
+    int   argCount  = 0;
+    MType argType0  = 0;
+    MType argType1  = 0;
+    MType argType2  = 0;
 };
 
-void _MFuncAdd(const MFuncInfo &info);
+void _MFuncAdd(const char *name, const _MFuncInfo &info);
 
-extern "C" int MFuncsBegin();
-extern "C" int MFuncsEnd  ();
+extern "C" void  MFuncSelect   (const char *name);
+extern "C" MType MFuncRetType  ();
+extern "C" bool  MFuncRetRetain();
+extern "C" int   MFuncArgCount ();
+extern "C" MType MFuncArgType0 ();
+extern "C" MType MFuncArgType1 ();
+extern "C" MType MFuncArgType2 ();
 
-//if the function not be found, return -1.
-extern "C" int MFuncIndex(const char *name);
-
-//NOTE!
-//the parameter "index" must be valid:
-
-extern "C" const char *MFuncName(int index);
-
-extern "C" MType MFuncRetType  (int index);
-extern "C" bool  MFuncRetRetain(int index);
-extern "C" int   MFuncArgCount (int index);
-extern "C" MType MFuncArgType  (int index, int argIndex);
-
-extern "C" MObject *NFuncCopyCall (int index, MArray *params);
-extern "C" void     NFuncCallVoid (int index, MArray *params);
-extern "C" bool     NFuncCallBool (int index, MArray *params);
-extern "C" int      NFuncCallInt  (int index, MArray *params);
-extern "C" float    NFuncCallFloat(int index, MArray *params);
+extern "C" MObject *NFuncCopyCall(const char *name, MObject *a0, MObject *a1, MObject *a2);
