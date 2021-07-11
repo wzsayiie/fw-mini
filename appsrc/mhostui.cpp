@@ -154,10 +154,7 @@ void _MWindowOnResize(_WPIXEL width, _WPIXEL height) {
 
 void _MWindowOnDraw() {
     Window *window = GetWindow();
-
-    window->selectedString.reset();
-    window->selectedImage.reset();
-
+    
     window->triangles.clear();
     window->images.clear();
     window->labels.clear();
@@ -343,12 +340,15 @@ void MWindowDrawImage() {
     float y1 = window->selectedPointY[1];
 
     Image image;
-
-    image.image  = window->selectedImage;
-    image.x      = x0;
-    image.y      = y0;
-    image.width  = x1 - x0;
-    image.height = y1 - y0;
+    {
+        image.image  = window->selectedImage;
+        image.x      = x0;
+        image.y      = y0;
+        image.width  = x1 - x0;
+        image.height = y1 - y0;
+    }
+    
+    window->selectedImage.reset();
 
     window->images.push_back(image);
 }
@@ -365,16 +365,19 @@ void MWindowDrawLabel() {
     float y1 = window->selectedPointY[1];
 
     Label label;
-
-    label.string   = window->selectedString  ;
-    label.color    = window->selectedColor   ;
-    label.fontSize = window->selectedFontSize;
-    label.aligns   = window->selectedAligns  ;
+    {
+        label.string   = window->selectedString  ;
+        label.color    = window->selectedColor   ;
+        label.fontSize = window->selectedFontSize;
+        label.aligns   = window->selectedAligns  ;
     
-    label.x      = x0;
-    label.y      = y0;
-    label.width  = x1 - x0;
-    label.height = y1 - y0;
+        label.x      = x0;
+        label.y      = y0;
+        label.width  = x1 - x0;
+        label.height = y1 - y0;
+    }
+    
+    window->selectedString.reset();
 
     window->labels.push_back(label);
 }
