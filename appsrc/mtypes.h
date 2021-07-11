@@ -5,6 +5,9 @@
 #include <vector>
 #include "mencode.h"
 
+//------------------------------------------------------------------------------
+//type enumeration:
+
 #define MEnumId(n) (((int)n[0]) | ((int)n[1] << 1) | ((int)n[2] << 2))
 
 typedef int MType;
@@ -25,6 +28,7 @@ const MType MType_MData   = MEnumId("Dat");     //MData.
 const MType MType_MArray  = MEnumId("Arr");     //MArray.
 const MType MType_MImage  = MEnumId("Img");     //MImage.
 
+//------------------------------------------------------------------------------
 //MObject:
 
 class MObject {
@@ -74,6 +78,7 @@ extern "C" inline MType MGetType(MObject *object) {
     return object ? object->_type() : 0;
 }
 
+//------------------------------------------------------------------------------
 //MBool & MInt & MFloat:
 
 template<typename T, int ID> class _MNumber : public MObject {
@@ -103,6 +108,7 @@ extern "C" inline bool  MBoolValue (MBool  *a) { return a ? a->_value() : 0; }
 extern "C" inline int   MIntValue  (MInt   *a) { return a ? a->_value() : 0; }
 extern "C" inline float MFloatValue(MFloat *a) { return a ? a->_value() : 0; }
 
+//------------------------------------------------------------------------------
 //MString:
 
 class MString : public MObject {
@@ -142,6 +148,7 @@ extern "C" inline const char16_t *MStringU16Bytes(MString *s) { return s ? s->_u
 extern "C" inline int MStringU8Size (MString *s) { return s ? s->_u8Size () : 0; }
 extern "C" inline int MStringU16Size(MString *s) { return s ? s->_u16Size() : 0; }
 
+//------------------------------------------------------------------------------
 //MLambda:
 
 typedef void (*MLambdaFunc)(MObject *load, MObject *param);
@@ -179,6 +186,7 @@ extern "C" inline void MLambdaCall(MLambda *lambda, MObject *param) {
     }
 }
 
+//------------------------------------------------------------------------------
 //MData:
 
 class MData : public MObject {
@@ -224,6 +232,7 @@ extern "C" inline int MDataSize(MData *data) {
     return data ? data->_size() : 0;
 }
 
+//------------------------------------------------------------------------------
 //MArray:
 
 class MArray : public MObject {
@@ -258,6 +267,7 @@ extern "C" inline MObject *MArrayItem(MArray *array, int index) {
     return array ? array->_item(index) : 0;
 }
 
+//------------------------------------------------------------------------------
 //MImage:
 
 typedef void (*MImageDispose)(int managedId);

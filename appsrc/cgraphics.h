@@ -3,6 +3,9 @@
 #include "mhostui.h"
 #include "mtypeex.h"
 
+//------------------------------------------------------------------------------
+//CColor:
+
 class CColor {
     
 public:
@@ -26,6 +29,9 @@ private:
 
 typedef std::shared_ptr<class CImage> CImageRef;
 
+//------------------------------------------------------------------------------
+//CImage:
+
 class CImage {
 
 public:
@@ -37,6 +43,9 @@ public:
 private:
     MImageRef mNativeImage;
 };
+
+//------------------------------------------------------------------------------
+//draw context:
 
 void CContextSetOffset(float x, float y);
 

@@ -2,6 +2,9 @@
 #include "mhostapis.h"
 #include "mstdapis.h"
 
+//------------------------------------------------------------------------------
+//CColor:
+
 CColor::CColor(float red, float green, float blue, float alpha) {
     set(red, blue, green, alpha);
 }
@@ -29,6 +32,9 @@ MColor CColor::rgba() const {
     return color.rgba;
 }
 
+//------------------------------------------------------------------------------
+//CImage:
+
 CImage::CImage(const std::vector<uint8_t> &data) {
     MDataRef imageData = m_auto_release MDataCreate(&data[0], (int)data.size());
 
@@ -45,6 +51,9 @@ CImage::CImage(const std::string &path) {
 MImage *CImage::nativeImage() {
     return mNativeImage.get();
 }
+
+//------------------------------------------------------------------------------
+//draw context:
 
 static float sOffsetX = 0;
 static float sOffsetY = 0;
