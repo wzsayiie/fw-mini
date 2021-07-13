@@ -115,7 +115,7 @@ void CUIResponder::handleWindowText() {
     if (responder) {
         MString *string = MWindowTextBoxString();
         bool enter = MWindowTextBoxEnter();
-        responder->onTextInput(MStringU8Bytes(string), enter);
+        responder->onTextInput(MStringU8Chars(string), enter);
     }
 }
 

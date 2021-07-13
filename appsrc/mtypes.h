@@ -116,25 +116,37 @@ class MString : public MObject {
 public:
     MString(const char *chars) : MObject(MType_MString) {
         if (chars) {
-            mU8String  = chars;
-            mU16String = MU16StringFromU8(chars);
+            mU8String = chars;
         }
     }
 
     MString(const char16_t *chars) : MObject(MType_MString) {
         if (chars) {
             mU16String = chars;
-            mU8String  = MU8StringFromU16(chars);
         }
     }
 
-    const char     *_u8Bytes () { return mU8String .c_str(); }
-    const char16_t *_u16Bytes() { return mU16String.c_str(); }
+    const char     *_u8chars () { return u8string ().c_str(); }
+    const char16_t *_u16chars() { return u16string().c_str(); }
 
-    int _u8Size () { return (int)mU8String .size(); }
-    int _u16Size() { return (int)mU16String.size(); }
+    int _u8size () { return (int)u8string ().size(); }
+    int _u16size() { return (int)u16string().size(); }
     
 private:
+    const std::string &u8string() {
+        if (mU8String.empty() && !mU16String.empty()) {
+            mU8String = MU8StringFromU16(mU16String.c_str());
+        }
+        return mU8String;
+    }
+
+    const std::u16string &u16string() {
+        if (mU16String.empty() && !mU8String.empty()) {
+            mU16String = MU16StringFromU8(mU8String.c_str());
+        }
+        return mU16String;
+    }
+
     std::string    mU8String ;
     std::u16string mU16String;
 };
@@ -142,11 +154,11 @@ private:
 extern "C" inline MString *MStringCreateU8 (const char     *s) { return new MString(s); }
 extern "C" inline MString *MStringCreateU16(const char16_t *s) { return new MString(s); }
 
-extern "C" inline const char     *MStringU8Bytes (MString *s) { return s ? s->_u8Bytes () : nullptr; }
-extern "C" inline const char16_t *MStringU16Bytes(MString *s) { return s ? s->_u16Bytes() : nullptr; }
+extern "C" inline const char     *MStringU8Chars (MString *s) { return s ? s->_u8chars () : nullptr; }
+extern "C" inline const char16_t *MStringU16Chars(MString *s) { return s ? s->_u16chars() : nullptr; }
 
-extern "C" inline int MStringU8Size (MString *s) { return s ? s->_u8Size () : 0; }
-extern "C" inline int MStringU16Size(MString *s) { return s ? s->_u16Size() : 0; }
+extern "C" inline int MStringU8Size (MString *s) { return s ? s->_u8size () : 0; }
+extern "C" inline int MStringU16Size(MString *s) { return s ? s->_u16size() : 0; }
 
 //------------------------------------------------------------------------------
 //MLambda:

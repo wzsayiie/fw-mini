@@ -9,7 +9,7 @@ MData *MCopyFileContent(MString *path) {
         return nullptr;
     }
 
-    FILE *file = fopen(MStringU8Bytes(path), "rb");
+    FILE *file = fopen(MStringU8Chars(path), "rb");
     if (!file) {
         return nullptr;
     }
@@ -30,7 +30,7 @@ void MWriteFile(MString *path, MData *content) {
         return;
     }
 
-    FILE *file = fopen(MStringU8Bytes(path), "wb");
+    FILE *file = fopen(MStringU8Chars(path), "wb");
     if (!file) {
         return;
     }

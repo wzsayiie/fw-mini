@@ -51,7 +51,7 @@ static void PaintImage(Gdiplus::Graphics *graphics, int index)
 static void PaintLabel(Gdiplus::Graphics *graphics, int index)
 {
     MString *string = _MWindowLabelString(index);
-    auto *stringBytes = (const wchar_t *)MStringU16Bytes(string);
+    auto *stringBytes = (const wchar_t *)MStringU16Chars(string);
     int stringSize = MStringU16Size(string);
 
     _WPIXEL fontSize = _MWindowLabelFontSize(index);
