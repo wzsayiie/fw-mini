@@ -50,6 +50,34 @@ static void PaintImage(Gdiplus::Graphics *graphics, int index)
 
 static void PaintLabel(Gdiplus::Graphics *graphics, int index)
 {
+    MString *string = _MWindowLabelString(index);
+    auto *stringBytes = (const wchar_t *)MStringU16Bytes(string);
+    int stringSize = MStringU16Size(string);
+
+    _WPIXEL fontSize = _MWindowLabelFontSize(index);
+    std::shared_ptr<Gdiplus::Font> font(new Gdiplus::Font(L"courier new", fontSize));
+
+    MAligns aligns = _MWindowLabelAligns(index);
+    std::shared_ptr<Gdiplus::StringFormat> format(new Gdiplus::StringFormat());
+    if /**/ (aligns & MAlign_Left   ) { format->SetAlignment    (Gdiplus::StringAlignmentNear  ); }
+    else if (aligns & MAlign_HCenter) { format->SetAlignment    (Gdiplus::StringAlignmentCenter); }
+    else if (aligns & MAlign_Right  ) { format->SetAlignment    (Gdiplus::StringAlignmentFar   ); }
+    if /**/ (aligns & MAlign_Top    ) { format->SetLineAlignment(Gdiplus::StringAlignmentNear  ); }
+    else if (aligns & MAlign_VCenter) { format->SetLineAlignment(Gdiplus::StringAlignmentCenter); }
+    else if (aligns & MAlign_Bottom ) { format->SetLineAlignment(Gdiplus::StringAlignmentFar   ); }
+
+    _WPIXEL x = _MWindowLabelX(index);
+    _WPIXEL y = _MWindowLabelY(index);
+    _WPIXEL width  = _MWindowLabelWidth (index);
+    _WPIXEL height = _MWindowLabelHeight(index);
+    Gdiplus::RectF rect(x, y, width, height);
+
+    MColorPattern rgba = {0};
+    rgba.rgba = _MWindowLabelColor(index);
+    Gdiplus::Color color(rgba.alpha, rgba.red, rgba.green, rgba.blue);
+    std::shared_ptr<Gdiplus::Brush> brush(new Gdiplus::SolidBrush(color));
+
+    graphics->DrawString(stringBytes, stringSize, font.get(), rect, format.get(), brush.get());
 }
 
 void MPaint(HDC dc)

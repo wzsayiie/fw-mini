@@ -3,7 +3,7 @@
 #include "mhostapis.h"
 #include "mtypeex.h"
 
-template<typename T> class ManagedPool
+template<typename T> class ManagedObjectPool
 {
 public:
     int add(T *object)
@@ -32,19 +32,18 @@ private:
     int mIdCount = 0;
 };
 
-static ManagedPool<Gdiplus::Image> *ManagedImagePool()
+static ManagedObjectPool<Gdiplus::Image> *ManagedImagePool()
 {
-    static ManagedPool<Gdiplus::Image> *pool = nullptr;
+    static ManagedObjectPool<Gdiplus::Image> *pool = nullptr;
     if (!pool)
     {
-        pool = new ManagedPool<Gdiplus::Image>;
+        pool = new ManagedObjectPool<Gdiplus::Image>;
     }
     return pool;
 }
 
-static MObject *CreateImage(MObject *a, MObject *)
+static MImage *CreateImage(MData *data)
 {
-    MData *data = m_as_data a;
     if (MDataSize(data) == 0)
     {
         return nullptr;
@@ -87,5 +86,5 @@ Gdiplus::Image *MManagedImage(int id)
 
 void MRegisterApis()
 {
-    _MApiSetFunc(MApi_CreateImage, CreateImage);
+    _MSetApiCreateImage(CreateImage);
 }
