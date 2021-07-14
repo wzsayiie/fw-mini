@@ -1,6 +1,6 @@
 #include "cgraphics.h"
-#include "mhostapis.h"
-#include "mstdapis.h"
+#include "mclib.h"
+#include "mhostapi.h"
 
 //------------------------------------------------------------------------------
 //CColor:

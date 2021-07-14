@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "mstdapis.h"
+#include "mclib.h"
 #include <cstdio>
 
 const int READ_BUFFER_SIZE = 8 * 1024;

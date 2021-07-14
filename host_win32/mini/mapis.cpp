@@ -1,6 +1,6 @@
 ﻿#include "mapis.h"
 #include <map>
-#include "mhostapis.h"
+#include "mhostapi.h"
 #include "mtypeex.h"
 
 template<typename T> class ManagedObjectPool
