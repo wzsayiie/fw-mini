@@ -20,6 +20,8 @@ public:
     
     MColor rgba() const;
 
+    bool isClear() const;
+
     static const CColor blackColor;
     static const CColor grayColor;
     static const CColor whiteColor;
@@ -53,13 +55,36 @@ private:
 };
 
 //------------------------------------------------------------------------------
+//content alignment:
+
+enum class CHorizontalAlign {
+    None   = 0,
+    Left   = 1,
+    Center = 2,
+    Right  = 3,
+};
+
+enum class CVerticalAlign {
+    None   = 0,
+    Top    = 1,
+    Center = 2,
+    Bottom = 3,
+};
+
+//------------------------------------------------------------------------------
 //draw context:
 
 void CContextSetOffset(float x, float y);
 
-void CContextSelectColor(const CColor &color);
-void CContextSelectImage(CImageRef image);
+void CContextSelectColor   (const CColor &color);
+void CContextSelectImage   (CImageRef image);
+void CContextSelectString  (const std::string &string);
+void CContextSelectFontSize(float size);
+
+void CContextSelectHorizontalAlign(CHorizontalAlign align);
+void CContextSelectVerticalAlign  (CVerticalAlign   align);
 
 void CContextDrawEllipse(float x, float y, float width, float height);
 void CContextDrawRect   (float x, float y, float width, float height);
 void CContextDrawImage  (float x, float y, float width, float height);
+void CContextDrawString (float x, float y, float width, float height);

@@ -55,7 +55,7 @@ static void PaintLabel(Gdiplus::Graphics *graphics, int index)
     int stringSize = MStringU16Size(string);
 
     _WPIXEL fontSize = _MWindowLabelFontSize(index);
-    std::shared_ptr<Gdiplus::Font> font(new Gdiplus::Font(L"courier new", fontSize));
+    std::shared_ptr<Gdiplus::Font> font(new Gdiplus::Font(L"MSYH", fontSize));
 
     MAligns aligns = _MWindowLabelAligns(index);
     std::shared_ptr<Gdiplus::StringFormat> format(new Gdiplus::StringFormat());

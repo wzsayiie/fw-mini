@@ -152,7 +152,7 @@ CUIResponder *CView::findResponder(std::function<bool (CUIResponder *)> fit) {
 }
 
 void CView::onDrawBackground(float width, float height) {
-    if (mBackgroundColor.alpha() != 0) {
+    if (!mBackgroundColor.isClear()) {
         CContextSelectColor(mBackgroundColor);
         CContextDrawRect(0, 0, width, height);
     }
