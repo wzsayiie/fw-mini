@@ -152,8 +152,10 @@ CUIResponder *CView::findResponder(std::function<bool (CUIResponder *)> fit) {
 }
 
 void CView::onDrawBackground(float width, float height) {
-    CContextSelectColor(mBackgroundColor);
-    CContextDrawRect(0, 0, width, height);
+    if (mBackgroundColor.alpha() != 0) {
+        CContextSelectColor(mBackgroundColor);
+        CContextDrawRect(0, 0, width, height);
+    }
 }
 
 void CView::onWindowTouchBegin(float x, float y) {

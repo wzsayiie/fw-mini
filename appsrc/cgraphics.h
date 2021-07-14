@@ -19,18 +19,26 @@ public:
     float alpha() const;
     
     MColor rgba() const;
+
+    static const CColor blackColor;
+    static const CColor grayColor;
+    static const CColor whiteColor;
+    static const CColor redColor;
+    static const CColor greenColor;
+    static const CColor blueColor;
+    static const CColor clearColor;
     
 private:
-    float mRed   = 1;
-    float mGreen = 1;
-    float mBlue  = 1;
-    float mAlpha = 1;
+    float mRed   = 0;
+    float mGreen = 0;
+    float mBlue  = 0;
+    float mAlpha = 0;
 };
-
-typedef std::shared_ptr<class CImage> CImageRef;
 
 //------------------------------------------------------------------------------
 //CImage:
+
+typedef std::shared_ptr<class CImage> CImageRef;
 
 class CImage {
 

@@ -66,7 +66,7 @@ private:
     float mWidth   = 0;
     float mHeight  = 0;
 
-    CColor mBackgroundColor {1, 1, 1};
+    CColor mBackgroundColor {0, 0, 0, 0};
     bool mTouchable = false;
     bool mVisible = true;
     

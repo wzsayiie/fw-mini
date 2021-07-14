@@ -87,6 +87,9 @@ CViewController *CViewController::parentController() {
 CViewRef CViewController::view() {
     if (!mView) {
         mView = loadView();
+
+        //set the view white by default.
+        mView->setBackgroundColor(CColor::whiteColor);
     }
     return mView;
 }

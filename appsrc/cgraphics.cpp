@@ -6,7 +6,7 @@
 //CColor:
 
 CColor::CColor(float red, float green, float blue, float alpha) {
-    set(red, blue, green, alpha);
+    set(red, green, blue, alpha);
 }
 
 void CColor::set(float red, float green, float blue, float alpha) {
@@ -31,6 +31,15 @@ MColor CColor::rgba() const {
     
     return color.rgba;
 }
+
+const CColor CColor::blackColor(0.00f, 0.00f, 0.00f);
+const CColor CColor::grayColor (0.90f, 0.90f, 0.90f);
+const CColor CColor::whiteColor(1.00f, 1.00f, 1.00f);
+const CColor CColor::redColor  (0.79f, 0.36f, 0.30f);
+const CColor CColor::greenColor(0.12f, 0.63f, 0.52f);
+const CColor CColor::blueColor (0.31f, 0.54f, 0.79f);
+
+const CColor CColor::clearColor(0, 0, 0, 0);
 
 //------------------------------------------------------------------------------
 //CImage:
