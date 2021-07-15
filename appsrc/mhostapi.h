@@ -10,6 +10,7 @@ typedef MString *(*_MApiCopyDocumentPath )();
 typedef MString *(*_MApiCopyCachePath    )();
 typedef MString *(*_MApiCopyTemporaryPath)();
 typedef bool     (*_MApiMakeDirectory    )(MString *path);
+typedef MArray  *(*_MApiCopyPathSubItems )(MString *path);
 typedef void     (*_MApiRemovePath       )(MString *path);
 typedef bool     (*_MApiPathExists       )(MString *path);
 typedef bool     (*_MApiDirectoryExists  )(MString *path);
@@ -22,6 +23,7 @@ extern "C" void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func);
 extern "C" void _MSetApiCopyCachePath    (_MApiCopyCachePath     func);
 extern "C" void _MSetApiCopyTemporaryPath(_MApiCopyTemporaryPath func);
 extern "C" void _MSetApiMakeDirectory    (_MApiMakeDirectory     func);
+extern "C" void _MSetApiCopyPathSubItems (_MApiCopyPathSubItems  func);
 extern "C" void _MSetApiRemovePath       (_MApiRemovePath        func);
 extern "C" void _MSetApiPathExists       (_MApiPathExists        func);
 extern "C" void _MSetApiDirectoryExists  (_MApiDirectoryExists   func);
@@ -34,6 +36,7 @@ MString *MCopyDocumentPath ();
 MString *MCopyCachePath    ();
 MString *MCopyTemporaryPath();
 bool     MMakeDirectory    (MString *path);
+MArray  *MCopyPathSubItems (MString *path);
 void     MRemovePath       (MString *path);
 bool     MPathExists       (MString *path);
 bool     MDirectoryExists  (MString *path);
@@ -46,6 +49,7 @@ MEXPORT(MCopyDocumentPath )
 MEXPORT(MCopyCachePath    )
 MEXPORT(MCopyTemporaryPath)
 MEXPORT(MMakeDirectory    )
+MEXPORT(MCopyPathSubItems )
 MEXPORT(MRemovePath       )
 MEXPORT(MPathExists       )
 MEXPORT(MDirectoryExists  )

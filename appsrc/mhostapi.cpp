@@ -30,6 +30,7 @@ static ApiObject<MString *()         > sCopyDocumentPath ;
 static ApiObject<MString *()         > sCopyCachePath    ;
 static ApiObject<MString *()         > sCopyTemporaryPath;
 static ApiObject<bool     (MString *)> sMakeDirectory    ;
+static ApiObject<MArray  *(MString *)> sCopyPathSubItems ;
 static ApiObject<void     (MString *)> sRemovePath       ;
 static ApiObject<bool     (MString *)> sPathExists       ;
 static ApiObject<bool     (MString *)> sDirectoryExists  ;
@@ -42,6 +43,7 @@ void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func) { sCopyDocumentPath 
 void _MSetApiCopyCachePath    (_MApiCopyCachePath     func) { sCopyCachePath    << func; }
 void _MSetApiCopyTemporaryPath(_MApiCopyTemporaryPath func) { sCopyTemporaryPath<< func; }
 void _MSetApiMakeDirectory    (_MApiMakeDirectory     func) { sMakeDirectory    << func; }
+void _MSetApiCopyPathSubItems (_MApiCopyPathSubItems  func) { sCopyPathSubItems << func; }
 void _MSetApiRemovePath       (_MApiRemovePath        func) { sRemovePath       << func; }
 void _MSetApiPathExists       (_MApiPathExists        func) { sPathExists       << func; }
 void _MSetApiDirectoryExists  (_MApiDirectoryExists   func) { sDirectoryExists  << func; }
@@ -54,6 +56,7 @@ MString *MCopyDocumentPath ()              { return sCopyDocumentPath (__func__)
 MString *MCopyCachePath    ()              { return sCopyCachePath    (__func__);       }
 MString *MCopyTemporaryPath()              { return sCopyTemporaryPath(__func__);       }
 bool     MMakeDirectory    (MString *path) { return sMakeDirectory    (__func__, path); }
+MArray  *MCopyPathSubItems (MString *path) { return sCopyPathSubItems (__func__, path); }
 void     MRemovePath       (MString *path) { return sRemovePath       (__func__, path); }
 bool     MPathExists       (MString *path) { return sPathExists       (__func__, path); }
 bool     MDirectoryExists  (MString *path) { return sDirectoryExists  (__func__, path); }
