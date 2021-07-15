@@ -12,7 +12,7 @@
 		CE107D9E2674C6A400823730 /* MViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D992674C6A400823730 /* MViewController.mm */; };
 		CE107DA72674C77C00823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107DA02674C77C00823730 /* mini.bundle */; };
 		CE107DA82674C77C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107DA22674C77C00823730 /* README.cpp */; };
-		CEE4971A269332C1005C4957 /* MAPIs.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE49716269332C1005C4957 /* MAPIs.mm */; };
+		CEE4971A269332C1005C4957 /* MOSXAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE49716269332C1005C4957 /* MOSXAPI.mm */; };
 		CEE4971B269332C1005C4957 /* MView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE49717269332C1005C4957 /* MView.mm */; };
 /* End PBXBuildFile section */
 
@@ -26,9 +26,9 @@
 		CE107D9B2674C6A400823730 /* MViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MViewController.h; sourceTree = "<group>"; };
 		CE107DA02674C77C00823730 /* mini.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mini.bundle; sourceTree = "<group>"; };
 		CE107DA22674C77C00823730 /* README.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = README.cpp; sourceTree = "<group>"; };
-		CEE49716269332C1005C4957 /* MAPIs.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MAPIs.mm; sourceTree = "<group>"; };
+		CEE49716269332C1005C4957 /* MOSXAPI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MOSXAPI.mm; sourceTree = "<group>"; };
 		CEE49717269332C1005C4957 /* MView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MView.mm; sourceTree = "<group>"; };
-		CEE49718269332C1005C4957 /* MAPIs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAPIs.h; sourceTree = "<group>"; };
+		CEE49718269332C1005C4957 /* MOSXAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MOSXAPI.h; sourceTree = "<group>"; };
 		CEE49719269332C1005C4957 /* MView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,9 +67,9 @@
 				CE107D882674C5EA00823730 /* Assets.xcassets */,
 				CE107D8D2674C5EA00823730 /* Info.plist */,
 				CE107D8E2674C5EA00823730 /* main.m */,
-				CEE49718269332C1005C4957 /* MAPIs.h */,
-				CEE49716269332C1005C4957 /* MAPIs.mm */,
 				CE107D902674C5EA00823730 /* mini.entitlements */,
+				CEE49718269332C1005C4957 /* MOSXAPI.h */,
+				CEE49716269332C1005C4957 /* MOSXAPI.mm */,
 				CEE49719269332C1005C4957 /* MView.h */,
 				CEE49717269332C1005C4957 /* MView.mm */,
 				CE107D9B2674C6A400823730 /* MViewController.h */,
@@ -165,7 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE107D9E2674C6A400823730 /* MViewController.mm in Sources */,
-				CEE4971A269332C1005C4957 /* MAPIs.mm in Sources */,
+				CEE4971A269332C1005C4957 /* MOSXAPI.mm in Sources */,
 				CEE4971B269332C1005C4957 /* MView.mm in Sources */,
 				CE107D8F2674C5EA00823730 /* main.m in Sources */,
 				CE107DA82674C77C00823730 /* README.cpp in Sources */,

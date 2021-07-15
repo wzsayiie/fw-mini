@@ -1,4 +1,4 @@
-#import "MAPIs.h"
+#import "MOSXAPI.h"
 #import "mhostapi.h"
 
 @interface ManagedObjectPool : NSObject
