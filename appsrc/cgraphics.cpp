@@ -48,21 +48,35 @@ const CColor CColor::clearColor(0, 0, 0, 0);
 //------------------------------------------------------------------------------
 //CImage:
 
-CImage::CImage(const std::vector<uint8_t> &data) {
-    MDataRef imageData = m_auto_release MDataCreate(&data[0], (int)data.size());
-
-    mNativeImage = m_auto_release MCreateImage(imageData.get());
+CImageRef CImage::fromData(const std::vector<uint8_t> &data) {
+    MDataRef  imageData   = m_auto_release MDataCreate (&data[0], (int)data.size());
+    MImageRef nativeImage = m_auto_release MCreateImage(imageData.get());
+    
+    return CImageRef(new CImage(nativeImage));
 }
 
-CImage::CImage(const std::string &path) {
-    MStringRef imagePath = m_auto_release MStringCreateU8(path.c_str());
-    MDataRef   imageData = m_auto_release MCopyFileContent(imagePath.get());
+CImageRef CImage::fromBundle(const std::string &path) {
+    MStringRef imagePath   = m_auto_release MStringCreateU8 (path.c_str());
+    MDataRef   imageData   = m_auto_release MCopyBundleAsset(imagePath.get());
+    MImageRef  nativeImage = m_auto_release MCreateImage    (imageData.get());
     
-    mNativeImage = m_auto_release MCreateImage(imageData.get());
+    return CImageRef(new CImage(nativeImage));
+}
+
+CImageRef CImage::fromFile(const std::string &path) {
+    MStringRef imagePath   = m_auto_release MStringCreateU8 (path.c_str());
+    MDataRef   imageData   = m_auto_release MCopyFileContent(imagePath.get());
+    MImageRef  nativeImage = m_auto_release MCreateImage    (imageData.get());
+    
+    return CImageRef(new CImage(nativeImage));
 }
 
 MImage *CImage::nativeImage() {
     return mNativeImage.get();
+}
+
+CImage::CImage(MImageRef nativeImage) {
+    mNativeImage = nativeImage;
 }
 
 //------------------------------------------------------------------------------

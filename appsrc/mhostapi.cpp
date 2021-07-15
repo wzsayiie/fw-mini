@@ -24,7 +24,7 @@ private:
 };
 
 static ApiObject<void     (MString *)> sPrintMessage     ;
-static ApiObject<MData   *(MString *)> sCopyResource     ;
+static ApiObject<MData   *(MString *)> sCopyBundleAsset  ;
 static ApiObject<MImage  *(MData   *)> sCreateImage      ;
 static ApiObject<MString *()         > sCopyDocumentPath ;
 static ApiObject<MString *()         > sCopyCachePath    ;
@@ -36,7 +36,7 @@ static ApiObject<bool     (MString *)> sDirectoryExists  ;
 static ApiObject<bool     (MString *)> sFileExists       ;
 
 void _MSetApiPrintMessage     (_MApiPrintMessage      func) { sPrintMessage     << func; }
-void _MSetApiCopyResource     (_MApiCopyResource      func) { sCopyResource     << func; }
+void _MSetApiCopyBundleAsset  (_MApiCopyBundleAsset   func) { sCopyBundleAsset  << func; }
 void _MSetApiCreateImage      (_MApiCreateImage       func) { sCreateImage      << func; }
 void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func) { sCopyDocumentPath << func; }
 void _MSetApiCopyCachePath    (_MApiCopyCachePath     func) { sCopyCachePath    << func; }
@@ -48,7 +48,7 @@ void _MSetApiDirectoryExists  (_MApiDirectoryExists   func) { sDirectoryExists  
 void _MSetApiFileExists       (_MApiFileExists        func) { sFileExists       << func; }
 
 void     MPrintMessage     (MString *text) { return sPrintMessage     (__func__, text); }
-MData   *MCopyResource     (MString *path) { return sCopyResource     (__func__, path); }
+MData   *MCopyBundleAsset  (MString *path) { return sCopyBundleAsset  (__func__, path); }
 MImage  *MCreateImage      (MData   *data) { return sCreateImage      (__func__, data); }
 MString *MCopyDocumentPath ()              { return sCopyDocumentPath (__func__);       }
 MString *MCopyCachePath    ()              { return sCopyCachePath    (__func__);       }

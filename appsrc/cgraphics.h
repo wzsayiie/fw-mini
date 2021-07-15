@@ -45,12 +45,15 @@ typedef std::shared_ptr<class CImage> CImageRef;
 class CImage {
 
 public:
-    CImage(const std::vector<uint8_t> &data);
-    CImage(const std::string &path);
+    static CImageRef fromData  (const std::vector<uint8_t> &data);
+    static CImageRef fromBundle(const std::string &path);
+    static CImageRef fromFile  (const std::string &path);
 
     MImage *nativeImage();
 
 private:
+    CImage(MImageRef nativeImage);
+    
     MImageRef mNativeImage;
 };
 
