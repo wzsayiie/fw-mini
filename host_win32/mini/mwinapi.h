@@ -5,4 +5,4 @@
 
 Gdiplus::Image *MManagedImage(int id);
 
-void MRegisterApis();
+void MRegisterApi();

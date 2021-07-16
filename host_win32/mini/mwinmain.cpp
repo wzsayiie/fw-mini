@@ -39,7 +39,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     OpenConsole();
 
-    MRegisterApis();
+    MRegisterApi();
     MPaintStart();
 
     //application events.
