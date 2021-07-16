@@ -58,7 +58,7 @@ static void PaintLabel(Gdiplus::Graphics *graphics, int index)
 {
     //get the string.
     MString *string = _MWindowLabelString(index);
-    auto    *wchars = (const wchar_t *)MStringU16Chars(string);
+    auto    *wchars = (const WCHAR *)MStringU16Chars(string);
     int      wsize  = MStringU16Size(string);
 
     //set the font.
