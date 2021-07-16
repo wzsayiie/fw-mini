@@ -19,14 +19,17 @@ const MKey MKey_W     = 'W' ;
 const MKey MKey_D     = 'D' ;
 const MKey MKey_S     = 'S' ;
 
-typedef int MAligns;
+typedef int MHAlign;
 
-const MAligns MAlign_Left    =  1;
-const MAligns MAlign_HCenter =  2;
-const MAligns MAlign_Right   =  4;
-const MAligns MAlign_Top     =  8;
-const MAligns MAlign_VCenter = 16;
-const MAligns MAlign_Bottom  = 32;
+const MHAlign MHAlign_Left   = 1;
+const MHAlign MHAlign_Center = 2;
+const MHAlign MHAlign_Right  = 3;
+
+typedef int MVAlign;
+
+const MVAlign MVAlign_Top    = 1;
+const MVAlign MVAlign_Center = 2;
+const MVAlign MVAlign_Bottom = 3;
 
 typedef int MColor;
 
@@ -37,7 +40,7 @@ union MColorPattern {
         uint8_t green;
         uint8_t red  ;
     };
-    MColor rgba;
+    MColor rgba = 0;
 };
 
 //this type is used to mark the graphics size of the host ui.
@@ -74,7 +77,8 @@ extern "C" int      _MWindowLabelCount   ();
 extern "C" MString *_MWindowLabelString  (int index);
 extern "C" MColor   _MWindowLabelColor   (int index);
 extern "C" _WPIXEL  _MWindowLabelFontSize(int index);
-extern "C" MAligns  _MWindowLabelAligns  (int index);
+extern "C" MHAlign  _MWindowLabelHAlign  (int index);
+extern "C" MVAlign  _MWindowLabelVAlign  (int index);
 extern "C" _WPIXEL  _MWindowLabelX       (int index);
 extern "C" _WPIXEL  _MWindowLabelY       (int index);
 extern "C" _WPIXEL  _MWindowLabelWidth   (int index);
@@ -113,7 +117,8 @@ void MWindowSelectString  (MString *string);
 void MWindowSelectImage   (MImage  *image );
 void MWindowSelectColor   (MColor   color );
 void MWindowSelectFontSize(float    size  );
-void MWindowSelectAligns  (MAligns  aligns);
+void MWindowSelectHAlign  (MHAlign  align );
+void MWindowSelectVAlign  (MVAlign  align );
 
 void MWindowSelectPoint0(float x, float y);
 void MWindowSelectPoint1(float x, float y);
@@ -139,7 +144,8 @@ MEXPORT(MWindowActiveKey     )
 MEXPORT(MWindowSelectString  )
 MEXPORT(MWindowSelectColor   )
 MEXPORT(MWindowSelectFontSize)
-MEXPORT(MWindowSelectAligns  )
+MEXPORT(MWindowSelectHAlign  )
+MEXPORT(MWindowSelectVAlign  )
 MEXPORT(MWindowSelectPoint0  )
 MEXPORT(MWindowSelectPoint1  )
 MEXPORT(MWindowSelectPoint2  )

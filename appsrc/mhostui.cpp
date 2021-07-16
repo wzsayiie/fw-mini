@@ -22,7 +22,8 @@ struct Label {
 
     MColor  color    = 0;
     float   fontSize = 0;
-    MAligns aligns   = 0;
+    MHAlign hAlign   = 0;
+    MVAlign vAlign   = 0;
 
     float x      = 0;
     float y      = 0;
@@ -53,7 +54,8 @@ struct Window {
     MImageRef  selectedImage ;
     MColor     selectedColor      = 0;
     float      selectedFontSize   = 0;
-    MAligns    selectedAligns     = 0;
+    MHAlign    selectedHAlign     = 0;
+    MVAlign    selectedVAlign     = 0;
     float      selectedPointX[3]  = {0};
     float      selectedPointY[3]  = {0};
 
@@ -237,9 +239,8 @@ _WPIXEL _MWindowLabelFontSize(int index) {
     return PixelFromPoint(size);
 }
 
-MAligns _MWindowLabelAligns(int index) {
-    return LabelAt(index)->aligns;
-}
+MHAlign _MWindowLabelHAlign(int index) { return LabelAt(index)->hAlign; }
+MVAlign _MWindowLabelVAlign(int index) { return LabelAt(index)->vAlign; }
 
 _WPIXEL _MWindowLabelX(int index) { return PixelFromPoint(LabelAt(index)->x); }
 _WPIXEL _MWindowLabelY(int index) { return PixelFromPoint(LabelAt(index)->y); }
@@ -295,9 +296,14 @@ void MWindowSelectFontSize(float size) {
     window->selectedFontSize = size;
 }
 
-void MWindowSelectAligns(MAligns aligns) {
+void MWindowSelectHAlign(MHAlign align) {
     Window *window = GetWindow();
-    window->selectedAligns = aligns;
+    window->selectedHAlign = align;
+}
+
+void MWindowSelectVAlign(MVAlign align) {
+    Window *window = GetWindow();
+    window->selectedVAlign = align;
 }
 
 static void SelectPoint(int index, float x, float y) {
@@ -369,7 +375,8 @@ void MWindowDrawLabel() {
         label.string   = window->selectedString  ;
         label.color    = window->selectedColor   ;
         label.fontSize = window->selectedFontSize;
-        label.aligns   = window->selectedAligns  ;
+        label.hAlign   = window->selectedHAlign  ;
+        label.vAlign   = window->selectedVAlign  ;
     
         label.x      = x0;
         label.y      = y0;

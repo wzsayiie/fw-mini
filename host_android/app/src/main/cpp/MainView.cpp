@@ -33,16 +33,16 @@ union AndroidColorPattern {
         uint8_t red  ;
         uint8_t alpha;
     };
-    int argb;
+    int argb = 0;
 };
 
 extern "C" JNIEXPORT jint JNICALL
 Java_src_app_mini_MainView_windowTriangleColor(JNIEnv *, jobject, jint index)
 {
-    MColorPattern src = {0};
+    MColorPattern src;
     src.rgba = _MWindowTriangleColor(index);
 
-    AndroidColorPattern dst = {0};
+    AndroidColorPattern dst;
     dst.red   = src.red;
     dst.green = src.green;
     dst.blue  = src.blue;

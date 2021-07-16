@@ -1,5 +1,6 @@
 #include "cgraphics.h"
 #include "mclib.h"
+#include "mcontext.h"
 #include "mhostapi.h"
 
 //------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ float CColor::blue () const { return mBlue ; }
 float CColor::alpha() const { return mAlpha; }
 
 MColor CColor::rgba() const {
-    MColorPattern color = {0};
+    MColorPattern color;
     
     color.red   = (uint8_t)(mRed   * 255);
     color.green = (uint8_t)(mGreen * 255);
@@ -82,108 +83,43 @@ CImage::CImage(MImageRef nativeImage) {
 //------------------------------------------------------------------------------
 //draw context:
 
-static float sOffsetX = 0;
-static float sOffsetY = 0;
-
-static CColor      sColor {0, 0, 0, 0};
-static CImageRef   sImage;
-static std::string sString;
-static float       sFontSize;
-
-static auto sHorizontalAlign = CHorizontalAlign::None;
-static auto sVerticalAlign   = CVerticalAlign  ::None;
-
 void CContextSetOffset(float x, float y) {
-    sOffsetX = x;
-    sOffsetY = y;
+    MContextSetOffset(x, y);
 }
 
 void CContextSelectColor(const CColor &color) {
-    sColor = color;
+    MContextSelectColor(color.rgba());
 }
 
 void CContextSelectImage(CImageRef image) {
-    sImage = image;
+    MContextSelectImage(image->nativeImage());
 }
 
 void CContextSelectString(const std::string &string) {
-    sString = string;
+    MStringRef nativeString = m_auto_release MStringCreateU8(string.c_str());
+    MContextSelectString(nativeString.get());
 }
 
 void CContextSelectFontSize(float size) {
-    sFontSize = size;
+    MContextSelectFontSize(size);
 }
 
-void CContextSelectHorizontalAlign(CHorizontalAlign a) { sHorizontalAlign = a; }
-void CContextSelectVerticalAlign  (CVerticalAlign   a) { sVerticalAlign   = a; }
+void CContextSelectHorizontalAlign(CHorizontalAlign align) {
+    MContextSelectHAlign((MHAlign)align);
+}
 
-void CContextDrawEllipse(float x, float y, float width, float height) {
+void CContextSelectVerticalAlign(CVerticalAlign align) {
+    MContextSelectVAlign((MVAlign)align);
 }
 
 void CContextDrawRect(float x, float y, float width, float height) {
-    MWindowSelectColor(sColor.rgba());
-    
-    float top    = sOffsetY + y;
-    float bottom = sOffsetY + y + height;
-    float left   = sOffsetX + x;
-    float right  = sOffsetX + x + width;
-    
-    MWindowSelectPoint0(left , top);
-    MWindowSelectPoint1(right, top);
-    MWindowSelectPoint2(right, bottom);
-    MWindowDrawTriangle();
-    
-    MWindowSelectPoint0(left , top);
-    MWindowSelectPoint1(right, bottom);
-    MWindowSelectPoint2(left , bottom);
-    MWindowDrawTriangle();
+    MContextDrawRect(x, y, width, height);
 }
 
 void CContextDrawImage(float x, float y, float width, float height) {
-    MWindowSelectImage(sImage->nativeImage());
-
-    float top    = sOffsetY + y;
-    float bottom = sOffsetY + y + height;
-    float left   = sOffsetX + x;
-    float right  = sOffsetX + x + width;
-    MWindowSelectPoint0(left , top);
-    MWindowSelectPoint1(right, bottom);
-
-    MWindowDrawImage();
-
-    sImage.reset();
+    MContextDrawImage(x, y, width, height);
 }
 
 void CContextDrawString(float x, float y, float width, float height) {
-    MStringRef string = m_auto_release MStringCreateU8(sString.c_str());
-    MWindowSelectString(string.get());
-
-    MWindowSelectFontSize(sFontSize);
-    MWindowSelectColor(sColor.rgba());
-
-    MAligns alignments = 0;
-    switch (sHorizontalAlign) {
-        case CHorizontalAlign::Left  : alignments |= MAlign_Left   ; break;
-        case CHorizontalAlign::Center: alignments |= MAlign_HCenter; break;
-        case CHorizontalAlign::Right : alignments |= MAlign_Right  ; break;
-        default:;
-    }
-    switch (sVerticalAlign) {
-        case CVerticalAlign::Top   : alignments |= MAlign_Top    ; break;
-        case CVerticalAlign::Center: alignments |= MAlign_VCenter; break;
-        case CVerticalAlign::Bottom: alignments |= MAlign_Bottom ; break;
-        default:;
-    }
-    MWindowSelectAligns(alignments);
-
-    float top    = sOffsetY + y;
-    float bottom = sOffsetY + y + height;
-    float left   = sOffsetX + x;
-    float right  = sOffsetX + x + width;
-    MWindowSelectPoint0(left , top);
-    MWindowSelectPoint1(right, bottom);
-
-    MWindowDrawLabel();
-
-    sString.clear();
+    MContextDrawString(x, y, width, height);
 }

@@ -62,16 +62,16 @@ private:
 
 enum class CHorizontalAlign {
     None   = 0,
-    Left   = 1,
-    Center = 2,
-    Right  = 3,
+    Left   = MHAlign_Left  ,
+    Center = MHAlign_Center,
+    Right  = MHAlign_Right ,
 };
 
 enum class CVerticalAlign {
     None   = 0,
-    Top    = 1,
-    Center = 2,
-    Bottom = 3,
+    Top    = MVAlign_Top   ,
+    Center = MVAlign_Center,
+    Bottom = MVAlign_Bottom,
 };
 
 //------------------------------------------------------------------------------
@@ -87,7 +87,6 @@ void CContextSelectFontSize(float size);
 void CContextSelectHorizontalAlign(CHorizontalAlign align);
 void CContextSelectVerticalAlign  (CVerticalAlign   align);
 
-void CContextDrawEllipse(float x, float y, float width, float height);
-void CContextDrawRect   (float x, float y, float width, float height);
-void CContextDrawImage  (float x, float y, float width, float height);
-void CContextDrawString (float x, float y, float width, float height);
+void CContextDrawRect  (float x, float y, float width, float height);
+void CContextDrawImage (float x, float y, float width, float height);
+void CContextDrawString(float x, float y, float width, float height);

@@ -19,12 +19,14 @@ void MPaintStop()
 
 static void PaintTriangle(Gdiplus::Graphics *graphics, int index)
 {
-    MColorPattern rgba = {0};
+    //set the color:
+    MColorPattern rgba;
     rgba.rgba = _MWindowTriangleColor(index);
 
     Gdiplus::Color color(rgba.alpha, rgba.red, rgba.green, rgba.blue);
     std::shared_ptr<Gdiplus::SolidBrush> brush(new Gdiplus::SolidBrush(color));
 
+    //connect points.
     Gdiplus::PointF vertices[3];
     for (int n = 0; n < 3; ++n)
     {
@@ -32,52 +34,72 @@ static void PaintTriangle(Gdiplus::Graphics *graphics, int index)
         vertices[n].Y = _MWindowTriangleVertexY(index, n);
     }
 
+    //draw.
     graphics->FillPolygon(brush.get(), vertices, 3);
 }
 
 static void PaintImage(Gdiplus::Graphics *graphics, int index)
 {
+    //get the image.
     MImage *image = _MWindowImageObject(index);
     Gdiplus::Image *managedImage = MManagedImage(MImageManagedId(image));
 
+    //get the position rectangle.
     float x = _MWindowImageX(index);
     float y = _MWindowImageY(index);
     float width  = _MWindowImageWidth (index);
     float height = _MWindowImageHeight(index);
 
+    //draw.
     graphics->DrawImage(managedImage, x, y, width, height);
 }
 
 static void PaintLabel(Gdiplus::Graphics *graphics, int index)
 {
+    //get the string.
     MString *string = _MWindowLabelString(index);
-    auto *stringBytes = (const wchar_t *)MStringU16Chars(string);
-    int stringSize = MStringU16Size(string);
+    auto    *wchars = (const wchar_t *)MStringU16Chars(string);
+    int      wsize  = MStringU16Size(string);
 
+    //set the font.
     _WPIXEL fontSize = _MWindowLabelFontSize(index);
     std::shared_ptr<Gdiplus::Font> font(new Gdiplus::Font(L"MSYH", fontSize));
 
-    MAligns aligns = _MWindowLabelAligns(index);
-    std::shared_ptr<Gdiplus::StringFormat> format(new Gdiplus::StringFormat());
-    if /**/ (aligns & MAlign_Left   ) { format->SetAlignment    (Gdiplus::StringAlignmentNear  ); }
-    else if (aligns & MAlign_HCenter) { format->SetAlignment    (Gdiplus::StringAlignmentCenter); }
-    else if (aligns & MAlign_Right  ) { format->SetAlignment    (Gdiplus::StringAlignmentFar   ); }
-    if /**/ (aligns & MAlign_Top    ) { format->SetLineAlignment(Gdiplus::StringAlignmentNear  ); }
-    else if (aligns & MAlign_VCenter) { format->SetLineAlignment(Gdiplus::StringAlignmentCenter); }
-    else if (aligns & MAlign_Bottom ) { format->SetLineAlignment(Gdiplus::StringAlignmentFar   ); }
-
+    //set the position rectangle.
     _WPIXEL x = _MWindowLabelX(index);
     _WPIXEL y = _MWindowLabelY(index);
+
     _WPIXEL width  = _MWindowLabelWidth (index);
     _WPIXEL height = _MWindowLabelHeight(index);
+
     Gdiplus::RectF rect(x, y, width, height);
 
-    MColorPattern rgba = {0};
+    //set the alignments:
+    std::shared_ptr<Gdiplus::StringFormat> format(new Gdiplus::StringFormat());
+    
+    switch (_MWindowLabelHAlign(index)) {
+        case MHAlign_Left  : format->SetAlignment(Gdiplus::StringAlignmentNear  ); break;
+        case MHAlign_Center: format->SetAlignment(Gdiplus::StringAlignmentCenter); break;
+        case MHAlign_Right : format->SetAlignment(Gdiplus::StringAlignmentFar   ); break;
+        default:;
+    }
+
+    switch (_MWindowLabelVAlign(index)) {
+        case MVAlign_Top   : format->SetLineAlignment(Gdiplus::StringAlignmentNear  ); break;
+        case MVAlign_Center: format->SetLineAlignment(Gdiplus::StringAlignmentCenter); break;
+        case MVAlign_Bottom: format->SetLineAlignment(Gdiplus::StringAlignmentFar   ); break;
+        default:;
+    }
+
+    //set the color:
+    MColorPattern rgba;
     rgba.rgba = _MWindowLabelColor(index);
+
     Gdiplus::Color color(rgba.alpha, rgba.red, rgba.green, rgba.blue);
     std::shared_ptr<Gdiplus::Brush> brush(new Gdiplus::SolidBrush(color));
 
-    graphics->DrawString(stringBytes, stringSize, font.get(), rect, format.get(), brush.get());
+    //draw.
+    graphics->DrawString(wchars, wsize, font.get(), rect, format.get(), brush.get());
 }
 
 void MPaint(HDC dc)
