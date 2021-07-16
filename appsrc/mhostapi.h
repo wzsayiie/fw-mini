@@ -3,8 +3,8 @@
 #include "mexport.h"
 #include "mtypes.h"
 
-static const char     *const MAppDirectoryU8Name  =  "mini";
-static const char16_t *const MAppDirectoryU16Name = u"mini";
+static const char     *const _MAppDirectoryU8Name  =  "mini";
+static const char16_t *const _MAppDirectoryU16Name = u"mini";
 
 typedef void     (*_MApiPrintMessage     )(MString *text);
 typedef MData   *(*_MApiCopyBundleAsset  )(MString *path);

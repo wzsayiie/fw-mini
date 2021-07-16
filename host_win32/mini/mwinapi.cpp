@@ -98,7 +98,7 @@ static MString *CopyAppDirectoryWithParent(const WCHAR *parent)
     {
         allPath.append(L"\\");
     }
-    allPath.append((const WCHAR *)MAppDirectoryU16Name);
+    allPath.append((const WCHAR *)_MAppDirectoryU16Name);
 
     //if the directory don't exist, then create it.
     MString *thisPath = MStringCreateU16((const char16_t *)allPath.c_str());
