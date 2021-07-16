@@ -1,9 +1,9 @@
 ﻿#include <cstdio>
 #include <windowsx.h>
-#include "mapis.h"
 #include "mapp.h"
 #include "mhostui.h"
 #include "mpaint.h"
+#include "mwinapi.h"
 
 static void OpenConsole(void)
 {

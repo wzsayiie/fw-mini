@@ -15,7 +15,7 @@
     <ClCompile Include="..\..\appsrc\README.cpp">
       <Filter>appsrc</Filter>
     </ClCompile>
-    <ClCompile Include="mapis.cpp">
+    <ClCompile Include="mwinapi.cpp">
       <Filter>mini</Filter>
     </ClCompile>
     <ClCompile Include="mpaint.cpp">
@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mapis.h">
+    <ClInclude Include="mwinapi.h">
       <Filter>mini</Filter>
     </ClInclude>
     <ClInclude Include="mpaint.h">

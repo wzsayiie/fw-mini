@@ -1,8 +1,8 @@
 ﻿#include "mpaint.h"
 #include <gdiplus.h>
 #include <memory>
-#include "mapis.h"
 #include "mhostui.h"
+#include "mwinapi.h"
 
 static ULONG_PTR sGdiplusToken = 0;
 

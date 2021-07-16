@@ -20,12 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\appsrc\README.cpp" />
-    <ClCompile Include="mapis.cpp" />
+    <ClCompile Include="mwinapi.cpp" />
     <ClCompile Include="mpaint.cpp" />
     <ClCompile Include="mwinmain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mapis.h" />
+    <ClInclude Include="mwinapi.h" />
     <ClInclude Include="mpaint.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
