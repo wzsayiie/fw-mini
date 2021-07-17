@@ -24,15 +24,15 @@ const MKey MKey_S     = 'S' ;
 
 typedef int MHAlign;
 
-const MHAlign MHAlign_Left   = 1;
-const MHAlign MHAlign_Center = 2;
-const MHAlign MHAlign_Right  = 3;
+const MHAlign MHAlign_Left   = 'L';
+const MHAlign MHAlign_Center = 'C';
+const MHAlign MHAlign_Right  = 'R';
 
 typedef int MVAlign;
 
-const MVAlign MVAlign_Top    = 1;
-const MVAlign MVAlign_Center = 2;
-const MVAlign MVAlign_Bottom = 3;
+const MVAlign MVAlign_Top    = 'T';
+const MVAlign MVAlign_Center = 'C';
+const MVAlign MVAlign_Bottom = 'B';
 
 typedef int MColor;
 
