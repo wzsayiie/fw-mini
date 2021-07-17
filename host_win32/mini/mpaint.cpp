@@ -62,15 +62,15 @@ static void PaintLabel(Gdiplus::Graphics *graphics, int index)
     int      wsize  = MStringU16Size(string);
 
     //set the font.
-    _WPIXEL fontSize = _MWindowLabelFontSize(index);
+    _MPixel fontSize = _MWindowLabelFontSize(index);
     std::shared_ptr<Gdiplus::Font> font(new Gdiplus::Font(L"MSYH", fontSize));
 
     //set the position rectangle.
-    _WPIXEL x = _MWindowLabelX(index);
-    _WPIXEL y = _MWindowLabelY(index);
+    _MPixel x = _MWindowLabelX(index);
+    _MPixel y = _MWindowLabelY(index);
 
-    _WPIXEL width  = _MWindowLabelWidth (index);
-    _WPIXEL height = _MWindowLabelHeight(index);
+    _MPixel width  = _MWindowLabelWidth (index);
+    _MPixel height = _MWindowLabelHeight(index);
 
     Gdiplus::RectF rect(x, y, width, height);
 

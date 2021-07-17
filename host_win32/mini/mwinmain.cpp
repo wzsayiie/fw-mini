@@ -50,7 +50,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     LONG width  = 0;
     LONG height = 0;
     GetClientSize(wnd, &width, &height);
-    _MWindowOnResize((_WPIXEL)width, (_WPIXEL)height);
+    _MWindowOnResize((_MPixel)width, (_MPixel)height);
 
     _MWindowOnLoad();
 

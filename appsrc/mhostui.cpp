@@ -138,7 +138,7 @@ void _MWindowOnHide() {
     }
 }
 
-void _MWindowOnResize(_WPIXEL width, _WPIXEL height) {
+void _MWindowOnResize(_MPixel width, _MPixel height) {
     float pointW = PointFromPixel(width );
     float pointH = PointFromPixel(height);
     
@@ -164,7 +164,7 @@ void _MWindowOnDraw() {
     SendEvent(window, MWindowEvent_Draw);
 }
 
-static void WindowOnTouch(MWindowEvent event, _WPIXEL x, _WPIXEL y) {
+static void WindowOnTouch(MWindowEvent event, _MPixel x, _MPixel y) {
     float pointX = PointFromPixel(x);
     float pointY = PointFromPixel(y);
     
@@ -175,9 +175,9 @@ static void WindowOnTouch(MWindowEvent event, _WPIXEL x, _WPIXEL y) {
     SendEvent(window, event);
 }
 
-void _MWindowOnTouchBegin(_WPIXEL x, _WPIXEL y) { WindowOnTouch(MWindowEvent_TouchBegin, x, y); }
-void _MWindowOnTouchMove (_WPIXEL x, _WPIXEL y) { WindowOnTouch(MWindowEvent_TouchMove , x, y); }
-void _MWindowOnTouchEnd  (_WPIXEL x, _WPIXEL y) { WindowOnTouch(MWindowEvent_TouchEnd  , x, y); }
+void _MWindowOnTouchBegin(_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_TouchBegin, x, y); }
+void _MWindowOnTouchMove (_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_TouchMove , x, y); }
+void _MWindowOnTouchEnd  (_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_TouchEnd  , x, y); }
 
 void _MWindowOnTextBox(MString *string, bool enter) {
     Window *window = GetWindow();
@@ -199,8 +199,8 @@ int _MWindowTriangleCount() {
     return (int)window->triangles.size();
 }
 
-_WPIXEL _MWindowTriangleVertexX(int index, int v) { return PixelFromPoint(TriangleAt(index)->x[v]); }
-_WPIXEL _MWindowTriangleVertexY(int index, int v) { return PixelFromPoint(TriangleAt(index)->y[v]); }
+_MPixel _MWindowTriangleVertexX(int index, int v) { return PixelFromPoint(TriangleAt(index)->x[v]); }
+_MPixel _MWindowTriangleVertexY(int index, int v) { return PixelFromPoint(TriangleAt(index)->y[v]); }
 
 MColor _MWindowTriangleColor(int index) {
     return TriangleAt(index)->color;
@@ -215,11 +215,11 @@ MImage *_MWindowImageObject(int index) {
     return ImageAt(index)->image.get();
 }
 
-_WPIXEL _MWindowImageX(int index) { return PixelFromPoint(ImageAt(index)->x); }
-_WPIXEL _MWindowImageY(int index) { return PixelFromPoint(ImageAt(index)->y); }
+_MPixel _MWindowImageX(int index) { return PixelFromPoint(ImageAt(index)->x); }
+_MPixel _MWindowImageY(int index) { return PixelFromPoint(ImageAt(index)->y); }
 
-_WPIXEL _MWindowImageWidth (int index) { return PixelFromPoint(ImageAt(index)->width ); }
-_WPIXEL _MWindowImageHeight(int index) { return PixelFromPoint(ImageAt(index)->height); }
+_MPixel _MWindowImageWidth (int index) { return PixelFromPoint(ImageAt(index)->width ); }
+_MPixel _MWindowImageHeight(int index) { return PixelFromPoint(ImageAt(index)->height); }
 
 int _MWindowLabelCount() {
     Window *window = GetWindow();
@@ -234,7 +234,7 @@ MColor _MWindowLabelColor(int index) {
     return LabelAt(index)->color;
 }
 
-_WPIXEL _MWindowLabelFontSize(int index) {
+_MPixel _MWindowLabelFontSize(int index) {
     float size = LabelAt(index)->fontSize;
     return PixelFromPoint(size);
 }
@@ -242,11 +242,11 @@ _WPIXEL _MWindowLabelFontSize(int index) {
 MHAlign _MWindowLabelHAlign(int index) { return LabelAt(index)->hAlign; }
 MVAlign _MWindowLabelVAlign(int index) { return LabelAt(index)->vAlign; }
 
-_WPIXEL _MWindowLabelX(int index) { return PixelFromPoint(LabelAt(index)->x); }
-_WPIXEL _MWindowLabelY(int index) { return PixelFromPoint(LabelAt(index)->y); }
+_MPixel _MWindowLabelX(int index) { return PixelFromPoint(LabelAt(index)->x); }
+_MPixel _MWindowLabelY(int index) { return PixelFromPoint(LabelAt(index)->y); }
 
-_WPIXEL _MWindowLabelWidth (int index) { return PixelFromPoint(LabelAt(index)->width ); }
-_WPIXEL _MWindowLabelHeight(int index) { return PixelFromPoint(LabelAt(index)->height); }
+_MPixel _MWindowLabelWidth (int index) { return PixelFromPoint(LabelAt(index)->width ); }
+_MPixel _MWindowLabelHeight(int index) { return PixelFromPoint(LabelAt(index)->height); }
 
 bool _MWindowTextBoxEnabled() {
     return GetTextBox()->enabled;

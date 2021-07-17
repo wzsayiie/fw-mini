@@ -40,12 +40,12 @@
     CGContextSetRGBStrokeColor(context, red, green, blue, alpha);
     
     //connect the points:
-    _WPIXEL x0 = _MWindowTriangleVertexX(index, 0);
-    _WPIXEL y0 = _MWindowTriangleVertexY(index, 0);
-    _WPIXEL x1 = _MWindowTriangleVertexX(index, 1);
-    _WPIXEL y1 = _MWindowTriangleVertexY(index, 1);
-    _WPIXEL x2 = _MWindowTriangleVertexX(index, 2);
-    _WPIXEL y2 = _MWindowTriangleVertexY(index, 2);
+    _MPixel x0 = _MWindowTriangleVertexX(index, 0);
+    _MPixel y0 = _MWindowTriangleVertexY(index, 0);
+    _MPixel x1 = _MWindowTriangleVertexX(index, 1);
+    _MPixel y1 = _MWindowTriangleVertexY(index, 1);
+    _MPixel x2 = _MWindowTriangleVertexX(index, 2);
+    _MPixel y2 = _MWindowTriangleVertexY(index, 2);
     
     CGContextMoveToPoint   (context, x0, y0);
     CGContextAddLineToPoint(context, x1, y1);
@@ -61,10 +61,10 @@
     UIImage *managedImage = MManagedImage(MImageManagedId(image));
     
     //get the position rectangle.
-    _WPIXEL X = _MWindowImageX(index);
-    _WPIXEL Y = _MWindowImageY(index);
-    _WPIXEL W = _MWindowImageWidth (index);
-    _WPIXEL H = _MWindowImageHeight(index);
+    _MPixel X = _MWindowImageX(index);
+    _MPixel Y = _MWindowImageY(index);
+    _MPixel W = _MWindowImageWidth (index);
+    _MPixel H = _MWindowImageHeight(index);
     
     //draw.
     [managedImage drawInRect:CGRectMake(X, Y, W, H)];
@@ -84,7 +84,7 @@
     UIColor *color = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
     
     //set the font.
-    _WPIXEL fontSize = _MWindowLabelFontSize(index);
+    _MPixel fontSize = _MWindowLabelFontSize(index);
     UIFont *font = [UIFont systemFontOfSize:fontSize];
     
     //calculate the position:
@@ -97,10 +97,10 @@
     };
     CGSize size = [string sizeWithAttributes:attributes];
     
-    _WPIXEL X = _MWindowLabelX(index);
-    _WPIXEL Y = _MWindowLabelY(index);
-    _WPIXEL W = _MWindowLabelWidth (index);
-    _WPIXEL H = _MWindowLabelHeight(index);
+    _MPixel X = _MWindowLabelX(index);
+    _MPixel Y = _MWindowLabelY(index);
+    _MPixel W = _MWindowLabelWidth (index);
+    _MPixel H = _MWindowLabelHeight(index);
     
     CGPoint origin = CGPointZero;
     MHAlign hAlign = _MWindowLabelHAlign(index);
