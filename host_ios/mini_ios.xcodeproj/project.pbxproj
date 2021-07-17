@@ -13,6 +13,8 @@
 		CE107D682674C19500823730 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE107D652674C19500823730 /* LaunchScreen.storyboard */; };
 		CE107D6F2674C42C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107D6A2674C42C00823730 /* README.cpp */; };
 		CE107D752674C4B900823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107D742674C4B900823730 /* mini.bundle */; };
+		CE9E181A26A29C93006FF96A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9E181926A29C93006FF96A /* UIKit.framework */; };
+		CE9E181C26A29C9A006FF96A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9E181B26A29C9A006FF96A /* CoreGraphics.framework */; };
 		CEE49720269332E0005C4957 /* MView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE4971C269332E0005C4957 /* MView.mm */; };
 		CEE49721269332E0005C4957 /* MIOSAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE4971F269332E0005C4957 /* MIOSAPI.mm */; };
 /* End PBXBuildFile section */
@@ -27,6 +29,8 @@
 		CE107D652674C19500823730 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CE107D6A2674C42C00823730 /* README.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = README.cpp; sourceTree = "<group>"; };
 		CE107D742674C4B900823730 /* mini.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mini.bundle; sourceTree = "<group>"; };
+		CE9E181926A29C93006FF96A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		CE9E181B26A29C9A006FF96A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		CEE4971C269332E0005C4957 /* MView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MView.mm; sourceTree = "<group>"; };
 		CEE4971D269332E0005C4957 /* MView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MView.h; sourceTree = "<group>"; };
 		CEE4971E269332E0005C4957 /* MIOSAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIOSAPI.h; sourceTree = "<group>"; };
@@ -38,6 +42,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE9E181C26A29C9A006FF96A /* CoreGraphics.framework in Frameworks */,
+				CE9E181A26A29C93006FF96A /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,6 +55,7 @@
 			children = (
 				CE107D732674C4B900823730 /* appres */,
 				CE107D692674C42C00823730 /* appsrc */,
+				CE9E181826A29C93006FF96A /* frameworks */,
 				CE107D472674C11300823730 /* mini */,
 				CE107D462674C11300823730 /* products */,
 			);
@@ -95,6 +102,15 @@
 			);
 			name = appres;
 			path = ../appres;
+			sourceTree = "<group>";
+		};
+		CE9E181826A29C93006FF96A /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE9E181B26A29C9A006FF96A /* CoreGraphics.framework */,
+				CE9E181926A29C93006FF96A /* UIKit.framework */,
+			);
+			name = frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
