@@ -1,4 +1,5 @@
 #import "MViewController.h"
+#import "mhostui.h"
 
 #pragma mark - window controller
 
@@ -14,7 +15,7 @@
     NSWindowStyleMask style = self.windowStyle;
     NSBackingStoreType backing = NSBackingStoreBuffered;
     NSWindow *window = [[NSWindow alloc] initWithContentRect:rect styleMask:style backing:backing defer:NO];
-    [window setTitle:@"mini"];
+    [window setTitle:@(_MAppWindowU8Name)];
     
     MWindowController *controller = [[MWindowController alloc] initWithWindow:window];
     window.contentViewController = [[MViewController alloc] init];
