@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE107D552674C11400823730 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE107D542674C11400823730 /* Assets.xcassets */; };
-		CE107D5B2674C11400823730 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D5A2674C11400823730 /* main.m */; };
+		CE107D5B2674C11400823730 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D5A2674C11400823730 /* main.mm */; };
 		CE107D672674C19500823730 /* MViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D622674C19500823730 /* MViewController.mm */; };
 		CE107D682674C19500823730 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE107D652674C19500823730 /* LaunchScreen.storyboard */; };
 		CE107D6F2674C42C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107D6A2674C42C00823730 /* README.cpp */; };
@@ -21,7 +21,7 @@
 		CE107D452674C11300823730 /* mini.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mini.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE107D542674C11400823730 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE107D592674C11400823730 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CE107D5A2674C11400823730 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CE107D5A2674C11400823730 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		CE107D622674C19500823730 /* MViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MViewController.mm; sourceTree = "<group>"; };
 		CE107D642674C19500823730 /* MViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MViewController.h; sourceTree = "<group>"; };
 		CE107D652674C19500823730 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -68,7 +68,7 @@
 				CE107D542674C11400823730 /* Assets.xcassets */,
 				CE107D592674C11400823730 /* Info.plist */,
 				CE107D652674C19500823730 /* LaunchScreen.storyboard */,
-				CE107D5A2674C11400823730 /* main.m */,
+				CE107D5A2674C11400823730 /* main.mm */,
 				CEE4971E269332E0005C4957 /* MIOSAPI.h */,
 				CEE4971F269332E0005C4957 /* MIOSAPI.mm */,
 				CEE4971D269332E0005C4957 /* MView.h */,
@@ -170,7 +170,7 @@
 				CE107D672674C19500823730 /* MViewController.mm in Sources */,
 				CEE49721269332E0005C4957 /* MIOSAPI.mm in Sources */,
 				CE107D6F2674C42C00823730 /* README.cpp in Sources */,
-				CE107D5B2674C11400823730 /* main.m in Sources */,
+				CE107D5B2674C11400823730 /* main.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

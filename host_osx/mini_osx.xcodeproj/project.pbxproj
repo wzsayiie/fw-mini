@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE107D892674C5EA00823730 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE107D882674C5EA00823730 /* Assets.xcassets */; };
-		CE107D8F2674C5EA00823730 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CE107D8E2674C5EA00823730 /* main.m */; };
+		CE107D8F2674C5EA00823730 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D8E2674C5EA00823730 /* main.mm */; };
 		CE107D9E2674C6A400823730 /* MViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D992674C6A400823730 /* MViewController.mm */; };
 		CE107DA72674C77C00823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107DA02674C77C00823730 /* mini.bundle */; };
 		CE107DA82674C77C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107DA22674C77C00823730 /* README.cpp */; };
@@ -20,7 +20,7 @@
 		CE107D7F2674C5E900823730 /* mini.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mini.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE107D882674C5EA00823730 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE107D8D2674C5EA00823730 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CE107D8E2674C5EA00823730 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CE107D8E2674C5EA00823730 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		CE107D902674C5EA00823730 /* mini.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = mini.entitlements; sourceTree = "<group>"; };
 		CE107D992674C6A400823730 /* MViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MViewController.mm; sourceTree = "<group>"; };
 		CE107D9B2674C6A400823730 /* MViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MViewController.h; sourceTree = "<group>"; };
@@ -66,7 +66,7 @@
 			children = (
 				CE107D882674C5EA00823730 /* Assets.xcassets */,
 				CE107D8D2674C5EA00823730 /* Info.plist */,
-				CE107D8E2674C5EA00823730 /* main.m */,
+				CE107D8E2674C5EA00823730 /* main.mm */,
 				CE107D902674C5EA00823730 /* mini.entitlements */,
 				CEE49718269332C1005C4957 /* MOSXAPI.h */,
 				CEE49716269332C1005C4957 /* MOSXAPI.mm */,
@@ -167,7 +167,7 @@
 				CE107D9E2674C6A400823730 /* MViewController.mm in Sources */,
 				CEE4971A269332C1005C4957 /* MOSXAPI.mm in Sources */,
 				CEE4971B269332C1005C4957 /* MView.mm in Sources */,
-				CE107D8F2674C5EA00823730 /* main.m in Sources */,
+				CE107D8F2674C5EA00823730 /* main.mm in Sources */,
 				CE107DA82674C77C00823730 /* README.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
