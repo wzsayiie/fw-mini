@@ -1,4 +1,5 @@
 #import "MViewController.h"
+#import "MIOSAPI.h"
 #import "MView.h"
 #import "mapp.h"
 #import "mhostui.h"
@@ -11,7 +12,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = UIColor.whiteColor;
+    
+    MRegisterAPIs();
     
     //application events.
     _MAppLaunch();
