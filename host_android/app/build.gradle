@@ -10,7 +10,7 @@ android {
     //compile configuration.
     defaultConfig {
         applicationId "domain.corp.store.flavor.mini"
-        minSdkVersion 19
+        minSdkVersion 28
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
