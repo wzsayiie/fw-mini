@@ -1,4 +1,5 @@
 #import "MView.h"
+#import "MOSXAPI.h"
 #import "mhostui.h"
 
 @implementation MView
@@ -41,12 +42,12 @@
     CGContextSetRGBStrokeColor(context, red, green, blue, alpha);
     
     //connect the points:
-    float x0 = _MWindowTriangleVertexX(index, 0);
-    float y0 = _MWindowTriangleVertexY(index, 0);
-    float x1 = _MWindowTriangleVertexX(index, 1);
-    float y1 = _MWindowTriangleVertexY(index, 1);
-    float x2 = _MWindowTriangleVertexX(index, 2);
-    float y2 = _MWindowTriangleVertexY(index, 2);
+    _WPIXEL x0 = _MWindowTriangleVertexX(index, 0);
+    _WPIXEL y0 = _MWindowTriangleVertexY(index, 0);
+    _WPIXEL x1 = _MWindowTriangleVertexX(index, 1);
+    _WPIXEL y1 = _MWindowTriangleVertexY(index, 1);
+    _WPIXEL x2 = _MWindowTriangleVertexX(index, 2);
+    _WPIXEL y2 = _MWindowTriangleVertexY(index, 2);
     
     CGContextMoveToPoint   (context, x0, viewHeight - y0);
     CGContextAddLineToPoint(context, x1, viewHeight - y1);
@@ -57,6 +58,18 @@
 }
 
 - (void)drawImage:(int)index withViewHeight:(float)viewHeight {
+    //get the image.
+    MImage *image = _MWindowImageObject(index);
+    NSImage *managedImage = MManagedImage(MImageManagedId(image));
+    
+    //get the position rectangle.
+    _WPIXEL W = _MWindowImageWidth (index);
+    _WPIXEL H = _MWindowImageHeight(index);
+    _WPIXEL X = _MWindowImageX(index);
+    _WPIXEL Y = viewHeight - H - _MWindowImageY(index);
+    
+    //draw.
+    [managedImage drawInRect:NSMakeRect(X, Y, W, H)];
 }
 
 - (void)drawLabel:(int)index withViewHeight:(float)viewHeight {
@@ -73,7 +86,7 @@
     NSColor *color = [NSColor colorWithRed:red green:green blue:blue alpha:alpha];
     
     //set the font.
-    float fontSize = _MWindowLabelFontSize(index);
+    _WPIXEL fontSize = _MWindowLabelFontSize(index);
     NSFont *font = [NSFont systemFontOfSize:fontSize];
     
     //calculate the position:
@@ -86,10 +99,10 @@
     };
     NSSize size = [string sizeWithAttributes:attributes];
     
-    float W = _MWindowLabelWidth (index);
-    float H = _MWindowLabelHeight(index);
-    float X = _MWindowLabelX(index);
-    float Y = viewHeight - H - _MWindowLabelY(index);
+    _WPIXEL W = _MWindowLabelWidth (index);
+    _WPIXEL H = _MWindowLabelHeight(index);
+    _WPIXEL X = _MWindowLabelX(index);
+    _WPIXEL Y = viewHeight - H - _MWindowLabelY(index);
     
     NSPoint origin = NSZeroPoint;
     MHAlign hAligns = _MWindowLabelHAlign(index);
