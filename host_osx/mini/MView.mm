@@ -13,14 +13,14 @@
         [self drawTriangle:index withViewHeight:height];
     }
 
-    int labelCount = _MWindowLabelCount();
-    for (int index = 0; index < labelCount; ++index) {
-        [self drawLabel:index withViewHeight:height];
-    }
-    
     int imageCount = _MWindowImageCount();
     for (int index = 0; index < imageCount; ++index) {
         [self drawImage:index withViewHeight:height];
+    }
+    
+    int labelCount = _MWindowLabelCount();
+    for (int index = 0; index < labelCount; ++index) {
+        [self drawLabel:index withViewHeight:height];
     }
 }
 
@@ -56,6 +56,9 @@
     CGContextDrawPath(context, kCGPathFillStroke);
 }
 
+- (void)drawImage:(int)index withViewHeight:(float)viewHeight {
+}
+
 - (void)drawLabel:(int)index withViewHeight:(float)viewHeight {
     //set the color:
     MColorPattern nativeColor = {
@@ -89,19 +92,17 @@
     float Y = viewHeight - H - _MWindowLabelY(index);
     
     NSPoint origin = NSZeroPoint;
-    MAligns aligns = _MWindowLabelAligns(index);
-    if /**/ (aligns & MAlign_Left   ) { origin.x = X; }
-    else if (aligns & MAlign_HCenter) { origin.x = X + (W - size.width ) / 2; }
-    else if (aligns & MAlign_Right  ) { origin.x = X + (W - size.width ); }
-    if /**/ (aligns & MAlign_Top    ) { origin.y = Y + (H - size.height); }
-    else if (aligns & MAlign_VCenter) { origin.y = Y + (H - size.height) / 2; }
-    else if (aligns & MAlign_Bottom ) { origin.y = Y; }
+    MHAlign hAligns = _MWindowLabelHAlign(index);
+    MVAlign vAligns = _MWindowLabelVAlign(index);
+    if /**/ (hAligns == MHAlign_Left  ) { origin.x = X; }
+    else if (hAligns == MHAlign_Center) { origin.x = X + (W - size.width ) / 2; }
+    else if (hAligns == MHAlign_Right ) { origin.x = X + (W - size.width ); }
+    if /**/ (vAligns == MVAlign_Top   ) { origin.y = Y + (H - size.height); }
+    else if (vAligns == MVAlign_Center) { origin.y = Y + (H - size.height) / 2; }
+    else if (vAligns == MVAlign_Bottom) { origin.y = Y; }
     
     //draw.
     [string drawAtPoint:origin withAttributes:attributes];
-}
-
-- (void)drawImage:(int)index withViewHeight:(float)viewHeight {
 }
 
 @end

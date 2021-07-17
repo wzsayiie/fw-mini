@@ -11,14 +11,14 @@
         [self drawTriangle:index];
     }
     
-    int labelCount = _MWindowLabelCount();
-    for (int index = 0; index < labelCount; ++index) {
-        [self drawLabel:index];
-    }
-    
     int imageCount = _MWindowImageCount();
     for (int index = 0; index < imageCount; ++index) {
         [self drawImage:index];
+    }
+    
+    int labelCount = _MWindowLabelCount();
+    for (int index = 0; index < labelCount; ++index) {
+        [self drawLabel:index];
     }
 }
 
@@ -54,6 +54,9 @@
     CGContextDrawPath(context, kCGPathFillStroke);
 }
 
+- (void)drawImage:(int)index {
+}
+
 - (void)drawLabel:(int)index {
     //set the color:
     MColorPattern nativeColor = {
@@ -87,19 +90,17 @@
     float H = _MWindowLabelHeight(index);
     
     CGPoint origin = CGPointZero;
-    MAligns aligns = _MWindowLabelAligns(index);
-    if /**/ (aligns & MAlign_Left   ) { origin.x = X; }
-    else if (aligns & MAlign_HCenter) { origin.x = X + (W - size.width ) / 2; }
-    else if (aligns & MAlign_Right  ) { origin.x = X + (W - size.width ); }
-    if /**/ (aligns & MAlign_Top    ) { origin.y = Y; }
-    else if (aligns & MAlign_VCenter) { origin.y = Y + (H - size.height) / 2; }
-    else if (aligns & MAlign_Bottom ) { origin.y = Y + (H - size.height); }
+    MHAlign hAlign = _MWindowLabelHAlign(index);
+    MVAlign vAlign = _MWindowLabelVAlign(index);
+    if /**/ (hAlign == MHAlign_Left  ) { origin.x = X; }
+    else if (hAlign == MHAlign_Center) { origin.x = X + (W - size.width ) / 2; }
+    else if (hAlign == MHAlign_Right ) { origin.x = X + (W - size.width ); }
+    if /**/ (vAlign == MVAlign_Top   ) { origin.y = Y; }
+    else if (vAlign == MVAlign_Center) { origin.y = Y + (H - size.height) / 2; }
+    else if (vAlign == MVAlign_Bottom) { origin.y = Y + (H - size.height); }
     
     //draw.
     [string drawAtPoint:origin withAttributes:attributes];
-}
-
-- (void)drawImage:(int)index {
 }
 
 @end
