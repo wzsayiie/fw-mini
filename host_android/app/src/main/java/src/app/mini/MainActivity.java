@@ -24,6 +24,8 @@ public class MainActivity extends Activity {
         mMainView = new MainView(this);
         setContentView(mMainView);
 
+        AndroidApi.registerApi(getApplicationContext());
+
         //application event.
         appLaunch();
         scheduleTimer(constAppUpdateInterval(), this::appUpdate);
