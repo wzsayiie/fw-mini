@@ -9,27 +9,36 @@ template<typename T> class ManagedObjectPool
 public:
     int add(T *object)
     {
-        mPool[++mIdCount] = object;
-        return mIdCount;
+        if (!object)
+        {
+            return 0;
+        }
+
+        int id = ++mIdCount;
+        mObjects[id] = object;
+        return id;
     }
 
     T *get(int id)
     {
-        auto it = mPool.find(id);
-        return it != mPool.end() ? it->second : nullptr;
+        auto it = mObjects.find(id);
+        if (it != mObjects.end())
+        {
+            return it->second;
+        }
+        else
+        {
+            return nullptr;
+        }
     }
 
     void remove(int id)
     {
-        auto it = mPool.find(id);
-        if (it != mPool.end())
-        {
-            mPool.erase(it);
-        }
+        mObjects.erase(it);
     }
 
 private:
-    std::map<int, T *> mPool;
+    std::map<int, T *> mObjects;
     int mIdCount = 0;
 };
 

@@ -19,6 +19,10 @@
 }
 
 - (int)addObject:(NSObject *)object {
+    if (!object) {
+        return 0;
+    }
+    
     int ID = ++self.IDCount;
     self.objects[@(ID)] = object;
     return ID;
@@ -70,11 +74,8 @@ static MImage *CreateImage(MData *data) {
     NSData  *imageData   = [NSData dataWithBytes:MDataBytes(data) length:MDataSize(data)];
     NSImage *imageObject = [[NSImage alloc] initWithData:imageData];
     
-    if (imageObject) {
-        int managedID = [ManagedImagePool() addObject:imageObject];
-        return MImageCreate(managedID, [](int ID) { [ManagedImagePool() removeObjectForID:ID]; });
-    }
-    return nullptr;
+    int managedID = [ManagedImagePool() addObject:imageObject];
+    return MImageCreate(managedID, [](int ID) { [ManagedImagePool() removeObjectForID:ID]; });
 }
 
 static MString *CopyDocumentPath() {
