@@ -306,7 +306,7 @@ private:
 };
 
 extern "C" inline MImage *MImageCreate(int managedId, MImageDispose dispose) {
-    return new MImage(managedId, dispose);
+    return managedId != 0 ? new MImage(managedId, dispose) : nullptr;
 }
 
 extern "C" inline int MImageManagedId(MImage *image) {
