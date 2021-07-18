@@ -1,4 +1,6 @@
 #include "cgraphics.h"
+#include <string>
+#include <vector>
 #include "mclib.h"
 #include "mcontext.h"
 #include "mhostapi.h"

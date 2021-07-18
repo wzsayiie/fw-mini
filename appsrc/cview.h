@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "cgraphics.h"
 #include "cuiresponder.h"
 

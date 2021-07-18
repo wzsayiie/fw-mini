@@ -1,4 +1,6 @@
 #include "mtypes.h"
+#include <vector>
+#include "mencode.h"
 
 //------------------------------------------------------------------------------
 //MObject:

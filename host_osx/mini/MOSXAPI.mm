@@ -1,6 +1,5 @@
 #import "MOSXAPI.h"
 #import "mhostapi.h"
-#import "mtypeex.h"
 
 #pragma mark - managed object pool
 

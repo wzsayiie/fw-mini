@@ -1,6 +1,5 @@
 #include <jni.h>
 #include "mhostapi.h"
-#include "mtypeex.h"
 
 static JNIEnv *sJniEnv = nullptr;
 static jclass  sJClass = nullptr;

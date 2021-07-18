@@ -1,7 +1,6 @@
 #pragma once
 
 #include "mhostui.h"
-#include "mtypeex.h"
 
 //------------------------------------------------------------------------------
 //CColor:
