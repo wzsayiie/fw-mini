@@ -1,6 +1,8 @@
 #pragma once
 
+#include "mconfig.h"
+
 const float _MAppUpdateInterval = 0.1f;
 
-extern "C" void _MAppLaunch();
-extern "C" void _MAppUpdate();
+MFUNC_HOST void _MAppLaunch();
+MFUNC_HOST void _MAppUpdate();

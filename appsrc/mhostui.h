@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mexport.h"
 #include "mtypes.h"
 
 static const char     *const _MAppWindowU8Name  =  "Mini";
@@ -49,45 +48,45 @@ union MColorPattern {
 //this type is used to mark the graphics size of the host ui.
 typedef float _MPixel;
 
-extern "C" void _MWindowSetPixelDensity(float density);
+MFUNC_HOST void _MWindowSetPixelDensity(float density);
 
-extern "C" void _MWindowOnLoad();
-extern "C" void _MWindowOnShow();
-extern "C" void _MWindowOnHide();
+MFUNC_HOST void _MWindowOnLoad();
+MFUNC_HOST void _MWindowOnShow();
+MFUNC_HOST void _MWindowOnHide();
 
-extern "C" void _MWindowOnResize(_MPixel width, _MPixel height);
-extern "C" void _MWindowOnDraw  ();
+MFUNC_HOST void _MWindowOnResize(_MPixel width, _MPixel height);
+MFUNC_HOST void _MWindowOnDraw  ();
 
-extern "C" void _MWindowOnTouchBegin(_MPixel x, _MPixel y);
-extern "C" void _MWindowOnTouchMove (_MPixel x, _MPixel y);
-extern "C" void _MWindowOnTouchEnd  (_MPixel x, _MPixel y);
-extern "C" void _MWindowOnTextBox   (MString *string, bool enter);
-extern "C" void _MWindowOnKeyDown   (MKey key);
+MFUNC_HOST void _MWindowOnTouchBegin(_MPixel x, _MPixel y);
+MFUNC_HOST void _MWindowOnTouchMove (_MPixel x, _MPixel y);
+MFUNC_HOST void _MWindowOnTouchEnd  (_MPixel x, _MPixel y);
+MFUNC_HOST void _MWindowOnTextBox   (MString *string, bool enter);
+MFUNC_HOST void _MWindowOnKeyDown   (MKey key);
 
-extern "C" int     _MWindowTriangleCount  ();
-extern "C" _MPixel _MWindowTriangleVertexX(int index, int vertexIndex);
-extern "C" _MPixel _MWindowTriangleVertexY(int index, int vertexIndex);
-extern "C" MColor  _MWindowTriangleColor  (int index);
+MFUNC_HOST int     _MWindowTriangleCount  ();
+MFUNC_HOST _MPixel _MWindowTriangleVertexX(int index, int vertexIndex);
+MFUNC_HOST _MPixel _MWindowTriangleVertexY(int index, int vertexIndex);
+MFUNC_HOST MColor  _MWindowTriangleColor  (int index);
 
-extern "C" int     _MWindowImageCount ();
-extern "C" MImage *_MWindowImageObject(int index);
-extern "C" _MPixel _MWindowImageX     (int index);
-extern "C" _MPixel _MWindowImageY     (int index);
-extern "C" _MPixel _MWindowImageWidth (int index);
-extern "C" _MPixel _MWindowImageHeight(int index);
+MFUNC_HOST int     _MWindowImageCount ();
+MFUNC_HOST MImage *_MWindowImageObject(int index);
+MFUNC_HOST _MPixel _MWindowImageX     (int index);
+MFUNC_HOST _MPixel _MWindowImageY     (int index);
+MFUNC_HOST _MPixel _MWindowImageWidth (int index);
+MFUNC_HOST _MPixel _MWindowImageHeight(int index);
 
-extern "C" int      _MWindowLabelCount   ();
-extern "C" MString *_MWindowLabelString  (int index);
-extern "C" MColor   _MWindowLabelColor   (int index);
-extern "C" _MPixel  _MWindowLabelFontSize(int index);
-extern "C" MHAlign  _MWindowLabelHAlign  (int index);
-extern "C" MVAlign  _MWindowLabelVAlign  (int index);
-extern "C" _MPixel  _MWindowLabelX       (int index);
-extern "C" _MPixel  _MWindowLabelY       (int index);
-extern "C" _MPixel  _MWindowLabelWidth   (int index);
-extern "C" _MPixel  _MWindowLabelHeight  (int index);
+MFUNC_HOST int      _MWindowLabelCount   ();
+MFUNC_HOST MString *_MWindowLabelString  (int index);
+MFUNC_HOST MColor   _MWindowLabelColor   (int index);
+MFUNC_HOST _MPixel  _MWindowLabelFontSize(int index);
+MFUNC_HOST MHAlign  _MWindowLabelHAlign  (int index);
+MFUNC_HOST MVAlign  _MWindowLabelVAlign  (int index);
+MFUNC_HOST _MPixel  _MWindowLabelX       (int index);
+MFUNC_HOST _MPixel  _MWindowLabelY       (int index);
+MFUNC_HOST _MPixel  _MWindowLabelWidth   (int index);
+MFUNC_HOST _MPixel  _MWindowLabelHeight  (int index);
 
-extern "C" bool _MWindowTextBoxEnabled();
+MFUNC_HOST bool _MWindowTextBoxEnabled();
 
 typedef int MWindowEvent;
 
@@ -135,25 +134,25 @@ void     MWindowEnableTextBox(bool enabled);
 MString *MWindowTextBoxString();
 bool     MWindowTextBoxEnter ();
 
-MEXPORT(MWindowAddListener   )
-MEXPORT(MWindowCurrentEvent  )
-MEXPORT(MWindowWidth         )
-MEXPORT(MWindowHeight        )
-MEXPORT(MWindowLoaded        )
-MEXPORT(MWindowShown         )
-MEXPORT(MWindowTouchX        )
-MEXPORT(MWindowTouchY        )
-MEXPORT(MWindowActiveKey     )
-MEXPORT(MWindowSelectString  )
-MEXPORT(MWindowSelectColor   )
-MEXPORT(MWindowSelectFontSize)
-MEXPORT(MWindowSelectHAlign  )
-MEXPORT(MWindowSelectVAlign  )
-MEXPORT(MWindowSelectPoint0  )
-MEXPORT(MWindowSelectPoint1  )
-MEXPORT(MWindowSelectPoint2  )
-MEXPORT(MWindowDrawTriangle  )
-MEXPORT(MWindowDrawLabel     )
-MEXPORT(MWindowEnableTextBox )
-MEXPORT(MWindowTextBoxString )
-MEXPORT(MWindowTextBoxEnter  )
+MFUNC_EXPORT(MWindowAddListener   )
+MFUNC_EXPORT(MWindowCurrentEvent  )
+MFUNC_EXPORT(MWindowWidth         )
+MFUNC_EXPORT(MWindowHeight        )
+MFUNC_EXPORT(MWindowLoaded        )
+MFUNC_EXPORT(MWindowShown         )
+MFUNC_EXPORT(MWindowTouchX        )
+MFUNC_EXPORT(MWindowTouchY        )
+MFUNC_EXPORT(MWindowActiveKey     )
+MFUNC_EXPORT(MWindowSelectString  )
+MFUNC_EXPORT(MWindowSelectColor   )
+MFUNC_EXPORT(MWindowSelectFontSize)
+MFUNC_EXPORT(MWindowSelectHAlign  )
+MFUNC_EXPORT(MWindowSelectVAlign  )
+MFUNC_EXPORT(MWindowSelectPoint0  )
+MFUNC_EXPORT(MWindowSelectPoint1  )
+MFUNC_EXPORT(MWindowSelectPoint2  )
+MFUNC_EXPORT(MWindowDrawTriangle  )
+MFUNC_EXPORT(MWindowDrawLabel     )
+MFUNC_EXPORT(MWindowEnableTextBox )
+MFUNC_EXPORT(MWindowTextBoxString )
+MFUNC_EXPORT(MWindowTextBoxEnter  )

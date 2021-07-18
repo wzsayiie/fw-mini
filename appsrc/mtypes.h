@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <memory>
+#include "mconfig.h"
 
 //------------------------------------------------------------------------------
 //type enumeration:
@@ -44,9 +45,9 @@ private:
     int mRefCount = 1;
 };
 
-extern "C" void  MRetain (MObject *object);
-extern "C" void  MRelease(MObject *object);
-extern "C" MType MGetType(MObject *object);
+MFUNC_BASE void  MRetain (MObject *object);
+MFUNC_BASE void  MRelease(MObject *object);
+MFUNC_BASE MType MGetType(MObject *object);
 
 //------------------------------------------------------------------------------
 //MBool & MInt & MFloat:
@@ -55,27 +56,27 @@ class MBool : public MObject {};
 class MInt  : public MObject {};
 class MFloat: public MObject {};
 
-extern "C" MBool  *MBoolCreate (bool  value);
-extern "C" MInt   *MIntCreate  (int   value);
-extern "C" MFloat *MFloatCreate(float value);
+MFUNC_BASE MBool  *MBoolCreate (bool  value);
+MFUNC_BASE MInt   *MIntCreate  (int   value);
+MFUNC_BASE MFloat *MFloatCreate(float value);
 
-extern "C" bool  MBoolValue (MBool  *object);
-extern "C" int   MIntValue  (MInt   *object);
-extern "C" float MFloatValue(MFloat *object);
+MFUNC_BASE bool  MBoolValue (MBool  *object);
+MFUNC_BASE int   MIntValue  (MInt   *object);
+MFUNC_BASE float MFloatValue(MFloat *object);
 
 //------------------------------------------------------------------------------
 //MString:
 
 class MString : public MObject {};
 
-extern "C" MString *MStringCreateU8 (const char     *chars);
-extern "C" MString *MStringCreateU16(const char16_t *chars);
+MFUNC_BASE MString *MStringCreateU8 (const char     *chars);
+MFUNC_BASE MString *MStringCreateU16(const char16_t *chars);
 
-extern "C" const char     *MStringU8Chars (MString *string);
-extern "C" const char16_t *MStringU16Chars(MString *string);
+MFUNC_BASE const char     *MStringU8Chars (MString *string);
+MFUNC_BASE const char16_t *MStringU16Chars(MString *string);
 
-extern "C" int MStringU8Size (MString *string);
-extern "C" int MStringU16Size(MString *string);
+MFUNC_BASE int MStringU8Size (MString *string);
+MFUNC_BASE int MStringU16Size(MString *string);
 
 //------------------------------------------------------------------------------
 //MLambda:
@@ -84,29 +85,29 @@ typedef void (*MLambdaFunc)(MObject *load, MObject *param);
 
 class MLambda : public MObject {};
 
-extern "C" MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
-extern "C" void MLambdaCall(MLambda *lambda, MObject *param);
+MFUNC_BASE MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
+MFUNC_BASE void MLambdaCall(MLambda *lambda, MObject *param);
 
 //------------------------------------------------------------------------------
 //MData:
 
 class MData : public MObject {};
 
-extern "C" MData *MDataCreate(const uint8_t *bytes, int size);
-extern "C" void   MDataAppend(MData *data, const uint8_t *bytes, int size);
-extern "C" int    MDataSize  (MData *data);
+MFUNC_BASE MData *MDataCreate(const uint8_t *bytes, int size);
+MFUNC_BASE void   MDataAppend(MData *data, const uint8_t *bytes, int size);
+MFUNC_BASE int    MDataSize  (MData *data);
 
-extern "C" const uint8_t *MDataBytes(MData *data);
+MFUNC_BASE const uint8_t *MDataBytes(MData *data);
 
 //------------------------------------------------------------------------------
 //MArray:
 
 class MArray : public MObject {};
 
-extern "C" MArray  *MArrayCreate();
-extern "C" void     MArrayAppend(MArray *array, MObject *item);
-extern "C" int      MArrayLength(MArray *array);
-extern "C" MObject *MArrayItem  (MArray *array, int index);
+MFUNC_BASE MArray  *MArrayCreate();
+MFUNC_BASE void     MArrayAppend(MArray *array, MObject *item);
+MFUNC_BASE int      MArrayLength(MArray *array);
+MFUNC_BASE MObject *MArrayItem  (MArray *array, int index);
 
 //------------------------------------------------------------------------------
 //MImage:
@@ -115,8 +116,8 @@ typedef void (*MImageDispose)(int managedId);
 
 class MImage : public MObject {};
 
-extern "C" MImage *MImageCreate(int managedId, MImageDispose dispose);
-extern "C" int MImageManagedId(MImage *image);
+MFUNC_BASE MImage *MImageCreate(int managedId, MImageDispose dispose);
+MFUNC_BASE int MImageManagedId(MImage *image);
 
 //------------------------------------------------------------------------------
 //smart pointer:

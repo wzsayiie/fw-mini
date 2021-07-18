@@ -15,13 +15,13 @@ void MContextDrawRect  (float x, float y, float width, float height);
 void MContextDrawImage (float x, float y, float width, float height);
 void MContextDrawString(float x, float y, float width, float height);
 
-MEXPORT(MContextSetOffset     )
-MEXPORT(MContextSelectColor   )
-MEXPORT(MContextSelectImage   )
-MEXPORT(MContextSelectString  )
-MEXPORT(MContextSelectFontSize)
-MEXPORT(MContextSelectHAlign  )
-MEXPORT(MContextSelectVAlign  )
-MEXPORT(MContextDrawRect      )
-MEXPORT(MContextDrawImage     )
-MEXPORT(MContextDrawString    )
+MFUNC_EXPORT(MContextSetOffset     )
+MFUNC_EXPORT(MContextSelectColor   )
+MFUNC_EXPORT(MContextSelectImage   )
+MFUNC_EXPORT(MContextSelectString  )
+MFUNC_EXPORT(MContextSelectFontSize)
+MFUNC_EXPORT(MContextSelectHAlign  )
+MFUNC_EXPORT(MContextSelectVAlign  )
+MFUNC_EXPORT(MContextDrawRect      )
+MFUNC_EXPORT(MContextDrawImage     )
+MFUNC_EXPORT(MContextDrawString    )

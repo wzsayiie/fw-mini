@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mexport.h"
 #include "mtypes.h"
 
 static const char     *const _MAppDirectoryU8Name    =  "mini";
@@ -21,18 +20,18 @@ typedef bool     (*_MApiPathExists       )(MString *path);
 typedef bool     (*_MApiDirectoryExists  )(MString *path);
 typedef bool     (*_MApiFileExists       )(MString *path);
 
-extern "C" void _MSetApiPrintMessage     (_MApiPrintMessage      func);
-extern "C" void _MSetApiCopyBundleAsset  (_MApiCopyBundleAsset   func);
-extern "C" void _MSetApiCreateImage      (_MApiCreateImage       func);
-extern "C" void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func);
-extern "C" void _MSetApiCopyCachePath    (_MApiCopyCachePath     func);
-extern "C" void _MSetApiCopyTemporaryPath(_MApiCopyTemporaryPath func);
-extern "C" void _MSetApiMakeDirectory    (_MApiMakeDirectory     func);
-extern "C" void _MSetApiCopyPathSubItems (_MApiCopyPathSubItems  func);
-extern "C" void _MSetApiRemovePath       (_MApiRemovePath        func);
-extern "C" void _MSetApiPathExists       (_MApiPathExists        func);
-extern "C" void _MSetApiDirectoryExists  (_MApiDirectoryExists   func);
-extern "C" void _MSetApiFileExists       (_MApiFileExists        func);
+MFUNC_HOST void _MSetApiPrintMessage     (_MApiPrintMessage      func);
+MFUNC_HOST void _MSetApiCopyBundleAsset  (_MApiCopyBundleAsset   func);
+MFUNC_HOST void _MSetApiCreateImage      (_MApiCreateImage       func);
+MFUNC_HOST void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func);
+MFUNC_HOST void _MSetApiCopyCachePath    (_MApiCopyCachePath     func);
+MFUNC_HOST void _MSetApiCopyTemporaryPath(_MApiCopyTemporaryPath func);
+MFUNC_HOST void _MSetApiMakeDirectory    (_MApiMakeDirectory     func);
+MFUNC_HOST void _MSetApiCopyPathSubItems (_MApiCopyPathSubItems  func);
+MFUNC_HOST void _MSetApiRemovePath       (_MApiRemovePath        func);
+MFUNC_HOST void _MSetApiPathExists       (_MApiPathExists        func);
+MFUNC_HOST void _MSetApiDirectoryExists  (_MApiDirectoryExists   func);
+MFUNC_HOST void _MSetApiFileExists       (_MApiFileExists        func);
 
 void     MPrintMessage     (MString *text);
 MData   *MCopyBundleAsset  (MString *path);
@@ -47,15 +46,15 @@ bool     MPathExists       (MString *path);
 bool     MDirectoryExists  (MString *path);
 bool     MFileExists       (MString *path);
 
-MEXPORT(MPrintMessage     )
-MEXPORT(MCopyBundleAsset  )
-MEXPORT(MCreateImage      )
-MEXPORT(MCopyDocumentPath )
-MEXPORT(MCopyCachePath    )
-MEXPORT(MCopyTemporaryPath)
-MEXPORT(MMakeDirectory    )
-MEXPORT(MCopyPathSubItems )
-MEXPORT(MRemovePath       )
-MEXPORT(MPathExists       )
-MEXPORT(MDirectoryExists  )
-MEXPORT(MFileExists       )
+MFUNC_EXPORT(MPrintMessage     )
+MFUNC_EXPORT(MCopyBundleAsset  )
+MFUNC_EXPORT(MCreateImage      )
+MFUNC_EXPORT(MCopyDocumentPath )
+MFUNC_EXPORT(MCopyCachePath    )
+MFUNC_EXPORT(MCopyTemporaryPath)
+MFUNC_EXPORT(MMakeDirectory    )
+MFUNC_EXPORT(MCopyPathSubItems )
+MFUNC_EXPORT(MRemovePath       )
+MFUNC_EXPORT(MPathExists       )
+MFUNC_EXPORT(MDirectoryExists  )
+MFUNC_EXPORT(MFileExists       )
