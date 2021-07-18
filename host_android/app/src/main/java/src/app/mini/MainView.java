@@ -1,6 +1,7 @@
 package src.app.mini;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -22,6 +23,11 @@ public class MainView extends View {
         int triangleCount = windowTriangleCount();
         for (int index = 0; index < triangleCount; ++index) {
             drawTriangle(index, canvas);
+        }
+
+        int imageCount = windowImageCount();
+        for (int index = 0; index < imageCount; ++index) {
+            drawImage(index, canvas);
         }
 
         int labelCount = windowLabelCount();
@@ -51,6 +57,24 @@ public class MainView extends View {
 
         //draw.
         canvas.drawPath(path, paint);
+    }
+
+    private void drawImage(int index, Canvas canvas) {
+        //get the image.
+        int managedId = windowImageObject(index);
+        Bitmap image = AndroidApi.getManagedImage(managedId);
+
+        //set the position rectangle.
+        int x = (int) windowImageX(index);
+        int y = (int) windowImageY(index);
+        int w = (int) windowImageWidth (index);
+        int h = (int) windowImageHeight(index);
+
+        Rect srcRect = new Rect(0, 0, w, h);
+        Rect dstRect = new Rect(x, y, x + w, y + h);
+
+        //draw.
+        canvas.drawBitmap(image, srcRect, dstRect, null);
     }
 
     private void drawLabel(int index, Canvas canvas) {
@@ -101,6 +125,13 @@ public class MainView extends View {
     private native float windowTriangleVertexY(int index, int vertexIndex);
     private native int   windowTriangleColor  (int index);
 
+    private native int   windowImageCount ();
+    private native int   windowImageObject(int index);
+    private native float windowImageX     (int index);
+    private native float windowImageY     (int index);
+    private native float windowImageWidth (int index);
+    private native float windowImageHeight(int index);
+    
     private native int    windowLabelCount   ();
     private native String windowLabelString  (int index);
     private native int    windowLabelColor   (int index);

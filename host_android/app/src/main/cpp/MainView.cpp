@@ -51,6 +51,43 @@ Java_src_app_mini_MainView_windowTriangleColor(JNIEnv *, jobject, jint index)
 }
 
 extern "C" JNIEXPORT jint JNICALL
+Java_src_app_mini_MainView_windowImageCount(JNIEnv *, jobject)
+{
+    return _MWindowImageCount();
+}
+
+extern "C" JNIEXPORT jint JNICALL
+Java_src_app_mini_MainView_windowImageObject(JNIEnv *, jobject, jint index)
+{
+    MImage *image = _MWindowImageObject(index);
+    return MImageManagedId(image);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowImageX(JNIEnv *, jobject, jint index)
+{
+    return _MWindowImageX(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowImageY(JNIEnv *, jobject, jint index)
+{
+    return _MWindowImageY(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowImageWidth(JNIEnv *, jobject, jint index)
+{
+    return _MWindowImageWidth(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowImageHeight(JNIEnv *, jobject, jint index)
+{
+    return _MWindowImageHeight(index);
+}
+
+extern "C" JNIEXPORT jint JNICALL
 Java_src_app_mini_MainView_windowLabelCount(JNIEnv *, jobject)
 {
     return _MWindowLabelCount();
