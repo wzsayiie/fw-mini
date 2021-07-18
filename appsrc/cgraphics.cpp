@@ -50,34 +50,41 @@ const CColor CColor::clearColor(0, 0, 0, 0);
 //CImage:
 
 CImageRef CImage::fromData(const std::vector<uint8_t> &data) {
-    MDataRef  imageData   = m_auto_release MDataCreate (&data[0], (int)data.size());
-    MImageRef nativeImage = m_auto_release MCreateImage(imageData.get());
-    
-    return CImageRef(new CImage(nativeImage));
+    MDataRef imageData = m_auto_release MDataCreate(&data[0], (int)data.size());
+    return decodeData(imageData);
 }
 
 CImageRef CImage::fromBundle(const std::string &path) {
-    MStringRef imagePath   = m_auto_release MStringCreateU8 (path.c_str());
-    MDataRef   imageData   = m_auto_release MCopyBundleAsset(imagePath.get());
-    MImageRef  nativeImage = m_auto_release MCreateImage    (imageData.get());
-    
-    return CImageRef(new CImage(nativeImage));
+    MStringRef imagePath = m_auto_release MStringCreateU8 (path.c_str());
+    MDataRef   imageData = m_auto_release MCopyBundleAsset(imagePath.get());
+
+    return decodeData(imageData);
 }
 
 CImageRef CImage::fromFile(const std::string &path) {
-    MStringRef imagePath   = m_auto_release MStringCreateU8 (path.c_str());
-    MDataRef   imageData   = m_auto_release MCopyFileContent(imagePath.get());
-    MImageRef  nativeImage = m_auto_release MCreateImage    (imageData.get());
-    
-    return CImageRef(new CImage(nativeImage));
+    MStringRef imagePath = m_auto_release MStringCreateU8 (path.c_str());
+    MDataRef   imageData = m_auto_release MCopyFileContent(imagePath.get());
+
+    return decodeData(imageData);
 }
 
 MImage *CImage::nativeImage() {
     return mNativeImage.get();
 }
 
-CImage::CImage(MImageRef nativeImage) {
-    mNativeImage = nativeImage;
+CImageRef CImage::decodeData(MDataRef data) {
+    if (!data) {
+        return nullptr;
+    }
+
+    MImageRef nativeImage = m_auto_release MCreateImage(data.get());
+    if (!nativeImage) {
+        return nullptr;
+    }
+
+    CImageRef image(new CImage());
+    image->mNativeImage = nativeImage;
+    return image;
 }
 
 //------------------------------------------------------------------------------

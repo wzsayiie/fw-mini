@@ -52,7 +52,7 @@ public:
     MImage *nativeImage();
 
 private:
-    CImage(MImageRef nativeImage);
+    static CImageRef decodeData(MDataRef data);
     
     MImageRef mNativeImage;
 };
