@@ -2,10 +2,10 @@
 
 #include "mtypes.h"
 
-static const char     *const _MAppDirectoryU8Name    =  "mini";
-static const char16_t *const _MAppDirectoryU16Name   = u"mini";
-static const char     *const _MAppAssetBundleU8Name  =  "mini.bundle";
-static const char16_t *const _MAppAssetBundleU16Name = u"mini.bundle";
+static const char     *const _MPrivateDirectoryU8Name  =  "mini";
+static const char16_t *const _MPrivateDirectoryU16Name = u"mini";
+static const char     *const _MAssetBundleU8Name       =  "mini.bundle";
+static const char16_t *const _MAssetBundleU16Name      = u"mini.bundle";
 
 typedef void     (*_MApiPrintMessage     )(MString *text);
 typedef MData   *(*_MApiCopyBundleAsset  )(MString *path);

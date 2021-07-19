@@ -2,8 +2,8 @@
 
 #include "mtypes.h"
 
-static const char     *const _MAppWindowU8Name  =  "Mini";
-static const char16_t *const _MAppWindowU16Name = u"Mini";
+static const char     *const _MWindowTitleU8Name  =  "Mini";
+static const char16_t *const _MWindowTitleU16Name = u"Mini";
 
 const float _MWindowDrawInterval = 0.1f;
 

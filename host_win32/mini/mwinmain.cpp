@@ -237,7 +237,7 @@ int APIENTRY wWinMain(
     HWND wnd = CreateWindowExW(
         /* dwExStyle    */ 0,
         /* lpClassName  */ className,
-        /* lpWindowName */ (const WCHAR *)_MAppWindowU16Name,
+        /* lpWindowName */ (const WCHAR *)_MWindowTitleU16Name,
         /* dwStyle      */ WS_OVERLAPPEDWINDOW,
         /* x,y          */ 1000, 100,
         /* width,height */  376, 679,
