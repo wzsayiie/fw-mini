@@ -1,8 +1,8 @@
 ﻿#include "mwinapi.h"
 #include <map>
 #include <shlobj.h>
+#include <string>
 #include "mhostapi.h"
-#include "mtypeex.h"
 
 template<typename T> class ManagedObjectPool
 {
@@ -34,7 +34,7 @@ public:
 
     void remove(int id)
     {
-        mObjects.erase(it);
+        mObjects.erase(id);
     }
 
 private:
