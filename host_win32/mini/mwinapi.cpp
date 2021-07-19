@@ -4,6 +4,8 @@
 #include <string>
 #include "mhostapi.h"
 
+//managed object pool:
+
 template<typename T> class ManagedObjectPool
 {
 public:
@@ -57,6 +59,45 @@ Gdiplus::Image *MManagedImage(int id)
     return ManagedImagePool()->get(id);
 }
 
+//host api assist:
+
+static MString *CopyAppDirectory(const WCHAR *parent, const WCHAR *directory)
+{
+    //join the directory path.
+    std::basic_string<WCHAR> allPath = parent;
+    if (*allPath.rbegin() != L'\\')
+    {
+        allPath.append(L"\\");
+    }
+    allPath.append(directory);
+
+    //if the directory don't exist, then create it.
+    MString *thisPath = MStringCreateU16((const char16_t *)allPath.c_str());
+    if (!MDirectoryExists(thisPath))
+    {
+        MMakeDirectory(thisPath);
+    }
+    return thisPath;
+}
+
+static bool PathExistsAt(MString *path, bool *isDir)
+{
+    auto  thisPath   = (const WCHAR *)MStringU16Chars(path);
+    DWORD attributes = GetFileAttributesW(thisPath);
+
+    if (attributes != INVALID_FILE_ATTRIBUTES)
+    {
+        *isDir = attributes & FILE_ATTRIBUTE_DIRECTORY;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//host api:
+
 static void PrintMessage(MString *text)
 {
     wprintf(L"%s\n", (const WCHAR *)MStringU16Chars(text));
@@ -99,31 +140,12 @@ static MImage *CreateImage(MData *data)
     return MImageCreate(imageId, [](int id) { ManagedImagePool()->remove(id); });
 }
 
-static MString *CopyAppDirectoryWithParent(const WCHAR *parent)
-{
-    //join the directory path.
-    std::basic_string<WCHAR> allPath = parent;
-    if (*allPath.rbegin() != L'\\')
-    {
-        allPath.append(L"\\");
-    }
-    allPath.append((const WCHAR *)_MPrivateDirectoryU16Name);
-
-    //if the directory don't exist, then create it.
-    MString *thisPath = MStringCreateU16((const char16_t *)allPath.c_str());
-    if (!MDirectoryExists(thisPath))
-    {
-        MMakeDirectory(thisPath);
-    }
-    return thisPath;
-}
-
 static MString *CopyDocumentPath()
 {
     WCHAR document[MAX_PATH] = L"\0";
     SHGetFolderPathW(nullptr, CSIDL_PERSONAL, nullptr, 0, document);
 
-    return CopyAppDirectoryWithParent(document);
+    return CopyAppDirectory(document, (const WCHAR *)_MPrivateDirectoryU16Name);
 }
 
 static MString *CopyCachePath()
@@ -131,7 +153,7 @@ static MString *CopyCachePath()
     WCHAR home[MAX_PATH] = L"\0";
     SHGetFolderPathW(nullptr, CSIDL_PROFILE, nullptr, 0, home);
 
-    return CopyAppDirectoryWithParent(home);
+    return CopyAppDirectory(home, (const WCHAR *)_MPrivateDirectoryU16Name);
 }
 
 static MString *CopyTemporaryPath()
@@ -139,7 +161,7 @@ static MString *CopyTemporaryPath()
     WCHAR temporary[MAX_PATH] = L"\0";
     GetTempPathW(MAX_PATH, temporary);
 
-    return CopyAppDirectoryWithParent(temporary);
+    return CopyAppDirectory(temporary, (const WCHAR *)_MPrivateDirectoryU16Name);
 }
 
 static bool MakeDirectory(MString *path)
@@ -237,22 +259,6 @@ static void RemovePath(MString *path)
     operation.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION;
 
     SHFileOperationW(&operation);
-}
-
-static bool PathExistsAt(MString *path, bool *isDir)
-{
-    auto  thisPath   = (const WCHAR *)MStringU16Chars(path);
-    DWORD attributes = GetFileAttributesW(thisPath);
-
-    if (attributes != INVALID_FILE_ATTRIBUTES)
-    {
-        *isDir = attributes & FILE_ATTRIBUTE_DIRECTORY;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 static bool PathExists(MString *path)
