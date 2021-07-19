@@ -210,12 +210,10 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
     }
 }
 
-int APIENTRY wWinMain(
-    _In_     HINSTANCE instance,
-    _In_opt_ HINSTANCE prevInst,
-    _In_     LPWSTR    cmdLine ,
-    _In_     int       showCmd )
+MFUNC_BASE void MAppMain()
 {
+    HINSTANCE instance = GetModuleHandleW(nullptr);
+
     //register window class.
     LPCWSTR className = L"MWindow";
     WNDCLASSW wndClass = {0};
@@ -226,7 +224,7 @@ int APIENTRY wWinMain(
     wndClass.cbWndExtra    = 0;
     wndClass.hInstance     = instance;
     wndClass.hIcon         = nullptr;
-    wndClass.hCursor       = LoadCursorW(nullptr, IDC_ARROW);
+    wndClass.hCursor       = LoadCursorW(nullptr, (LPCWSTR)IDC_ARROW);
     wndClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
     wndClass.lpszMenuName  = nullptr;
     wndClass.lpszClassName = className;
@@ -247,7 +245,7 @@ int APIENTRY wWinMain(
         /* lpParam      */ nullptr
     );
 
-    ShowWindow(wnd, showCmd);
+    ShowWindow(wnd, SW_SHOWDEFAULT);
     UpdateWindow(wnd);
 
     //message loop.
@@ -257,6 +255,14 @@ int APIENTRY wWinMain(
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
+}
 
-    return (int)msg.wParam;
+int APIENTRY wWinMain(
+    _In_     HINSTANCE instance,
+    _In_opt_ HINSTANCE prevInst,
+    _In_     LPWSTR    cmdLine ,
+    _In_     int       showCmd )
+{
+    MAppMain();
+    return 0;
 }
