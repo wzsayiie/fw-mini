@@ -1,4 +1,5 @@
 #include "crunloop.h"
+#include "mapp.h"
 
-void CAppUpdate() {
+MAPP_UPDATE(CAppUpdate) void CAppUpdate() {
 }

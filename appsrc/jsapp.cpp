@@ -1,5 +1,7 @@
-void JsAppLaunch() {
+#include "mapp.h"
+
+MAPP_SCENE_LAUNCH(JsAppLaunch) void JsAppLaunch() {
 }
 
-void JsAppUpdate() {
+MAPP_UPDATE(JsAppUpdate) void JsAppUpdate() {
 }
