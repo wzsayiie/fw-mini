@@ -104,7 +104,7 @@ static void PrintMessage(MString *text)
     wprintf(L"%s\n", (const WCHAR *)MStringU16Chars(text));
 }
 
-const int READ_ASSET_BUFFER_SIZE = 8 * 1024;
+const int ReadAssetBufferSize = 8 * 1024;
 
 static MData *CopyBundleAsset(MString *path)
 {
@@ -149,10 +149,10 @@ static MData *CopyBundleAsset(MString *path)
     }
 
     MData *assetData = MDataCreate(nullptr, 0);
-    uint8_t buffer[READ_ASSET_BUFFER_SIZE];
+    uint8_t buffer[ReadAssetBufferSize];
     while (!feof(assetFile))
     {
-        auto size = (int)fread(buffer, 1, READ_ASSET_BUFFER_SIZE, assetFile);
+        auto size = (int)fread(buffer, 1, ReadAssetBufferSize, assetFile);
         MDataAppend(assetData, buffer, size);
     }
     fclose(assetFile);

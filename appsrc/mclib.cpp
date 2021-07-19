@@ -2,7 +2,7 @@
 #include "mclib.h"
 #include <cstdio>
 
-const int READ_BUFFER_SIZE = 8 * 1024;
+const int ReadFileBufferSize = 8 * 1024;
 
 MData *MCopyFileContent(MString *path) {
     if (!path) {
@@ -15,9 +15,9 @@ MData *MCopyFileContent(MString *path) {
     }
 
     MData *data = MDataCreate(nullptr, 0);
-    uint8_t buffer[READ_BUFFER_SIZE];
+    uint8_t buffer[ReadFileBufferSize];
     while (!feof(file)) {
-        auto size = (int)fread(buffer, 1, READ_BUFFER_SIZE, file);
+        auto size = (int)fread(buffer, 1, ReadFileBufferSize, file);
         MDataAppend(data, buffer, size);
     }
 
