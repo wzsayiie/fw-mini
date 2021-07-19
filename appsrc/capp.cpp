@@ -1,4 +1,4 @@
-#include "mdebug.h"
+#include "mapp.h"
 
-void CAppLaunch() {
+MAPP_UI_LAUNCH(CAppLaunch) void CAppLaunch() {
 }
