@@ -27,9 +27,8 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     //set the color:
-    MColorPattern color {
-        .rgba = _MWindowTriangleColor(index)
-    };
+    MColorPattern color;
+    color.rgba = _MWindowTriangleColor(index);
     
     float red   = color.red   / 255.f;
     float green = color.green / 255.f;
@@ -72,9 +71,8 @@
 
 - (void)drawLabel:(int)index {
     //set the color:
-    MColorPattern nativeColor = {
-        .rgba = _MWindowLabelColor(index)
-    };
+    MColorPattern nativeColor;
+    nativeColor.rgba = _MWindowLabelColor(index);
     
     float red   = nativeColor.red   / 255.f;
     float green = nativeColor.green / 255.f;
