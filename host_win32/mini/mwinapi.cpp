@@ -1,4 +1,5 @@
-﻿#include "mwinapi.h"
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include "mwinapi.h"
 #include <map>
 #include <shlobj.h>
 #include <string>
@@ -64,7 +65,7 @@ Gdiplus::Image *MManagedImage(int id)
 static MString *CopyAppDirectory(const WCHAR *parent, const WCHAR *directory)
 {
     //join the directory path.
-    std::basic_string<WCHAR> allPath = parent;
+    std::wstring allPath = parent;
     if (*allPath.rbegin() != L'\\')
     {
         allPath.append(L"\\");
@@ -103,9 +104,59 @@ static void PrintMessage(MString *text)
     wprintf(L"%s\n", (const WCHAR *)MStringU16Chars(text));
 }
 
+const int READ_ASSET_BUFFER_SIZE = 8 * 1024;
+
 static MData *CopyBundleAsset(MString *path)
 {
-    return nullptr;
+    //join the asset path.
+    static std::wstring *bundlePath = nullptr;
+    if (!bundlePath)
+    {
+        WCHAR buffer[MAX_PATH] = {0};
+        GetModuleFileNameW(nullptr, buffer, MAX_PATH);
+        
+        WCHAR *base = nullptr;
+        //in development mode, the bundle is in the project directory.
+        if (base = wcsstr(buffer, L"fw-mini\\"))
+        {
+            base[8] = L'\0';
+            wcscat(buffer, L"appres\\");
+        }
+        //in the run mode, the bundle and the program are in the same directory.
+        else if (base = wcsrchr(buffer, L'\\'))
+        {
+            base[1] = L'\0';
+        }
+
+        bundlePath = new std::wstring;
+        if (base)
+        {
+            wcscat(buffer, (const WCHAR *)_MAssetBundleU16Name);
+            wcscat(buffer, L"\\");
+            bundlePath->append(buffer);
+        }
+    }
+
+    std::wstring assetPath;
+    assetPath.append(*bundlePath);
+    assetPath.append((const WCHAR *)MStringU16Chars(path));
+
+    //read the asset file.
+    FILE *assetFile = _wfopen(assetPath.c_str(), L"rb");
+    if (!assetFile)
+    {
+        return nullptr;
+    }
+
+    MData *assetData = MDataCreate(nullptr, 0);
+    uint8_t buffer[READ_ASSET_BUFFER_SIZE];
+    while (!feof(assetFile))
+    {
+        auto size = (int)fread(buffer, 1, READ_ASSET_BUFFER_SIZE, assetFile);
+        MDataAppend(assetData, buffer, size);
+    }
+    fclose(assetFile);
+    return assetData;
 }
 
 static MImage *CreateImage(MData *data)
@@ -166,7 +217,7 @@ static MString *CopyTemporaryPath()
 
 static bool MakeDirectory(MString *path)
 {
-    std::basic_string<WCHAR> dirPath = (const WCHAR *)MStringU16Chars(path);
+    std::wstring dirPath = (const WCHAR *)MStringU16Chars(path);
 
     //SHCreateDirectoryEx() can create a continuous path like "xx\xx\xx",
     //but it's parameter does not support relative path.
@@ -175,7 +226,7 @@ static bool MakeDirectory(MString *path)
         WCHAR buffer[MAX_PATH] = {0};
         GetCurrentDirectoryW(MAX_PATH, buffer);
 
-        std::basic_string<WCHAR> allPath = buffer;
+        std::wstring allPath = buffer;
         if (*allPath.rbegin() != L'\\')
         {
             allPath.append(L"\\");
@@ -195,7 +246,7 @@ static bool MakeDirectory(MString *path)
 static MArray *CopyPathSubItems(MString *path)
 {
     //construct the pattern string "xx\*".
-    std::basic_string<WCHAR> target = (const WCHAR *)MStringU16Chars(path);
+    std::wstring target = (const WCHAR *)MStringU16Chars(path);
     if (*target.rbegin() != '\\')
     {
         target.append(L"\\*");
@@ -249,7 +300,7 @@ static MArray *CopyPathSubItems(MString *path)
 static void RemovePath(MString *path)
 {
     //SHFILEOPSTRUCT.pFrom need double null terminating.
-    std::basic_string<WCHAR> from = (const WCHAR *)MStringU16Chars(path);
+    std::wstring from = (const WCHAR *)MStringU16Chars(path);
     from.push_back('\0');
 
     SHFILEOPSTRUCTW operation = {0};

@@ -160,12 +160,10 @@ struct MDataImpl : MData {
 };
 
 MData *MDataCreate(const uint8_t *bytes, int size) {
-    if (!bytes && size <= 0) {
-        return nullptr;
-    }
-    
     auto data = new MDataImpl();
-    data->bytes.insert(data->bytes.end(), bytes, bytes + size);
+    if (bytes && size > 0) {
+        data->bytes.insert(data->bytes.end(), bytes, bytes + size);
+    }
     return data;
 }
 
