@@ -6,15 +6,10 @@
 #define MFUNC_HOST extern "C"
 
 //basic functions for realizing the export function.
-//NOTE: "MBUILD_AS_DLL" needs to be defined by the compiler.
-#ifdef MBUILD_AS_DLL
-    #if MCPL_CL
-        #define MFUNC_BASE extern "C" __declspec(dllexport)
-    #else
-        #define MFUNC_BASE extern "C" __attribute((visibility("default")))
-    #endif
+#if MCPL_CL
+    #define MFUNC_BASE extern "C" __declspec(dllexport)
 #else
-    #define MFUNC_BASE extern "C"
+    #define MFUNC_BASE extern "C" __attribute((visibility("default")))
 #endif
 
 //exported functions that can be called dynamically.
