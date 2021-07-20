@@ -1,4 +1,5 @@
 ﻿#include <cstdio>
+#include <io.h>
 #include <windowsx.h>
 #include "mapp.h"
 #include "mhostui.h"
@@ -7,6 +8,12 @@
 
 static void OpenConsole(void)
 {
+    if (_isatty(_fileno(stdout)))
+    {
+        //currently there is a console.
+        return;
+    }
+
     AllocConsole();
 
     FILE* newStdin  = nullptr;
