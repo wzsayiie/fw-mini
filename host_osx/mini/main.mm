@@ -54,12 +54,22 @@
 
 #pragma mark - main
 
-int main(int argc, const char *argv[]) {
-    
+MFUNC_BASE void MAppMain() {
     Class clazz = NSClassFromString(@"MAppDelegate");
     id<NSApplicationDelegate> delegate = [[clazz alloc] init];
     
     //NOTE: the "delegate" is weak.
     NSApplication.sharedApplication.delegate = delegate;
-    return NSApplicationMain(argc, argv);
+    
+    NSArray<NSString *> *arguments = NSProcessInfo.processInfo.arguments;
+    int  argc = (int)arguments.count;
+    auto argv = new const char *[argc];
+    for (int index = 0; index < argc; ++index) {
+        argv[index] = arguments[index].UTF8String;
+    }
+    NSApplicationMain(argc, argv);
+}
+
+int main() {
+    MAppMain();
 }
