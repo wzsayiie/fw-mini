@@ -25,6 +25,14 @@ MData *MCopyFileContent(MString *path) {
     return data;
 }
 
+MString *MCopyFileString(MString *path) {
+    return nullptr;
+}
+
+MString *MCopyBundleString(MString *path) {
+    return nullptr;
+}
+
 void MWriteFile(MString *path, MData *content) {
     if (!path || !content) {
         return;
@@ -40,4 +48,10 @@ void MWriteFile(MString *path, MData *content) {
     fwrite(bytes, 1, size, file);
 
     fclose(file);
+}
+
+void MWriteU8File(MString *path, MString *string) {
+}
+
+void MWriteU16File(MString *path, MString *string) {
 }
