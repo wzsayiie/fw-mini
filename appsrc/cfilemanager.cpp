@@ -24,7 +24,7 @@ void CAppendPathItem(std::string *path, const std::string &item) {
         return;
     }
 
-    if (!IsPathSeperator(*path->rbegin())) {
+    if (!IsPathSeperator(path->back())) {
         path->push_back(PathSeperator);
     }
     path->append(item);

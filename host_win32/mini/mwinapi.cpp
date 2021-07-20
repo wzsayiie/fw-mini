@@ -66,9 +66,9 @@ static MString *CopyAppDirectory(const WCHAR *parent, const WCHAR *directory)
 {
     //join the directory path.
     std::wstring allPath = parent;
-    if (*allPath.rbegin() != L'\\')
+    if (allPath.back() != L'\\')
     {
-        allPath.append(L"\\");
+        allPath.push_back(L'\\');
     }
     allPath.append(directory);
 
@@ -227,9 +227,9 @@ static bool MakeDirectory(MString *path)
         GetCurrentDirectoryW(MAX_PATH, buffer);
 
         std::wstring allPath = buffer;
-        if (*allPath.rbegin() != L'\\')
+        if (allPath.back() != L'\\')
         {
-            allPath.append(L"\\");
+            allPath.push_back(L'\\');
         }
         allPath.append(dirPath);
 
@@ -247,7 +247,7 @@ static MArray *CopyPathSubItems(MString *path)
 {
     //construct the pattern string "xx\*".
     std::wstring target = (const WCHAR *)MStringU16Chars(path);
-    if (*target.rbegin() != '\\')
+    if (target.back() != '\\')
     {
         target.append(L"\\*");
     }
