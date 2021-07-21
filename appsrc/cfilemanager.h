@@ -4,7 +4,7 @@
 #include <vector>
 
 //------------------------------------------------------------------------------
-//path join:
+//path:
 
 void CAppendPathItem(std::string *path, const std::string &item);
 
@@ -14,14 +14,14 @@ std::string CGetPathParent  (const std::string &path);
 //------------------------------------------------------------------------------
 //file operations:
 
-std::vector<uint8_t> CReadFile        (const std::string &path);
-std::string          CReadTextFile    (const std::string &path);
-std::vector<uint8_t> CReadBundleAsset (const std::string &path);
-std::string          CReadBundleString(const std::string &path);
+std::vector<uint8_t> CReadDataFromFile    (const std::string &path);
+std::string          CReadStringFromFile  (const std::string &path);
+std::vector<uint8_t> CReadDataFromBundle  (const std::string &path);
+std::string          CReadStringFromBundle(const std::string &path);
 
-void CWriteFile   (const std::string &path, const std::vector<uint8_t> &data);
-void CWriteU8File (const std::string &path, const std::string &data);
-void CWriteU16File(const std::string &path, const std::string &data);
+void CWriteDataToFile     (const std::string &path, const std::vector<uint8_t> &data);
+void CWriteU8StringToFile (const std::string &path, const std::string &data);
+void CWriteU16StringToFile(const std::string &path, const std::string &data);
 
 std::string CDocumentPath ();
 std::string CCachePath    ();

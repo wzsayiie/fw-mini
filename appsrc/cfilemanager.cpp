@@ -1,6 +1,6 @@
 #include "cfilemanager.h"
-#include "mclib.h"
 #include "mhostapi.h"
+#include "mresource.h"
 
 //------------------------------------------------------------------------------
 //path join:
@@ -74,23 +74,26 @@ std::string CGetPathParent(const std::string &path) {
 //------------------------------------------------------------------------------
 //file operations:
 
-std::vector<uint8_t> CReadFile(const std::string &path) {
+std::vector<uint8_t> CReadDataFromFile(const std::string &path) {
     MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MDataRef   fileData = m_auto_release MCopyFileContent(filePath.get());
+    MDataRef   fileData = m_auto_release MCopyDataFromFile(filePath.get());
 
     const uint8_t *bytes = MDataBytes(fileData.get());
     int size = MDataSize(fileData.get());
     return std::vector<uint8_t>(bytes, bytes + size);
 }
 
-std::string CReadTextFile(const std::string &path) {
+std::string CReadStringFromFile(const std::string &path) {
     MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MStringRef fileData = m_auto_release MCopyFileString(filePath.get());
+    MStringRef string   = m_auto_release MCopyStringFromFile(filePath.get());
 
-    return std::string(MStringU8Chars(fileData.get()));
+    if (string) {
+        return std::string(MStringU8Chars(string.get()));
+    }
+    return "";
 }
 
-std::vector<uint8_t> CReadBundleAsset(const std::string &path) {
+std::vector<uint8_t> CReadDataFromBundle(const std::string &path) {
     MStringRef assetPath = m_auto_release MStringCreateU8(path.c_str());
     MDataRef   assetData = m_auto_release MCopyBundleAsset(assetPath.get());
 
@@ -99,32 +102,35 @@ std::vector<uint8_t> CReadBundleAsset(const std::string &path) {
     return std::vector<uint8_t>(bytes, bytes + size);
 }
 
-std::string CReadBundleString(const std::string &path) {
+std::string CReadStringFromBundle(const std::string &path) {
     MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MStringRef fileData = m_auto_release MCopyBundleString(filePath.get());
+    MStringRef string   = m_auto_release MCopyStringFromBundle(filePath.get());
 
-    return std::string(MStringU8Chars(fileData.get()));
+    if (string) {
+        return std::string(MStringU8Chars(string.get()));
+    }
+    return "";
 }
 
-void CWriteFile(const std::string &path, const std::vector<uint8_t> &data) {
+void CWriteDataToFile(const std::string &path, const std::vector<uint8_t> &data) {
     MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
     MDataRef   fileData = m_auto_release MDataCreate(&data[0], (int)data.size());
 
-    MWriteFile(filePath.get(), fileData.get());
+    MWriteDataToFile(filePath.get(), fileData.get());
 }
 
-void CWriteU8File(const std::string &path, const std::string &data) {
+void CWriteU8StringToFile(const std::string &path, const std::string &data) {
     MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MStringRef fileData = m_auto_release MStringCreateU8(data.c_str());
+    MStringRef string   = m_auto_release MStringCreateU8(data.c_str());
 
-    MWriteU8File(filePath.get(), fileData.get());
+    MWriteU8StringToFile(filePath.get(), string.get());
 }
 
-void CWriteU16File(const std::string &path, const std::string &data) {
+void CWriteU16StringToFile(const std::string &path, const std::string &data) {
     MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MStringRef fileData = m_auto_release MStringCreateU8(data.c_str());
+    MStringRef string   = m_auto_release MStringCreateU8(data.c_str());
 
-    MWriteU16File(filePath.get(), fileData.get());
+    MWriteU16StringToFile(filePath.get(), string.get());
 }
 
 std::string CDocumentPath() {
