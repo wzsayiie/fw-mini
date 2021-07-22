@@ -189,7 +189,7 @@ void CView::setSupersOffset(float x, float y) {
     }
 }
 
-void CView::handleWindowEvent(MObject *, MObject *) {
+void CView::handleWindowEvent(MObject *) {
     if (!sRootView) {
         return;
     }

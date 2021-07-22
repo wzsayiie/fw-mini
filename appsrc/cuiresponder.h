@@ -38,7 +38,7 @@ protected:
     virtual void onKeyDown(MKey key) {}
     
 private:
-    static void handleWindowEvent(MObject *, MObject *);
+    static void handleWindowEvent(MObject *);
     
     static CUIResponder *findFirstResponder(std::function<bool (CUIResponder *)> fit);
     

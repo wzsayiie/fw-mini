@@ -81,12 +81,12 @@ MFUNC_BASE int MStringU16Size(MString *string);
 //------------------------------------------------------------------------------
 //MLambda:
 
-typedef void (*MLambdaFunc)(MObject *load, MObject *param);
+typedef void (*MLambdaFunc)(MObject *load);
 
 class MLambda : public MObject {};
 
 MFUNC_BASE MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
-MFUNC_BASE void MLambdaCall(MLambda *lambda, MObject *param);
+MFUNC_BASE void MLambdaCall(MLambda *lambda);
 
 //------------------------------------------------------------------------------
 //MData:

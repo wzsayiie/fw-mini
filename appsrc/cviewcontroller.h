@@ -37,7 +37,7 @@ protected:
     void onWindowTouchEnd  (float x, float y) override;
     
 private:
-    static void handleWindowEvent(MObject *, MObject *);
+    static void handleWindowEvent(MObject *);
     
     void handleLoad();
     void handleAppear();

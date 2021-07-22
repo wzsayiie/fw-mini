@@ -140,10 +140,10 @@ MLambda *MLambdaCreate(MLambdaFunc func, MObject *load) {
     return nullptr;
 }
 
-void MLambdaCall(MLambda *lambda, MObject *param) {
+void MLambdaCall(MLambda *lambda) {
     if (lambda) {
         auto object = (MLambdaImpl *)lambda;
-        object->mFunc(object->mLoad, param);
+        object->mFunc(object->mLoad);
     }
 }
 

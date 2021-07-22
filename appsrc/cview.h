@@ -55,7 +55,7 @@ protected:
 private:
     void setSupersOffset(float x, float y);
 
-    static void handleWindowEvent(MObject *, MObject *);
+    static void handleWindowEvent(MObject *);
 
     void handleResize(float width, float height);
     void handleDraw();

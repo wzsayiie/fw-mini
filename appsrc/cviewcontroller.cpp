@@ -151,7 +151,7 @@ void CViewController::onWindowTouchEnd(float x, float y) {
     onTouchEnd(viewX, viewY);
 }
 
-void CViewController::handleWindowEvent(MObject *, MObject *) {
+void CViewController::handleWindowEvent(MObject *) {
     if (!sRootController) {
         return;
     }

@@ -98,7 +98,7 @@ static TextBox *GetTextBox() {
 static void SendEvent(Window *window, MWindowEvent event) {
     window->event = event;
     for (const MLambdaRef &listener : window->listeners) {
-        MLambdaCall(listener.get(), nullptr);
+        MLambdaCall(listener.get());
     }
 }
 

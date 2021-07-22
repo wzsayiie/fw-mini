@@ -44,7 +44,7 @@ bool CUIResponder::isFirstResponder() {
     return this == sFirstResponder;
 }
 
-void CUIResponder::handleWindowEvent(MObject *, MObject *) {
+void CUIResponder::handleWindowEvent(MObject *) {
     MWindowEvent event = MWindowCurrentEvent();
     switch (event) {
         case MWindowEvent_TouchBegin: handleWindowTouchBegin(); break;
