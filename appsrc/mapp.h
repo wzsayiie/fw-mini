@@ -1,27 +1,18 @@
 #pragma once
 
-#include "mconfig.h"
+#include "mtypes.h"
 
 const float _MAppUpdateInterval = 0.1f;
 
 MFUNC_HOST void _MAppLaunch();
 MFUNC_HOST void _MAppUpdate();
 
-MFUNC_BASE void _MAppAddLaunchFunc(void (*func)(), int priority);
-MFUNC_BASE void _MAppAddUpdateFunc(void (*func)());
+MFUNC_BASE void _MAppAddLaunchListener(MLambda *listener, int priority);
+MFUNC_BASE void _MAppAddUpdateListener(MLambda *listener);
 
-struct _MAppLaunchAdder {
-    _MAppLaunchAdder(void (*func)(), int priority) {
-        _MAppAddLaunchFunc(func, priority);
-    }
-};
+struct _MAppLaunchFuncAdder { _MAppLaunchFuncAdder(void (*func)(), int priority); };
+struct _MAppUpdateFuncAdder { _MAppUpdateFuncAdder(void (*func)()); };
 
-struct _MAppUpdateAdder {
-    _MAppUpdateAdder(void (*func)()) {
-        _MAppAddUpdateFunc(func);
-    }
-};
-
-#define MAPP_SCENE_LAUNCH(N) void N(); static _MAppLaunchAdder _launch_##N(N, 1);
-#define MAPP_UI_LAUNCH(   N) void N(); static _MAppLaunchAdder _launch_##N(N, 0);
-#define MAPP_UPDATE(      N) void N(); static _MAppUpdateAdder _update_##N(N);
+#define MAPP_SCENE_LAUNCH(N) void N(); static _MAppLaunchFuncAdder _launch_##N(N, 1);
+#define MAPP_UI_LAUNCH(   N) void N(); static _MAppLaunchFuncAdder _launch_##N(N, 0);
+#define MAPP_UPDATE(      N) void N(); static _MAppUpdateFuncAdder _update_##N(N);
