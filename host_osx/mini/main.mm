@@ -10,7 +10,7 @@
 
 + (MWindowController *)windowController {
     //only assign the origin, the size will be taken care of by content view.
-    NSRect rect = NSMakeRect(600, 200, 0, 0);
+    NSRect rect = NSMakeRect(1000, 200, 0, 0);
     
     NSWindowStyleMask style = self.windowStyle;
     NSBackingStoreType backing = NSBackingStoreBuffered;
@@ -61,13 +61,9 @@ MFUNC_BASE void MAppMain() {
     //NOTE: the "delegate" is weak.
     NSApplication.sharedApplication.delegate = delegate;
     
-    NSArray<NSString *> *arguments = NSProcessInfo.processInfo.arguments;
-    int  argc = (int)arguments.count;
-    auto argv = new const char *[argc];
-    for (int index = 0; index < argc; ++index) {
-        argv[index] = arguments[index].UTF8String;
-    }
-    NSApplicationMain(argc, argv);
+    //NSApplicationMain() will try to read the info.plist.
+    //if it is a custom directory structure, this will cause inconvenience.
+    [NSApplication.sharedApplication run];
 }
 
 int main() {
