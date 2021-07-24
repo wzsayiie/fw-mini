@@ -1,4 +1,4 @@
-#include <jni.h>
+#include "AndroidApi.h"
 #include "mhostui.h"
 
 union AndroidColorPattern {
@@ -56,11 +56,13 @@ Java_src_app_mini_MainView_windowImageCount(JNIEnv *, jobject)
     return _MWindowImageCount();
 }
 
-extern "C" JNIEXPORT jint JNICALL
+extern "C" JNIEXPORT jobject JNICALL
 Java_src_app_mini_MainView_windowImageObject(JNIEnv *, jobject, jint index)
 {
     MImage *image = _MWindowImageObject(index);
-    return MImageManagedId(image);
+    auto    load  = (MImageLoad *)MImageGetLoad(image);
+
+    return load->nativeImage();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL

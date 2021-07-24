@@ -1,55 +1,17 @@
 #import "MOSXAPI.h"
 #import "mhostapi.h"
 
-#pragma mark - managed object pool
+#pragma mark - native types.
 
-@interface ManagedObjectPool : NSObject
-@property (nonatomic) NSMutableDictionary<NSNumber *, NSObject *> *objects;
-@property (nonatomic) int IDCount;
-@end
-
-@implementation ManagedObjectPool
-
-- (instancetype)init {
-    if (self = [super init]) {
-        self.objects = [NSMutableDictionary dictionary];
-    }
-    return self;
+MImageLoad::MImageLoad(NSImage *nativeImage) {
+    mNativeImage = nativeImage;
 }
 
-- (int)addObject:(NSObject *)object {
-    if (!object) {
-        return 0;
-    }
-    
-    int ID = ++self.IDCount;
-    self.objects[@(ID)] = object;
-    return ID;
+NSImage *MImageLoad::nativeImage() {
+    return mNativeImage;
 }
 
-- (NSObject *)objectForID:(int)ID {
-    return self.objects[@(ID)];
-}
-
-- (void)removeObjectForID:(int)ID {
-    [self.objects removeObjectForKey:@(ID)];
-}
-
-@end
-
-static ManagedObjectPool *ManagedImagePool() {
-    static ManagedObjectPool *pool = nil;
-    if (!pool) {
-        pool = [[ManagedObjectPool alloc] init];
-    }
-    return pool;
-}
-
-NSImage *MManagedImage(int ID) {
-    return (NSImage *)[ManagedImagePool() objectForID:ID];
-}
-
-#pragma mark - osx api
+#pragma mark - apis.
 
 static void PrintMessage(MString *text) {
     NSLog(@"%s", MStringU8Chars(text));
@@ -73,8 +35,10 @@ static MImage *CreateImage(MData *data) {
     NSData  *imageData   = [NSData dataWithBytes:MDataBytes(data) length:MDataSize(data)];
     NSImage *imageObject = [[NSImage alloc] initWithData:imageData];
     
-    int managedID = [ManagedImagePool() addObject:imageObject];
-    return MImageCreate(managedID, [](int ID) { [ManagedImagePool() removeObjectForID:ID]; });
+    if (imageObject) {
+        return MImageCreate(new MImageLoad(imageObject));
+    }
+    return nullptr;
 }
 
 static MString *CopyDocumentPath() {

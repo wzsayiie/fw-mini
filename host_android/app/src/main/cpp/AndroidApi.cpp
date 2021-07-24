@@ -1,8 +1,26 @@
-#include <jni.h>
+#include "AndroidApi.h"
 #include "mhostapi.h"
 
 static JNIEnv *sJniEnv = nullptr;
 static jclass  sJClass = nullptr;
+
+//------------------------------------------------------------------------------
+//MImageLoad:
+
+MImageLoad::MImageLoad(jobject nativeImage) {
+    mNativeImage = sJniEnv->NewGlobalRef(nativeImage);
+}
+
+MImageLoad::~MImageLoad() {
+    sJniEnv->DeleteGlobalRef(mNativeImage);
+}
+
+jobject MImageLoad::nativeImage() {
+    return mNativeImage;
+}
+
+//------------------------------------------------------------------------------
+//api assist:
 
 static jstring JNewString(MString *src) {
     if (!src) {
@@ -62,9 +80,11 @@ struct JLocalRefDeleteHelper {
 };
 #define j_auto_delete JLocalRefDeleteHelper()<<
 
+//------------------------------------------------------------------------------
+//android api:
+
 static jmethodID sPrintMessage      = nullptr;
 static jmethodID sCopyBundleAsset   = nullptr;
-static jmethodID sInner_DeleteImage = nullptr;
 static jmethodID sCreateImage       = nullptr;
 static jmethodID sCopyDocumentPath  = nullptr;
 static jmethodID sCopyCachePath     = nullptr;
@@ -87,14 +107,14 @@ static MData *CopyBundleAsset(MString *path) {
     return CreateData(assetData.get());
 }
 
-static void DeleteImage(int id) {
-    sJniEnv->CallStaticVoidMethod(sJClass, sInner_DeleteImage, id);
-}
-
 static MImage *CreateImage(MData *data) {
-    auto imageData = j_auto_delete JNewByteArray(data);
-    jint managedId = sJniEnv->CallStaticIntMethod(sJClass, sCreateImage, imageData.get());
-    return MImageCreate(managedId, [](int id) { DeleteImage(id); });
+    auto imageData   = j_auto_delete JNewByteArray(data);
+    auto imageObject = j_auto_delete sJniEnv->CallStaticObjectMethod(sJClass, sCreateImage, imageData.get());
+
+    if (imageObject) {
+        return MImageCreate(new MImageLoad(imageObject.get()));
+    }
+    return nullptr;
 }
 
 static MString *CopyDocumentPath() {
@@ -167,8 +187,7 @@ Java_src_app_mini_AndroidApi_registerAndroidApi(JNIEnv *env, jclass)
 
     sPrintMessage      = env->GetStaticMethodID(sJClass, "printMessage"     , "(Ljava/lang/String;)V");
     sCopyBundleAsset   = env->GetStaticMethodID(sJClass, "copyBundleAsset"  , "(Ljava/lang/String;)[B");
-    sInner_DeleteImage = env->GetStaticMethodID(sJClass, "deleteImage"      , "(I)V");
-    sCreateImage       = env->GetStaticMethodID(sJClass, "createImage"      , "([B)I");
+    sCreateImage       = env->GetStaticMethodID(sJClass, "createImage"      , "([B)Landroid/graphics/Bitmap;");
     sCopyDocumentPath  = env->GetStaticMethodID(sJClass, "copyDocumentPath" , "()Ljava/lang/String;");
     sCopyCachePath     = env->GetStaticMethodID(sJClass, "copyCachePath"    , "()Ljava/lang/String;");
     sCopyTemporaryPath = env->GetStaticMethodID(sJClass, "copyTemporaryPath", "()Ljava/lang/String;");

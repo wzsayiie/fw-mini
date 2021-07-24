@@ -58,8 +58,9 @@
 
 - (void)drawImage:(int)index withViewHeight:(float)viewHeight {
     //get the image.
-    MImage *image = _MWindowImageObject(index);
-    NSImage *managedImage = MManagedImage(MImageManagedId(image));
+    MImage  *imageObject = _MWindowImageObject(index);
+    auto     imageLoad   = (MImageLoad *)MImageGetLoad(imageObject);
+    NSImage *nativeImage = imageLoad->nativeImage();
     
     //get the position rectangle.
     _MPixel W = _MWindowImageWidth (index);
@@ -68,7 +69,7 @@
     _MPixel Y = viewHeight - H - _MWindowImageY(index);
     
     //draw.
-    [managedImage drawInRect:NSMakeRect(X, Y, W, H)];
+    [nativeImage drawInRect:NSMakeRect(X, Y, W, H)];
 }
 
 - (void)drawLabel:(int)index withViewHeight:(float)viewHeight {

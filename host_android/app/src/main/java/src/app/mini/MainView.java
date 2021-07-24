@@ -61,8 +61,7 @@ public class MainView extends View {
 
     private void drawImage(int index, Canvas canvas) {
         //get the image.
-        int managedId = windowImageObject(index);
-        Bitmap image = AndroidApi.getManagedImage(managedId);
+        Bitmap image = windowImageObject(index);
 
         //set the position rectangle.
         int x = (int) windowImageX(index);
@@ -125,12 +124,12 @@ public class MainView extends View {
     private native float windowTriangleVertexY(int index, int vertexIndex);
     private native int   windowTriangleColor  (int index);
 
-    private native int   windowImageCount ();
-    private native int   windowImageObject(int index);
-    private native float windowImageX     (int index);
-    private native float windowImageY     (int index);
-    private native float windowImageWidth (int index);
-    private native float windowImageHeight(int index);
+    private native int    windowImageCount ();
+    private native Bitmap windowImageObject(int index);
+    private native float  windowImageX     (int index);
+    private native float  windowImageY     (int index);
+    private native float  windowImageWidth (int index);
+    private native float  windowImageHeight(int index);
     
     private native int    windowLabelCount   ();
     private native String windowLabelString  (int index);

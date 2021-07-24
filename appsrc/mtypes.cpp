@@ -115,17 +115,17 @@ int MStringU16Size(MString *str) { return str ? (int)((MStringImpl *)str)->u16s(
 
 struct MLambdaImpl : MLambda {
     
-    MLambdaFunc mFunc;
-    MObject    *mLoad;
+    MLambdaFunc func;
+    MObject    *load;
     
     MLambdaImpl(MLambdaFunc func, MObject *load) {
         MRetain(load);
-        mFunc = func;
-        mLoad = load;
+        this->func = func;
+        this->load = load;
     }
 
     ~MLambdaImpl() {
-        MRelease(mLoad);
+        MRelease(load);
     }
     
     MType _type() override {
@@ -143,7 +143,7 @@ MLambda *MLambdaCreate(MLambdaFunc func, MObject *load) {
 void MLambdaCall(MLambda *lambda) {
     if (lambda) {
         auto object = (MLambdaImpl *)lambda;
-        object->mFunc(object->mLoad);
+        object->func(object->load);
     }
 }
 
@@ -249,16 +249,15 @@ MObject *MArrayItem(MArray *array, int index) {
 
 struct MImageImpl : MImage {
     
-    int managedId = 0;
-    MImageDispose dispose = nullptr;
+    MObject *load;
 
-    MImageImpl(int managedId, MImageDispose dispose) {
-        this->managedId = managedId;
-        this->dispose = dispose;
+    MImageImpl(MObject *load) {
+        MRetain(load);
+        this->load = load;
     }
     
     ~MImageImpl() {
-        dispose(managedId);
+        MRelease(load);
     }
     
     MType _type() override {
@@ -266,19 +265,18 @@ struct MImageImpl : MImage {
     }
 };
 
-MImage *MImageCreate(int managedId, MImageDispose dispose) {
-    if (managedId != 0) {
-        return new MImageImpl(managedId, dispose);
+MImage *MImageCreate(MObject *load) {
+    if (load) {
+        return new MImageImpl(load);
     }
     return nullptr;
 }
 
-int MImageManagedId(MImage *image) {
+MObject *MImageGetLoad(MImage *image) {
     if (image) {
-        auto object = (MImageImpl *)image;
-        return object->managedId;
+        return ((MImageImpl *)image)->load;
     }
-    return 0;
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------

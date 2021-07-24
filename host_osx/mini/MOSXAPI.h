@@ -1,5 +1,18 @@
 #import <Cocoa/Cocoa.h>
+#import "mtypes.h"
 
-NSImage *MManagedImage(int ID);
+#pragma mark - native types.
+
+class MImageLoad : public _MNative {
+    
+public:
+    MImageLoad(NSImage *nativeImage);
+    NSImage *nativeImage();
+    
+private:
+    NSImage *mNativeImage;
+};
+
+#pragma mark - apis.
 
 void MRegisterAPIs();

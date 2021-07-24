@@ -56,8 +56,9 @@
 
 - (void)drawImage:(int)index {
     //get the image.
-    MImage *image = _MWindowImageObject(index);
-    UIImage *managedImage = MManagedImage(MImageManagedId(image));
+    MImage *imageObject  = _MWindowImageObject(index);
+    auto    imageLoad    = (MImageLoad *)MImageGetLoad(imageObject);
+    UIImage *nativeImage = imageLoad->nativeImage();
     
     //get the position rectangle.
     _MPixel X = _MWindowImageX(index);
@@ -66,7 +67,7 @@
     _MPixel H = _MWindowImageHeight(index);
     
     //draw.
-    [managedImage drawInRect:CGRectMake(X, Y, W, H)];
+    [nativeImage drawInRect:CGRectMake(X, Y, W, H)];
 }
 
 - (void)drawLabel:(int)index {

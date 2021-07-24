@@ -119,8 +119,8 @@ typedef void (*MImageDispose)(int managedId);
 
 class MImage : public MObject {};
 
-MFUNC_BASE MImage *MImageCreate(int managedId, MImageDispose dispose);
-MFUNC_BASE int MImageManagedId(MImage *image);
+MFUNC_BASE MImage  *MImageCreate (MObject *load );
+MFUNC_BASE MObject *MImageGetLoad(MImage  *image);
 
 //------------------------------------------------------------------------------
 //Native:

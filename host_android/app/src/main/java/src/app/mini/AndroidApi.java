@@ -10,44 +10,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 public class AndroidApi {
-
-    //managed object pool:
-
-    private static class ManagedObjectPool<T> {
-
-        private final HashMap<Integer, Object> mObjects = new HashMap<>();
-        private int mIDCount = 0;
-
-        public int addObject(T object) {
-            if (object == null) {
-                return 0;
-            }
-
-            int id = ++mIDCount;
-            mObjects.put(id, object);
-            return id;
-        }
-
-        @SuppressWarnings("unchecked")
-        public T objectForId(int id) {
-            return (T) mObjects.get(id);
-        }
-
-        public void removeObject(int id) {
-            mObjects.remove(id);
-        }
-    }
-
-    private static final ManagedObjectPool<Bitmap> sManagedImagePool = new ManagedObjectPool<>();
-
-    public static Bitmap getManagedImage(int id) {
-        return sManagedImagePool.objectForId(id);
-    }
-
-    //android api:
 
     @SuppressLint("StaticFieldLeak")
     private static Context sContext = null;
@@ -88,13 +52,11 @@ public class AndroidApi {
         }
     }
 
-    protected static void deleteImage(int managedId) {
-        sManagedImagePool.removeObject(managedId);
-    }
-
-    protected static int createImage(byte[] data) {
-        Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-        return sManagedImagePool.addObject(image);
+    protected static Bitmap createImage(byte[] data) {
+        if (data != null) {
+            return BitmapFactory.decodeByteArray(data, 0, data.length);
+        }
+        return null;
     }
 
     protected static String copyDocumentPath() {
