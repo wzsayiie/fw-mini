@@ -10,23 +10,23 @@ struct UpdateItem {
     MLambdaRef listener;
 };
 
-static std::vector<LaunchItem> *sLaunchListeners = nullptr;
-static std::vector<UpdateItem> *sUpdateListeners = nullptr;
+static std::vector<LaunchItem> *sLaunchItems;
+static std::vector<UpdateItem> *sUpdateItems;
 
 void _MAppLaunch() {
-    if (!sLaunchListeners) {
+    if (!sLaunchItems) {
         return;
     }
-    for (const LaunchItem &item : *sLaunchListeners) {
+    for (const LaunchItem &item : *sLaunchItems) {
         MLambdaCall(item.listener.get());
     }
 }
 
 void _MAppUpdate() {
-    if (!sUpdateListeners) {
+    if (!sUpdateItems) {
         return;
     }
-    for (const UpdateItem &item : *sUpdateListeners) {
+    for (const UpdateItem &item : *sUpdateItems) {
         MLambdaCall(item.listener.get());
     }
 }
@@ -35,40 +35,47 @@ void _MAppAddLaunchListener(MLambda *listener, int priority) {
     if (!listener) {
         return;
     }
-
-    if (!sLaunchListeners) {
-        sLaunchListeners = new std::vector<LaunchItem>;
+    
+    if (!sLaunchItems) {
+        sLaunchItems = new std::vector<LaunchItem>;
     }
-
-    LaunchItem newItem;
-    newItem.listener = m_make_shared listener;
-    newItem.priority = priority;
-
-    for (auto it = sLaunchListeners->begin(); it != sLaunchListeners->end(); ++it) {
+    
+    LaunchItem one;
+    one.listener = m_make_shared listener;
+    one.priority = priority;
+    for (auto it = sLaunchItems->begin(); it != sLaunchItems->end(); ++it) {
         if (priority > (it->priority)) {
-            sLaunchListeners->insert(it, newItem);
+            sLaunchItems->insert(it, one);
             return;
         }
     }
-    sLaunchListeners->push_back(newItem);
+    sLaunchItems->push_back(one);
 }
 
 void _MAppAddUpdateListener(MLambda *listener) {
     if (!listener) {
         return;
     }
-
-    if (!sUpdateListeners) {
-        sUpdateListeners = new std::vector<UpdateItem>;
+    
+    if (!sUpdateItems) {
+        sUpdateItems = new std::vector<UpdateItem>;
     }
     
-    UpdateItem newItem;
-    newItem.listener = m_make_shared listener;
-    sUpdateListeners->push_back(newItem);
+    UpdateItem one;
+    one.listener = m_make_shared listener;
+    sUpdateItems->push_back(one);
 }
 
 _MAppLaunchFuncAdder::_MAppLaunchFuncAdder(void (*func)(), int priority) {
+    MLambdaRef listener = m_cast_lambda [func]() {
+        func();
+    };
+    _MAppAddLaunchListener(listener.get(), priority);
 }
 
 _MAppUpdateFuncAdder::_MAppUpdateFuncAdder(void (*func)()) {
+    MLambdaRef listener = m_cast_lambda [func]() {
+        func();
+    };
+    _MAppAddUpdateListener(listener.get());
 }
