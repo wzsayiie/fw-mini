@@ -1,1 +1,13 @@
 #!/bin/bash
+
+set -e -u
+
+cd `dirname $0`
+
+flg="--std=c++11 -fobjc-arc -dynamiclib -framework Cocoa"
+inc="-Iappsrc"
+src="appsrc/m*.cpp host_osx/mini/*.mm"
+
+mkdir -p "BUILD"
+rm    -f "BUILD/libmini.dylib"
+c++   -o "BUILD/libmini.dylib" $flg $inc $src
