@@ -280,3 +280,10 @@ int MImageManagedId(MImage *image) {
     }
     return 0;
 }
+
+//------------------------------------------------------------------------------
+//Native:
+
+MType _MNative::_type() {
+    return MType_MNative;
+}

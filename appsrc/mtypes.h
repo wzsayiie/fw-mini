@@ -27,6 +27,9 @@ const MType MType_MData   = MEnumId("Dat");     //MData.
 const MType MType_MArray  = MEnumId("Arr");     //MArray.
 const MType MType_MImage  = MEnumId("Img");     //MImage.
 
+//used to present types related to the os.
+const MType MType_MNative = MEnumId("Ntv");
+
 //------------------------------------------------------------------------------
 //MObject:
 
@@ -120,6 +123,15 @@ MFUNC_BASE MImage *MImageCreate(int managedId, MImageDispose dispose);
 MFUNC_BASE int MImageManagedId(MImage *image);
 
 //------------------------------------------------------------------------------
+//Native:
+
+class _MNative : public MObject {
+    
+public:
+    MType _type() override;
+};
+
+//------------------------------------------------------------------------------
 //smart pointer:
 
 typedef std::shared_ptr<MObject> MObjectRef;
@@ -174,3 +186,38 @@ private:
 };
 
 #define m_auto_release _MAutoReleaseHelper()<<
+
+//------------------------------------------------------------------------------
+//lambda cast:
+
+class _MLambdaCastHelper {
+    
+public:
+    template<typename F> MLambdaRef operator<<(const F &func) {
+        
+        struct Impl : Intf {
+            
+            F mFunc;
+            
+            Impl(const F &func): mFunc(func) {
+            }
+            
+            void call() override {
+                mFunc();
+            }
+        };
+        
+        return m_auto_release MLambdaCreate(procedure, new Impl(func));
+    }
+    
+private:
+    struct Intf : _MNative {
+        virtual void call() = 0;
+    };
+    
+    static void procedure(MObject *load) {
+        ((Intf *)load)->call();
+    }
+};
+
+#define m_cast_lambda _MLambdaCastHelper()<<
