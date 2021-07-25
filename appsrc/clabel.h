@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "cview.h"
 
 typedef std::shared_ptr<class CLabel> CLabelRef;

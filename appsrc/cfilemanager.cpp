@@ -1,6 +1,4 @@
 #include "cfilemanager.h"
-#include "mhostapi.h"
-#include "mresource.h"
 
 //------------------------------------------------------------------------------
 //path join:

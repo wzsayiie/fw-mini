@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
+
 #include "mresource.h"
-#include <cstdio>
-#include <string>
 #include "mencode.h"
 #include "mhostapi.h"
 

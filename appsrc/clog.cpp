@@ -1,7 +1,4 @@
 #include "clog.h"
-#include <cstdarg>
-#include <cstdio>
-#include "mhostapi.h"
 
 const size_t MessageBufferSize = 4096;
 

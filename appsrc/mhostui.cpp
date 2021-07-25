@@ -1,5 +1,4 @@
 #include "mhostui.h"
-#include <vector>
 
 struct Triangle {
     MColor color = 0;

@@ -1,5 +1,4 @@
 #include "mcontext.h"
-#include "mhostapi.h"
 
 static float sOffsetX = 0;
 static float sOffsetY = 0;

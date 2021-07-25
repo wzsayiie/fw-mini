@@ -1,5 +1,4 @@
 #include "mapp.h"
-#include <vector>
 
 struct LaunchItem {
     MLambdaRef listener;

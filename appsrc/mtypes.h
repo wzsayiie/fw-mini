@@ -1,8 +1,16 @@
 #pragma once
 
-#include <cstdint>
-#include <memory>
 #include "mconfig.h"
+
+//------------------------------------------------------------------------------
+//common types of the standard library:
+
+#include <cstdint>
+#include <functional>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 //------------------------------------------------------------------------------
 //type enumeration:

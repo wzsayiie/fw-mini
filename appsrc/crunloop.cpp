@@ -1,5 +1,5 @@
 #include "crunloop.h"
-#include "mapp.h"
+#include "minikit.h"
 
 MAPP_UPDATE(CAppUpdate) void CAppUpdate() {
 }

@@ -1,9 +1,4 @@
 #include "cgraphics.h"
-#include <string>
-#include <vector>
-#include "mcontext.h"
-#include "mhostapi.h"
-#include "mresource.h"
 
 //------------------------------------------------------------------------------
 //CColor:

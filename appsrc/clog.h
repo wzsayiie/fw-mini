@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mdebug.h"
+#include "minikit.h"
 
 void CLog(_Printf_format_string_ const char *format, ...) __printflike(1, 2);
 

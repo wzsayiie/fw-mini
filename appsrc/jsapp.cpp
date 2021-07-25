@@ -1,4 +1,4 @@
-#include "mapp.h"
+#include "minikit.h"
 
 MAPP_SCENE_LAUNCH(JsAppLaunch) void JsAppLaunch() {
 }
