@@ -1,5 +1,4 @@
-﻿#include <cstdio>
-#include <io.h>
+﻿#include <io.h>
 #include <windowsx.h>
 #include "mapp.h"
 #include "mhostui.h"

@@ -1,66 +1,24 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
+
 #include "mwinapi.h"
-#include <map>
 #include <shlobj.h>
-#include <string>
 #include "mhostapi.h"
 
-//managed object pool:
+//native types:
 
-template<typename T> class ManagedObjectPool
-{
-public:
-    int add(T *object)
-    {
-        if (!object)
-        {
-            return 0;
-        }
-
-        int id = ++mIdCount;
-        mObjects[id] = object;
-        return id;
-    }
-
-    T *get(int id)
-    {
-        auto it = mObjects.find(id);
-        if (it != mObjects.end())
-        {
-            return it->second;
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-
-    void remove(int id)
-    {
-        mObjects.erase(id);
-    }
-
-private:
-    std::map<int, T *> mObjects;
-    int mIdCount = 0;
-};
-
-static ManagedObjectPool<Gdiplus::Image> *ManagedImagePool()
-{
-    static ManagedObjectPool<Gdiplus::Image> *pool = nullptr;
-    if (!pool)
-    {
-        pool = new ManagedObjectPool<Gdiplus::Image>;
-    }
-    return pool;
+MImageLoad::MImageLoad(Gdiplus::Image *nativeImage) {
+    mNativeImage = nativeImage;
 }
 
-Gdiplus::Image *MManagedImage(int id)
-{
-    return ManagedImagePool()->get(id);
+MImageLoad::~MImageLoad() {
+    delete mNativeImage;
 }
 
-//host api assist:
+Gdiplus::Image *MImageLoad::nativeImage() {
+    return mNativeImage;
+}
+
+//api assist:
 
 static MString *CopyAppDirectory(const WCHAR *parent, const WCHAR *directory)
 {
@@ -187,8 +145,10 @@ static MImage *CreateImage(MData *data)
     Gdiplus::Image *image = Gdiplus::Image::FromStream(stream, FALSE);
     stream->Release();
 
-    int imageId = ManagedImagePool()->add(image);
-    return MImageCreate(imageId, [](int id) { ManagedImagePool()->remove(id); });
+    if (image) {
+        return MImageCreate(new MImageLoad(image));
+    }
+    return nullptr;
 }
 
 static MString *CopyDocumentPath()

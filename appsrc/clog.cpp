@@ -1,4 +1,6 @@
 #include "clog.h"
+#include <cstdarg>
+#include <cstdio>
 
 const size_t MessageBufferSize = 4096;
 

@@ -1,6 +1,4 @@
 ﻿#include "mpaint.h"
-#include <gdiplus.h>
-#include <memory>
 #include "mhostui.h"
 #include "mwinapi.h"
 
@@ -41,8 +39,9 @@ static void PaintTriangle(Gdiplus::Graphics *graphics, int index)
 static void PaintImage(Gdiplus::Graphics *graphics, int index)
 {
     //get the image.
-    MImage *image = _MWindowImageObject(index);
-    Gdiplus::Image *managedImage = MManagedImage(MImageManagedId(image));
+    MImage         *imageObject = _MWindowImageObject(index);
+    auto            imageLoad   = (MImageLoad *)MImageGetLoad(imageObject);
+    Gdiplus::Image *nativeImage = imageLoad->nativeImage();
 
     //get the position rectangle.
     float x = _MWindowImageX(index);
@@ -51,7 +50,7 @@ static void PaintImage(Gdiplus::Graphics *graphics, int index)
     float height = _MWindowImageHeight(index);
 
     //draw.
-    graphics->DrawImage(managedImage, x, y, width, height);
+    graphics->DrawImage(nativeImage, x, y, width, height);
 }
 
 static void PaintLabel(Gdiplus::Graphics *graphics, int index)

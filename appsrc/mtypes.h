@@ -123,8 +123,6 @@ MFUNC_BASE MObject *MArrayItem  (MArray *array, int index);
 //------------------------------------------------------------------------------
 //MImage:
 
-typedef void (*MImageDispose)(int managedId);
-
 class MImage : public MObject {};
 
 MFUNC_BASE MImage  *MImageCreate (MObject *load );
