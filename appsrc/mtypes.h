@@ -56,9 +56,9 @@ private:
     int mRefCount = 1;
 };
 
-MFUNC_BASE void  MRetain (MObject *object);
-MFUNC_BASE void  MRelease(MObject *object);
-MFUNC_BASE MType MGetType(MObject *object);
+MFUNC_EXPORT void  MRetain (MObject *object);
+MFUNC_EXPORT void  MRelease(MObject *object);
+MFUNC_EXPORT MType MGetType(MObject *object);
 
 //------------------------------------------------------------------------------
 //MBool & MInt & MFloat:
@@ -67,27 +67,27 @@ class MBool : public MObject {};
 class MInt  : public MObject {};
 class MFloat: public MObject {};
 
-MFUNC_BASE MBool  *MBoolCreate (bool  value);
-MFUNC_BASE MInt   *MIntCreate  (int   value);
-MFUNC_BASE MFloat *MFloatCreate(float value);
+MFUNC_EXPORT MBool  *MBoolCreate (bool  value);
+MFUNC_EXPORT MInt   *MIntCreate  (int   value);
+MFUNC_EXPORT MFloat *MFloatCreate(float value);
 
-MFUNC_BASE bool  MBoolValue (MBool  *object);
-MFUNC_BASE int   MIntValue  (MInt   *object);
-MFUNC_BASE float MFloatValue(MFloat *object);
+MFUNC_EXPORT bool  MBoolValue (MBool  *object);
+MFUNC_EXPORT int   MIntValue  (MInt   *object);
+MFUNC_EXPORT float MFloatValue(MFloat *object);
 
 //------------------------------------------------------------------------------
 //MString:
 
 class MString : public MObject {};
 
-MFUNC_BASE MString *MStringCreateU8 (const char     *chars);
-MFUNC_BASE MString *MStringCreateU16(const char16_t *chars);
+MFUNC_EXPORT MString *MStringCreateU8 (const char     *chars);
+MFUNC_EXPORT MString *MStringCreateU16(const char16_t *chars);
 
-MFUNC_BASE const char     *MStringU8Chars (MString *string);
-MFUNC_BASE const char16_t *MStringU16Chars(MString *string);
+MFUNC_EXPORT const char     *MStringU8Chars (MString *string);
+MFUNC_EXPORT const char16_t *MStringU16Chars(MString *string);
 
-MFUNC_BASE int MStringU8Size (MString *string);
-MFUNC_BASE int MStringU16Size(MString *string);
+MFUNC_EXPORT int MStringU8Size (MString *string);
+MFUNC_EXPORT int MStringU16Size(MString *string);
 
 //------------------------------------------------------------------------------
 //MLambda:
@@ -96,37 +96,37 @@ typedef void (*MLambdaFunc)(MObject *load);
 
 class MLambda : public MObject {};
 
-MFUNC_BASE MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
-MFUNC_BASE void MLambdaCall(MLambda *lambda);
+MFUNC_EXPORT MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
+MFUNC_EXPORT void MLambdaCall(MLambda *lambda);
 
 //------------------------------------------------------------------------------
 //MData:
 
 class MData : public MObject {};
 
-MFUNC_BASE MData *MDataCreate(const uint8_t *bytes, int size);
-MFUNC_BASE void   MDataAppend(MData *data, const uint8_t *bytes, int size);
-MFUNC_BASE int    MDataSize  (MData *data);
+MFUNC_EXPORT MData *MDataCreate(const uint8_t *bytes, int size);
+MFUNC_EXPORT void   MDataAppend(MData *data, const uint8_t *bytes, int size);
+MFUNC_EXPORT int    MDataSize  (MData *data);
 
-MFUNC_BASE const uint8_t *MDataBytes(MData *data);
+MFUNC_EXPORT const uint8_t *MDataBytes(MData *data);
 
 //------------------------------------------------------------------------------
 //MArray:
 
 class MArray : public MObject {};
 
-MFUNC_BASE MArray  *MArrayCreate();
-MFUNC_BASE void     MArrayAppend(MArray *array, MObject *item);
-MFUNC_BASE int      MArrayLength(MArray *array);
-MFUNC_BASE MObject *MArrayItem  (MArray *array, int index);
+MFUNC_EXPORT MArray  *MArrayCreate();
+MFUNC_EXPORT void     MArrayAppend(MArray *array, MObject *item);
+MFUNC_EXPORT int      MArrayLength(MArray *array);
+MFUNC_EXPORT MObject *MArrayItem  (MArray *array, int index);
 
 //------------------------------------------------------------------------------
 //MImage:
 
 class MImage : public MObject {};
 
-MFUNC_BASE MImage  *MImageCreate (MObject *load );
-MFUNC_BASE MObject *MImageGetLoad(MImage  *image);
+MFUNC_EXPORT MImage  *MImageCreate (MObject *load );
+MFUNC_EXPORT MObject *MImageGetLoad(MImage  *image);
 
 //------------------------------------------------------------------------------
 //Native:

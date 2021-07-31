@@ -2,21 +2,12 @@
 
 #include "mtypes.h"
 
-MData   *MCopyDataFromFile     (MString *path);
-MString *MCopyStringFromFile   (MString *path);
-MString *MCopyStringFromBundle (MString *path);
-MImage  *MCreateImageFromFile  (MString *path);
-MImage  *MCreateImageFromBundle(MString *path);
+MFUNC_EXPORT MData   *MCopyDataFromFile     (MString *path) MFUNC_META(MCopyDataFromFile     );
+MFUNC_EXPORT MString *MCopyStringFromFile   (MString *path) MFUNC_META(MCopyStringFromFile   );
+MFUNC_EXPORT MString *MCopyStringFromBundle (MString *path) MFUNC_META(MCopyStringFromBundle );
+MFUNC_EXPORT MImage  *MCreateImageFromFile  (MString *path) MFUNC_META(MCreateImageFromFile  );
+MFUNC_EXPORT MImage  *MCreateImageFromBundle(MString *path) MFUNC_META(MCreateImageFromBundle);
 
-void MWriteDataToFile     (MString *path, MData   *data  );
-void MWriteU8StringToFile (MString *path, MString *string);
-void MWriteU16StringToFile(MString *path, MString *string);
-
-MFUNC_EXPORT(MCopyDataFromFile     )
-MFUNC_EXPORT(MCopyStringFromFile   )
-MFUNC_EXPORT(MCopyStringFromBundle )
-MFUNC_EXPORT(MCreateImageFromFile  )
-MFUNC_EXPORT(MCreateImageFromBundle)
-MFUNC_EXPORT(MWriteDataToFile      )
-MFUNC_EXPORT(MWriteU8StringToFile  )
-MFUNC_EXPORT(MWriteU16StringToFile )
+MFUNC_EXPORT void MWriteDataToFile     (MString *path, MData   *data  ) MFUNC_META(MWriteDataToFile     );
+MFUNC_EXPORT void MWriteU8StringToFile (MString *path, MString *string) MFUNC_META(MWriteU8StringToFile );
+MFUNC_EXPORT void MWriteU16StringToFile(MString *path, MString *string) MFUNC_META(MWriteU16StringToFile);

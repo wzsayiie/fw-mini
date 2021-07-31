@@ -33,28 +33,15 @@ MFUNC_HOST void _MSetApiPathExists       (_MApiPathExists        func);
 MFUNC_HOST void _MSetApiDirectoryExists  (_MApiDirectoryExists   func);
 MFUNC_HOST void _MSetApiFileExists       (_MApiFileExists        func);
 
-void     MPrintMessage     (MString *text);
-MData   *MCopyBundleAsset  (MString *path);
-MImage  *MCreateImage      (MData   *data);
-MString *MCopyDocumentPath ();
-MString *MCopyCachePath    ();
-MString *MCopyTemporaryPath();
-bool     MMakeDirectory    (MString *path);
-MArray  *MCopyPathSubItems (MString *path);
-void     MRemovePath       (MString *path);
-bool     MPathExists       (MString *path);
-bool     MDirectoryExists  (MString *path);
-bool     MFileExists       (MString *path);
-
-MFUNC_EXPORT(MPrintMessage     )
-MFUNC_EXPORT(MCopyBundleAsset  )
-MFUNC_EXPORT(MCreateImage      )
-MFUNC_EXPORT(MCopyDocumentPath )
-MFUNC_EXPORT(MCopyCachePath    )
-MFUNC_EXPORT(MCopyTemporaryPath)
-MFUNC_EXPORT(MMakeDirectory    )
-MFUNC_EXPORT(MCopyPathSubItems )
-MFUNC_EXPORT(MRemovePath       )
-MFUNC_EXPORT(MPathExists       )
-MFUNC_EXPORT(MDirectoryExists  )
-MFUNC_EXPORT(MFileExists       )
+MFUNC_EXPORT void     MPrintMessage     (MString *text) MFUNC_META(MPrintMessage     );
+MFUNC_EXPORT MData   *MCopyBundleAsset  (MString *path) MFUNC_META(MCopyBundleAsset  );
+MFUNC_EXPORT MImage  *MCreateImage      (MData   *data) MFUNC_META(MCreateImage      );
+MFUNC_EXPORT MString *MCopyDocumentPath ()              MFUNC_META(MCopyDocumentPath );
+MFUNC_EXPORT MString *MCopyCachePath    ()              MFUNC_META(MCopyCachePath    );
+MFUNC_EXPORT MString *MCopyTemporaryPath()              MFUNC_META(MCopyTemporaryPath);
+MFUNC_EXPORT bool     MMakeDirectory    (MString *path) MFUNC_META(MMakeDirectory    );
+MFUNC_EXPORT MArray  *MCopyPathSubItems (MString *path) MFUNC_META(MCopyPathSubItems );
+MFUNC_EXPORT void     MRemovePath       (MString *path) MFUNC_META(MRemovePath       );
+MFUNC_EXPORT bool     MPathExists       (MString *path) MFUNC_META(MPathExists       );
+MFUNC_EXPORT bool     MDirectoryExists  (MString *path) MFUNC_META(MDirectoryExists  );
+MFUNC_EXPORT bool     MFileExists       (MString *path) MFUNC_META(MFileExists       );

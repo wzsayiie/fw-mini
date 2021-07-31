@@ -2,26 +2,15 @@
 
 #include "mhostui.h"
 
-void MContextSetOffset(float x, float y);
+MFUNC_EXPORT void MContextSetOffset(float x, float y) MFUNC_META(MContextSetOffset);
 
-void MContextSelectColor   (MColor   color );
-void MContextSelectImage   (MImage  *image );
-void MContextSelectString  (MString *string);
-void MContextSelectFontSize(float    size  );
-void MContextSelectHAlign  (MHAlign  align );
-void MContextSelectVAlign  (MVAlign  align );
+MFUNC_EXPORT void MContextSelectColor   (MColor   color ) MFUNC_META(MContextSelectColor   );
+MFUNC_EXPORT void MContextSelectImage   (MImage  *image ) MFUNC_META(MContextSelectImage   );
+MFUNC_EXPORT void MContextSelectString  (MString *string) MFUNC_META(MContextSelectString  );
+MFUNC_EXPORT void MContextSelectFontSize(float    size  ) MFUNC_META(MContextSelectFontSize);
+MFUNC_EXPORT void MContextSelectHAlign  (MHAlign  align ) MFUNC_META(MContextSelectHAlign  );
+MFUNC_EXPORT void MContextSelectVAlign  (MVAlign  align ) MFUNC_META(MContextSelectVAlign  );
 
-void MContextDrawRect  (float x, float y, float width, float height);
-void MContextDrawImage (float x, float y, float width, float height);
-void MContextDrawString(float x, float y, float width, float height);
-
-MFUNC_EXPORT(MContextSetOffset     )
-MFUNC_EXPORT(MContextSelectColor   )
-MFUNC_EXPORT(MContextSelectImage   )
-MFUNC_EXPORT(MContextSelectString  )
-MFUNC_EXPORT(MContextSelectFontSize)
-MFUNC_EXPORT(MContextSelectHAlign  )
-MFUNC_EXPORT(MContextSelectVAlign  )
-MFUNC_EXPORT(MContextDrawRect      )
-MFUNC_EXPORT(MContextDrawImage     )
-MFUNC_EXPORT(MContextDrawString    )
+MFUNC_EXPORT void MContextDrawRect  (float x, float y, float width, float height) MFUNC_META(MContextDrawRect  );
+MFUNC_EXPORT void MContextDrawImage (float x, float y, float width, float height) MFUNC_META(MContextDrawImage );
+MFUNC_EXPORT void MContextDrawString(float x, float y, float width, float height) MFUNC_META(MContextDrawString);

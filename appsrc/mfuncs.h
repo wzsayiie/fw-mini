@@ -14,12 +14,12 @@ struct _MFuncInfo {
 
 void _MFuncAdd(const char *name, const _MFuncInfo &info);
 
-MFUNC_BASE void  MFuncSelect   (const char *name);
-MFUNC_BASE MType MFuncRetType  ();
-MFUNC_BASE bool  MFuncRetRetain();
-MFUNC_BASE int   MFuncArgCount ();
-MFUNC_BASE MType MFuncArgType0 ();
-MFUNC_BASE MType MFuncArgType1 ();
-MFUNC_BASE MType MFuncArgType2 ();
+MFUNC_EXPORT void  MFuncSelect   (const char *name);
+MFUNC_EXPORT MType MFuncRetType  ();
+MFUNC_EXPORT bool  MFuncRetRetain();
+MFUNC_EXPORT int   MFuncArgCount ();
+MFUNC_EXPORT MType MFuncArgType0 ();
+MFUNC_EXPORT MType MFuncArgType1 ();
+MFUNC_EXPORT MType MFuncArgType2 ();
 
-MFUNC_BASE MObject *NFuncCopyCall(const char *name, MObject *a0, MObject *a1, MObject *a2);
+MFUNC_EXPORT MObject *NFuncCopyCall(const char *name, MObject *a0, MObject *a1, MObject *a2);

@@ -216,7 +216,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
     }
 }
 
-MFUNC_BASE void MAppMain()
+MFUNC_EXPORT void MAppMain()
 {
     HINSTANCE instance = GetModuleHandleW(nullptr);
 

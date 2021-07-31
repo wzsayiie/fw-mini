@@ -101,58 +101,36 @@ const MWindowEvent MWindowEvent_TouchEnd   = 'E';
 const MWindowEvent MWindowEvent_TextBox    = 'T';
 const MWindowEvent MWindowEvent_KeyDown    = 'K';
 
-void MWindowAddListener(MLambda *listener);
+MFUNC_EXPORT void MWindowAddListener(MLambda *listener) MFUNC_META(MWindowAddListener);
 
-MWindowEvent MWindowCurrentEvent();
+MFUNC_EXPORT MWindowEvent MWindowCurrentEvent() MFUNC_META(MWindowCurrentEvent);
 
-float MWindowWidth ();
-float MWindowHeight();
+MFUNC_EXPORT float MWindowWidth () MFUNC_META(MWindowWidth );
+MFUNC_EXPORT float MWindowHeight() MFUNC_META(MWindowHeight);
 
-bool MWindowLoaded();
-bool MWindowShown ();
+MFUNC_EXPORT bool MWindowLoaded() MFUNC_META(MWindowLoaded);
+MFUNC_EXPORT bool MWindowShown () MFUNC_META(MWindowShown );
 
-float MWindowTouchX();
-float MWindowTouchY();
-MKey  MWindowActiveKey();
+MFUNC_EXPORT float MWindowTouchX() MFUNC_META(MWindowTouchX);
+MFUNC_EXPORT float MWindowTouchY() MFUNC_META(MWindowTouchY);
 
-void MWindowSelectString  (MString *string);
-void MWindowSelectImage   (MImage  *image );
-void MWindowSelectColor   (MColor   color );
-void MWindowSelectFontSize(float    size  );
-void MWindowSelectHAlign  (MHAlign  align );
-void MWindowSelectVAlign  (MVAlign  align );
+MFUNC_EXPORT MKey  MWindowActiveKey() MFUNC_META(MWindowActiveKey);
 
-void MWindowSelectPoint0(float x, float y);
-void MWindowSelectPoint1(float x, float y);
-void MWindowSelectPoint2(float x, float y);
+MFUNC_EXPORT void MWindowSelectString  (MString *string) MFUNC_META(MWindowSelectString  );
+MFUNC_EXPORT void MWindowSelectImage   (MImage  *image ) MFUNC_META(MWindowSelectImage   );
+MFUNC_EXPORT void MWindowSelectColor   (MColor   color ) MFUNC_META(MWindowSelectColor   );
+MFUNC_EXPORT void MWindowSelectFontSize(float    size  ) MFUNC_META(MWindowSelectFontSize);
+MFUNC_EXPORT void MWindowSelectHAlign  (MHAlign  align ) MFUNC_META(MWindowSelectHAlign  );
+MFUNC_EXPORT void MWindowSelectVAlign  (MVAlign  align ) MFUNC_META(MWindowSelectVAlign  );
 
-void MWindowDrawTriangle();
-void MWindowDrawImage();
-void MWindowDrawLabel();
+MFUNC_EXPORT void MWindowSelectPoint0(float x, float y) MFUNC_META(MWindowSelectPoint0);
+MFUNC_EXPORT void MWindowSelectPoint1(float x, float y) MFUNC_META(MWindowSelectPoint1);
+MFUNC_EXPORT void MWindowSelectPoint2(float x, float y) MFUNC_META(MWindowSelectPoint2);
 
-void     MWindowEnableTextBox(bool enabled);
-MString *MWindowTextBoxString();
-bool     MWindowTextBoxEnter ();
+MFUNC_EXPORT void MWindowDrawTriangle() MFUNC_META(MWindowDrawTriangle);
+MFUNC_EXPORT void MWindowDrawImage   () MFUNC_META(MWindowDrawImage   );
+MFUNC_EXPORT void MWindowDrawLabel   () MFUNC_META(MWindowDrawLabel   );
 
-MFUNC_EXPORT(MWindowAddListener   )
-MFUNC_EXPORT(MWindowCurrentEvent  )
-MFUNC_EXPORT(MWindowWidth         )
-MFUNC_EXPORT(MWindowHeight        )
-MFUNC_EXPORT(MWindowLoaded        )
-MFUNC_EXPORT(MWindowShown         )
-MFUNC_EXPORT(MWindowTouchX        )
-MFUNC_EXPORT(MWindowTouchY        )
-MFUNC_EXPORT(MWindowActiveKey     )
-MFUNC_EXPORT(MWindowSelectString  )
-MFUNC_EXPORT(MWindowSelectColor   )
-MFUNC_EXPORT(MWindowSelectFontSize)
-MFUNC_EXPORT(MWindowSelectHAlign  )
-MFUNC_EXPORT(MWindowSelectVAlign  )
-MFUNC_EXPORT(MWindowSelectPoint0  )
-MFUNC_EXPORT(MWindowSelectPoint1  )
-MFUNC_EXPORT(MWindowSelectPoint2  )
-MFUNC_EXPORT(MWindowDrawTriangle  )
-MFUNC_EXPORT(MWindowDrawLabel     )
-MFUNC_EXPORT(MWindowEnableTextBox )
-MFUNC_EXPORT(MWindowTextBoxString )
-MFUNC_EXPORT(MWindowTextBoxEnter  )
+MFUNC_EXPORT void     MWindowEnableTextBox(bool enabled) MFUNC_META(MWindowEnableTextBox);
+MFUNC_EXPORT MString *MWindowTextBoxString()             MFUNC_META(MWindowTextBoxString);
+MFUNC_EXPORT bool     MWindowTextBoxEnter ()             MFUNC_META(MWindowTextBoxEnter );
