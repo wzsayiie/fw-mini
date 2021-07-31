@@ -2,7 +2,7 @@
 
 #include "mtypes.h"
 
-struct _MFuncInfo {
+struct _MFuncMeta {
     void *address   = nullptr;
     MType retType   = 0;
     bool  retRetain = false;
@@ -12,9 +12,10 @@ struct _MFuncInfo {
     MType argType2  = 0;
 };
 
-void _MFuncAdd(const char *name, const _MFuncInfo &info);
+void _MFuncAddMeta(const char *name, const _MFuncMeta &meta);
 
 MFUNC_EXPORT void  MFuncSelect   (const char *name);
+MFUNC_EXPORT int   MFuncIndex    ();
 MFUNC_EXPORT MType MFuncRetType  ();
 MFUNC_EXPORT bool  MFuncRetRetain();
 MFUNC_EXPORT int   MFuncArgCount ();
@@ -22,4 +23,4 @@ MFUNC_EXPORT MType MFuncArgType0 ();
 MFUNC_EXPORT MType MFuncArgType1 ();
 MFUNC_EXPORT MType MFuncArgType2 ();
 
-MFUNC_EXPORT MObject *NFuncCopyCall(const char *name, MObject *a0, MObject *a1, MObject *a2);
+MFUNC_EXPORT MObject *MFuncCallCopy(int index, MObject *a0, MObject *a1, MObject *a2);
