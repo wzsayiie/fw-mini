@@ -10,4 +10,5 @@
 #include "mhostapi.h"
 #include "mhostui.h"
 #include "mresource.h"
+#include "mrunloop.h"
 #include "mtypes.h"
