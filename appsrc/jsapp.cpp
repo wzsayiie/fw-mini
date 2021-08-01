@@ -1,7 +1,7 @@
 #include "minikit.h"
 
-MAPP_SCENE_LAUNCH(JsAppLaunch) void JsAppLaunch() {
+static void Launch() MAPP_SCENE_LAUNCH(Launch) {
 }
 
-MAPP_UPDATE(JsAppUpdate) void JsAppUpdate() {
+static void Update() MAPP_UPDATE(Update) {
 }

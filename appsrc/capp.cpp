@@ -7,6 +7,6 @@ protected:
     }
 };
 
-MAPP_UI_LAUNCH(CAppLaunch) void CAppLaunch() {
+static void Launch() MAPP_UI_LAUNCH(Launch) {
     (new MainController)->asRootController();
 }

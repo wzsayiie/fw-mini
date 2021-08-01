@@ -19,7 +19,7 @@ static int GetTick(int increment) {
     return tick;
 }
 
-MAPP_UPDATE(MAppUpdate) void MAppUpdate() {
+static void Update() MAPP_UPDATE(Update) {
     std::map<MLambdaRef, TaskConfig> *tasks = GetTasks();
     int tick = GetTick(1);
     

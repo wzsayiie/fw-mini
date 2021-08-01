@@ -13,6 +13,6 @@ MFUNC_EXPORT void _MAppAddUpdateListener(MLambda *listener);
 struct _MAppLaunchFuncAdder { _MAppLaunchFuncAdder(void (*func)(), int priority); };
 struct _MAppUpdateFuncAdder { _MAppUpdateFuncAdder(void (*func)()); };
 
-#define MAPP_SCENE_LAUNCH(N) void N(); static _MAppLaunchFuncAdder _launch_##N(N, 1);
-#define MAPP_UI_LAUNCH(   N) void N(); static _MAppLaunchFuncAdder _launch_##N(N, 0);
-#define MAPP_UPDATE(      N) void N(); static _MAppUpdateFuncAdder _update_##N(N);
+#define MAPP_SCENE_LAUNCH(N) ; static _MAppLaunchFuncAdder _launch_##N(N, 1); void N()
+#define MAPP_UI_LAUNCH(   N) ; static _MAppLaunchFuncAdder _launch_##N(N, 0); void N()
+#define MAPP_UPDATE(      N) ; static _MAppUpdateFuncAdder _update_##N(N)   ; void N()
