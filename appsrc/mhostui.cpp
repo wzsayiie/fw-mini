@@ -67,10 +67,7 @@ struct Window {
 };
 
 static Window *GetWindow() {
-    static Window *window = nullptr;
-    if (!window) {
-        window = new Window;
-    }
+    static Window *window = new Window;
     return window;
 }
 
