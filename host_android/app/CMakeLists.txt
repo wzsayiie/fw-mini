@@ -13,7 +13,7 @@ list(APPEND sys_libs log)
 # ignore when header path contains "\".
 add_compile_options(-Wno-nonportable-include-path)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 include_directories(${inc_path})
 
