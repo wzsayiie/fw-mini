@@ -40,6 +40,8 @@ public:
     CUIResponder *findResponder(std::function<bool (CUIResponder *)> fit) override;
 
 protected:
+    virtual void onLayoutSubviews(float width, float height) {}
+    
     virtual void onDrawBackground(float width, float height);
     virtual void onDraw(float width, float height) {}
     

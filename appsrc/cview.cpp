@@ -40,8 +40,16 @@ void CView::setOrigin(float x, float y) {
 }
 
 void CView::setSize(float width, float height) {
+    if (mWidth == width && mHeight == height) {
+        return;
+    }
+    
     mWidth  = width ;
     mHeight = height;
+    
+    if (mSubviews.size() > 0) {
+        onLayoutSubviews(width, height);
+    }
 }
 
 float CView::windowX() { return mSupersX + mX; }
