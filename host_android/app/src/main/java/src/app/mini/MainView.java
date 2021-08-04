@@ -69,7 +69,7 @@ public class MainView extends View {
         int w = (int) windowImageWidth (index);
         int h = (int) windowImageHeight(index);
 
-        Rect srcRect = new Rect(0, 0, w, h);
+        Rect srcRect = new Rect(0, 0, image.getWidth(), image.getHeight());
         Rect dstRect = new Rect(x, y, x + w, y + h);
 
         //draw.
