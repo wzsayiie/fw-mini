@@ -81,6 +81,18 @@ void MRunEverySeconds(float interval, MLambda *task) {
     GetTasks()->insert({m_make_shared task, config});
 }
 
+MLambdaRef MRunAfterSeconds(float delay, std::function<void ()> task) {
+    MLambdaRef lambda = m_cast_lambda task;
+    MRunAfterSeconds(delay, lambda.get());
+    return lambda;
+}
+
+MLambdaRef MRunEverySeconds(float interval, std::function<void ()> task) {
+    MLambdaRef lambda = m_cast_lambda task;
+    MRunEverySeconds(interval, lambda.get());
+    return lambda;
+}
+
 void MCancelTask(MLambda *task) {
     if (!task) {
         return;
