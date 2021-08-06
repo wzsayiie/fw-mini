@@ -20,34 +20,30 @@ public class MainView extends View {
 
         windowOnDraw();
 
-        int triangleCount = windowTriangleCount();
-        for (int index = 0; index < triangleCount; ++index) {
-            drawTriangle(index, canvas);
-        }
+        int count = windowGraphCount();
+        for (int index = 0; index < count; ++index) {
+            int graph = windowGraphType(index);
 
-        int imageCount = windowImageCount();
-        for (int index = 0; index < imageCount; ++index) {
-            drawImage(index, canvas);
-        }
-
-        int labelCount = windowLabelCount();
-        for (int index = 0; index < labelCount; ++index) {
-            drawLabel(index, canvas);
+            switch (graph) {
+                case 'T': drawTriangle(index, canvas); break;
+                case 'I': drawImage   (index, canvas); break;
+                case 'L': drawLabel   (index, canvas); break;
+            }
         }
     }
 
     private void drawTriangle(int index, Canvas canvas) {
         //set the color.
         Paint paint = new Paint();
-        paint.setColor(windowTriangleColor(index));
+        paint.setColor(windowTriangleGraphColor(index));
 
         //connect the points.
-        float x0 = windowTriangleVertexX(index, 0);
-        float y0 = windowTriangleVertexY(index, 0);
-        float x1 = windowTriangleVertexX(index, 1);
-        float y1 = windowTriangleVertexY(index, 1);
-        float x2 = windowTriangleVertexX(index, 2);
-        float y2 = windowTriangleVertexY(index, 2);
+        float x0 = windowTriangleGraphX0(index);
+        float y0 = windowTriangleGraphY0(index);
+        float x1 = windowTriangleGraphX1(index);
+        float y1 = windowTriangleGraphY1(index);
+        float x2 = windowTriangleGraphX2(index);
+        float y2 = windowTriangleGraphY2(index);
 
         Path path = new Path();
         path.moveTo(x0, y0);
@@ -61,13 +57,13 @@ public class MainView extends View {
 
     private void drawImage(int index, Canvas canvas) {
         //get the image.
-        Bitmap image = windowImageObject(index);
+        Bitmap image = windowImageGraphObject(index);
 
         //set the position rectangle.
-        int x = (int) windowImageX(index);
-        int y = (int) windowImageY(index);
-        int w = (int) windowImageWidth (index);
-        int h = (int) windowImageHeight(index);
+        int x = (int) windowImageGraphX     (index);
+        int y = (int) windowImageGraphY     (index);
+        int w = (int) windowImageGraphWidth (index);
+        int h = (int) windowImageGraphHeight(index);
 
         Rect srcRect = new Rect(0, 0, image.getWidth(), image.getHeight());
         Rect dstRect = new Rect(x, y, x + w, y + h);
@@ -78,20 +74,20 @@ public class MainView extends View {
 
     private void drawLabel(int index, Canvas canvas) {
         //get the string.
-        String text = windowLabelString(index);
+        String text = windowLabelGraphString(index);
 
         //set the color.
         Paint paint = new Paint();
-        paint.setColor(windowLabelColor(index));
+        paint.setColor(windowLabelGraphColor(index));
 
         //set the font size.
-        paint.setTextSize(windowLabelFontSize(index));
+        paint.setTextSize(windowLabelGraphFontSize(index));
 
         //set the position rectangle.
-        float x = windowLabelX(index);
-        float y = windowLabelY(index);
-        float w = windowLabelWidth (index);
-        float h = windowLabelHeight(index);
+        float x = windowLabelGraphX     (index);
+        float y = windowLabelGraphY     (index);
+        float w = windowLabelGraphWidth (index);
+        float h = windowLabelGraphHeight(index);
 
         Rect textRect = new Rect();
         paint.getTextBounds(text, 0, text.length(), textRect);
@@ -100,8 +96,8 @@ public class MainView extends View {
         float th = textRect.height() * 1.2f;    //the text height.
         float bh = textRect.height();           //the height above text baseline.
 
-        int hAlign = windowLabelHAlign(index);
-        int vAlign = windowLabelVAlign(index);
+        int hAlign = windowLabelGraphHAlign(index);
+        int vAlign = windowLabelGraphVAlign(index);
 
         float tx = 0;
         float ty = 0;
@@ -119,26 +115,30 @@ public class MainView extends View {
 
     private native void windowOnDraw();
 
-    private native int   windowTriangleCount  ();
-    private native float windowTriangleVertexX(int index, int vertexIndex);
-    private native float windowTriangleVertexY(int index, int vertexIndex);
-    private native int   windowTriangleColor  (int index);
+    private native int windowGraphCount();
+    private native int windowGraphType (int index);
 
-    private native int    windowImageCount ();
-    private native Bitmap windowImageObject(int index);
-    private native float  windowImageX     (int index);
-    private native float  windowImageY     (int index);
-    private native float  windowImageWidth (int index);
-    private native float  windowImageHeight(int index);
-    
-    private native int    windowLabelCount   ();
-    private native String windowLabelString  (int index);
-    private native int    windowLabelColor   (int index);
-    private native float  windowLabelFontSize(int index);
-    private native int    windowLabelHAlign  (int index);
-    private native int    windowLabelVAlign  (int index);
-    private native float  windowLabelX       (int index);
-    private native float  windowLabelY       (int index);
-    private native float  windowLabelWidth   (int index);
-    private native float  windowLabelHeight  (int index);
+    private native float  windowTriangleGraphX0   (int index);
+    private native float  windowTriangleGraphY0   (int index);
+    private native float  windowTriangleGraphX1   (int index);
+    private native float  windowTriangleGraphY1   (int index);
+    private native float  windowTriangleGraphX2   (int index);
+    private native float  windowTriangleGraphY2   (int index);
+    private native int    windowTriangleGraphColor(int index);
+
+    private native Bitmap windowImageGraphObject  (int index);
+    private native float  windowImageGraphX       (int index);
+    private native float  windowImageGraphY       (int index);
+    private native float  windowImageGraphWidth   (int index);
+    private native float  windowImageGraphHeight  (int index);
+
+    private native String windowLabelGraphString  (int index);
+    private native int    windowLabelGraphColor   (int index);
+    private native float  windowLabelGraphFontSize(int index);
+    private native int    windowLabelGraphHAlign  (int index);
+    private native int    windowLabelGraphVAlign  (int index);
+    private native float  windowLabelGraphX       (int index);
+    private native float  windowLabelGraphY       (int index);
+    private native float  windowLabelGraphWidth   (int index);
+    private native float  windowLabelGraphHeight  (int index);
 }

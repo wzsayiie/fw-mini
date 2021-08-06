@@ -7,19 +7,16 @@
 - (void)drawRect:(CGRect)rect {
     _MWindowOnDraw();
     
-    int triangleCount = _MWindowTriangleCount();
-    for (int index = 0; index < triangleCount; ++index) {
-        [self drawTriangle:index];
-    }
-    
-    int imageCount = _MWindowImageCount();
-    for (int index = 0; index < imageCount; ++index) {
-        [self drawImage:index];
-    }
-    
-    int labelCount = _MWindowLabelCount();
-    for (int index = 0; index < labelCount; ++index) {
-        [self drawLabel:index];
+    int count = _MWindowGraphCount();
+    for (int index = 0; index < count; ++index) {
+        _MGraph graph = _MWindowGraphType(index);
+        
+        switch (graph) {
+            case _MGraph_Triangle: [self drawTriangle:index]; break;
+            case _MGraph_Image   : [self drawImage   :index]; break;
+            case _MGraph_Label   : [self drawLabel   :index]; break;
+            default:;
+        }
     }
 }
 
@@ -28,7 +25,7 @@
     
     //set the color:
     MColorPattern color;
-    color.rgba = _MWindowTriangleColor(index);
+    color.rgba = _MWindowTriangleGraphColor(index);
     
     float red   = color.red   / 255.f;
     float green = color.green / 255.f;
@@ -39,12 +36,12 @@
     CGContextSetRGBStrokeColor(context, red, green, blue, alpha);
     
     //connect the points:
-    _MPixel x0 = _MWindowTriangleVertexX(index, 0);
-    _MPixel y0 = _MWindowTriangleVertexY(index, 0);
-    _MPixel x1 = _MWindowTriangleVertexX(index, 1);
-    _MPixel y1 = _MWindowTriangleVertexY(index, 1);
-    _MPixel x2 = _MWindowTriangleVertexX(index, 2);
-    _MPixel y2 = _MWindowTriangleVertexY(index, 2);
+    _MPixel x0 = _MWindowTriangleGraphX0(index);
+    _MPixel y0 = _MWindowTriangleGraphY0(index);
+    _MPixel x1 = _MWindowTriangleGraphX1(index);
+    _MPixel y1 = _MWindowTriangleGraphY1(index);
+    _MPixel x2 = _MWindowTriangleGraphX2(index);
+    _MPixel y2 = _MWindowTriangleGraphY2(index);
     
     CGContextMoveToPoint   (context, x0, y0);
     CGContextAddLineToPoint(context, x1, y1);
@@ -56,15 +53,15 @@
 
 - (void)drawImage:(int)index {
     //get the image.
-    MImage *imageObject  = _MWindowImageObject(index);
+    MImage *imageObject  = _MWindowImageGraphObject(index);
     auto    imageLoad    = (MImageLoad *)MImageGetLoad(imageObject);
     UIImage *nativeImage = imageLoad->nativeImage();
     
     //get the position rectangle.
-    _MPixel X = _MWindowImageX(index);
-    _MPixel Y = _MWindowImageY(index);
-    _MPixel W = _MWindowImageWidth (index);
-    _MPixel H = _MWindowImageHeight(index);
+    _MPixel X = _MWindowImageGraphX     (index);
+    _MPixel Y = _MWindowImageGraphY     (index);
+    _MPixel W = _MWindowImageGraphWidth (index);
+    _MPixel H = _MWindowImageGraphHeight(index);
     
     //draw.
     [nativeImage drawInRect:CGRectMake(X, Y, W, H)];
@@ -73,7 +70,7 @@
 - (void)drawLabel:(int)index {
     //set the color:
     MColorPattern nativeColor;
-    nativeColor.rgba = _MWindowLabelColor(index);
+    nativeColor.rgba = _MWindowLabelGraphColor(index);
     
     float red   = nativeColor.red   / 255.f;
     float green = nativeColor.green / 255.f;
@@ -83,11 +80,11 @@
     UIColor *color = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
     
     //set the font.
-    _MPixel fontSize = _MWindowLabelFontSize(index);
+    _MPixel fontSize = _MWindowLabelGraphFontSize(index);
     UIFont *font = [UIFont systemFontOfSize:fontSize];
     
     //calculate the position:
-    MString *nativeString = _MWindowLabelString(index);
+    MString *nativeString = _MWindowLabelGraphString(index);
     NSString *string = @(MStringU8Chars(nativeString));
     
     NSDictionary *attributes = @{
@@ -96,14 +93,14 @@
     };
     CGSize size = [string sizeWithAttributes:attributes];
     
-    _MPixel X = _MWindowLabelX(index);
-    _MPixel Y = _MWindowLabelY(index);
-    _MPixel W = _MWindowLabelWidth (index);
-    _MPixel H = _MWindowLabelHeight(index);
+    _MPixel X = _MWindowLabelGraphX     (index);
+    _MPixel Y = _MWindowLabelGraphY     (index);
+    _MPixel W = _MWindowLabelGraphWidth (index);
+    _MPixel H = _MWindowLabelGraphHeight(index);
     
     CGPoint origin = CGPointZero;
-    MHAlign hAlign = _MWindowLabelHAlign(index);
-    MVAlign vAlign = _MWindowLabelVAlign(index);
+    MHAlign hAlign = _MWindowLabelGraphHAlign(index);
+    MVAlign vAlign = _MWindowLabelGraphVAlign(index);
     if /**/ (hAlign == MHAlign_Left  ) { origin.x = X; }
     else if (hAlign == MHAlign_Center) { origin.x = X + (W - size.width ) / 2; }
     else if (hAlign == MHAlign_Right ) { origin.x = X + (W - size.width ); }

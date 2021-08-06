@@ -18,28 +18,58 @@ Java_src_app_mini_MainView_windowOnDraw(JNIEnv *, jobject)
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MainView_windowTriangleCount(JNIEnv *, jobject)
+Java_src_app_mini_MainView_windowGraphCount(JNIEnv *, jobject)
 {
-    return _MWindowTriangleCount();
-}
-
-extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowTriangleVertexX(JNIEnv *, jobject, jint index, jint vertexIndex)
-{
-    return _MWindowTriangleVertexX(index, vertexIndex);
-}
-
-extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowTriangleVertexY(JNIEnv *, jobject, jint index, jint vertexIndex)
-{
-    return _MWindowTriangleVertexY(index, vertexIndex);
+    return _MWindowGraphCount();
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MainView_windowTriangleColor(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowGraphType(JNIEnv *, jobject, jint index)
+{
+    return _MWindowGraphType(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowTriangleGraphX0(JNIEnv *, jobject, jint index)
+{
+    return _MWindowTriangleGraphX0(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowTriangleGraphY0(JNIEnv *, jobject, jint index)
+{
+    return _MWindowTriangleGraphY0(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowTriangleGraphX1(JNIEnv *, jobject, jint index)
+{
+    return _MWindowTriangleGraphX1(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowTriangleGraphY1(JNIEnv *, jobject, jint index)
+{
+    return _MWindowTriangleGraphY1(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowTriangleGraphX2(JNIEnv *, jobject, jint index)
+{
+    return _MWindowTriangleGraphX2(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_MainView_windowTriangleGraphY2(JNIEnv *, jobject, jint index)
+{
+    return _MWindowTriangleGraphY2(index);
+}
+
+extern "C" JNIEXPORT jint JNICALL
+Java_src_app_mini_MainView_windowTriangleGraphColor(JNIEnv *, jobject, jint index)
 {
     MColorPattern src;
-    src.rgba = _MWindowTriangleColor(index);
+    src.rgba = _MWindowTriangleGraphColor(index);
 
     AndroidColorPattern dst;
     dst.red   = src.red;
@@ -50,55 +80,43 @@ Java_src_app_mini_MainView_windowTriangleColor(JNIEnv *, jobject, jint index)
     return dst.argb;
 }
 
-extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MainView_windowImageCount(JNIEnv *, jobject)
-{
-    return _MWindowImageCount();
-}
-
 extern "C" JNIEXPORT jobject JNICALL
-Java_src_app_mini_MainView_windowImageObject(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowImageGraphObject(JNIEnv *, jobject, jint index)
 {
-    MImage *image = _MWindowImageObject(index);
+    MImage *image = _MWindowImageGraphObject(index);
     auto    load  = (MImageLoad *)MImageGetLoad(image);
 
     return load->nativeImage();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowImageX(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowImageGraphX(JNIEnv *, jobject, jint index)
 {
-    return _MWindowImageX(index);
+    return _MWindowImageGraphX(index);
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowImageY(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowImageGraphY(JNIEnv *, jobject, jint index)
 {
-    return _MWindowImageY(index);
+    return _MWindowImageGraphY(index);
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowImageWidth(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowImageGraphWidth(JNIEnv *, jobject, jint index)
 {
-    return _MWindowImageWidth(index);
+    return _MWindowImageGraphWidth(index);
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowImageHeight(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowImageGraphHeight(JNIEnv *, jobject, jint index)
 {
-    return _MWindowImageHeight(index);
-}
-
-extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MainView_windowLabelCount(JNIEnv *, jobject)
-{
-    return _MWindowLabelCount();
+    return _MWindowImageGraphHeight(index);
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_src_app_mini_MainView_windowLabelString(JNIEnv *env, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphString(JNIEnv *env, jobject, jint index)
 {
-    MString *string = _MWindowLabelString(index);
+    MString *string = _MWindowLabelGraphString(index);
 
     auto chars = (const jchar *)MStringU16Chars(string);
     auto size  = (jsize)MStringU16Size(string);
@@ -107,10 +125,10 @@ Java_src_app_mini_MainView_windowLabelString(JNIEnv *env, jobject, jint index)
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MainView_windowLabelColor(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphColor(JNIEnv *, jobject, jint index)
 {
     MColorPattern src;
-    src.rgba = _MWindowLabelColor(index);
+    src.rgba = _MWindowLabelGraphColor(index);
 
     AndroidColorPattern dst;
     dst.red   = src.red;
@@ -122,43 +140,43 @@ Java_src_app_mini_MainView_windowLabelColor(JNIEnv *, jobject, jint index)
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowLabelFontSize(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphFontSize(JNIEnv *, jobject, jint index)
 {
-    return _MWindowLabelFontSize(index);
+    return _MWindowLabelGraphFontSize(index);
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MainView_windowLabelHAlign(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphHAlign(JNIEnv *, jobject, jint index)
 {
-    return _MWindowLabelHAlign(index);
+    return _MWindowLabelGraphHAlign(index);
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MainView_windowLabelVAlign(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphVAlign(JNIEnv *, jobject, jint index)
 {
-    return _MWindowLabelVAlign(index);
+    return _MWindowLabelGraphVAlign(index);
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowLabelX(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphX(JNIEnv *, jobject, jint index)
 {
-    return _MWindowLabelX(index);
+    return _MWindowLabelGraphX(index);
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowLabelY(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphY(JNIEnv *, jobject, jint index)
 {
-    return _MWindowLabelY(index);
+    return _MWindowLabelGraphY(index);
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowLabelWidth(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphWidth(JNIEnv *, jobject, jint index)
 {
-    return _MWindowLabelWidth(index);
+    return _MWindowLabelGraphWidth(index);
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
-Java_src_app_mini_MainView_windowLabelHeight(JNIEnv *, jobject, jint index)
+Java_src_app_mini_MainView_windowLabelGraphHeight(JNIEnv *, jobject, jint index)
 {
-    return _MWindowLabelHeight(index);
+    return _MWindowLabelGraphHeight(index);
 }

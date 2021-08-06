@@ -1,114 +1,155 @@
 #include "mhostui.h"
 
-struct Triangle {
-    MColor color = 0;
+//------------------------------------------------------------------------------
+//graphs:
 
-    float x[3] = {0};
-    float y[3] = {0};
+typedef std::shared_ptr<struct AnyGraph     > AnyGraphRef     ;
+typedef std::shared_ptr<struct TriangleGraph> TriangleGraphRef;
+typedef std::shared_ptr<struct ImageGraph   > ImageGraphRef   ;
+typedef std::shared_ptr<struct LabelGraph   > LabelGraphRef   ;
+
+struct AnyGraph {
+    virtual ~AnyGraph() {}
+    virtual _MGraph type() = 0;
 };
 
-struct Image {
-    MImageRef image;
+struct TriangleGraph : AnyGraph {
+    
+    _MGraph type() override { return _MGraph_Triangle; }
+    
+    MColor color = 0;
+    float  x0    = 0;
+    float  y0    = 0;
+    float  x1    = 0;
+    float  y1    = 0;
+    float  x2    = 0;
+    float  y2    = 0;
+};
 
+struct ImageGraph : AnyGraph {
+    
+    _MGraph type() override { return _MGraph_Image; }
+    
+    MImageRef image;
+    
     float x      = 0;
     float y      = 0;
     float width  = 0;
     float height = 0;
 };
 
-struct Label {
+struct LabelGraph : AnyGraph {
+    
+    _MGraph type() override { return _MGraph_Label; }
+    
     MStringRef string;
-
+    
     MColor  color    = 0;
     float   fontSize = 0;
     MHAlign hAlign   = 0;
     MVAlign vAlign   = 0;
-
-    float x      = 0;
-    float y      = 0;
-    float width  = 0;
-    float height = 0;
+    float   x        = 0;
+    float   y        = 0;
+    float   width    = 0;
+    float   height   = 0;
 };
 
-struct TextBox {
-    MStringRef string;
+//------------------------------------------------------------------------------
+//draw select:
 
+typedef std::shared_ptr<struct DrawSelect> DrawSelectRef;
+
+struct DrawSelect {
+    MStringRef string;
+    MImageRef  image ;
+    
+    MColor  color    = 0;
+    float   fontSize = 0;
+    MHAlign hAlign   = 0;
+    MVAlign vAlign   = 0;
+    float   x0       = 0;
+    float   y0       = 0;
+    float   x1       = 0;
+    float   y1       = 0;
+    float   x2       = 0;
+    float   y2       = 0;
+};
+
+//------------------------------------------------------------------------------
+//text box:
+
+typedef std::shared_ptr<struct TextBox> TextBoxRef;
+
+struct TextBox {
+    MStringRef rawString;
+    MStringRef string   ;
+
+    bool updated = false;
     bool enabled = false;
     bool enter   = false;
 };
 
-struct Window {
-    bool loaded = false;
-    bool shown  = false;
-    
+//------------------------------------------------------------------------------
+//host window:
+
+struct HostWindow {
     MWindowEvent event = 0;
     
     float width  = 0;
     float height = 0;
+    bool  loaded = false;
+    bool  shown  = false;
     float touchX = 0;
     float touchY = 0;
     MKey  key    = 0;
 
-    MStringRef selectedString;
-    MImageRef  selectedImage ;
-    MColor     selectedColor      = 0;
-    float      selectedFontSize   = 0;
-    MHAlign    selectedHAlign     = 0;
-    MVAlign    selectedVAlign     = 0;
-    float      selectedPointX[3]  = {0};
-    float      selectedPointY[3]  = {0};
-
-    std::vector<Triangle> triangles;
-    std::vector<Image> images;
-    std::vector<Label> labels;
-    TextBox textBox;
-
+    std::vector<AnyGraphRef> graphs;
+    DrawSelectRef select;
+    TextBoxRef textBox;
+    
     std::vector<MLambdaRef> listeners;
 };
 
-static Window *GetWindow() {
-    static Window *window = new Window;
+//assist functions:
+
+static HostWindow *GetWindow() {
+    static HostWindow *window = nullptr;
+    if (!window) {
+        window = new HostWindow;
+        
+        window->select  = DrawSelectRef(new DrawSelect);
+        window->textBox = TextBoxRef(new TextBox);
+    }
     return window;
 }
 
-static Triangle *TriangleAt(int index) {
-    Window *window = GetWindow();
-    return &window->triangles[index];
-}
+static TriangleGraph *TriangleGraphAt(int i) { return (TriangleGraph *)GetWindow()->graphs[i].get(); }
+static ImageGraph    *ImageGraphAt   (int i) { return (ImageGraph    *)GetWindow()->graphs[i].get(); }
+static LabelGraph    *LabelGraphAt   (int i) { return (LabelGraph    *)GetWindow()->graphs[i].get(); }
 
-static Image *ImageAt(int index) {
-    Window *window = GetWindow();
-    return &window->images[index];
-}
+static DrawSelect *GetSelect () { return GetWindow()->select .get(); }
+static TextBox    *GetTextBox() { return GetWindow()->textBox.get(); }
 
-static Label *LabelAt(int index) {
-    Window *window = GetWindow();
-    return &window->labels[index];
-}
-
-static TextBox *GetTextBox() {
-    Window *window = GetWindow();
-    return &window->textBox;
-}
-
-static void SendEvent(Window *window, MWindowEvent event) {
+static void SendEvent(HostWindow *window, MWindowEvent event) {
     window->event = event;
     for (const MLambdaRef &listener : window->listeners) {
         MLambdaCall(listener.get());
     }
 }
 
+//interface functions:
+
 static float sPixelDensity = 1.f;
 
-static float PointFromPixel(float pixel) { return pixel / sPixelDensity; }
-static float PixelFromPoint(float point) { return point * sPixelDensity; }
+static float   PointFromPixel(_MPixel pixel) { return pixel / sPixelDensity; }
+static _MPixel PixelFromPoint(float   point) { return point * sPixelDensity; }
 
 void _MWindowSetPixelDensity(float density) {
     sPixelDensity = density;
 }
 
 void _MWindowOnLoad() {
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
     
     if (!window->loaded) {
         window->loaded = true;
@@ -117,7 +158,7 @@ void _MWindowOnLoad() {
 }
 
 void _MWindowOnShow() {
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
     
     if (window->loaded && !window->shown) {
         window->shown = true;
@@ -126,7 +167,7 @@ void _MWindowOnShow() {
 }
 
 void _MWindowOnHide() {
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
     
     if (window->shown) {
         window->shown = false;
@@ -135,39 +176,36 @@ void _MWindowOnHide() {
 }
 
 void _MWindowOnResize(_MPixel width, _MPixel height) {
-    float pointW = PointFromPixel(width );
-    float pointH = PointFromPixel(height);
+    float wPoint = PointFromPixel(width );
+    float hPoint = PointFromPixel(height);
     
-    Window *window = GetWindow();
-    if (window->width == pointW && window->height == pointH) {
+    HostWindow *window = GetWindow();
+    if (window->width == wPoint && window->height == hPoint) {
         return;
     }
     
-    window->width  = pointW;
-    window->height = pointH;
+    window->width  = wPoint;
+    window->height = hPoint;
     if (window->loaded) {
         SendEvent(window, MWindowEvent_Resize);
     }
 }
 
 void _MWindowOnDraw() {
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
     
-    window->triangles.clear();
-    window->images.clear();
-    window->labels.clear();
-    
+    window->graphs.clear();
     SendEvent(window, MWindowEvent_Draw);
 }
 
 static void WindowOnTouch(MWindowEvent event, _MPixel x, _MPixel y) {
-    float pointX = PointFromPixel(x);
-    float pointY = PointFromPixel(y);
+    float xPoint = PointFromPixel(x);
+    float yPoint = PointFromPixel(y);
     
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
 
-    window->touchX = pointX;
-    window->touchY = pointY;
+    window->touchX = xPoint;
+    window->touchY = yPoint;
     SendEvent(window, event);
 }
 
@@ -176,81 +214,59 @@ void _MWindowOnTouchMove (_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_Tou
 void _MWindowOnTouchEnd  (_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_TouchEnd  , x, y); }
 
 void _MWindowOnTextBox(MString *string, bool enter) {
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
 
-    window->textBox.string = m_make_shared string;
-    window->textBox.enter = enter;
+    window->textBox->string = m_make_shared string;
+    window->textBox->enter = enter;
     SendEvent(window, MWindowEvent_TextBox);
 }
 
 void _MWindowOnKeyDown(MKey key) {
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
 
     window->key = key;
     SendEvent(window, MWindowEvent_KeyDown);
 }
 
-int _MWindowTriangleCount() {
-    Window *window = GetWindow();
-    return (int)window->triangles.size();
+int _MWindowGraphCount() {
+    return (int)GetWindow()->graphs.size();
 }
 
-_MPixel _MWindowTriangleVertexX(int index, int v) { return PixelFromPoint(TriangleAt(index)->x[v]); }
-_MPixel _MWindowTriangleVertexY(int index, int v) { return PixelFromPoint(TriangleAt(index)->y[v]); }
-
-MColor _MWindowTriangleColor(int index) {
-    return TriangleAt(index)->color;
+_MGraph _MWindowGraphType(int index) {
+    return GetWindow()->graphs[index]->type();
 }
 
-int _MWindowImageCount() {
-    Window *window = GetWindow();
-    return (int)window->images.size();
-}
+_MPixel  _MWindowTriangleGraphX0   (int i) { return PixelFromPoint(TriangleGraphAt(i)->x0); }
+_MPixel  _MWindowTriangleGraphY0   (int i) { return PixelFromPoint(TriangleGraphAt(i)->y0); }
+_MPixel  _MWindowTriangleGraphX1   (int i) { return PixelFromPoint(TriangleGraphAt(i)->x1); }
+_MPixel  _MWindowTriangleGraphY1   (int i) { return PixelFromPoint(TriangleGraphAt(i)->y1); }
+_MPixel  _MWindowTriangleGraphX2   (int i) { return PixelFromPoint(TriangleGraphAt(i)->x2); }
+_MPixel  _MWindowTriangleGraphY2   (int i) { return PixelFromPoint(TriangleGraphAt(i)->y2); }
+MColor   _MWindowTriangleGraphColor(int i) { return TriangleGraphAt(i)->color             ; }
 
-MImage *_MWindowImageObject(int index) {
-    return ImageAt(index)->image.get();
-}
+MImage  *_MWindowImageGraphObject  (int i) { return ImageGraphAt(i)->image.get()           ; }
+_MPixel  _MWindowImageGraphX       (int i) { return PixelFromPoint(ImageGraphAt(i)->x     ); }
+_MPixel  _MWindowImageGraphY       (int i) { return PixelFromPoint(ImageGraphAt(i)->y     ); }
+_MPixel  _MWindowImageGraphWidth   (int i) { return PixelFromPoint(ImageGraphAt(i)->width ); }
+_MPixel  _MWindowImageGraphHeight  (int i) { return PixelFromPoint(ImageGraphAt(i)->height); }
 
-_MPixel _MWindowImageX(int index) { return PixelFromPoint(ImageAt(index)->x); }
-_MPixel _MWindowImageY(int index) { return PixelFromPoint(ImageAt(index)->y); }
+MString *_MWindowLabelGraphString  (int i) { return LabelGraphAt(i)->string.get()            ; }
+MColor   _MWindowLabelGraphColor   (int i) { return LabelGraphAt(i)->color                   ; }
+_MPixel  _MWindowLabelGraphFontSize(int i) { return PixelFromPoint(LabelGraphAt(i)->fontSize); }
+MHAlign  _MWindowLabelGraphHAlign  (int i) { return LabelGraphAt(i)->hAlign                  ; }
+MVAlign  _MWindowLabelGraphVAlign  (int i) { return LabelGraphAt(i)->vAlign                  ; }
+_MPixel  _MWindowLabelGraphX       (int i) { return PixelFromPoint(LabelGraphAt(i)->x     )  ; }
+_MPixel  _MWindowLabelGraphY       (int i) { return PixelFromPoint(LabelGraphAt(i)->y     )  ; }
+_MPixel  _MWindowLabelGraphWidth   (int i) { return PixelFromPoint(LabelGraphAt(i)->width )  ; }
+_MPixel  _MWindowLabelGraphHeight  (int i) { return PixelFromPoint(LabelGraphAt(i)->height)  ; }
 
-_MPixel _MWindowImageWidth (int index) { return PixelFromPoint(ImageAt(index)->width ); }
-_MPixel _MWindowImageHeight(int index) { return PixelFromPoint(ImageAt(index)->height); }
-
-int _MWindowLabelCount() {
-    Window *window = GetWindow();
-    return (int)window->labels.size();
-}
-
-MString *_MWindowLabelString(int index) {
-    return LabelAt(index)->string.get();
-}
-
-MColor _MWindowLabelColor(int index) {
-    return LabelAt(index)->color;
-}
-
-_MPixel _MWindowLabelFontSize(int index) {
-    float size = LabelAt(index)->fontSize;
-    return PixelFromPoint(size);
-}
-
-MHAlign _MWindowLabelHAlign(int index) { return LabelAt(index)->hAlign; }
-MVAlign _MWindowLabelVAlign(int index) { return LabelAt(index)->vAlign; }
-
-_MPixel _MWindowLabelX(int index) { return PixelFromPoint(LabelAt(index)->x); }
-_MPixel _MWindowLabelY(int index) { return PixelFromPoint(LabelAt(index)->y); }
-
-_MPixel _MWindowLabelWidth (int index) { return PixelFromPoint(LabelAt(index)->width ); }
-_MPixel _MWindowLabelHeight(int index) { return PixelFromPoint(LabelAt(index)->height); }
-
-bool _MWindowTextBoxEnabled() {
-    return GetTextBox()->enabled;
-}
+bool     _MWindowTextBoxUpdated  () { return GetTextBox()->updated; }
+bool     _MWindowTextBoxEnabled  () { return GetTextBox()->enabled; }
+MString *_MWindowTextBoxRawString() { return GetTextBox()->rawString.get(); }
 
 void MWindowAddListener(MLambda *listener) {
     if (listener) {
-        Window *window = GetWindow();
+        HostWindow *window = GetWindow();
         window->listeners.push_back(m_make_shared listener);
     }
 }
@@ -259,141 +275,92 @@ MWindowEvent MWindowCurrentEvent() {
     return GetWindow()->event;
 }
 
-float MWindowWidth () { return GetWindow()->width ; }
-float MWindowHeight() { return GetWindow()->height; }
+float MWindowWidth    () { return GetWindow()->width ; }
+float MWindowHeight   () { return GetWindow()->height; }
+bool  MWindowLoaded   () { return GetWindow()->loaded; }
+bool  MWindowShown    () { return GetWindow()->shown ; }
+float MWindowTouchX   () { return GetWindow()->touchX; }
+float MWindowTouchY   () { return GetWindow()->touchY; }
+MKey  MWindowActiveKey() { return GetWindow()->key   ; }
 
-bool MWindowLoaded() { return GetWindow()->loaded; }
-bool MWindowShown () { return GetWindow()->shown ; }
+void MWindowSelectString(MString *string) { GetSelect()->string = m_make_shared string; }
+void MWindowSelectImage (MImage  *image ) { GetSelect()->image  = m_make_shared image ; }
 
-float MWindowTouchX() { return GetWindow()->touchX; }
-float MWindowTouchY() { return GetWindow()->touchY; }
+void MWindowSelectColor   (MColor  color) { GetSelect()->color    = color; }
+void MWindowSelectFontSize(float   size ) { GetSelect()->fontSize = size ; }
+void MWindowSelectHAlign  (MHAlign align) { GetSelect()->hAlign   = align; }
+void MWindowSelectVAlign  (MVAlign align) { GetSelect()->vAlign   = align; }
 
-MKey MWindowActiveKey() {
-    return GetWindow()->key;
-}
-
-void MWindowSelectString(MString *string) {
-    Window *window = GetWindow();
-    window->selectedString = m_make_shared string;
-}
-
-void MWindowSelectImage(MImage *image) {
-    Window *window = GetWindow();
-    window->selectedImage = m_make_shared image;
-}
-
-void MWindowSelectColor(MColor color) {
-    Window *window = GetWindow();
-    window->selectedColor = color;
-}
-
-void MWindowSelectFontSize(float size) {
-    Window *window = GetWindow();
-    window->selectedFontSize = size;
-}
-
-void MWindowSelectHAlign(MHAlign align) {
-    Window *window = GetWindow();
-    window->selectedHAlign = align;
-}
-
-void MWindowSelectVAlign(MVAlign align) {
-    Window *window = GetWindow();
-    window->selectedVAlign = align;
-}
-
-static void SelectPoint(int index, float x, float y) {
-    Window *window = GetWindow();
-
-    window->selectedPointX[index]  = x;
-    window->selectedPointY[index]  = y;
-}
-
-void MWindowSelectPoint0(float x, float y) { SelectPoint(0, x, y); }
-void MWindowSelectPoint1(float x, float y) { SelectPoint(1, x, y); }
-void MWindowSelectPoint2(float x, float y) { SelectPoint(2, x, y); }
+void MWindowSelectPoint0(float x, float y) { DrawSelect *s = GetSelect(); s->x0 = x; s->y0 = y; }
+void MWindowSelectPoint1(float x, float y) { DrawSelect *s = GetSelect(); s->x1 = x; s->y1 = y; }
+void MWindowSelectPoint2(float x, float y) { DrawSelect *s = GetSelect(); s->x2 = x; s->y2 = y; }
 
 void MWindowDrawTriangle() {
-    Window *window = GetWindow();
+    HostWindow *window = GetWindow();
+    DrawSelect *select = window->select.get();
 
-    Triangle triangle;
-    
-    triangle.color = window->selectedColor;
-
-    triangle.x[0] = window->selectedPointX[0];
-    triangle.y[0] = window->selectedPointY[0];
-    triangle.x[1] = window->selectedPointX[1];
-    triangle.y[1] = window->selectedPointY[1];
-    triangle.x[2] = window->selectedPointX[2];
-    triangle.y[2] = window->selectedPointY[2];
-
-    window->triangles.push_back(triangle);
+    TriangleGraphRef triangle(new TriangleGraph); {
+        
+        triangle->color = select->color;
+        triangle->x0    = select->x0;
+        triangle->y0    = select->y0;
+        triangle->x1    = select->x1;
+        triangle->y1    = select->y1;
+        triangle->x2    = select->x2;
+        triangle->y2    = select->y2;
+    }
+    window->graphs.push_back(triangle);
 }
 
 void MWindowDrawImage() {
-    Window *window = GetWindow();
-    if (!window->selectedImage) {
+    HostWindow *window = GetWindow();
+    DrawSelect *select = window->select.get();
+
+    if (!select->image) {
         return;
     }
-
-    float x0 = window->selectedPointX[0];
-    float y0 = window->selectedPointY[0];
-    float x1 = window->selectedPointX[1];
-    float y1 = window->selectedPointY[1];
-
-    Image image;
-    {
-        image.image  = window->selectedImage;
-        image.x      = x0;
-        image.y      = y0;
-        image.width  = x1 - x0;
-        image.height = y1 - y0;
-    }
     
-    window->selectedImage.reset();
-
-    window->images.push_back(image);
+    ImageGraphRef image(new ImageGraph); {
+        
+        image->image  = select->image;
+        image->x      = select->x0;
+        image->y      = select->y0;
+        image->width  = select->x1 - select->x0;
+        image->height = select->y1 - select->y0;
+    }
+    window->graphs.push_back(image);
+    
+    select->image.reset();
 }
 
 void MWindowDrawLabel() {
-    Window *window = GetWindow();
-    if (!window->selectedString) {
+    HostWindow *window = GetWindow();
+    DrawSelect *select = window->select.get();
+    
+    if (!select->string) {
         return;
     }
-
-    float x0 = window->selectedPointX[0];
-    float y0 = window->selectedPointY[0];
-    float x1 = window->selectedPointX[1];
-    float y1 = window->selectedPointY[1];
-
-    Label label;
-    {
-        label.string   = window->selectedString  ;
-        label.color    = window->selectedColor   ;
-        label.fontSize = window->selectedFontSize;
-        label.hAlign   = window->selectedHAlign  ;
-        label.vAlign   = window->selectedVAlign  ;
     
-        label.x      = x0;
-        label.y      = y0;
-        label.width  = x1 - x0;
-        label.height = y1 - y0;
+    LabelGraphRef label(new LabelGraph); {
+        
+        label->string   = select->string;
+        label->color    = select->color;
+        label->fontSize = select->fontSize;
+        label->hAlign   = select->hAlign;
+        label->vAlign   = select->vAlign;
+        label->x        = select->x0;
+        label->y        = select->y0;
+        label->width    = select->x1 - select->x0;
+        label->height   = select->y1 - select->y0;
     }
+    window->graphs.push_back(label);
     
-    window->selectedString.reset();
-
-    window->labels.push_back(label);
+    select->string.reset();
 }
 
-void MWindowEnableTextBox(bool enabled) {
-    TextBox *textBox = GetTextBox();
-    textBox->enabled = enabled;
-}
+void MWindowSetTextBoxUpdated  (bool     updated ) { GetTextBox()->updated   = updated; }
+void MWindowSetTextBoxEnabled  (bool     enabled ) { GetTextBox()->enabled   = enabled; }
+void MWindowSetTextBoxRawString(MString *original) { GetTextBox()->rawString = m_make_shared original; }
 
-MString *MWindowTextBoxString() {
-    return GetTextBox()->string.get();
-}
-
-bool MWindowTextBoxEnter() {
-    return GetTextBox()->enter;
-}
+MString *MWindowTextBoxString() { return GetTextBox()->string.get(); }
+bool     MWindowTextBoxEnter () { return GetTextBox()->enter; }
