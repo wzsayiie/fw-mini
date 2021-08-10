@@ -65,20 +65,20 @@ void CView::setBackgroundColor(const CColor &color) {
     mBackgroundColor = color;
 }
 
-void CView::setTouchable(bool touchable) {
-    mTouchable = touchable;
-}
-
-bool CView::touchable() {
-    return mTouchable;
-}
-
 void CView::setVisible(bool visible) {
     mVisible = visible;
 }
 
 bool CView::visible() {
     return mVisible;
+}
+
+void CView::setTouchable(bool touchable) {
+    mTouchable = touchable;
+}
+
+bool CView::touchable() {
+    return mTouchable;
 }
 
 static void RemoveSubview(std::vector<CViewRef> *subviews, CView *view) {
@@ -219,8 +219,7 @@ void CView::handleWindowEvent(MObject *) {
 }
 
 void CView::handleResize(float width, float height) {
-    mWidth  = width ;
-    mHeight = height;
+    setSize(width, height);
 }
 
 void CView::handleDraw() {

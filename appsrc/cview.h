@@ -25,11 +25,11 @@ public:
     
     void setBackgroundColor(const CColor &color);
     
-    void setTouchable(bool touchable);
-    bool touchable();
-    
     void setVisible(bool visible);
     bool visible();
+    
+    void setTouchable(bool touchable);
+    bool touchable();
 
     void addSubview(CViewRef subview);
     void removeFromSuperview();
@@ -69,8 +69,10 @@ private:
     float mHeight  = 0;
 
     CColor mBackgroundColor {0, 0, 0, 0};
-    bool mTouchable = false;
     bool mVisible = true;
+    
+    //views are not touchable by default.
+    bool mTouchable = false;
     
     std::vector<CViewRef> mSubviews;
     CView *mSuperview = nullptr;
