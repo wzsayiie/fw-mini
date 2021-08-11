@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ccontrol.h"
 #include "cfilemanager.h"
 #include "cgraphics.h"
 #include "cimageview.h"
