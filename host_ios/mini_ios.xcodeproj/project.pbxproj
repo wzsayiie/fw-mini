@@ -13,27 +13,6 @@
 		CE107D682674C19500823730 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE107D652674C19500823730 /* LaunchScreen.storyboard */; };
 		CE107D6F2674C42C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107D6A2674C42C00823730 /* README.cpp */; };
 		CE107D752674C4B900823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107D742674C4B900823730 /* mini.bundle */; };
-		CE4F2F7226AC0313008BC47C /* jsapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F4826AC0312008BC47C /* jsapp.cpp */; };
-		CE4F2F7326AC0313008BC47C /* mtypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F4926AC0312008BC47C /* mtypes.cpp */; };
-		CE4F2F7426AC0313008BC47C /* mdebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F4B26AC0312008BC47C /* mdebug.cpp */; };
-		CE4F2F7526AC0313008BC47C /* mencode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F4C26AC0312008BC47C /* mencode.cpp */; };
-		CE4F2F7626AC0313008BC47C /* cviewcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F4D26AC0312008BC47C /* cviewcontroller.cpp */; };
-		CE4F2F7726AC0313008BC47C /* mexport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5226AC0312008BC47C /* mexport.cpp */; };
-		CE4F2F7826AC0313008BC47C /* mapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5426AC0312008BC47C /* mapp.cpp */; };
-		CE4F2F7926AC0313008BC47C /* mhostui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5626AC0312008BC47C /* mhostui.cpp */; };
-		CE4F2F7A26AC0313008BC47C /* mresource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5726AC0312008BC47C /* mresource.cpp */; };
-		CE4F2F7B26AC0313008BC47C /* cuiresponder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5826AC0312008BC47C /* cuiresponder.cpp */; };
-		CE4F2F7C26AC0313008BC47C /* mcontext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5A26AC0312008BC47C /* mcontext.cpp */; };
-		CE4F2F7D26AC0313008BC47C /* clog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5C26AC0312008BC47C /* clog.cpp */; };
-		CE4F2F7E26AC0313008BC47C /* cimageview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5D26AC0312008BC47C /* cimageview.cpp */; };
-		CE4F2F7F26AC0313008BC47C /* cview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F5F26AC0312008BC47C /* cview.cpp */; };
-		CE4F2F8026AC0313008BC47C /* cgraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F6026AC0313008BC47C /* cgraphics.cpp */; };
-		CE4F2F8126AC0313008BC47C /* crunloop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F6526AC0313008BC47C /* crunloop.cpp */; };
-		CE4F2F8226AC0313008BC47C /* capp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F6A26AC0313008BC47C /* capp.cpp */; };
-		CE4F2F8326AC0313008BC47C /* cfilemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F6C26AC0313008BC47C /* cfilemanager.cpp */; };
-		CE4F2F8426AC0313008BC47C /* mfuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F6E26AC0313008BC47C /* mfuncs.cpp */; };
-		CE4F2F8526AC0313008BC47C /* clabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F7026AC0313008BC47C /* clabel.cpp */; };
-		CE4F2F8626AC0313008BC47C /* mhostapi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE4F2F7126AC0313008BC47C /* mhostapi.cpp */; };
 		CE9E181A26A29C93006FF96A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9E181926A29C93006FF96A /* UIKit.framework */; };
 		CE9E181C26A29C9A006FF96A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9E181B26A29C9A006FF96A /* CoreGraphics.framework */; };
 		CEE49720269332E0005C4957 /* MView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE4971C269332E0005C4957 /* MView.mm */; };
@@ -50,48 +29,6 @@
 		CE107D652674C19500823730 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CE107D6A2674C42C00823730 /* README.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = README.cpp; sourceTree = "<group>"; };
 		CE107D742674C4B900823730 /* mini.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mini.bundle; sourceTree = "<group>"; };
-		CE4F2F4826AC0312008BC47C /* jsapp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jsapp.cpp; sourceTree = "<group>"; };
-		CE4F2F4926AC0312008BC47C /* mtypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mtypes.cpp; sourceTree = "<group>"; };
-		CE4F2F4A26AC0312008BC47C /* mtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mtypes.h; sourceTree = "<group>"; };
-		CE4F2F4B26AC0312008BC47C /* mdebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mdebug.cpp; sourceTree = "<group>"; };
-		CE4F2F4C26AC0312008BC47C /* mencode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mencode.cpp; sourceTree = "<group>"; };
-		CE4F2F4D26AC0312008BC47C /* cviewcontroller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cviewcontroller.cpp; sourceTree = "<group>"; };
-		CE4F2F4E26AC0312008BC47C /* mcontext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mcontext.h; sourceTree = "<group>"; };
-		CE4F2F4F26AC0312008BC47C /* cviewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cviewcontroller.h; sourceTree = "<group>"; };
-		CE4F2F5026AC0312008BC47C /* clabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clabel.h; sourceTree = "<group>"; };
-		CE4F2F5126AC0312008BC47C /* cview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cview.h; sourceTree = "<group>"; };
-		CE4F2F5226AC0312008BC47C /* mexport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mexport.cpp; sourceTree = "<group>"; };
-		CE4F2F5326AC0312008BC47C /* mhostapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mhostapi.h; sourceTree = "<group>"; };
-		CE4F2F5426AC0312008BC47C /* mapp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mapp.cpp; sourceTree = "<group>"; };
-		CE4F2F5526AC0312008BC47C /* mconfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mconfig.h; sourceTree = "<group>"; };
-		CE4F2F5626AC0312008BC47C /* mhostui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mhostui.cpp; sourceTree = "<group>"; };
-		CE4F2F5726AC0312008BC47C /* mresource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mresource.cpp; sourceTree = "<group>"; };
-		CE4F2F5826AC0312008BC47C /* cuiresponder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cuiresponder.cpp; sourceTree = "<group>"; };
-		CE4F2F5926AC0312008BC47C /* MEXPORT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MEXPORT.h; sourceTree = "<group>"; };
-		CE4F2F5A26AC0312008BC47C /* mcontext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mcontext.cpp; sourceTree = "<group>"; };
-		CE4F2F5B26AC0312008BC47C /* mresource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mresource.h; sourceTree = "<group>"; };
-		CE4F2F5C26AC0312008BC47C /* clog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clog.cpp; sourceTree = "<group>"; };
-		CE4F2F5D26AC0312008BC47C /* cimageview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cimageview.cpp; sourceTree = "<group>"; };
-		CE4F2F5E26AC0312008BC47C /* mhostui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mhostui.h; sourceTree = "<group>"; };
-		CE4F2F5F26AC0312008BC47C /* cview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cview.cpp; sourceTree = "<group>"; };
-		CE4F2F6026AC0313008BC47C /* cgraphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cgraphics.cpp; sourceTree = "<group>"; };
-		CE4F2F6126AC0313008BC47C /* cfilemanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cfilemanager.h; sourceTree = "<group>"; };
-		CE4F2F6226AC0313008BC47C /* clog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clog.h; sourceTree = "<group>"; };
-		CE4F2F6326AC0313008BC47C /* mapp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mapp.h; sourceTree = "<group>"; };
-		CE4F2F6426AC0313008BC47C /* mfuncs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mfuncs.h; sourceTree = "<group>"; };
-		CE4F2F6526AC0313008BC47C /* crunloop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crunloop.cpp; sourceTree = "<group>"; };
-		CE4F2F6626AC0313008BC47C /* menviron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = menviron.h; sourceTree = "<group>"; };
-		CE4F2F6726AC0313008BC47C /* cgraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cgraphics.h; sourceTree = "<group>"; };
-		CE4F2F6826AC0313008BC47C /* cuiresponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cuiresponder.h; sourceTree = "<group>"; };
-		CE4F2F6926AC0313008BC47C /* crunloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crunloop.h; sourceTree = "<group>"; };
-		CE4F2F6A26AC0313008BC47C /* capp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = capp.cpp; sourceTree = "<group>"; };
-		CE4F2F6B26AC0313008BC47C /* mencode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mencode.h; sourceTree = "<group>"; };
-		CE4F2F6C26AC0313008BC47C /* cfilemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cfilemanager.cpp; sourceTree = "<group>"; };
-		CE4F2F6D26AC0313008BC47C /* cimageview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cimageview.h; sourceTree = "<group>"; };
-		CE4F2F6E26AC0313008BC47C /* mfuncs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mfuncs.cpp; sourceTree = "<group>"; };
-		CE4F2F6F26AC0313008BC47C /* mdebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mdebug.h; sourceTree = "<group>"; };
-		CE4F2F7026AC0313008BC47C /* clabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clabel.cpp; sourceTree = "<group>"; };
-		CE4F2F7126AC0313008BC47C /* mhostapi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mhostapi.cpp; sourceTree = "<group>"; };
 		CE9E181926A29C93006FF96A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		CE9E181B26A29C9A006FF96A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		CEE4971C269332E0005C4957 /* MView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MView.mm; sourceTree = "<group>"; };
@@ -152,48 +89,6 @@
 		CE107D692674C42C00823730 /* appsrc */ = {
 			isa = PBXGroup;
 			children = (
-				CE4F2F6A26AC0313008BC47C /* capp.cpp */,
-				CE4F2F6C26AC0313008BC47C /* cfilemanager.cpp */,
-				CE4F2F6126AC0313008BC47C /* cfilemanager.h */,
-				CE4F2F6026AC0313008BC47C /* cgraphics.cpp */,
-				CE4F2F6726AC0313008BC47C /* cgraphics.h */,
-				CE4F2F5D26AC0312008BC47C /* cimageview.cpp */,
-				CE4F2F6D26AC0313008BC47C /* cimageview.h */,
-				CE4F2F7026AC0313008BC47C /* clabel.cpp */,
-				CE4F2F5026AC0312008BC47C /* clabel.h */,
-				CE4F2F5C26AC0312008BC47C /* clog.cpp */,
-				CE4F2F6226AC0313008BC47C /* clog.h */,
-				CE4F2F6526AC0313008BC47C /* crunloop.cpp */,
-				CE4F2F6926AC0313008BC47C /* crunloop.h */,
-				CE4F2F5826AC0312008BC47C /* cuiresponder.cpp */,
-				CE4F2F6826AC0313008BC47C /* cuiresponder.h */,
-				CE4F2F5F26AC0312008BC47C /* cview.cpp */,
-				CE4F2F5126AC0312008BC47C /* cview.h */,
-				CE4F2F4D26AC0312008BC47C /* cviewcontroller.cpp */,
-				CE4F2F4F26AC0312008BC47C /* cviewcontroller.h */,
-				CE4F2F4826AC0312008BC47C /* jsapp.cpp */,
-				CE4F2F5426AC0312008BC47C /* mapp.cpp */,
-				CE4F2F6326AC0313008BC47C /* mapp.h */,
-				CE4F2F5526AC0312008BC47C /* mconfig.h */,
-				CE4F2F5A26AC0312008BC47C /* mcontext.cpp */,
-				CE4F2F4E26AC0312008BC47C /* mcontext.h */,
-				CE4F2F4B26AC0312008BC47C /* mdebug.cpp */,
-				CE4F2F6F26AC0313008BC47C /* mdebug.h */,
-				CE4F2F4C26AC0312008BC47C /* mencode.cpp */,
-				CE4F2F6B26AC0313008BC47C /* mencode.h */,
-				CE4F2F6626AC0313008BC47C /* menviron.h */,
-				CE4F2F5226AC0312008BC47C /* mexport.cpp */,
-				CE4F2F5926AC0312008BC47C /* MEXPORT.h */,
-				CE4F2F6E26AC0313008BC47C /* mfuncs.cpp */,
-				CE4F2F6426AC0313008BC47C /* mfuncs.h */,
-				CE4F2F7126AC0313008BC47C /* mhostapi.cpp */,
-				CE4F2F5326AC0312008BC47C /* mhostapi.h */,
-				CE4F2F5626AC0312008BC47C /* mhostui.cpp */,
-				CE4F2F5E26AC0312008BC47C /* mhostui.h */,
-				CE4F2F5726AC0312008BC47C /* mresource.cpp */,
-				CE4F2F5B26AC0312008BC47C /* mresource.h */,
-				CE4F2F4926AC0312008BC47C /* mtypes.cpp */,
-				CE4F2F4A26AC0312008BC47C /* mtypes.h */,
 				CE107D6A2674C42C00823730 /* README.cpp */,
 			);
 			name = appsrc;
@@ -287,32 +182,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE4F2F7226AC0313008BC47C /* jsapp.cpp in Sources */,
-				CE4F2F7B26AC0313008BC47C /* cuiresponder.cpp in Sources */,
 				CEE49720269332E0005C4957 /* MView.mm in Sources */,
 				CE107D672674C19500823730 /* MViewController.mm in Sources */,
 				CEE49721269332E0005C4957 /* MIOSAPI.mm in Sources */,
-				CE4F2F7726AC0313008BC47C /* mexport.cpp in Sources */,
 				CE107D6F2674C42C00823730 /* README.cpp in Sources */,
-				CE4F2F8426AC0313008BC47C /* mfuncs.cpp in Sources */,
-				CE4F2F7526AC0313008BC47C /* mencode.cpp in Sources */,
-				CE4F2F8526AC0313008BC47C /* clabel.cpp in Sources */,
-				CE4F2F7626AC0313008BC47C /* cviewcontroller.cpp in Sources */,
-				CE4F2F7326AC0313008BC47C /* mtypes.cpp in Sources */,
-				CE4F2F7F26AC0313008BC47C /* cview.cpp in Sources */,
-				CE4F2F8126AC0313008BC47C /* crunloop.cpp in Sources */,
-				CE4F2F7D26AC0313008BC47C /* clog.cpp in Sources */,
-				CE4F2F8226AC0313008BC47C /* capp.cpp in Sources */,
 				CE107D5B2674C11400823730 /* main.mm in Sources */,
-				CE4F2F8326AC0313008BC47C /* cfilemanager.cpp in Sources */,
-				CE4F2F7426AC0313008BC47C /* mdebug.cpp in Sources */,
-				CE4F2F8026AC0313008BC47C /* cgraphics.cpp in Sources */,
-				CE4F2F7926AC0313008BC47C /* mhostui.cpp in Sources */,
-				CE4F2F7E26AC0313008BC47C /* cimageview.cpp in Sources */,
-				CE4F2F8626AC0313008BC47C /* mhostapi.cpp in Sources */,
-				CE4F2F7826AC0313008BC47C /* mapp.cpp in Sources */,
-				CE4F2F7A26AC0313008BC47C /* mresource.cpp in Sources */,
-				CE4F2F7C26AC0313008BC47C /* mcontext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
