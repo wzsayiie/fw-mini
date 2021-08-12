@@ -4,7 +4,7 @@ set -e -u
 
 cd `dirname $0`
 
-flg="--std=c++11 -fobjc-arc -dynamiclib -framework Cocoa"
+flg="--std=c++14 -fobjc-arc -dynamiclib -framework Cocoa"
 inc="-Iappsrc"
 src="appsrc/m*.cpp host_osx/mini/*.mm"
 

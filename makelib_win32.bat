@@ -15,7 +15,7 @@ pushd %TMPDIR%
 if not exist %OUTDIR% (md  %OUTDIR%)
 if exist     %OUTEXE% (del %OUTEXE%)
 
-cl /nologo /EHsc /LD /Fe%OUTEXE% /I%INCDIR% %CPPSRC% %WINLIB%
+cl /nologo /std:c++14 /EHsc /LD /Fe%OUTEXE% /I%INCDIR% %CPPSRC% %WINLIB%
 
 popd
 rmdir /s /q %TMPDIR%
