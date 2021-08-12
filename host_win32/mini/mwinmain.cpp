@@ -29,10 +29,7 @@ static void OpenConsole(void)
     SetWindowPos(hWnd, HWND_TOP, 0, 100, 0, 0, SWP_NOSIZE);
 }
 
-const UINT_PTR UpdateTimerID = 1;
-const UINT_PTR DrawTimerID   = 2;
-
-static void GetClientSize(HWND wnd, LONG *width, LONG *height)
+static void GetClientSize(HWND wnd, int *width, int *height)
 {
     RECT rect = {0};
     GetClientRect(wnd, &rect);
@@ -41,23 +38,114 @@ static void GetClientSize(HWND wnd, LONG *width, LONG *height)
     *height = rect.bottom - rect.top ;
 }
 
+static MString *CopyEditText(HWND edit)
+{
+    const int BufferSize = 1024;
+    
+    WCHAR buffer[BufferSize] = L"";
+    GetWindowTextW(edit, buffer, BufferSize);
+
+    return MStringCreateU16((const char16_t *)buffer);
+}
+
+const UINT_PTR UpdateTimerID = 1;
+const UINT_PTR DrawTimerID   = 2;
+
+static HWND    sEditWnd         = nullptr;
+static WNDPROC sEditDefaultProc = nullptr;
+static bool    sLButtonDowned   = false;
+
+static LRESULT CALLBACK EditCustomProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    if (msg == WM_KEYDOWN && wParam == VK_RETURN)
+    {
+        MStringRef text = m_auto_release CopyEditText(wnd);
+        _MWindowOnTextBox(text.get(), true);
+        return 0;
+    }
+    else
+    {
+        return sEditDefaultProc(wnd, msg, wParam, lParam);
+    }
+}
+
+static void CreateEditWithParent(HWND parent)
+{
+    sEditWnd = CreateWindowExW(
+        /* dwExStyle    */ 0,
+        /* lpClassName  */ L"edit",
+        /* lpWindowName */ nullptr,
+        /* dwStyle      */ WS_CHILD | WS_BORDER | ES_WANTRETURN,
+        /* x,y          */ 0, 0,
+        /* width,height */ 0, 0,
+        /* hWndParent   */ parent,
+        /* hMenu        */ nullptr,
+        /* hInstance    */ nullptr,
+        /* lpParam      */ nullptr
+    );
+
+    sEditDefaultProc = (WNDPROC)GetWindowLongPtrW(sEditWnd, GWLP_WNDPROC);
+    SetWindowLongPtrW(sEditWnd, GWLP_WNDPROC, (LONG_PTR)EditCustomProc);
+}
+
+static void AdjustEditPosition(int parentWidth, int parentHeight)
+{
+    const int Width  = 200;
+    const int Height =  20;
+
+    int x = (parentWidth - Width) / 2;
+    int y = parentHeight - Height - 20;
+    SetWindowPos(sEditWnd, nullptr, x, y, Width, Height, 0);
+}
+
+static void UpdateEditState()
+{
+    if (!_MWindowTextBoxUpdated())
+    {
+        return;
+    }
+
+    //NOTE: reset the flag.
+    MWindowSetTextBoxUpdated(false);
+
+    if (_MWindowTextBoxEnabled())
+    {
+        ShowWindow(sEditWnd, SW_SHOW);
+
+        MString *text = _MWindowTextBoxRawString();
+        SetWindowTextW(sEditWnd, (LPWSTR)MStringU16Chars(text));
+
+        int length = MStringU16Size(text);
+        SendMessageW(sEditWnd, EM_SETSEL, /*begin*/ length, /*end*/ length);
+        SetFocus(sEditWnd);
+    }
+    else
+    {
+        ShowWindow(sEditWnd, SW_HIDE);
+    }
+}
+
 static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     OpenConsole();
+    MPaintStart();
 
     MRegisterApi();
-    MPaintStart();
+
+    int width  = 0;
+    int height = 0;
+    GetClientSize(wnd, &width, &height);
+
+    //create edit control.
+    CreateEditWithParent(wnd);
+    AdjustEditPosition(width, height);
 
     //application events.
     _MAppLaunch();
     SetTimer(wnd, UpdateTimerID, (UINT)(1000 * _MAppUpdateInterval), nullptr);
 
     //window events:
-    LONG width  = 0;
-    LONG height = 0;
-    GetClientSize(wnd, &width, &height);
     _MWindowOnResize((_MPixel)width, (_MPixel)height);
-
     _MWindowOnLoad();
 
     SetTimer(wnd, DrawTimerID, (UINT)(1000 * _MWindowDrawInterval), nullptr);
@@ -96,6 +184,7 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
     UINT_PTR timerID = wParam;
     if (timerID == UpdateTimerID)
     {
+        UpdateEditState();
         _MAppUpdate();
     }
     else if (timerID == DrawTimerID)
@@ -109,16 +198,19 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
 static LRESULT OnSize(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     LPARAM clientSize = lParam;
-    float width  = LOWORD(clientSize);
-    float height = HIWORD(clientSize);
-    _MWindowOnResize(width, height);
+    int width  = LOWORD(clientSize);
+    int height = HIWORD(clientSize);
+
+    AdjustEditPosition(width, height);
+    _MWindowOnResize((_MPixel)width, (_MPixel)height);
+    
     return 0;
 }
 
 static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    LONG width  = 0;
-    LONG height = 0;
+    int width  = 0;
+    int height = 0;
     GetClientSize(wnd, &width, &height);
 
     PAINTSTRUCT paint = {0};
@@ -137,8 +229,6 @@ static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
     EndPaint(wnd, &paint);
     return 0;
 }
-
-static bool sLButtonDowned = false;
 
 static LRESULT OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
@@ -172,6 +262,20 @@ static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
     _MWindowOnTouchEnd(x, y);
 
     sLButtonDowned = false;
+
+    return 0;
+}
+
+static LRESULT OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
+{
+    HWND controlWnd = (HWND)(lParam);
+    int  notifyCode = HIWORD(wParam);
+
+    if (controlWnd == sEditWnd && notifyCode == EN_CHANGE)
+    {
+        MStringRef text = m_auto_release CopyEditText(sEditWnd);
+        _MWindowOnTextBox(text.get(), false);
+    }
 
     return 0;
 }
@@ -210,6 +314,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
         case WM_LBUTTONDOWN: return OnLButtonDown(wnd, wParam, lParam);
         case WM_MOUSEMOVE  : return OnMouseMove  (wnd, wParam, lParam);
         case WM_LBUTTONUP  : return OnLButtonUp  (wnd, wParam, lParam);
+        case WM_COMMAND    : return OnCommand    (wnd, wParam, lParam);
         case WM_KEYDOWN    : return OnKeyDown    (wnd, wParam, lParam);
 
         default: return DefWindowProcW(wnd, msg, wParam, lParam);
