@@ -45,7 +45,7 @@ void CTextField::onTouchEnd(float x, float y) {
 void CTextField::onBecomeFirstResponder() {
     //blink the cursor.
     mCursorShown = true;
-    MRunEverySeconds(0.4f, mCursorTask.get());
+    MRunEverySeconds(0.6f, mCursorTask.get());
 
     //enable host text box.
     MStringRef text = m_auto_release MStringCreateU8(mText.c_str());
@@ -113,6 +113,6 @@ void CTextField::onDraw(float width, float height) {
     //draw cursor.
     if (mCursorShown) {
         CContextSelectColor(CColor::blackColor);
-        CContextDrawRect(0, height - 8, width, 2);
+        CContextDrawRect(0, (height + mFontSize) / 2, width, 2);
     }
 }

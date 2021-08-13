@@ -189,7 +189,7 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
     }
     else if (timerID == DrawTimerID)
     {
-        InvalidateRect(wnd, nullptr, TRUE);
+        InvalidateRect(wnd, nullptr, FALSE);
     }
 
     return 0;
