@@ -56,9 +56,10 @@ void CUIResponder::handleWindowEvent(MObject *) {
     }
 }
 
-CUIResponder *CUIResponder::findFirstResponder(std::function<bool (CUIResponder *)> fit) {
+CUIResponder *CUIResponder::findFirstResponder(bool refind, std::function<bool (CUIResponder *)> fit) {
     CUIResponder *responder = nullptr;
-    if (sFirstResponder && fit(sFirstResponder)) {
+
+    if (!refind && sFirstResponder && fit(sFirstResponder)) {
         responder = sFirstResponder;
 
     } else if (sRootResponder) {
@@ -75,7 +76,7 @@ void CUIResponder::handleWindowTouchBegin() {
     float x = MWindowTouchX();
     float y = MWindowTouchY();
 
-    CUIResponder *responder = findFirstResponder([x, y](CUIResponder *candidate) {
+    CUIResponder *responder = findFirstResponder(true, [x, y](CUIResponder *candidate) {
         return candidate->canRespondWindowTouch(x, y);
     });
 
@@ -108,7 +109,7 @@ void CUIResponder::handleWindowTouchEnd() {
 }
 
 void CUIResponder::handleWindowText() {
-    CUIResponder *responder = findFirstResponder([](CUIResponder *candidate) {
+    CUIResponder *responder = findFirstResponder(false, [](CUIResponder *candidate) {
         return candidate->canRespondText();
     });
 
@@ -120,7 +121,7 @@ void CUIResponder::handleWindowText() {
 }
 
 void CUIResponder::handleWindowKeyDown() {
-    CUIResponder *responder = findFirstResponder([](CUIResponder *candidate) {
+    CUIResponder *responder = findFirstResponder(false, [](CUIResponder *candidate) {
         return candidate->canRespondKey();
     });
 

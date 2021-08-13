@@ -37,7 +37,7 @@ protected:
 private:
     static void handleWindowEvent(MObject *);
     
-    static CUIResponder *findFirstResponder(std::function<bool (CUIResponder *)> fit);
+    static CUIResponder *findFirstResponder(bool refind, std::function<bool (CUIResponder *)> fit);
     
     static void handleWindowTouchBegin();
     static void handleWindowTouchMove();
