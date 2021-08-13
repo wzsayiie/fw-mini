@@ -1,4 +1,5 @@
-﻿#include <io.h>
+﻿#include <clocale>
+#include <io.h>
 #include <windowsx.h>
 #include "mapp.h"
 #include "mhostui.h"
@@ -13,6 +14,7 @@ static void OpenConsole(void)
         return;
     }
 
+    //create a console window:
     AllocConsole();
 
     FILE* newStdin  = nullptr;
@@ -22,11 +24,15 @@ static void OpenConsole(void)
     _wfreopen_s(&newStdout, L"conout$", L"w", stdout);
     _wfreopen_s(&newStderr, L"conout$", L"w", stderr);
 
+    //IMPORTANT: use local character set.
+    setlocale(LC_CTYPE, "");
+
+    //move the console window:
     WCHAR title[MAX_PATH];
     GetConsoleTitleW(title, MAX_PATH);
 
-    HWND hWnd = FindWindowW(nullptr, title);
-    SetWindowPos(hWnd, HWND_TOP, 0, 100, 0, 0, SWP_NOSIZE);
+    HWND wnd = FindWindowW(nullptr, title);
+    SetWindowPos(wnd, HWND_TOP, 0, 100, 0, 0, SWP_NOSIZE);
 }
 
 static void GetClientSize(HWND wnd, int *width, int *height)
