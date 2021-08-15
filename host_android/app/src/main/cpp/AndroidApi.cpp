@@ -51,10 +51,11 @@ static MString *CreateString(jstring src) {
         return nullptr;
     }
 
-    const jchar *chars = sJniEnv->GetStringChars(src, nullptr);
+    //use GetStringUTFChars (the return string of GetStringChars has no terminator '\0').
+    const char *chars = sJniEnv->GetStringUTFChars(src, nullptr);
 
-    MString *dst = MStringCreateU16((const char16_t *)chars);
-    sJniEnv->ReleaseStringChars(src, chars);
+    MString *dst = MStringCreateU8(chars);
+    sJniEnv->ReleaseStringUTFChars(src, chars);
 
     return dst;
 }

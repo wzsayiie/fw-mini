@@ -8,9 +8,9 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.view.View;
 
-public class MainView extends View {
+public class DrawView extends View {
 
-    public MainView(Context context) {
+    public DrawView(Context context) {
         super(context);
     }
 
