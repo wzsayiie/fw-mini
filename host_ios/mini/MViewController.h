@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
 
-@interface MViewController : UIViewController
+@interface MViewController : UIViewController <UITextFieldDelegate>
+@property (nonatomic) UITextField *textField;
 @end
