@@ -90,15 +90,20 @@ void CTextField::onTextInput(const std::string &string, bool enter) {
 
 void CTextField::onDraw(float width, float height) {
 
+    const CColor &FrameColor  = CColor::grayColor ;
+    const CColor &CursorColor = CColor::blackColor;
+    
+    const float FW = 2; //frame width.
+    const float TI = 4; //text indent.
+    const float CH = 2; //cursor height.
+    
     //draw frame box:
-    CContextSelectColor(CColor::grayColor);
+    CContextSelectColor(FrameColor);
 
-    const float T = 2;
-
-    CContextDrawRect(0        , 0         , width, T     );
-    CContextDrawRect(0        , height - T, width, T     );
-    CContextDrawRect(0        , 0         , T    , height);
-    CContextDrawRect(width - T, 0         , T    , height);
+    CContextDrawRect(0         , 0          , width, FW    );
+    CContextDrawRect(0         , height - FW, width, FW    );
+    CContextDrawRect(0         , 0          , FW   , height);
+    CContextDrawRect(width - FW, 0          , FW   , height);
 
     //draw text:
     CContextSelectHorizontalAlign(CHorizontalAlign::Left);
@@ -108,11 +113,11 @@ void CTextField::onDraw(float width, float height) {
     CContextSelectFontSize(mFontSize );
     CContextSelectColor   (mTextColor);
 
-    CContextDrawString(0, 0, width, height);
+    CContextDrawString(TI, 0, width - TI * 2, height);
 
     //draw cursor.
     if (mCursorShown) {
-        CContextSelectColor(CColor::blackColor);
-        CContextDrawRect(0, (height + mFontSize) / 2, width, 2);
+        CContextSelectColor(CursorColor);
+        CContextDrawRect(TI, (height + mFontSize) / 2, width - TI * 2, CH);
     }
 }
