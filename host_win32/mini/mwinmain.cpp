@@ -6,6 +6,13 @@
 #include "mpaint.h"
 #include "mwinapi.h"
 
+const int ConsoleFrameX     =   20;
+const int ConsoleFrameY     =  100;
+const int WindowFrameX      = 1000;
+const int WindowFrameY      =  100;
+const int WindowFrameWidth  =  376;
+const int WindowFrameHeight =  679;
+
 static void OpenConsole(void)
 {
     if (_isatty(_fileno(stdout)))
@@ -32,7 +39,7 @@ static void OpenConsole(void)
     GetConsoleTitleW(title, MAX_PATH);
 
     HWND wnd = FindWindowW(nullptr, title);
-    SetWindowPos(wnd, HWND_TOP, 0, 100, 0, 0, SWP_NOSIZE);
+    SetWindowPos(wnd, HWND_TOP, ConsoleFrameX, ConsoleFrameY, 0, 0, SWP_NOSIZE);
 }
 
 static void GetClientSize(HWND wnd, int *width, int *height)
@@ -111,18 +118,19 @@ static void UpdateEditState()
         return;
     }
 
-    //NOTE: reset the flag.
+    //IMPORTANT: reset the flag.
     MWindowSetTextBoxUpdated(false);
 
     if (_MWindowTextBoxEnabled())
     {
+        MString *textBoxString  = _MWindowTextBoxRawString();
+        WPARAM   selectionBegin = 0;
+        LPARAM   selectionEnd   = MStringU16Size(textBoxString);
+
+        SetWindowTextW(sEditWnd, (LPWSTR)MStringU16Chars(textBoxString));
+        SendMessageW(sEditWnd, EM_SETSEL, selectionBegin, selectionEnd);
+
         ShowWindow(sEditWnd, SW_SHOW);
-
-        MString *text = _MWindowTextBoxRawString();
-        SetWindowTextW(sEditWnd, (LPWSTR)MStringU16Chars(text));
-
-        int length = MStringU16Size(text);
-        SendMessageW(sEditWnd, EM_SETSEL, /*begin*/ length, /*end*/ length);
         SetFocus(sEditWnd);
     }
     else
@@ -354,8 +362,10 @@ MFUNC_EXPORT void MAppMain()
         /* lpClassName  */ className,
         /* lpWindowName */ (const WCHAR *)_MWindowTitleU16Name,
         /* dwStyle      */ WS_OVERLAPPEDWINDOW,
-        /* x,y          */ 1000, 100,
-        /* width,height */  376, 679,
+        /* x            */ WindowFrameX,
+        /* y            */ WindowFrameY,
+        /* width        */ WindowFrameWidth ,
+        /* height       */ WindowFrameHeight,
         /* hWndParent   */ nullptr,
         /* hMenu        */ nullptr,
         /* hInstance    */ instance,
