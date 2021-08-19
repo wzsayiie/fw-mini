@@ -1,59 +1,71 @@
-#include <cstdint>
 #include <cstring>
 
-#define MFUNC_META(name) ; static int _unused_##name = (Pick(#name, name), 0)
+//define collection macro:
+
+#define MFUNC_META(name) ; static int _unused_##name = (SetFunc(#name, name), 0)
 #include "mconfig.h"
 
-template<typename T> struct Extr;
+//TypeOf:
 
-template<> struct Extr<void            > { static const MType T = MType_Void   ; };
-template<> struct Extr<bool            > { static const MType T = MType_Bool   ; };
-template<> struct Extr<int             > { static const MType T = MType_Int    ; };
-template<> struct Extr<float           > { static const MType T = MType_Float  ; };
-template<> struct Extr<uint8_t        *> { static const MType T = MType_C8Ptr  ; };
-template<> struct Extr<const uint8_t  *> { static const MType T = MType_C8Ptr  ; };
-template<> struct Extr<char           *> { static const MType T = MType_C8Ptr  ; };
-template<> struct Extr<const char     *> { static const MType T = MType_C8Ptr  ; };
-template<> struct Extr<char16_t       *> { static const MType T = MType_C16Ptr ; };
-template<> struct Extr<const char16_t *> { static const MType T = MType_C16Ptr ; };
-template<> struct Extr<class MObject  *> { static const MType T = MType_MObject; };
-template<> struct Extr<class MBool    *> { static const MType T = MType_MBool  ; };
-template<> struct Extr<class MInt     *> { static const MType T = MType_MInt   ; };
-template<> struct Extr<class MFloat   *> { static const MType T = MType_MFloat ; };
-template<> struct Extr<class MString  *> { static const MType T = MType_MString; };
-template<> struct Extr<class MLambda  *> { static const MType T = MType_MLambda; };
-template<> struct Extr<class MData    *> { static const MType T = MType_MData  ; };
-template<> struct Extr<class MArray   *> { static const MType T = MType_MArray ; };
-template<> struct Extr<class MImage   *> { static const MType T = MType_MImage ; };
-template<> struct Extr<class _MNative *> { static const MType T = MType_MNative; };
+template<typename T> struct TypeOf;
+
+template<> struct TypeOf<void            > { static const MType Value = MType_Void   ; };
+template<> struct TypeOf<bool            > { static const MType Value = MType_Bool   ; };
+template<> struct TypeOf<int             > { static const MType Value = MType_Int    ; };
+template<> struct TypeOf<float           > { static const MType Value = MType_Float  ; };
+template<> struct TypeOf<char           *> { static const MType Value = MType_C8Ptr  ; };
+template<> struct TypeOf<const char     *> { static const MType Value = MType_C8Ptr  ; };
+template<> struct TypeOf<char16_t       *> { static const MType Value = MType_C16Ptr ; };
+template<> struct TypeOf<const char16_t *> { static const MType Value = MType_C16Ptr ; };
+template<> struct TypeOf<class  MObject *> { static const MType Value = MType_MObject; };
+template<> struct TypeOf<class  MBool   *> { static const MType Value = MType_MBool  ; };
+template<> struct TypeOf<class  MInt    *> { static const MType Value = MType_MInt   ; };
+template<> struct TypeOf<class  MFloat  *> { static const MType Value = MType_MFloat ; };
+template<> struct TypeOf<class  MString *> { static const MType Value = MType_MString; };
+template<> struct TypeOf<class  MLambda *> { static const MType Value = MType_MLambda; };
+template<> struct TypeOf<class  MData   *> { static const MType Value = MType_MData  ; };
+template<> struct TypeOf<class  MArray  *> { static const MType Value = MType_MArray ; };
+template<> struct TypeOf<class  MImage  *> { static const MType Value = MType_MImage ; };
+template<> struct TypeOf<class _MNative *> { static const MType Value = MType_MNative; };
+
+//ArgCountOf:
+
+template<typename T> struct ArgCountOf;
+
+template<typename R> struct ArgCountOf<R ()> {
+    static const int Value = 0;
+};
+
+template<typename R, typename A, typename... B> struct ArgCountOf<R (A, B...)> {
+    static const int Value = 1 + ArgCountOf<R (B...)>::Value;
+};
+
+//AppendArgs:
+
+template<typename R> void AppendArgs(_MFuncMeta *meta, R (*)()) {
+}
+
+template<typename R, typename A, typename... B> void AppendArgs(_MFuncMeta *meta, R (*)(A, B...)) {
+    meta->argTypes[(meta->argCount)++] = TypeOf<A>::Value;
+    AppendArgs(meta, (R (*)(B...))nullptr);
+}
+
+//collect functions:
 
 void _MFuncSetMeta(const char *name, const _MFuncMeta &meta);
 
-template<typename R> void Set(const char* name, void *func, int argc, MType a, MType b, MType c, MType d) {
+template<typename R, typename... A> void SetFunc(const char *name, R (*func)(A...)) {
+
     _MFuncMeta meta;
-    
-    meta.address   = func;
-    meta.retType   = Extr<R>::T;
+
+    meta.address   = (void *)func;
+    meta.retType   = TypeOf<R>::Value;
     meta.retRetain = strstr(name, "Create") || strstr(name, "Retain") || strstr(name, "Copy");
-    meta.argCount  = argc;
-    meta.argType0  = a;
-    meta.argType1  = b;
-    meta.argType2  = c;
-    meta.argType3  = d;
+
+    static_assert((ArgCountOf<R (A...)>::Value) <= MFuncMaxArgCount, "");
+    AppendArgs(&meta, func);
 
     _MFuncSetMeta(name, meta);
 }
-
-#define tpl_0 template<class R>
-#define tpl_1 template<class R, class A>
-#define tpl_2 template<class R, class A, class B>
-#define tpl_3 template<class R, class A, class B, class C>
-#define tpl_4 template<class R, class A, class B, class C, class D>
-
-tpl_0 void Pick(const char* n, R (*f)(          )) { Set<R>(n, f, 0, 0         , 0         , 0         , 0         ); }
-tpl_1 void Pick(const char* n, R (*f)(A         )) { Set<R>(n, f, 1, Extr<A>::T, 0         , 0         , 0         ); }
-tpl_2 void Pick(const char* n, R (*f)(A, B      )) { Set<R>(n, f, 2, Extr<A>::T, Extr<B>::T, 0         , 0         ); }
-tpl_3 void Pick(const char* n, R (*f)(A, B, C   )) { Set<R>(n, f, 3, Extr<A>::T, Extr<B>::T, Extr<C>::T, 0         ); }
-tpl_4 void Pick(const char* n, R (*f)(A, B, C, D)) { Set<R>(n, f, 4, Extr<A>::T, Extr<B>::T, Extr<C>::T, Extr<D>::T); }
 
 #include "minikit.h"

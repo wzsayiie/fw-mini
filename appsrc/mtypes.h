@@ -27,9 +27,9 @@ private:
     int mRefCount = 1;
 };
 
-MFUNC_EXPORT void  MRetain (MObject *object);
-MFUNC_EXPORT void  MRelease(MObject *object);
-MFUNC_EXPORT MType MGetType(MObject *object);
+MFUNC_EXPORT MObject *MRetain (MObject *object);
+MFUNC_EXPORT void     MRelease(MObject *object);
+MFUNC_EXPORT MType    MGetType(MObject *object);
 
 //------------------------------------------------------------------------------
 //MBool & MInt & MFloat:

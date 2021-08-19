@@ -14,10 +14,11 @@ void MObject::_release() {
     }
 }
 
-void MRetain(MObject *object) {
+MObject *MRetain(MObject *object) {
     if (object) {
         object->_retain();
     }
+    return object;
 }
 
 void MRelease(MObject *object) {
@@ -49,9 +50,9 @@ template<typename T, int ID, typename BASE> struct _MNumber : BASE {
     }
 };
 
-typedef _MNumber<bool , MType_Bool , MBool > MBoolImpl ;
-typedef _MNumber<int  , MType_Int  , MInt  > MIntImpl  ;
-typedef _MNumber<float, MType_Float, MFloat> MFloatImpl;
+typedef _MNumber<bool , MType_MBool , MBool > MBoolImpl ;
+typedef _MNumber<int  , MType_MInt  , MInt  > MIntImpl  ;
+typedef _MNumber<float, MType_MFloat, MFloat> MFloatImpl;
 
 MBool  *MBoolCreate (bool  value) { return new MBoolImpl (value); }
 MInt   *MIntCreate  (int   value) { return new MIntImpl  (value); }

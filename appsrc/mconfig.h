@@ -13,8 +13,8 @@ const MType MType_Void    = MEnumId("vid");     //void.
 const MType MType_Bool    = MEnumId("bol");     //bool.
 const MType MType_Int     = MEnumId("int");     //int.
 const MType MType_Float   = MEnumId("flt");     //float.
-const MType MType_C8Ptr   = MEnumId("p08");     //char *, uint8_t *.
-const MType MType_C16Ptr  = MEnumId("p16");     //char16_t *.
+const MType MType_C8Ptr   = MEnumId("s08");     //char *.
+const MType MType_C16Ptr  = MEnumId("s16");     //char16_t *.
 const MType MType_MObject = MEnumId("Obj");     //MObject.
 const MType MType_MBool   = MEnumId("Bol");     //MBool.
 const MType MType_MInt    = MEnumId("Int");     //MInt.
@@ -31,15 +31,15 @@ const MType MType_MNative = MEnumId("Ntv");
 //------------------------------------------------------------------------------
 //function meta information:
 
+const int MFuncMaxArgCount = 4;
+
 struct _MFuncMeta {
     void *address   = nullptr;
     MType retType   = 0;
     bool  retRetain = false;
     int   argCount  = 0;
-    MType argType0  = 0;
-    MType argType1  = 0;
-    MType argType2  = 0;
-    MType argType3  = 0;
+
+    MType argTypes[MFuncMaxArgCount] = {0};
 };
 
 //------------------------------------------------------------------------------
