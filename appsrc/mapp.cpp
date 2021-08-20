@@ -9,8 +9,8 @@ struct UpdateItem {
     MLambdaRef listener;
 };
 
-static std::vector<LaunchItem> *sLaunchItems;
-static std::vector<UpdateItem> *sUpdateItems;
+static std::vector<LaunchItem> *sLaunchItems = nullptr;
+static std::vector<UpdateItem> *sUpdateItems = nullptr;
 
 void _MAppLaunch() {
     if (!sLaunchItems) {
