@@ -9,24 +9,24 @@
 
 typedef int MType;
 
-const MType MType_Void    = MEnumId("vid");     //void.
-const MType MType_Bool    = MEnumId("bol");     //bool.
-const MType MType_Int     = MEnumId("int");     //int.
-const MType MType_Float   = MEnumId("flt");     //float.
-const MType MType_C8Ptr   = MEnumId("s08");     //char *.
-const MType MType_C16Ptr  = MEnumId("s16");     //char16_t *.
-const MType MType_MObject = MEnumId("Obj");     //MObject.
-const MType MType_MBool   = MEnumId("Bol");     //MBool.
-const MType MType_MInt    = MEnumId("Int");     //MInt.
-const MType MType_MFloat  = MEnumId("Flt");     //MFloat.
-const MType MType_MString = MEnumId("Str");     //MString.
-const MType MType_MLambda = MEnumId("Lmd");     //MLamdba.
-const MType MType_MData   = MEnumId("Dat");     //MData.
-const MType MType_MArray  = MEnumId("Arr");     //MArray.
-const MType MType_MImage  = MEnumId("Img");     //MImage.
-
-//used to present types related to the os.
-const MType MType_MNative = MEnumId("Ntv");
+const MType MType_void     = MEnumId("vid");    //void.
+const MType MType_bool     = MEnumId("bol");    //bool.
+const MType MType_int      = MEnumId("int");    //int.
+const MType MType_float    = MEnumId("flt");    //float.
+const MType MType_pointer  = MEnumId("ptr");    //uint8_t *.
+const MType MType_s8ptr    = MEnumId("s08");    //char *.
+const MType MType_s16ptr   = MEnumId("s16");    //char16_t *.
+const MType MType_MObject  = MEnumId("Obj");    //MObject.
+const MType MType_MBool    = MEnumId("Bol");    //MBool.
+const MType MType_MInt     = MEnumId("Int");    //MInt.
+const MType MType_MFloat   = MEnumId("Flt");    //MFloat.
+const MType MType_MPointer = MEnumId("Ptr");    //MPointer.
+const MType MType_MString  = MEnumId("Str");    //MString.
+const MType MType_MLambda  = MEnumId("Lmd");    //MLamdba.
+const MType MType_MData    = MEnumId("Dat");    //MData.
+const MType MType_MArray   = MEnumId("Arr");    //MArray.
+const MType MType_MImage   = MEnumId("Img");    //MImage.
+const MType MType_MSpecial = MEnumId("Spc");    //MSpecial.
 
 //------------------------------------------------------------------------------
 //function meta information:

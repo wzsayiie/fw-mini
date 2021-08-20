@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <cstring>
 
 //define collection macro:
@@ -9,24 +10,27 @@
 
 template<typename T> struct TypeOf;
 
-template<> struct TypeOf<void            > { static const MType Value = MType_Void   ; };
-template<> struct TypeOf<bool            > { static const MType Value = MType_Bool   ; };
-template<> struct TypeOf<int             > { static const MType Value = MType_Int    ; };
-template<> struct TypeOf<float           > { static const MType Value = MType_Float  ; };
-template<> struct TypeOf<char           *> { static const MType Value = MType_C8Ptr  ; };
-template<> struct TypeOf<const char     *> { static const MType Value = MType_C8Ptr  ; };
-template<> struct TypeOf<char16_t       *> { static const MType Value = MType_C16Ptr ; };
-template<> struct TypeOf<const char16_t *> { static const MType Value = MType_C16Ptr ; };
-template<> struct TypeOf<class  MObject *> { static const MType Value = MType_MObject; };
-template<> struct TypeOf<class  MBool   *> { static const MType Value = MType_MBool  ; };
-template<> struct TypeOf<class  MInt    *> { static const MType Value = MType_MInt   ; };
-template<> struct TypeOf<class  MFloat  *> { static const MType Value = MType_MFloat ; };
-template<> struct TypeOf<class  MString *> { static const MType Value = MType_MString; };
-template<> struct TypeOf<class  MLambda *> { static const MType Value = MType_MLambda; };
-template<> struct TypeOf<class  MData   *> { static const MType Value = MType_MData  ; };
-template<> struct TypeOf<class  MArray  *> { static const MType Value = MType_MArray ; };
-template<> struct TypeOf<class  MImage  *> { static const MType Value = MType_MImage ; };
-template<> struct TypeOf<class _MNative *> { static const MType Value = MType_MNative; };
+template<> struct TypeOf<void            > { static const MType Value = MType_void    ; };
+template<> struct TypeOf<bool            > { static const MType Value = MType_bool    ; };
+template<> struct TypeOf<int             > { static const MType Value = MType_int     ; };
+template<> struct TypeOf<float           > { static const MType Value = MType_float   ; };
+template<> struct TypeOf<uint8_t        *> { static const MType Value = MType_pointer ; };
+template<> struct TypeOf<const uint8_t  *> { static const MType Value = MType_pointer ; };
+template<> struct TypeOf<char           *> { static const MType Value = MType_s8ptr   ; };
+template<> struct TypeOf<const char     *> { static const MType Value = MType_s8ptr   ; };
+template<> struct TypeOf<char16_t       *> { static const MType Value = MType_s16ptr  ; };
+template<> struct TypeOf<const char16_t *> { static const MType Value = MType_s16ptr  ; };
+template<> struct TypeOf<class MObject  *> { static const MType Value = MType_MObject ; };
+template<> struct TypeOf<class MBool    *> { static const MType Value = MType_MBool   ; };
+template<> struct TypeOf<class MInt     *> { static const MType Value = MType_MInt    ; };
+template<> struct TypeOf<class MFloat   *> { static const MType Value = MType_MFloat  ; };
+template<> struct TypeOf<class MPointer *> { static const MType Value = MType_MPointer; };
+template<> struct TypeOf<class MString  *> { static const MType Value = MType_MString ; };
+template<> struct TypeOf<class MLambda  *> { static const MType Value = MType_MLambda ; };
+template<> struct TypeOf<class MData    *> { static const MType Value = MType_MData   ; };
+template<> struct TypeOf<class MArray   *> { static const MType Value = MType_MArray  ; };
+template<> struct TypeOf<class MImage   *> { static const MType Value = MType_MImage  ; };
+template<> struct TypeOf<class MSpecial *> { static const MType Value = MType_MSpecial; };
 
 //ArgCountOf:
 

@@ -32,19 +32,22 @@ MFUNC_EXPORT void     MRelease(MObject *object);
 MFUNC_EXPORT MType    MGetType(MObject *object);
 
 //------------------------------------------------------------------------------
-//MBool & MInt & MFloat:
+//MBool & MInt & MFloat & MPointer:
 
-class MBool : public MObject {};
-class MInt  : public MObject {};
-class MFloat: public MObject {};
+class MBool    : public MObject {};
+class MInt     : public MObject {};
+class MFloat   : public MObject {};
+class MPointer : public MObject {};
 
-MFUNC_EXPORT MBool  *MBoolCreate (bool  value);
-MFUNC_EXPORT MInt   *MIntCreate  (int   value);
-MFUNC_EXPORT MFloat *MFloatCreate(float value);
+MFUNC_EXPORT MBool    *MBoolCreate   (bool     value);
+MFUNC_EXPORT MInt     *MIntCreate    (int      value);
+MFUNC_EXPORT MFloat   *MFloatCreate  (float    value);
+MFUNC_EXPORT MPointer *MPointerCreate(uint8_t *value);
 
-MFUNC_EXPORT bool  MBoolValue (MBool  *object);
-MFUNC_EXPORT int   MIntValue  (MInt   *object);
-MFUNC_EXPORT float MFloatValue(MFloat *object);
+MFUNC_EXPORT bool     MBoolValue   (MBool    *object);
+MFUNC_EXPORT int      MIntValue    (MInt     *object);
+MFUNC_EXPORT float    MFloatValue  (MFloat   *object);
+MFUNC_EXPORT uint8_t *MPointerValue(MPointer *object);
 
 //------------------------------------------------------------------------------
 //MString:
@@ -100,9 +103,9 @@ MFUNC_EXPORT MImage  *MImageCreate (MObject *load );
 MFUNC_EXPORT MObject *MImageGetLoad(MImage  *image);
 
 //------------------------------------------------------------------------------
-//Native:
+//MSpecial:
 
-class _MNative : public MObject {
+class MSpecial : public MObject {
     
 public:
     MType _type() override;
@@ -188,7 +191,7 @@ public:
     }
     
 private:
-    struct Intf : _MNative {
+    struct Intf : MSpecial {
         virtual void call() = 0;
     };
     

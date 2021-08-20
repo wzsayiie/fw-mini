@@ -6,7 +6,7 @@
 
 //native types:
 
-class MImageLoad : public _MNative {
+class MImageLoad : public MSpecial {
 
 public:
     MImageLoad(Gdiplus::Image *nativeImage);

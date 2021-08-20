@@ -50,17 +50,20 @@ template<typename T, int ID, typename BASE> struct _MNumber : BASE {
     }
 };
 
-typedef _MNumber<bool , MType_MBool , MBool > MBoolImpl ;
-typedef _MNumber<int  , MType_MInt  , MInt  > MIntImpl  ;
-typedef _MNumber<float, MType_MFloat, MFloat> MFloatImpl;
+typedef _MNumber<bool     , MType_MBool   , MBool   > MBoolImpl   ;
+typedef _MNumber<int      , MType_MInt    , MInt    > MIntImpl    ;
+typedef _MNumber<float    , MType_MFloat  , MFloat  > MFloatImpl  ;
+typedef _MNumber<uint8_t *, MType_MPointer, MPointer> MPointerImpl;
 
-MBool  *MBoolCreate (bool  value) { return new MBoolImpl (value); }
-MInt   *MIntCreate  (int   value) { return new MIntImpl  (value); }
-MFloat *MFloatCreate(float value) { return new MFloatImpl(value); }
+MBool    *MBoolCreate   (bool     value) { return new MBoolImpl   (value); }
+MInt     *MIntCreate    (int      value) { return new MIntImpl    (value); }
+MFloat   *MFloatCreate  (float    value) { return new MFloatImpl  (value); }
+MPointer *MPointerCreate(uint8_t *value) { return new MPointerImpl(value); }
 
-bool  MBoolValue (MBool  *obj) { return obj ? ((MBoolImpl  *)obj)->value : 0; }
-int   MIntValue  (MInt   *obj) { return obj ? ((MIntImpl   *)obj)->value : 0; }
-float MFloatValue(MFloat *obj) { return obj ? ((MFloatImpl *)obj)->value : 0; }
+bool     MBoolValue   (MBool    *obj) { return obj ? ((MBoolImpl    *)obj)->value : 0; }
+int      MIntValue    (MInt     *obj) { return obj ? ((MIntImpl     *)obj)->value : 0; }
+float    MFloatValue  (MFloat   *obj) { return obj ? ((MFloatImpl   *)obj)->value : 0; }
+uint8_t *MPointerValue(MPointer *obj) { return obj ? ((MPointerImpl *)obj)->value : 0; }
 
 //------------------------------------------------------------------------------
 //MString:
@@ -282,6 +285,6 @@ MObject *MImageGetLoad(MImage *image) {
 //------------------------------------------------------------------------------
 //Native:
 
-MType _MNative::_type() {
-    return MType_MNative;
+MType MSpecial::_type() {
+    return MType_MSpecial;
 }
