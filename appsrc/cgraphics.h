@@ -76,16 +76,27 @@ enum class CVerticalAlign {
 //------------------------------------------------------------------------------
 //draw context:
 
-void CContextSetOffset(float x, float y);
-
-void CContextSelectColor   (const CColor &color);
-void CContextSelectImage   (CImageRef image);
-void CContextSelectString  (const std::string &string);
-void CContextSelectFontSize(float size);
+void CContextSelectColor (const CColor      &color );
+void CContextSelectImage (CImageRef          image );
+void CContextSelectString(const std::string &string);
 
 void CContextSelectHorizontalAlign(CHorizontalAlign align);
 void CContextSelectVerticalAlign  (CVerticalAlign   align);
 
-void CContextDrawRect  (float x, float y, float width, float height);
-void CContextDrawImage (float x, float y, float width, float height);
-void CContextDrawString(float x, float y, float width, float height);
+inline void CContextSetOffset(float x, float y) { MContextSetOffset(x, y); }
+
+inline void CContextSelectFontSize (float s) { MContextSelectFontSize (s); }
+inline void CContextSelectLineWidth(float w) { MContextSelectLineWidth(w); }
+
+inline void CContextDrawTriangle0(float x0, float y0) { MContextDrawTriangle0(x0, y0); }
+inline void CContextDrawTriangle1(float x1, float y1) { MContextDrawTriangle1(x1, y1); }
+inline void CContextDrawTriangle2(float x2, float y2) { MContextDrawTriangle2(x2, y2); }
+
+inline void CContextDrawFlatLine  (float x0, float y0, float x1, float y1) { MContextDrawFlatLine  (x0, y0, x1, x1); }
+inline void CContextDrawSquareLine(float x0, float y0, float x1, float y1) { MContextDrawSquareLine(x0, y0, x1, x1); }
+inline void CContextDrawRoundLine (float x0, float y0, float x1, float y1) { MContextDrawRoundLine (x0, y0, x1, x1); }
+
+inline void CContextDrawRect   (float x, float y, float w, float h) { MContextDrawRect   (x, y, w, h); }
+inline void CContextDrawEllipse(float x, float y, float w, float h) { MContextDrawEllipse(x, y, w, h); }
+inline void CContextDrawImage  (float x, float y, float w, float h) { MContextDrawImage  (x, y, w, h); }
+inline void CContextDrawString (float x, float y, float w, float h) { MContextDrawString (x, y, w, h); }

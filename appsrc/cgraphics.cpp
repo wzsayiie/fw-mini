@@ -87,10 +87,6 @@ CImage::CImage(MImageRef nativeImage) {
 //------------------------------------------------------------------------------
 //draw context:
 
-void CContextSetOffset(float x, float y) {
-    MContextSetOffset(x, y);
-}
-
 void CContextSelectColor(const CColor &color) {
     MContextSelectColor(color.rgba());
 }
@@ -104,26 +100,10 @@ void CContextSelectString(const std::string &string) {
     MContextSelectString(nativeString.get());
 }
 
-void CContextSelectFontSize(float size) {
-    MContextSelectFontSize(size);
-}
-
 void CContextSelectHorizontalAlign(CHorizontalAlign align) {
     MContextSelectHAlign((MHAlign)align);
 }
 
 void CContextSelectVerticalAlign(CVerticalAlign align) {
     MContextSelectVAlign((MVAlign)align);
-}
-
-void CContextDrawRect(float x, float y, float width, float height) {
-    MContextDrawRect(x, y, width, height);
-}
-
-void CContextDrawImage(float x, float y, float width, float height) {
-    MContextDrawImage(x, y, width, height);
-}
-
-void CContextDrawString(float x, float y, float width, float height) {
-    MContextDrawString(x, y, width, height);
 }
