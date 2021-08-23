@@ -1,7 +1,4 @@
 #include "minikit.h"
 
-static void Launch() MAPP_SCENE_LAUNCH(Launch) {
-}
-
-static void Update() MAPP_UPDATE(Update) {
+static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
 }

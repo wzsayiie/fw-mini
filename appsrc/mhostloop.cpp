@@ -1,4 +1,4 @@
-#include "mapp.h"
+#include "mhostloop.h"
 
 struct LaunchItem {
     MLambdaRef listener;
@@ -39,16 +39,16 @@ void _MAppAddLaunchListener(MLambda *listener, int priority) {
         sLaunchItems = new std::vector<LaunchItem>;
     }
     
-    LaunchItem one;
-    one.listener = m_make_shared listener;
-    one.priority = priority;
+    LaunchItem fresh;
+    fresh.listener = m_make_shared listener;
+    fresh.priority = priority;
     for (auto it = sLaunchItems->begin(); it != sLaunchItems->end(); ++it) {
         if (priority > (it->priority)) {
-            sLaunchItems->insert(it, one);
+            sLaunchItems->insert(it, fresh);
             return;
         }
     }
-    sLaunchItems->push_back(one);
+    sLaunchItems->push_back(fresh);
 }
 
 void _MAppAddUpdateListener(MLambda *listener) {
@@ -60,19 +60,19 @@ void _MAppAddUpdateListener(MLambda *listener) {
         sUpdateItems = new std::vector<UpdateItem>;
     }
     
-    UpdateItem one;
-    one.listener = m_make_shared listener;
-    sUpdateItems->push_back(one);
+    UpdateItem fresh;
+    fresh.listener = m_make_shared listener;
+    sUpdateItems->push_back(fresh);
 }
 
-_MAppLaunchFuncAdder::_MAppLaunchFuncAdder(void (*func)(), int priority) {
+_MAppLaunchAdder::_MAppLaunchAdder(void (*func)(), int priority) {
     MLambdaRef listener = m_cast_lambda [func]() {
         func();
     };
     _MAppAddLaunchListener(listener.get(), priority);
 }
 
-_MAppUpdateFuncAdder::_MAppUpdateFuncAdder(void (*func)()) {
+_MAppUpdateAdder::_MAppUpdateAdder(void (*func)()) {
     MLambdaRef listener = m_cast_lambda [func]() {
         func();
     };

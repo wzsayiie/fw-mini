@@ -1,7 +1,7 @@
 ﻿#include <clocale>
 #include <io.h>
 #include <windowsx.h>
-#include "mapp.h"
+#include "mhostloop.h"
 #include "mhostui.h"
 #include "mpaint.h"
 #include "mwinapi.h"

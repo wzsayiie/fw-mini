@@ -7,6 +7,6 @@ protected:
     }
 };
 
-static void Launch() MAPP_UI_LAUNCH(Launch) {
+static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_UI) {
     (new MainController)->asRootController();
 }

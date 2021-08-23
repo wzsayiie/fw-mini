@@ -1,5 +1,5 @@
 #include "mrunloop.h"
-#include "mapp.h"
+#include "mhostloop.h"
 
 struct TaskConfig {
     int  intervalTicks = 0;

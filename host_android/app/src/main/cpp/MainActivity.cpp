@@ -1,5 +1,5 @@
 #include <jni.h>
-#include "mapp.h"
+#include "mhostloop.h"
 #include "mhostui.h"
 
 extern "C" JNIEXPORT jfloat JNICALL
