@@ -3,6 +3,7 @@
 #include <windowsx.h>
 #include "mhostloop.h"
 #include "mhostui.h"
+#include "mjsrt.h"
 #include "mpaint.h"
 #include "mwinapi.h"
 
@@ -144,6 +145,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     OpenConsole();
     MPaintStart();
 
+    MRegisterJSRT();
     MRegisterApi();
 
     int width  = 0;

@@ -7,6 +7,7 @@
 #include "menviron.h"
 #include "mfuncs.h"
 #include "mhostapi.h"
+#include "mhostjs.h"
 #include "mhostloop.h"
 #include "mhostui.h"
 #include "mresource.h"
