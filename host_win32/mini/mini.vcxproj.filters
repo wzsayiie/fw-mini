@@ -21,12 +21,18 @@
     <ClCompile Include="mpaint.cpp">
       <Filter>mini</Filter>
     </ClCompile>
+    <ClCompile Include="mjsrt.cpp">
+      <Filter>mini</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mwinapi.h">
       <Filter>mini</Filter>
     </ClInclude>
     <ClInclude Include="mpaint.h">
+      <Filter>mini</Filter>
+    </ClInclude>
+    <ClInclude Include="mjsrt.h">
       <Filter>mini</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\appsrc\README.cpp" />
+    <ClCompile Include="mjsrt.cpp" />
     <ClCompile Include="mwinapi.cpp" />
     <ClCompile Include="mpaint.cpp" />
     <ClCompile Include="mwinmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mjsrt.h" />
     <ClInclude Include="mwinapi.h" />
     <ClInclude Include="mpaint.h" />
   </ItemGroup>
