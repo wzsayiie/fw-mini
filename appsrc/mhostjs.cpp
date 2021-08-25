@@ -70,23 +70,44 @@ void MJsRegisterFunc(const char *name, MLambda *func) {
     sFuncMap[name] = m_make_shared func;
 }
 
+int MJsParamInt(int index) {
+    MArray  *params = sCallingFrames.back().callingParams.get();
+    MObject *object = MArrayItem(params, index);
+
+    switch (MGetType(object)) {
+        case MType_MBool : return (int)MBoolValue ((MBool  *)object);
+        case MType_MInt  : return (int)MIntValue  ((MInt   *)object);
+        case MType_MFloat: return (int)MFloatValue((MFloat *)object);
+
+        default: return 0;
+    }
+}
+
 MObject *MJsParamObject(int index) {
     MArray *params = sCallingFrames.back().callingParams.get();
     return MArrayItem(params, index);
 }
 
-MString *MJsParamString(int index) {
+template<typename T, MType ID> T JsParam(int index) {
     MArray  *params = sCallingFrames.back().callingParams.get();
     MObject *object = MArrayItem(params, index);
 
-    if (MGetType(object) == MType_MString) {
-        return (MString *)object;
+    if (MGetType(object) == ID) {
+        return (T)object;
     }
     return nullptr;
 }
 
-void MJsReturnObject(MObject *object) {
-    sCallingFrames.back().returnObject = m_make_shared object;
+MString *MJsParamString(int index) { return JsParam<MString *, MType_MString>(index); }
+MLambda *MJsParamLambda(int index) { return JsParam<MLambda *, MType_MLambda>(index); }
+MArray  *MJsParamArray (int index) { return JsParam<MArray  *, MType_MArray >(index); }
+
+void MJsReturnInt(int value) {
+    sCallingFrames.back().returnObject = m_auto_release MIntCreate(value);
+}
+
+void MJsReturnObject(MObject *value) {
+    sCallingFrames.back().returnObject = m_make_shared value;
 }
 
 void MJsRunScript(MString *name, MString *script) {

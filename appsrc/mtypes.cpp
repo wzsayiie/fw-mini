@@ -317,18 +317,15 @@ public:
         mFunc = func;
     }
 
-    void call() {
-        mFunc();
+    static void call(MObject *load) {
+        auto wrapper = (LambdaCastWrapper *)load;
+        wrapper->mFunc();
     }
 
 private:
     std::function<void ()> mFunc;
 };
 
-static void LambdaCastProc(MObject *load) {
-    ((LambdaCastWrapper *)load)->call();
-}
-
 MLambdaRef _MLambdaCastHelper::operator<<(std::function<void ()> func) {
-    return m_auto_release MLambdaCreate(LambdaCastProc, new LambdaCastWrapper(func));
+    return m_auto_release MLambdaCreate(LambdaCastWrapper::call, new LambdaCastWrapper(func));
 }

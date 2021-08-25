@@ -15,105 +15,52 @@ static void InitializeRuntime()
     JsSetCurrentContext(sContext);
 }
 
-static JsValueRef GetJsObjectFromObject(MObject *object)
+static std::map<JsValueRef, MObject *> *GetObjectMap()
 {
-    //| return {
-    //|   _mIsNative: true,
-    //|   _mPtrHigh : xxxx,
-    //|   _mPtrLow  : xxxx
-    //| }
-    //
+    static auto map = new std::map<JsValueRef, MObject *>;
+    return map;
+}
 
+#define sObjectMap (*GetObjectMap())
+
+static void CALLBACK JsObjectBeforeCollect(JsRef value, void *callbackState)
+{
+    MObject *object = sObjectMap[value];
+    sObjectMap.erase(value);
+
+    //IMPORTANT: release the native object.
+    MRelease(object);
+}
+
+static JsValueRef AddJsObjectFromObject(MObject *object)
+{
     JsValueRef value = JS_INVALID_REFERENCE;
     JsCreateObject(&value);
 
-    MJsPtrPattern pattern = { object };
+    //set the flag.
+    JsPropertyIdRef nativeId = JS_INVALID_REFERENCE;
+    JsValueRef nativeValue = JS_INVALID_REFERENCE;
+    JsGetPropertyIdFromName(L"isNativeObject", &nativeId);
+    JsBoolToBoolean(true, &nativeValue);
+    JsSetProperty(value, nativeId, nativeValue, true);
+    
+    sObjectMap[value] = object;
 
-    //set "_mIsNative":
-    {
-        JsPropertyIdRef id = JS_INVALID_REFERENCE;
-        JsGetPropertyIdFromName(L"_mIsNative", &id);
-
-        JsValueRef member = JS_INVALID_REFERENCE;
-        JsBoolToBoolean(true, &member);
-
-        JsSetProperty(value, id, member, true);
-    }
-
-    //set "_mPtrHigh":
-    {
-        JsPropertyIdRef id = JS_INVALID_REFERENCE;
-        JsGetPropertyIdFromName(L"_mPtrHigh", &id);
-
-        JsValueRef member = JS_INVALID_REFERENCE;
-        JsIntToNumber(pattern.high, &member);
-
-        JsSetProperty(value, id, member, true);
-    }
-
-    //set "_mPtrLow":
-    {
-        JsPropertyIdRef id = JS_INVALID_REFERENCE;
-        JsGetPropertyIdFromName(L"_mPtrLow", &id);
-
-        JsValueRef member = JS_INVALID_REFERENCE;
-        JsIntToNumber(pattern.low, &member);
-
-        JsSetProperty(value, id, member, true);
-    }
+    //IMPORTANT: retain one reference count of native object.
+    MRetain(object);
+    JsSetObjectBeforeCollectCallback(value, nullptr, JsObjectBeforeCollect);
 
     return value;
 }
 
 static MObject *GetObjectFromJsObject(JsValueRef value)
 {
-    //get "_mIsNative":
-    bool isNative = false;
+    auto iterator = sObjectMap.find(value);
+    if (iterator != sObjectMap.end())
     {
-        JsPropertyIdRef id = JS_INVALID_REFERENCE;
-        JsGetPropertyIdFromName(L"_mIsNative", &id);
-
-        JsValueRef member = JS_INVALID_REFERENCE;
-        JsGetProperty(value, id, &member);
-
-        JsBooleanToBool(member, &isNative);
+        return iterator->second;
     }
-    if (!isNative)
-    {
-        return nullptr;
-    }
-
-    MJsPtrPattern pattern;
-
-    //get "_mPtrHigh":
-    {
-        JsPropertyIdRef id = JS_INVALID_REFERENCE;
-        JsGetPropertyIdFromName(L"_mPtrHigh", &id);
-
-        JsValueRef member = JS_INVALID_REFERENCE;
-        JsGetProperty(value, id, &member);
-
-        JsNumberToInt(member, &pattern.high);
-    }
-
-    //get "_mPtrLow":
-    {
-        JsPropertyIdRef id = JS_INVALID_REFERENCE;
-        JsGetPropertyIdFromName(L"_mPtrLow", &id);
-
-        JsValueRef member = JS_INVALID_REFERENCE;
-        JsGetProperty(value, id, &member);
-
-        JsNumberToInt(member, &pattern.low);
-    }
-
-    return pattern.object;
-}
-
-static void CALLBACK JsObjectBeforeCollect(JsRef value, void *callbackState)
-{
-    MObject *object = GetObjectFromJsObject(value);
-    MRelease(object);
+    return nullptr;
 }
 
 static MObject *CopyObjectFromJsValue(JsValueRef value)
@@ -210,13 +157,7 @@ static JsValueRef JsValueFromObject(MObject *object) {
         }
         default:
         {
-            JsValueRef value = GetJsObjectFromObject(object);
-
-            //IMPORTANT: the js object will hold one reference count of the native object.
-            MRetain(object);
-            JsSetObjectBeforeCollectCallback(value, nullptr, JsObjectBeforeCollect);
-
-            return value;
+            return AddJsObjectFromObject(object);
         }
     }
 }
