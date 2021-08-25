@@ -6,10 +6,18 @@ typedef void (*_MJsRegisterFunc)(MString *name);
 typedef void (*_MJsRunScript   )(MString *name, MString *script);
 
 MFUNC_HOST void _MJsSetRegisterFunc(_MJsRegisterFunc func);
-MFUNC_HOST void _MjsSetRunScript   (_MJsRunScript    func);
+MFUNC_HOST void _MJsSetRunScript   (_MJsRunScript    func);
 
 MFUNC_HOST MObject *_MJsOnCallCopyRet(MString *name, MArray *params);
 MFUNC_HOST void     _MJsOnHappenError(MString *info);
+
+union MJsPtrPattern {
+    MObject *object = nullptr;
+    struct {
+        int32_t low ;
+        int32_t high;
+    };
+};
 
 MFUNC_EXPORT void     MJsSetErrorListener(MLambda *listener) MFUNC_META(MJsSetErrorListener);
 MFUNC_EXPORT MString *MJsGetLastError    ()                  MFUNC_META(MJsGetLastError    );

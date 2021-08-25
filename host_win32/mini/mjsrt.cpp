@@ -15,71 +15,208 @@ static void InitializeRuntime()
     JsSetCurrentContext(sContext);
 }
 
-static MObject *CopyObjectFromJsValue(JsValueRef value) {
-    if (value == JS_INVALID_REFERENCE) {
+static JsValueRef GetJsObjectFromObject(MObject *object)
+{
+    //| return {
+    //|   _mIsNative: true,
+    //|   _mPtrHigh : xxxx,
+    //|   _mPtrLow  : xxxx
+    //| }
+    //
+
+    JsValueRef value = JS_INVALID_REFERENCE;
+    JsCreateObject(&value);
+
+    MJsPtrPattern pattern = { object };
+
+    //set "_mIsNative":
+    {
+        JsPropertyIdRef id = JS_INVALID_REFERENCE;
+        JsGetPropertyIdFromName(L"_mIsNative", &id);
+
+        JsValueRef member = JS_INVALID_REFERENCE;
+        JsBoolToBoolean(true, &member);
+
+        JsSetProperty(value, id, member, true);
+    }
+
+    //set "_mPtrHigh":
+    {
+        JsPropertyIdRef id = JS_INVALID_REFERENCE;
+        JsGetPropertyIdFromName(L"_mPtrHigh", &id);
+
+        JsValueRef member = JS_INVALID_REFERENCE;
+        JsIntToNumber(pattern.high, &member);
+
+        JsSetProperty(value, id, member, true);
+    }
+
+    //set "_mPtrLow":
+    {
+        JsPropertyIdRef id = JS_INVALID_REFERENCE;
+        JsGetPropertyIdFromName(L"_mPtrLow", &id);
+
+        JsValueRef member = JS_INVALID_REFERENCE;
+        JsIntToNumber(pattern.low, &member);
+
+        JsSetProperty(value, id, member, true);
+    }
+
+    return value;
+}
+
+static MObject *GetObjectFromJsObject(JsValueRef value)
+{
+    //get "_mIsNative":
+    bool isNative = false;
+    {
+        JsPropertyIdRef id = JS_INVALID_REFERENCE;
+        JsGetPropertyIdFromName(L"_mIsNative", &id);
+
+        JsValueRef member = JS_INVALID_REFERENCE;
+        JsGetProperty(value, id, &member);
+
+        JsBooleanToBool(member, &isNative);
+    }
+    if (!isNative)
+    {
+        return nullptr;
+    }
+
+    MJsPtrPattern pattern;
+
+    //get "_mPtrHigh":
+    {
+        JsPropertyIdRef id = JS_INVALID_REFERENCE;
+        JsGetPropertyIdFromName(L"_mPtrHigh", &id);
+
+        JsValueRef member = JS_INVALID_REFERENCE;
+        JsGetProperty(value, id, &member);
+
+        JsNumberToInt(member, &pattern.high);
+    }
+
+    //get "_mPtrLow":
+    {
+        JsPropertyIdRef id = JS_INVALID_REFERENCE;
+        JsGetPropertyIdFromName(L"_mPtrLow", &id);
+
+        JsValueRef member = JS_INVALID_REFERENCE;
+        JsGetProperty(value, id, &member);
+
+        JsNumberToInt(member, &pattern.low);
+    }
+
+    return pattern.object;
+}
+
+static void CALLBACK JsObjectBeforeCollect(JsRef value, void *callbackState)
+{
+    MObject *object = GetObjectFromJsObject(value);
+    MRelease(object);
+}
+
+static MObject *CopyObjectFromJsValue(JsValueRef value)
+{
+    if (value == JS_INVALID_REFERENCE)
+    {
         return nullptr;
     }
 
     JsValueType type = JsUndefined;
     JsGetValueType(value, &type);
 
-    switch (type) {
-        case JsBoolean: {
+    switch (type)
+    {
+        case JsBoolean:
+        {
             bool raw = false;
             JsBooleanToBool(value, &raw);
             return MBoolCreate(raw);
         }
-        case JsNumber: {
+        case JsNumber:
+        {
             double raw = 0;
             JsNumberToDouble(value, &raw);
-            return MFloatCreate((float)raw);
+
+            if ((int64_t)raw < raw)
+            {
+                return MFloatCreate((float)raw);
+            }
+            else
+            {
+                return MIntCreate((int)raw);
+            }
         }
-        case JsString: {
+        case JsString:
+        {
             const wchar_t *raw = nullptr;
-            size_t size = 0;
-            JsStringToPointer(value, &raw, &size);
+            size_t rawSize = 0;
+            JsStringToPointer(value, &raw, &rawSize);
             return MStringCreateU16((const char16_t *)raw);
         }
-        case JsObject: {
-            return nullptr;
+        case JsObject:
+        {
+            MObject *object = GetObjectFromJsObject(value);
+            return MRetain(object);
         }
-        default: {
+        default:
+        {
             return nullptr;
         }
     }
 }
 
 static JsValueRef JsValueFromObject(MObject *object) {
-    if (!object) {
+    if (!object)
+    {
         return JS_INVALID_REFERENCE;
     }
 
-    switch (MGetType(object)) {
-        case MType_MBool: {
-            JsValueRef value = JS_INVALID_REFERENCE;
-            JsBoolToBoolean(MBoolValue((MBool *)object), &value);
-            return value;
-        }
-        case MType_MInt: {
-            JsValueRef value = JS_INVALID_REFERENCE;
-            JsIntToNumber(MIntValue((MInt *)object), &value);
-            return value;
-        }
-        case MType_MFloat: {
-            JsValueRef value = JS_INVALID_REFERENCE;
-            JsDoubleToNumber(MFloatValue((MFloat *)object), &value);
-            return value;
-        }
-        case MType_MString: {
-            auto raw  = (const wchar_t *)MStringU16Chars((MString *)object);
-            auto size = (size_t)MStringU16Size((MString *)object);
+    switch (MGetType(object))
+    {
+        case MType_MBool:
+        {
+            bool raw = MBoolValue((MBool *)object);
 
             JsValueRef value = JS_INVALID_REFERENCE;
-            JsPointerToString(raw, size, &value);
+            JsBoolToBoolean(raw, &value);
             return value;
         }
-        default: {
-            return JS_INVALID_REFERENCE;
+        case MType_MInt:
+        {
+            int raw = MIntValue((MInt *)object);
+
+            JsValueRef value = JS_INVALID_REFERENCE;
+            JsIntToNumber(raw, &value);
+            return value;
+        }
+        case MType_MFloat:
+        {
+            float raw = MFloatValue((MFloat *)object);
+
+            JsValueRef value = JS_INVALID_REFERENCE;
+            JsDoubleToNumber(raw, &value);
+            return value;
+        }
+        case MType_MString:
+        {
+            auto raw     = (const wchar_t *)MStringU16Chars((MString *)object);
+            auto rawSize = (size_t)MStringU16Size((MString *)object);
+
+            JsValueRef value = JS_INVALID_REFERENCE;
+            JsPointerToString(raw, rawSize, &value);
+            return value;
+        }
+        default:
+        {
+            JsValueRef value = GetJsObjectFromObject(object);
+
+            //IMPORTANT: the js object will hold one reference count of the native object.
+            MRetain(object);
+            JsSetObjectBeforeCollectCallback(value, nullptr, JsObjectBeforeCollect);
+
+            return value;
         }
     }
 }
@@ -87,21 +224,21 @@ static JsValueRef JsValueFromObject(MObject *object) {
 static JsValueRef CALLBACK NativeFunction(
     JsValueRef callee, bool isConstruct, JsValueRef *args, unsigned short argc, void *callbackState)
 {
-    MArray *params = nullptr;
+    MArrayRef params;
 
     //NOTE: the first argument is "this".
     if (argc > 1)
     {
-        params = MArrayCreate();
+        params = m_auto_release MArrayCreate();
         for (int index = 1; index < argc; ++index)
         {
             MObjectRef object = m_auto_release CopyObjectFromJsValue(args[index]);
-            MArrayAppend(params, object.get());
+            MArrayAppend(params.get(), object.get());
         }
     }
 
     auto funcName = (MString *)callbackState;
-    MObjectRef returnObject = m_auto_release _MJsOnCallCopyRet(funcName, params);
+    MObjectRef returnObject = m_auto_release _MJsOnCallCopyRet(funcName, params.get());
 
     return JsValueFromObject(returnObject.get());
 }
@@ -153,7 +290,7 @@ static void RunScript(MString *name, MString *script)
     JsValueRef result = JS_INVALID_REFERENCE;
     JsErrorCode error = JsRunScript(scriptCode, ++sSource, scriptName, &result);
 
-    //print runtime exception if needed.
+    //print runtime exception if need.
     if (error == JsNoError)
     {
         return;
@@ -178,5 +315,5 @@ void MRegisterJSRT()
     InitializeRuntime();
 
     _MJsSetRegisterFunc(RegisterFunc);
-    _MjsSetRunScript(RunScript);
+    _MJsSetRunScript(RunScript);
 }

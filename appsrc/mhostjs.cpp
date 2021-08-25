@@ -2,11 +2,11 @@
 
 struct CallingFrame {
 
-    MArrayRef  params;
-    MObjectRef retValue;
+    MArrayRef  callingParams;
+    MObjectRef returnObject ;
 
     CallingFrame(MArray *params) {
-        this->params = m_make_shared params;
+        this->callingParams = m_make_shared params;
     }
 };
 
@@ -19,7 +19,7 @@ static MLambdaRef sErrorListener;
 static MStringRef sLastError;
 
 void _MJsSetRegisterFunc(_MJsRegisterFunc func) { sRegisterFunc = func; }
-void _MjsSetRunScript   (_MJsRunScript    func) { sRunScript    = func; }
+void _MJsSetRunScript   (_MJsRunScript    func) { sRunScript    = func; }
 
 MObject *_MJsOnCallCopyRet(MString *name, MArray *params) {
     const char *chars = MStringU8Chars(name);
@@ -36,10 +36,10 @@ MObject *_MJsOnCallCopyRet(MString *name, MArray *params) {
     sCallingFrames.push_back(CallingFrame(params));
     MLambdaCall(iterator->second.get());
 
-    MObject *coptRet = MRetain(sCallingFrames.back().retValue.get());
+    MObjectRef returnObject = sCallingFrames.back().returnObject;
     sCallingFrames.pop_back();
 
-    return coptRet;
+    return MRetain(returnObject.get());
 }
 
 void _MJsOnHappenError(MString *info) {
@@ -68,11 +68,11 @@ void MJsRegisterFunc(const char *name, MLambda *func) {
 }
 
 MArray *MJsCallingParams() {
-    return sCallingFrames.back().params.get();
+    return sCallingFrames.back().callingParams.get();
 }
 
 void MJsCallingReturn(MObject *value) {
-    sCallingFrames.back().retValue = m_make_shared value;
+    sCallingFrames.back().returnObject = m_make_shared value;
 }
 
 void MJsRunScript(MString *name, MString *script) {
