@@ -1,4 +1,7 @@
 #include "mhostjs.h"
+#include <cstring>
+#include <set>
+#include "mresource.h"
 
 struct CallingFrame {
 
@@ -51,7 +54,7 @@ void MJsSetErrorListener(MLambda *listener) {
     sErrorListener = m_make_shared listener;
 }
 
-MString *MJsGetLastError() {
+MString *MJsLastError() {
     return sLastError.get();
 }
 
@@ -67,16 +70,55 @@ void MJsRegisterFunc(const char *name, MLambda *func) {
     sFuncMap[name] = m_make_shared func;
 }
 
-MArray *MJsCallingParams() {
-    return sCallingFrames.back().callingParams.get();
+MObject *MJsParamObject(int index) {
+    MArray *params = sCallingFrames.back().callingParams.get();
+    return MArrayItem(params, index);
 }
 
-void MJsCallingReturn(MObject *value) {
-    sCallingFrames.back().returnObject = m_make_shared value;
+MString *MJsParamString(int index) {
+    MArray  *params = sCallingFrames.back().callingParams.get();
+    MObject *object = MArrayItem(params, index);
+
+    if (MGetType(object) == MType_MString) {
+        return (MString *)object;
+    }
+    return nullptr;
+}
+
+void MJsReturnObject(MObject *object) {
+    sCallingFrames.back().returnObject = m_make_shared object;
 }
 
 void MJsRunScript(MString *name, MString *script) {
     if (sRunScript && script) {
         sRunScript(name, script);
+    }
+}
+
+void MJsRunScriptNamed(MString *name) {
+    const char *nameChars = MStringU8Chars(name);
+    if (!nameChars) {
+        return;
+    }
+
+    //do not run repeatedly.
+    static std::set<std::string> *ranSet = nullptr;
+    if (!ranSet) {
+        ranSet = new std::set<std::string>;
+    }
+    if (ranSet->find(nameChars) != ranSet->end()) {
+        return;
+    }
+
+    //if the target is a file path, load the corresponding file.
+    MStringRef script;
+    if (strchr(nameChars, '/') || strchr(nameChars, '\\')) {
+        script = m_auto_release MCopyStringFromFile(name);
+    } else {
+        script = m_auto_release MCopyStringFromBundle(name);
+    }
+
+    if (sRunScript && script) {
+        sRunScript(name, script.get());
     }
 }

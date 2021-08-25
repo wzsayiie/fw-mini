@@ -19,11 +19,18 @@ union MJsPtrPattern {
     };
 };
 
-MFUNC_EXPORT void     MJsSetErrorListener(MLambda *listener) MFUNC_META(MJsSetErrorListener);
-MFUNC_EXPORT MString *MJsGetLastError    ()                  MFUNC_META(MJsGetLastError    );
+//set error listener.
+MFUNC_EXPORT void MJsSetErrorListener(MLambda *listener) MFUNC_META(MJsSetErrorListener);
+MFUNC_EXPORT MString *MJsLastError() MFUNC_META(MJsLastError);
 
-MFUNC_EXPORT void    MJsRegisterFunc (const char *name, MLambda *func) MFUNC_META(MJsRegisterFunc );
-MFUNC_EXPORT MArray *MJsCallingParams()                                MFUNC_META(MJsCallingParams);
-MFUNC_EXPORT void    MJsCallingReturn(MObject *value)                  MFUNC_META(MJsCallingReturn);
+//register native function:
+MFUNC_EXPORT void MJsRegisterFunc(const char *name, MLambda *func) MFUNC_META(MJsRegisterFunc);
 
+MFUNC_EXPORT MObject *MJsParamObject(int index) MFUNC_META(MJsParamObject);
+MFUNC_EXPORT MString *MJsParamString(int index) MFUNC_META(MJsParamString);
+
+MFUNC_EXPORT void MJsReturnObject(MObject *object) MFUNC_META(MJsReturnObject);
+
+//execute javascript string.
 MFUNC_EXPORT void MJsRunScript(MString *name, MString *script) MFUNC_META(MJsRunScript);
+MFUNC_EXPORT void MJsRunScriptNamed(MString *name) MFUNC_META(MJsRunScriptNamed);

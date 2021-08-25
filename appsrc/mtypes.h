@@ -177,34 +177,8 @@ private:
 //------------------------------------------------------------------------------
 //lambda cast:
 
-class _MLambdaCastHelper {
-    
-public:
-    template<typename F> MLambdaRef operator<<(const F &func) {
-        
-        struct Impl : Intf {
-            
-            F mFunc;
-            
-            Impl(const F &func): mFunc(func) {
-            }
-            
-            void call() override {
-                mFunc();
-            }
-        };
-        
-        return m_auto_release MLambdaCreate(procedure, new Impl(func));
-    }
-    
-private:
-    struct Intf : MSpecial {
-        virtual void call() = 0;
-    };
-    
-    static void procedure(MObject *load) {
-        ((Intf *)load)->call();
-    }
+struct _MLambdaCastHelper {
+    MLambdaRef operator<<(std::function<void ()> func);
 };
 
 #define m_cast_lambda _MLambdaCastHelper()<<

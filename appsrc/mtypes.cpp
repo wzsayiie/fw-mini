@@ -301,8 +301,34 @@ MObject *MImageGetLoad(MImage *image) {
 }
 
 //------------------------------------------------------------------------------
-//Native:
+//MSpecial:
 
 MType MSpecial::_type() {
     return MType_MSpecial;
+}
+
+//------------------------------------------------------------------------------
+//lambda cast:
+
+class LambdaCastWrapper : public MSpecial {
+
+public:
+    LambdaCastWrapper(std::function<void ()> func) {
+        mFunc = func;
+    }
+
+    void call() {
+        mFunc();
+    }
+
+private:
+    std::function<void ()> mFunc;
+};
+
+static void LambdaCastProc(MObject *load) {
+    ((LambdaCastWrapper *)load)->call();
+}
+
+MLambdaRef _MLambdaCastHelper::operator<<(std::function<void ()> func) {
+    return m_auto_release MLambdaCreate(LambdaCastProc, new LambdaCastWrapper(func));
 }
