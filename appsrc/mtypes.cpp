@@ -6,12 +6,30 @@
 
 void MObject::_retain() {
     mRefCount += 1;
+
+    if (mRefObserver) {
+        mRefObserver(this, mRefCount);
+    }
 }
 
 void MObject::_release() {
-    if (--mRefCount == 0) {
+    mRefCount -= 1;
+
+    if (mRefObserver) {
+        mRefObserver(this, mRefCount);
+    }
+
+    if (mRefCount == 0) {
         delete this;
     }
+}
+
+void MObject::_setRefObserver(_MRefObserver observer) {
+    mRefObserver = observer;
+}
+
+int MObject::_refCount() {
+    return mRefCount;
 }
 
 MObject *MRetain(MObject *object) {

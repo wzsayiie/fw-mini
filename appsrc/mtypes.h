@@ -12,6 +12,8 @@
 //------------------------------------------------------------------------------
 //MObject:
 
+typedef std::function<void (class MObject *object, int refCount)> _MRefObserver;
+
 class MObject {
 
 public:
@@ -20,10 +22,15 @@ public:
     
     virtual MType _type() = 0;
 
+    //for debugging.
+    void _setRefObserver(_MRefObserver observer);
+    int  _refCount();
+
 protected:
     virtual ~MObject() {}
 
 private:
+    _MRefObserver mRefObserver;
     int mRefCount = 1;
 };
 
