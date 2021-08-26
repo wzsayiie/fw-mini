@@ -4,6 +4,8 @@
 #include <jsrt.h>
 #include "mhostjs.h"
 
+m_static_object(sObjectMap(), std::map<JsValueRef, MObject *>)
+
 static JsRuntimeHandle sRuntime = JS_INVALID_RUNTIME_HANDLE;
 static JsContextRef    sContext = JS_INVALID_REFERENCE;
 static JsSourceContext sSource  = 0;
@@ -15,18 +17,10 @@ static void InitializeRuntime()
     JsSetCurrentContext(sContext);
 }
 
-static std::map<JsValueRef, MObject *> *GetObjectMap()
-{
-    static auto map = new std::map<JsValueRef, MObject *>;
-    return map;
-}
-
-#define sObjectMap (*GetObjectMap())
-
 static void CALLBACK JsObjectBeforeCollect(JsRef value, void *callbackState)
 {
-    MObject *object = sObjectMap[value];
-    sObjectMap.erase(value);
+    MObject *object = sObjectMap()[value];
+    sObjectMap().erase(value);
 
     //IMPORTANT: release the native object.
     MRelease(object);
@@ -44,7 +38,7 @@ static JsValueRef AddJsObjectFromObject(MObject *object)
     JsBoolToBoolean(true, &nativeValue);
     JsSetProperty(value, nativeId, nativeValue, true);
     
-    sObjectMap[value] = object;
+    sObjectMap()[value] = object;
 
     //IMPORTANT: retain one reference count of native object.
     MRetain(object);
@@ -55,8 +49,8 @@ static JsValueRef AddJsObjectFromObject(MObject *object)
 
 static MObject *GetObjectFromJsObject(JsValueRef value)
 {
-    auto iterator = sObjectMap.find(value);
-    if (iterator != sObjectMap.end())
+    auto iterator = sObjectMap().find(value);
+    if (iterator != sObjectMap().end())
     {
         return iterator->second;
     }

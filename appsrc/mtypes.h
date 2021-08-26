@@ -10,6 +10,11 @@
 #include "mconfig.h"
 
 //------------------------------------------------------------------------------
+//c++ idioms:
+
+#define m_static_object(name, ...) static __VA_ARGS__ &name { static auto a = new __VA_ARGS__; return *a; }
+
+//------------------------------------------------------------------------------
 //MObject:
 
 typedef std::function<void (class MObject *object, int refCount)> _MRefObserver;

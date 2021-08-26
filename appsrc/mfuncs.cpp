@@ -1,64 +1,46 @@
 #include "mfuncs.h"
 
-typedef std::map<std::string, _MFuncMeta> MetaMap;
-
-static MetaMap *GetMetaMap() {
-    static MetaMap *map = nullptr;
-    if (!map) {
-        map = new MetaMap;
-    }
-    return map;
-}
-
-static MetaMap::iterator *GetIterator() {
-    static MetaMap::iterator *iterator = nullptr;
-    if (!iterator) {
-        iterator = new MetaMap::iterator;
-    }
-    return iterator;
-}
-
-#define sMetaMap  (*GetMetaMap ())
-#define sIterator (*GetIterator())
+m_static_object(sMetaMap (), std::map<std::string, _MFuncMeta>)
+m_static_object(sIterator(), std::map<std::string, _MFuncMeta>::iterator)
 
 void _MFuncSetMeta(const char *name, const _MFuncMeta& meta) {
     if (name) {
-        sMetaMap[name] = meta;
+        sMetaMap()[name] = meta;
     }
 }
 
 void MFuncSelectFirst() {
-    sIterator = sMetaMap.begin();
+    sIterator() = sMetaMap().begin();
 }
 
 bool MFuncSelectedValid() {
-    return sIterator != sMetaMap.end();
+    return sIterator() != sMetaMap().end();
 }
 
 void MFuncSelectNext() {
-    ++sIterator;
+    ++sIterator();
 }
 
 bool MFuncSelect(const char *name) {
     if (name) {
-        sIterator = sMetaMap.find(name);
+        sIterator() = sMetaMap().find(name);
     } else {
-        sIterator = sMetaMap.end();
+        sIterator() = sMetaMap().end();
     }
 
-    return sIterator != sMetaMap.end();
+    return sIterator() != sMetaMap().end();
 }
 
 const char *MFuncSelectedName() {
-    return sIterator->first.c_str();
+    return sIterator()->first.c_str();
 }
 
-MType MFuncSelectedRetType  () { return sIterator->second.retType  ; }
-bool  MFuncSelectedRetRetain() { return sIterator->second.retRetain; }
-int   MFuncSelectedArgCount () { return sIterator->second.argCount ; }
+MType MFuncSelectedRetType  () { return sIterator()->second.retType  ; }
+bool  MFuncSelectedRetRetain() { return sIterator()->second.retRetain; }
+int   MFuncSelectedArgCount () { return sIterator()->second.argCount ; }
 
 MType MFuncSelectedArgType(int index) {
-    return sIterator->second.argTypes[index];
+    return sIterator()->second.argTypes[index];
 }
 
 //NOTE:
@@ -181,8 +163,8 @@ MObject *MFuncCallCopyRet(const char *name, MArray *args) {
         return nullptr;
     }
 
-    auto iterator = sMetaMap.find(name);
-    if (iterator == sMetaMap.end()) {
+    auto iterator = sMetaMap().find(name);
+    if (iterator == sMetaMap().end()) {
         return nullptr;
     }
 

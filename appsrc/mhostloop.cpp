@@ -9,23 +9,17 @@ struct UpdateItem {
     MLambdaRef listener;
 };
 
-static std::vector<LaunchItem> *sLaunchItems = nullptr;
-static std::vector<UpdateItem> *sUpdateItems = nullptr;
+m_static_object(sLaunchItems(), std::vector<LaunchItem>)
+m_static_object(sUpdateItems(), std::vector<UpdateItem>)
 
 void _MAppLaunch() {
-    if (!sLaunchItems) {
-        return;
-    }
-    for (const LaunchItem &item : *sLaunchItems) {
+    for (const LaunchItem &item : sLaunchItems()) {
         MLambdaCall(item.listener.get());
     }
 }
 
 void _MAppUpdate() {
-    if (!sUpdateItems) {
-        return;
-    }
-    for (const UpdateItem &item : *sUpdateItems) {
+    for (const UpdateItem &item : sUpdateItems()) {
         MLambdaCall(item.listener.get());
     }
 }
@@ -35,20 +29,16 @@ void _MAppAddLaunchListener(MLambda *listener, int priority) {
         return;
     }
     
-    if (!sLaunchItems) {
-        sLaunchItems = new std::vector<LaunchItem>;
-    }
-    
     LaunchItem fresh;
     fresh.listener = m_make_shared listener;
     fresh.priority = priority;
-    for (auto it = sLaunchItems->begin(); it != sLaunchItems->end(); ++it) {
+    for (auto it = sLaunchItems().begin(); it != sLaunchItems().end(); ++it) {
         if (priority > (it->priority)) {
-            sLaunchItems->insert(it, fresh);
+            sLaunchItems().insert(it, fresh);
             return;
         }
     }
-    sLaunchItems->push_back(fresh);
+    sLaunchItems().push_back(fresh);
 }
 
 void _MAppAddUpdateListener(MLambda *listener) {
@@ -56,13 +46,9 @@ void _MAppAddUpdateListener(MLambda *listener) {
         return;
     }
     
-    if (!sUpdateItems) {
-        sUpdateItems = new std::vector<UpdateItem>;
-    }
-    
     UpdateItem fresh;
     fresh.listener = m_make_shared listener;
-    sUpdateItems->push_back(fresh);
+    sUpdateItems().push_back(fresh);
 }
 
 _MAppLaunchAdder::_MAppLaunchAdder(void (*func)(), int priority) {

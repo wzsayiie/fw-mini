@@ -8,10 +8,7 @@ struct TaskConfig {
     bool cancelled     = false;
 };
 
-static std::map<MLambdaRef, TaskConfig> *GetTasks() {
-    static auto tasks = new std::map<MLambdaRef, TaskConfig>;
-    return tasks;
-}
+m_static_object(sTasks(), std::map<MLambdaRef, TaskConfig>)
 
 static int GetTick(int increment) {
     static int tick = 0;
@@ -20,20 +17,19 @@ static int GetTick(int increment) {
 }
 
 static void Update() MAPP_UPDATE(Update) {
-    std::map<MLambdaRef, TaskConfig> *tasks = GetTasks();
     int tick = GetTick(1);
     
     //remove cancelled tasks.
-    for (auto it = tasks->begin(); it != tasks->end(); ) {
+    for (auto it = sTasks().begin(); it != sTasks().end(); ) {
         if (it->second.cancelled) {
-            tasks->erase(it++);
+            sTasks().erase(it++);
         } else {
             it++;
         }
     }
     
     //call tasks.
-    for (auto it = tasks->begin(); it != tasks->end(); ++it) {
+    for (auto it = sTasks().begin(); it != sTasks().end(); ++it) {
         if (tick < (it->second.nextRunTick)) {
             continue;
         }
@@ -63,7 +59,7 @@ void MRunAfterSeconds(float delay, MLambda *task) {
     config.runOnlyOnce   = true;
     config.nextRunTick   = GetTick(0) + intervalTicks;
     
-    GetTasks()->insert({m_make_shared task, config});
+    sTasks().insert({m_make_shared task, config});
 }
 
 void MRunEverySeconds(float interval, MLambda *task) {
@@ -78,7 +74,7 @@ void MRunEverySeconds(float interval, MLambda *task) {
     config.runOnlyOnce   = false;
     config.nextRunTick   = GetTick(0) + intervalTicks;
     
-    GetTasks()->insert({m_make_shared task, config});
+    sTasks().insert({m_make_shared task, config});
 }
 
 MLambdaRef MRunAfterSeconds(float delay, std::function<void ()> task) {
@@ -97,11 +93,9 @@ void MCancelTask(MLambda *task) {
     if (!task) {
         return;
     }
-    
-    std::map<MLambdaRef, TaskConfig> *tasks = GetTasks();
-    
-    auto it = tasks->find(m_make_shared task);
-    if (it != tasks->end()) {
+
+    auto it = sTasks().find(m_make_shared task);
+    if (it != sTasks().end()) {
         it->second.cancelled = true;
     }
 }
