@@ -11,7 +11,7 @@ function _make_string_with_shrink(shrink, indent, object, out) {
         _make_indent(indent, out)
     }
 
-    if (object == null) {
+    if (object === null) {
         out.push("null")
 
     } else if (Array.isArray(object)) {
@@ -25,7 +25,7 @@ function _make_string_with_shrink(shrink, indent, object, out) {
         _make_indent(out, indent)
         out.push("]")
 
-    } else if (typeof(object) == "object") {
+    } else if (typeof object == "object") {
         out.push("{\n")
 
         for (let key in object) {
@@ -103,7 +103,7 @@ function _MJsLambdaRemove(iden) {
 }
 
 function MJsLambda(func) {
-    if (typeof(func) == "function") {
+    if (typeof func == "function") {
         let iden = _MJsLambdaInsert(func)
         return MJsLambdaCreate(iden)
     }
