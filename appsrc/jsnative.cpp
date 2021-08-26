@@ -4,148 +4,73 @@
 #include <cstdio>
 #include "minikit.h"
 
-static void include() {
-    MString *target = MJsParamString(0);
-
-    if (!target) {
-        return;
-    }
-
-    MJsRunScriptNamed(target);
-}
-
-static void PrintMessage() {
-    MString *message = MJsParamString(0);
-
-    if (!message) {
-        return;
-    }
-
-    MPrintMessage(message);
-}
-
-static void Release() {
-    MObject *object = MJsParamObject(0);
-
-    if (!object) {
-        return;
-    }
-
-    MRelease(object);
-}
-
-static void GetType() {
-    MObject *object = MJsParamObject(0);
-
-    if (!object) {
-        return;
-    }
-
-    MType type = MGetType(object);
-    MJsReturnInt(type);
-}
-
-class JsLambda : public MSpecial {
+class JsLambdaActual : public MSpecial {
 
 public:
-    JsLambda(int id) {
-        mId = id;
+    JsLambdaActual(int iden) {
+        mIden = iden;
     }
 
     static void call(MObject *load) {
-        auto lambda = (JsLambda *)load;
-        lambda->run("inner.callLambda(%d)");
+        auto lambda = (JsLambdaActual *)load;
+        lambda->run("_MJsLambdaInvoke(%d)");
     }
 
-    ~JsLambda() {
-        run("inner.removeLambda(%d)");
+    ~JsLambdaActual() {
+        run("_MJsLambdaRemove(%d)");
     }
 
 private:
     void run(const char *format) {
         char string[64] = "\0";
-        sprintf(string, format, mId);
+        sprintf(string, format, mIden);
 
         MStringRef script = m_auto_release MStringCreateU8(string);
         MJsRunScript(script.get(), script.get());
     }
 
-    int mId;
+    int mIden;
 };
 
-static void LambdaCreate() {
-    int id = MJsParamInt(0);
+static void N_include() {
+    MArray  *params = MJsCallingParams();
+    MObject *target = MArrayItem(params, 0);
 
-    if (id == 0) {
+    if (MGetType(target) == MType_MString) {
+        MJsRunScriptNamed((MString *)target);
+    }
+}
+
+static void N_MJsLambdaCreate() {
+    MArray  *params = MJsCallingParams();
+    MObject *object = MArrayItem(params, 0);
+
+    if (MGetType(object) != MType_MInt) {
         return;
     }
 
-    MObjectRef actual = m_auto_release new JsLambda(id);
-    MLambdaRef lambda = m_auto_release MLambdaCreate(JsLambda::call, actual.get());
-    MJsReturnObject(lambda.get());
+    int iden = MIntValue((MInt *)object);
+    MObjectRef actual = m_auto_release new JsLambdaActual(iden);
+    MLambdaRef lambda = m_auto_release MLambdaCreate(JsLambdaActual::call, actual.get());
+    MJsCallingReturn(lambda.get());
 }
 
-static void LambdaCall() {
-    MLambda *lambda = MJsParamLambda(0);
+static void N_GeneralFunc() {
+    const char *funcName = MJsCallingFuncName();
+    MArray     *params   = MJsCallingParams();
+    MObjectRef  returned = m_auto_release MFuncCallCopyRet(funcName, params);
 
-    if (!lambda) {
-        return;
-    }
-
-    MLambdaCall(lambda);
-}
-
-static void ArrayCreate() {
-    MArrayRef array = m_auto_release MArrayCreate();
-    MJsReturnObject(array.get());
-}
-
-static void ArrayAppend() {
-    MArray  *array = MJsParamArray (0);
-    MObject *item  = MJsParamObject(1);
-
-    if (!array) {
-        return;
-    }
-
-    MArrayAppend(array, item);
-}
-
-static void ArrayLength() {
-    MArray *array = MJsParamArray(0);
-
-    if (!array) {
-        return;
-    }
-
-    int length = MArrayLength(array);
-    MJsReturnInt(length);
-}
-
-static void ArrayItem() {
-    MArray *array = MJsParamArray(0);
-    int     index = MJsParamInt  (1);
-
-    if (!array) {
-        return;
-    }
-
-    MObject *item = MArrayItem(array, index);
-    MJsReturnObject(item);
+    MJsCallingReturn(returned.get());
 }
 
 void JSRegisterNativeFuncs() {
 
-    #define REGISTER(n, f) MJsRegisterFunc(n, (m_cast_lambda f).get())
+    MJsRegisterFunc("include"        , (m_cast_lambda N_include        ).get());
+    MJsRegisterFunc("MJsLambdaCreate", (m_cast_lambda N_MJsLambdaCreate).get());
 
-    REGISTER("include"      , include     );
-    REGISTER("MPrintMessage", PrintMessage);
-    REGISTER("MRelease"     , Release     );
-    REGISTER("MGetType"     , GetType     );
-    REGISTER("MLambdaCreate", LambdaCreate);
-    REGISTER("MLambdaCall"  , LambdaCall  );
-    REGISTER("MArrayCreate" , ArrayCreate );
-    REGISTER("MArrayAppend" , ArrayAppend );
-    REGISTER("MArrayLength" , ArrayLength );
-    REGISTER("MArrayItem"   , ArrayItem   );
+    MLambdaRef general = m_cast_lambda N_GeneralFunc;
+    for (MFuncSelectFirst(); MFuncSelectedValid(); MFuncSelectNext()) {
+        const char *name = MFuncSelectedName();
+        MJsRegisterFunc(name, general.get());
+    }
 }

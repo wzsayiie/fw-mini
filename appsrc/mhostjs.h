@@ -16,16 +16,10 @@ MFUNC_EXPORT void MJsSetErrorListener(MLambda *listener) MFUNC_META(MJsSetErrorL
 MFUNC_EXPORT MString *MJsLastError() MFUNC_META(MJsLastError);
 
 //register native function:
-MFUNC_EXPORT void MJsRegisterFunc(const char *name, MLambda *func) MFUNC_META(MJsRegisterFunc);
-
-MFUNC_EXPORT int      MJsParamInt   (int index) MFUNC_META(MJsParamInt   );
-MFUNC_EXPORT MObject *MJsParamObject(int index) MFUNC_META(MJsParamObject);
-MFUNC_EXPORT MString *MJsParamString(int index) MFUNC_META(MJsParamString);
-MFUNC_EXPORT MLambda *MJsParamLambda(int index) MFUNC_META(MJsParamLambda);
-MFUNC_EXPORT MArray  *MJsParamArray (int index) MFUNC_META(MJsParamArray );
-
-MFUNC_EXPORT void MJsReturnInt   (int      value) MFUNC_META(MJsReturnInt   );
-MFUNC_EXPORT void MJsReturnObject(MObject *value) MFUNC_META(MJsReturnObject);
+MFUNC_EXPORT void        MJsRegisterFunc   (const char *name, MLambda *func) MFUNC_META(MJsRegisterFunc   );
+MFUNC_EXPORT const char *MJsCallingFuncName()                                MFUNC_META(MJsCallingFuncName);
+MFUNC_EXPORT MArray     *MJsCallingParams  ()                                MFUNC_META(MJsCallingParams  );
+MFUNC_EXPORT void        MJsCallingReturn  (MObject *value)                  MFUNC_META(MJsCallingReturn  );
 
 //execute javascript string.
 MFUNC_EXPORT void MJsRunScript(MString *name, MString *script) MFUNC_META(MJsRunScript);

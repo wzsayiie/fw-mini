@@ -14,6 +14,6 @@ static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
     MStringRef launchFile = m_auto_release MStringCreateU8("app.js");
     MJsRunScriptNamed(launchFile.get());
 
-    MStringRef launcFunc = m_auto_release MStringCreateU8("launch()");
+    MStringRef launcFunc = m_auto_release MStringCreateU8("Launch()");
     MJsRunScript(launcFunc.get(), launcFunc.get());
 }

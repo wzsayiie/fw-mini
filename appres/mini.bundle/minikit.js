@@ -1,148 +1,111 @@
 //minikit.js
 
-let inner = {}
-let m = {}
-
-//------------------------------------------------------------------------------
-//print:
-
-inner.makeIndent = function (outArray, indent) {
+function _make_indent(indent, out) {
     while (indent-- > 0) {
-        outArray.push("  ")
+        out.push("  ")
     }
 }
 
-inner.makeString = function (outArray, isHeadIndent, indent, object) {
-    if (isHeadIndent) {
-        inner.makeIndent(outArray, indent)
+function _make_string_with_shrink(shrink, indent, object, out) {
+    if (!shrink) {
+        _make_indent(indent, out)
     }
 
     if (object == null) {
-        outArray.push("null")
+        out.push("null")
 
-    } else if (typeof(object) == "object" && Array.isArray(object)) {
-        outArray.push("[\n")
+    } else if (Array.isArray(object)) {
+        out.push("[\n")
 
         for (let item of object) {
-            inner.makeString(outArray, true, indent + 1, item)
-            outArray.push(",\n")
+            _make_string_with_shrink(false, indent + 1, item, out)
+            out.push(",\n")
         }
 
-        inner.makeIndent(outArray, indent)
-        outArray.push("]")
+        _make_indent(out, indent)
+        out.push("]")
 
     } else if (typeof(object) == "object") {
-        outArray.push("{\n")
+        out.push("{\n")
 
         for (let key in object) {
-            inner.makeString(outArray, true, indent + 1, key)
-            outArray.push(": ")
+            let val = object[key]
 
-            inner.makeString(outArray, false, indent + 1, object[key])
-            outArray.push(",\n")
+            _make_string_with_shrink(false, indent + 1, key, out)
+            out.push(": " )
+
+            _make_string_with_shrink(true , indent + 1, val, out)
+            out.push(",\n")
         }
 
-        inner.makeIndent(outArray, indent)
-        outArray.push("}")
+        _make_indent(indent, out)
+        out.push("}")
 
     } else {
-        outArray.push(String(object))
+        out.push(String(object))
     }
 }
 
-m.string = function (object) {
+function MString(object) {
     let array = []
-    inner.makeString(array, false, 0, object)
+    _make_string_with_shrink(true, 0, object, array)
     return array.join("")
 }
 
-m.print = function (object) {
-    let message = m.string(object)
+function MLog(object) {
+    let message = MString(object)
     MPrintMessage(message)
 }
 
-//------------------------------------------------------------------------------
-//MObject:
-
-inner.enumId = function (string) {
-    let a = string.charCodeAt(0)
-    let b = string.charCodeAt(1)
-    let c = string.charCodeAt(2)
-
-    return a | (b << 8) | (c << 16)
-}
-
-m.TypeObject  = inner.enumId("Obj")
-m.TypeBool    = inner.enumId("Bol")
-m.TypeInt     = inner.enumId("Int")
-m.TypeFloat   = inner.enumId("Flt")
-m.TypePointer = inner.enumId("Ptr")
-m.TypeString  = inner.enumId("Str")
-m.TypeLambda  = inner.enumId("Lmd")
-m.TypeData    = inner.enumId("Dat")
-m.TypeArray   = inner.enumId("Arr")
-m.TypeImage   = inner.enumId("Img")
-m.TypeSpecial = inner.enumId("Spc")
-
-m.release = function (object) {
-    MRelease(object)
-    delete object.isNativeObject
-}
-
-m.getType = function (object) {
-    return MGetType(object)
-}
-
-//------------------------------------------------------------------------------
-//MLambda:
-
-inner.lambdaObjects = {}
-inner.lambdaIdCount = 0
-
-inner.addLambda = function (func) {
-    let id = ++inner.lambdaIdCount
-    inner.lambdaObjects[id] = func
+function MEnumId(string) {
+    let id = 0
+    for (let index in string) {
+        id = (id << 8) | string.charCodeAt(index)
+    }
     return id
 }
 
-inner.callLambda = function (id) {
-    let func = inner.lambdaObjects[id]
+const MType = {
+    Object : MEnumId("Obj"),
+    Bool   : MEnumId("Bol"),
+    Int    : MEnumId("Int"),
+    Float  : MEnumId("Flt"),
+    Pointer: MEnumId("Ptr"),
+    String : MEnumId("Str"),
+    Lambda : MEnumId("Lmd"),
+    Data   : MEnumId("Dat"),
+    Array  : MEnumId("Arr"),
+    Image  : MEnumId("Img"),
+    Special: MEnumId("Spc"),
+}
+Object.freeze(MType)
+
+let _MJsLambdaObjects = {}
+let _MJsLambdaIdCount = 0
+
+function _MJsLambdaInsert(func) {
+    let iden = _MJsLambdaIdCount
+    _MJsLambdaIdCount += 1
+
+    _MJsLambdaObjects[iden] = func
+    return iden
+}
+
+function _MJsLambdaInvoke(iden) {
+    let func = _MJsLambdaObjects[iden]
     if (func) {
         func()
     }
 }
 
-inner.removeLambda = function (id) {
-    delete inner.lambdaObjects[id]
+function _MJsLambdaRemove(iden) {
+    delete _MJsLambdaObjects[iden]
 }
 
-m.lambdaCreate = function (func) {
+function MJsLambda(func) {
     if (typeof(func) == "function") {
-        let id = inner.addLambda(func)
-        return MLambdaCreate(id)
+        let iden = _MJsLambdaInsert(func)
+        return MJsLambdaCreate(iden)
     }
     return null
-}
-
-m.lambdaCall = function (lambda) {
-    MLambdaCall(lambda)
-}
-
-//------------------------------------------------------------------------------
-//MArray:
-
-m.arrayCreate = function () {
-    return MArrayCreate()
-}
-
-m.arrayAppend = function (array, item) {
-    MArrayAppend(array, item)
-}
-
-m.arrayLength = function (array) {
-    return MArrayLength(array)
-}
-
-m.arrayItem = function (array, index) {
-    return MArrayItem(array, index)
 }

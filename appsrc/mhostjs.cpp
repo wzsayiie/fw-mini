@@ -5,11 +5,13 @@
 
 struct CallingFrame {
 
-    MArrayRef  callingParams;
-    MObjectRef returnObject ;
+    std::string funcName;
+    MArrayRef   params  ;
+    MObjectRef  returned;
 
-    CallingFrame(MArray *params) {
-        this->callingParams = m_make_shared params;
+    CallingFrame(const char *funcName, MArray *params) {
+        this->funcName = funcName;
+        this->params   = m_make_shared params;
     }
 };
 
@@ -36,10 +38,10 @@ MObject *_MJsOnCallCopyRet(MString *name, MArray *params) {
     }
 
     //NOTE: use calling stack. calling may be multi-level.
-    sCallingFrames.push_back(CallingFrame(params));
+    sCallingFrames.push_back(CallingFrame(chars, params));
     MLambdaCall(iterator->second.get());
 
-    MObjectRef returnObject = sCallingFrames.back().returnObject;
+    MObjectRef returnObject = sCallingFrames.back().returned;
     sCallingFrames.pop_back();
 
     return MRetain(returnObject.get());
@@ -70,44 +72,16 @@ void MJsRegisterFunc(const char *name, MLambda *func) {
     sFuncMap[name] = m_make_shared func;
 }
 
-int MJsParamInt(int index) {
-    MArray  *params = sCallingFrames.back().callingParams.get();
-    MObject *object = MArrayItem(params, index);
-
-    switch (MGetType(object)) {
-        case MType_MBool : return (int)MBoolValue ((MBool  *)object);
-        case MType_MInt  : return (int)MIntValue  ((MInt   *)object);
-        case MType_MFloat: return (int)MFloatValue((MFloat *)object);
-
-        default: return 0;
-    }
+const char *MJsCallingFuncName() {
+    return sCallingFrames.back().funcName.c_str();
 }
 
-MObject *MJsParamObject(int index) {
-    MArray *params = sCallingFrames.back().callingParams.get();
-    return MArrayItem(params, index);
+MArray *MJsCallingParams() {
+    return sCallingFrames.back().params.get();
 }
 
-template<typename T, MType ID> T JsParam(int index) {
-    MArray  *params = sCallingFrames.back().callingParams.get();
-    MObject *object = MArrayItem(params, index);
-
-    if (MGetType(object) == ID) {
-        return (T)object;
-    }
-    return nullptr;
-}
-
-MString *MJsParamString(int index) { return JsParam<MString *, MType_MString>(index); }
-MLambda *MJsParamLambda(int index) { return JsParam<MLambda *, MType_MLambda>(index); }
-MArray  *MJsParamArray (int index) { return JsParam<MArray  *, MType_MArray >(index); }
-
-void MJsReturnInt(int value) {
-    sCallingFrames.back().returnObject = m_auto_release MIntCreate(value);
-}
-
-void MJsReturnObject(MObject *value) {
-    sCallingFrames.back().returnObject = m_make_shared value;
+void MJsCallingReturn(MObject *value) {
+    sCallingFrames.back().returned = m_make_shared value;
 }
 
 void MJsRunScript(MString *name, MString *script) {
