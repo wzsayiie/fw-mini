@@ -80,6 +80,9 @@ const MType = {
 }
 Object.freeze(MType)
 
+//shield this function, it's unsafe for the js environment.
+function MRelease() {}
+
 let _MJsLambdaObjects = {}
 let _MJsLambdaIdCount = 0
 
