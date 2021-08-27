@@ -1,23 +1,22 @@
 #include "mrunloop.h"
 #include "mhostloop.h"
+#include <ctime>
 
 struct TaskConfig {
-    int  intervalTicks = 0;
-    bool runOnlyOnce   = false;
-    int  nextRunTick   = 0;
-    bool cancelled     = false;
+    bool  runOnlyOnce = false;
+    float nextRunTick = 0;
+    float interval    = 0;
+    bool  cancelled   = false;
 };
 
 m_static_object(sTasks(), std::map<MLambdaRef, TaskConfig>)
 
-static int GetTick(int increment) {
-    static int tick = 0;
-    tick += increment;
-    return tick;
+static float CurrentTick() {
+    return (float)clock() / CLOCKS_PER_SEC;
 }
 
 static void Update() MAPP_UPDATE(Update) {
-    int tick = GetTick(1);
+    float tick = CurrentTick();
     
     //remove cancelled tasks.
     for (auto it = sTasks().begin(); it != sTasks().end(); ) {
@@ -42,7 +41,7 @@ static void Update() MAPP_UPDATE(Update) {
         if (config->runOnlyOnce) {
             config->cancelled = true;
         } else {
-            config->nextRunTick += config->intervalTicks;
+            config->nextRunTick += config->interval;
         }
     }
 }
@@ -51,13 +50,11 @@ void MRunAfterSeconds(float delay, MLambda *task) {
     if (!task) {
         return;
     }
-    
-    auto intervalTicks = (int)(delay / _MAppUpdateInterval);
-    
+
     TaskConfig config;
-    config.intervalTicks = intervalTicks;
-    config.runOnlyOnce   = true;
-    config.nextRunTick   = GetTick(0) + intervalTicks;
+    config.runOnlyOnce = true;
+    config.nextRunTick = CurrentTick() + delay;
+    config.interval    = 0;
     
     sTasks().insert({m_make_shared task, config});
 }
@@ -66,13 +63,11 @@ void MRunEverySeconds(float interval, MLambda *task) {
     if (!task) {
         return;
     }
-    
-    auto intervalTicks = (int)(interval / _MAppUpdateInterval);
-    
+
     TaskConfig config;
-    config.intervalTicks = intervalTicks;
-    config.runOnlyOnce   = false;
-    config.nextRunTick   = GetTick(0) + intervalTicks;
+    config.runOnlyOnce = false;
+    config.nextRunTick = CurrentTick() + interval;
+    config.interval    = interval;
     
     sTasks().insert({m_make_shared task, config});
 }
