@@ -101,9 +101,11 @@ void MJsRunScriptNamed(MString *name) {
     if (!ranSet) {
         ranSet = new std::set<std::string>;
     }
+    
     if (ranSet->find(nameChars) != ranSet->end()) {
         return;
     }
+    ranSet->insert(nameChars);
 
     //if the target is a file path, load the corresponding file.
     MStringRef script;
@@ -112,8 +114,20 @@ void MJsRunScriptNamed(MString *name) {
     } else {
         script = m_auto_release MCopyStringFromBundle(name);
     }
+    
+    if (!script) {
+        std::string builder;
+        builder.append("no javascript script named '");
+        builder.append(nameChars);
+        builder.append("'");
+        
+        MStringRef string = m_auto_release MStringCreateU8(builder.c_str());
+        _MJsOnHappenError(string.get());
+        
+        return;
+    }
 
-    if (sRunScript && script) {
+    if (sRunScript) {
         sRunScript(name, script.get());
     }
 }
