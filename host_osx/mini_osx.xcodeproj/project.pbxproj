@@ -12,7 +12,9 @@
 		CE107D9E2674C6A400823730 /* MViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D992674C6A400823730 /* MViewController.mm */; };
 		CE107DA72674C77C00823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107DA02674C77C00823730 /* mini.bundle */; };
 		CE107DA82674C77C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107DA22674C77C00823730 /* README.cpp */; };
-		CE9E181726A29C5A006FF96A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9E181626A29C5A006FF96A /* Cocoa.framework */; };
+		CEDE116326DB8D890098D3C8 /* MJavaScriptCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEDE116226DB8D890098D3C8 /* MJavaScriptCore.mm */; };
+		CEDE116626DB8DB50098D3C8 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE116526DB8DB50098D3C8 /* JavaScriptCore.framework */; };
+		CEDE116826DB8DBD0098D3C8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE116726DB8DBD0098D3C8 /* Cocoa.framework */; };
 		CEE4971A269332C1005C4957 /* MOSXAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE49716269332C1005C4957 /* MOSXAPI.mm */; };
 		CEE4971B269332C1005C4957 /* MView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE49717269332C1005C4957 /* MView.mm */; };
 /* End PBXBuildFile section */
@@ -27,7 +29,10 @@
 		CE107D9B2674C6A400823730 /* MViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MViewController.h; sourceTree = "<group>"; };
 		CE107DA02674C77C00823730 /* mini.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mini.bundle; sourceTree = "<group>"; };
 		CE107DA22674C77C00823730 /* README.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = README.cpp; sourceTree = "<group>"; };
-		CE9E181626A29C5A006FF96A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		CEDE116126DB8D890098D3C8 /* MJavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJavaScriptCore.h; sourceTree = "<group>"; };
+		CEDE116226DB8D890098D3C8 /* MJavaScriptCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MJavaScriptCore.mm; sourceTree = "<group>"; };
+		CEDE116526DB8DB50098D3C8 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		CEDE116726DB8DBD0098D3C8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		CEE49716269332C1005C4957 /* MOSXAPI.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MOSXAPI.mm; sourceTree = "<group>"; };
 		CEE49717269332C1005C4957 /* MView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MView.mm; sourceTree = "<group>"; };
 		CEE49718269332C1005C4957 /* MOSXAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MOSXAPI.h; sourceTree = "<group>"; };
@@ -39,7 +44,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE9E181726A29C5A006FF96A /* Cocoa.framework in Frameworks */,
+				CEDE116826DB8DBD0098D3C8 /* Cocoa.framework in Frameworks */,
+				CEDE116626DB8DB50098D3C8 /* JavaScriptCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,7 +57,7 @@
 			children = (
 				CE107D9F2674C77C00823730 /* appres */,
 				CE107DA12674C77C00823730 /* appsrc */,
-				CE9E181526A29C5A006FF96A /* frameworks */,
+				CEDE116426DB8DB50098D3C8 /* frameworks */,
 				CE107D812674C5E900823730 /* mini */,
 				CE107D802674C5E900823730 /* products */,
 			);
@@ -72,6 +78,8 @@
 				CE107D8D2674C5EA00823730 /* Info.plist */,
 				CE107D8E2674C5EA00823730 /* main.mm */,
 				CE107D902674C5EA00823730 /* mini.entitlements */,
+				CEDE116126DB8D890098D3C8 /* MJavaScriptCore.h */,
+				CEDE116226DB8D890098D3C8 /* MJavaScriptCore.mm */,
 				CEE49718269332C1005C4957 /* MOSXAPI.h */,
 				CEE49716269332C1005C4957 /* MOSXAPI.mm */,
 				CEE49719269332C1005C4957 /* MView.h */,
@@ -100,10 +108,11 @@
 			path = ../appsrc;
 			sourceTree = "<group>";
 		};
-		CE9E181526A29C5A006FF96A /* frameworks */ = {
+		CEDE116426DB8DB50098D3C8 /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CE9E181626A29C5A006FF96A /* Cocoa.framework */,
+				CEDE116726DB8DBD0098D3C8 /* Cocoa.framework */,
+				CEDE116526DB8DB50098D3C8 /* JavaScriptCore.framework */,
 			);
 			name = frameworks;
 			sourceTree = "<group>";
@@ -179,6 +188,7 @@
 				CE107D9E2674C6A400823730 /* MViewController.mm in Sources */,
 				CEE4971A269332C1005C4957 /* MOSXAPI.mm in Sources */,
 				CEE4971B269332C1005C4957 /* MView.mm in Sources */,
+				CEDE116326DB8D890098D3C8 /* MJavaScriptCore.mm in Sources */,
 				CE107D8F2674C5EA00823730 /* main.mm in Sources */,
 				CE107DA82674C77C00823730 /* README.cpp in Sources */,
 			);

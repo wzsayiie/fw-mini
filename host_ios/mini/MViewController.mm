@@ -1,5 +1,6 @@
 #import "MViewController.h"
 #import "MIOSAPI.h"
+#import "MJavaScriptCore.h"
 #import "MView.h"
 #import "mhostloop.h"
 #import "mhostui.h"
@@ -13,6 +14,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    MInstallJSVirtualMachine();
     MRegisterAPIs();
     
     CGSize size = UIScreen.mainScreen.bounds.size;

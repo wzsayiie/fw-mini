@@ -1,4 +1,5 @@
 #import "MViewController.h"
+#import "MJavaScriptCore.h"
 #import "MOSXAPI.h"
 #import "MView.h"
 #import "mhostloop.h"
@@ -14,6 +15,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    MInstallJSVirtualMachine();
     MRegisterAPIs();
     
     NSSize size = self.view.frame.size;
