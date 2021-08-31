@@ -1,6 +1,6 @@
 #include "mrunloop.h"
 #include "mhostloop.h"
-#include <ctime>
+#include <chrono>
 
 struct TaskConfig {
     bool  runOnlyOnce = false;
@@ -12,12 +12,14 @@ struct TaskConfig {
 m_static_object(sTasks(), std::map<MLambdaRef, TaskConfig>)
 
 static float CurrentTick() {
-    return (float)clock() / CLOCKS_PER_SEC;
+    auto now  = std::chrono::system_clock::now().time_since_epoch();
+    auto tick = std::chrono::duration_cast<std::chrono::milliseconds>(now);
+    return tick.count() / 1000.f;
 }
 
 static void Update() MAPP_UPDATE(Update) {
     float tick = CurrentTick();
-    
+
     //remove cancelled tasks.
     for (auto it = sTasks().begin(); it != sTasks().end(); ) {
         if (it->second.cancelled) {
