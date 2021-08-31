@@ -195,7 +195,8 @@ static void RegisterFunc(MString *name)
     JsSetProperty(globalObject, propertyId, funcObject, true);
 }
 
-static void AppendExceptionInfo(std::wstring *info, JsValueRef exception, const wchar_t *name)
+static void AppendExceptionInfo(
+    std::wstring *info, JsValueRef exception, const wchar_t *name, const wchar_t *desc)
 {
     JsValueRef id = JS_INVALID_REFERENCE;
     JsGetPropertyIdFromName(name, &id);
@@ -210,7 +211,7 @@ static void AppendExceptionInfo(std::wstring *info, JsValueRef exception, const 
     size_t charsSize = 0;
     JsStringToPointer(string, &chars, &charsSize);
 
-    info->append(name );
+    info->append(desc );
     info->append(L": ");
     info->append(chars);
     info->append(L"\n");
@@ -234,11 +235,12 @@ static void RunScript(MString *name, MString *script)
     JsValueRef exception = JS_INVALID_REFERENCE;
     JsGetAndClearException(&exception);
 
-    std::wstring info = L"JavaScript Exception:\n";
-    AppendExceptionInfo(&info, exception, L"message");
-    AppendExceptionInfo(&info, exception, L"url"    );
-    AppendExceptionInfo(&info, exception, L"line"   );
-    AppendExceptionInfo(&info, exception, L"stack"  );
+    std::wstring info = L"JavaScript Exception\n";
+    AppendExceptionInfo(&info, exception, L"name"   , L"Type ");
+    AppendExceptionInfo(&info, exception, L"message", L"Cause");
+    AppendExceptionInfo(&info, exception, L"url"    , L"File ");
+    AppendExceptionInfo(&info, exception, L"line"   , L"Line ");
+    AppendExceptionInfo(&info, exception, L"stack"  , L"Stack");
 
     auto infoChars = (const char16_t *)info.c_str();
     MStringRef infoString = m_auto_release MStringCreateU16(infoChars);
