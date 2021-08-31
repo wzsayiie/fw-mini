@@ -145,7 +145,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     OpenConsole();
     MPaintStart();
 
-    MRegisterJSRT();
+    MInstallJSRT();
     MRegisterApi();
 
     int width  = 0;

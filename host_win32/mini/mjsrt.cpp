@@ -245,7 +245,7 @@ static void RunScript(MString *name, MString *script)
     _MJsOnHappenError(infoString.get());
 }
 
-void MRegisterJSRT()
+void MInstallJSRT()
 {
     InitializeRuntime();
 
