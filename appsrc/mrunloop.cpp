@@ -11,14 +11,21 @@ struct TaskConfig {
 
 m_static_object(sTasks(), std::map<MLambdaRef, TaskConfig>)
 
-static float CurrentTick() {
-    auto now  = std::chrono::system_clock::now().time_since_epoch();
-    auto tick = std::chrono::duration_cast<std::chrono::milliseconds>(now);
-    return tick.count() / 1000.f;
+float MRunningSeconds() {
+    static int64_t startTick = 0;
+    
+    auto now = std::chrono::system_clock::now().time_since_epoch();
+    auto nowTick = std::chrono::duration_cast<std::chrono::milliseconds>(now);
+    
+    if (startTick == 0) {
+        startTick = nowTick.count();
+    }
+    
+    return (nowTick.count() - startTick) / 1000.f;
 }
 
 static void Update() MAPP_UPDATE(Update) {
-    float tick = CurrentTick();
+    float tick = MRunningSeconds();
 
     //remove cancelled tasks.
     for (auto it = sTasks().begin(); it != sTasks().end(); ) {
@@ -55,7 +62,7 @@ void MRunAfterSeconds(float delay, MLambda *task) {
 
     TaskConfig config;
     config.runOnlyOnce = true;
-    config.nextRunTick = CurrentTick() + delay;
+    config.nextRunTick = MRunningSeconds() + delay;
     config.interval    = 0;
     
     sTasks().insert({m_make_shared task, config});
@@ -68,7 +75,7 @@ void MRunEverySeconds(float interval, MLambda *task) {
 
     TaskConfig config;
     config.runOnlyOnce = false;
-    config.nextRunTick = CurrentTick() + interval;
+    config.nextRunTick = MRunningSeconds() + interval;
     config.interval    = interval;
     
     sTasks().insert({m_make_shared task, config});

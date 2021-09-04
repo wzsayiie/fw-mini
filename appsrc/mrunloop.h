@@ -2,6 +2,8 @@
 
 #include "mtypes.h"
 
+MFUNC_EXPORT float MRunningSeconds() MFUNC_META(MRunningSeconds);
+
 MFUNC_EXPORT void MRunAfterSeconds(float delay   , MLambda *task) MFUNC_META(MRunAfterSeconds);
 MFUNC_EXPORT void MRunEverySeconds(float interval, MLambda *task) MFUNC_META(MRunEverySeconds);
 
