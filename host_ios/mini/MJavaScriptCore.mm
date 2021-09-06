@@ -20,7 +20,9 @@ static MObject *CopyObjectFromJSValue(JSValue *value) {
         if ((int64_t)raw < raw) {
             return MFloatCreate((float)raw);
         } else {
-            return MIntCreate((int)raw);
+            //the double value may exceed the range of int.
+            //convert to int64_t first, so that the low bits can be got.
+            return MIntCreate((int)(int64_t)raw);
         }
         
     } else if (value.isString) {
