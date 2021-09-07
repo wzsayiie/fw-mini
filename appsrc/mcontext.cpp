@@ -24,8 +24,8 @@ void MContextSelectLineWidth(float width) {
 }
 
 void MContextDrawTriangle0(float x0, float y0) { MWindowSelectPoint0(sOffsetX + x0, sOffsetY + y0); }
-void MContextDrawTriangle1(float x1, float y1) { MWindowSelectPoint0(sOffsetX + x1, sOffsetY + y1); }
-void MContextDrawTriangle2(float x2, float y2) { MWindowSelectPoint0(sOffsetX + x2, sOffsetY + y2);
+void MContextDrawTriangle1(float x1, float y1) { MWindowSelectPoint1(sOffsetX + x1, sOffsetY + y1); }
+void MContextDrawTriangle2(float x2, float y2) { MWindowSelectPoint2(sOffsetX + x2, sOffsetY + y2);
     MWindowDrawTriangle();
 }
 
