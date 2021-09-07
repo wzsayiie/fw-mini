@@ -5,7 +5,7 @@ cd %~dp0
 ::configuration begin.
 set _IncDir=appsrc
 set _CxxSrc=appsrc\m*.cpp host_win32\mini\*.cpp
-set _SysLib=gdi32.lib gdiplus.lib ole32.lib shell32.lib user32.lib
+set _SysLib=chakrart.lib gdi32.lib gdiplus.lib ole32.lib shell32.lib user32.lib
 set _CxxFlg=/nologo /std:c++14 /Ox /EHsc /LD
 
 set _OutDir=BUILD
