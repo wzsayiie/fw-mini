@@ -80,34 +80,29 @@ const MType = {
 }
 Object.freeze(MType)
 
-//shield this function, it's unsafe for the js environment.
-function MRelease() {}
+let _js_lambda_pool = {}
+let _js_lambda_iden = 0
 
-let _MJsLambdaObjects = {}
-let _MJsLambdaIdCount = 0
-
-function _MJsLambdaInsert(func) {
-    let iden = _MJsLambdaIdCount
-    _MJsLambdaIdCount += 1
-
-    _MJsLambdaObjects[iden] = func
+function _js_lambda_insert(func) {
+    let iden = ++_js_lambda_iden
+    _js_lambda_pool[iden] = func
     return iden
 }
 
-function _MJsLambdaInvoke(iden) {
-    let func = _MJsLambdaObjects[iden]
+function _js_lambda_invoke(iden) {
+    let func = _js_lambda_pool[iden]
     if (func) {
         func()
     }
 }
 
-function _MJsLambdaRemove(iden) {
-    delete _MJsLambdaObjects[iden]
+function _js_lambda_remove(iden) {
+    delete _js_lambda_pool[iden]
 }
 
 function MJsLambda(func) {
     if (typeof func == "function") {
-        let iden = _MJsLambdaInsert(func)
+        let iden = _js_lambda_insert(func)
         return MJsLambdaCreate(iden)
     }
     return null
