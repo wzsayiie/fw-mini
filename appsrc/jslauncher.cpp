@@ -37,11 +37,11 @@ public:
 
     static void call(MObject *load) {
         auto lambda = (JsLambdaActual *)load;
-        lambda->run("_js_lambda_invoke(%d)");
+        lambda->run("_invokeJsLambda(%d)");
     }
 
     ~JsLambdaActual() {
-        run("_js_lambda_remove(%d)");
+        run("_removeJsLambda(%d)");
     }
 
 private:
