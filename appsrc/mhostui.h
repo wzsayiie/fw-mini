@@ -15,24 +15,30 @@ const float _MWindowDrawInterval = 0.1f;
 
 typedef int _MGraph;
 
-const _MGraph _MGraph_Triangle = 'T';
-const _MGraph _MGraph_Label    = 'L';
-const _MGraph _MGraph_Image    = 'I';
+enum {
+    _MGraph_Triangle = 'T',
+    _MGraph_Label    = 'L',
+    _MGraph_Image    = 'I',
+};
 
 //------------------------------------------------------------------------------
 //alignment:
 
 typedef int MHAlign;
 
-const MHAlign MHAlign_Left   = 'L';
-const MHAlign MHAlign_Center = 'C';
-const MHAlign MHAlign_Right  = 'R';
+enum {
+    MHAlign_Left   = 'L',
+    MHAlign_Center = 'C',
+    MHAlign_Right  = 'R',
+};
 
 typedef int MVAlign;
 
-const MVAlign MVAlign_Top    = 'T';
-const MVAlign MVAlign_Center = 'C';
-const MVAlign MVAlign_Bottom = 'B';
+enum {
+    MVAlign_Top    = 'T',
+    MVAlign_Center = 'C',
+    MVAlign_Bottom = 'B',
+};
 
 //------------------------------------------------------------------------------
 //color:
@@ -54,33 +60,37 @@ union MColorPattern {
 
 typedef int MKey;
 
-const MKey MKey_Back  = 0x08;
-const MKey MKey_Enter = 0x0D;
-const MKey MKey_Space = 0x20;
-const MKey MKey_Left  = 0x25;
-const MKey MKey_Up    = 0x26;
-const MKey MKey_Right = 0x27;
-const MKey MKey_Down  = 0x28;
-const MKey MKey_A     = 'A' ;
-const MKey MKey_W     = 'W' ;
-const MKey MKey_D     = 'D' ;
-const MKey MKey_S     = 'S' ;
+enum {
+    MKey_Back  = 0x08,
+    MKey_Enter = 0x0D,
+    MKey_Space = 0x20,
+    MKey_Left  = 0x25,
+    MKey_Up    = 0x26,
+    MKey_Right = 0x27,
+    MKey_Down  = 0x28,
+    MKey_A     = 'A' ,
+    MKey_W     = 'W' ,
+    MKey_D     = 'D' ,
+    MKey_S     = 'S' ,
+};
 
 //------------------------------------------------------------------------------
 //window event:
 
 typedef int MWindowEvent;
 
-const MWindowEvent MWindowEvent_Load       = 'L';
-const MWindowEvent MWindowEvent_Show       = 'S';
-const MWindowEvent MWindowEvent_Hide       = 'H';
-const MWindowEvent MWindowEvent_Resize     = 'R';
-const MWindowEvent MWindowEvent_Draw       = 'D';
-const MWindowEvent MWindowEvent_TouchBegin = 'B';
-const MWindowEvent MWindowEvent_TouchMove  = 'M';
-const MWindowEvent MWindowEvent_TouchEnd   = 'E';
-const MWindowEvent MWindowEvent_TextBox    = 'T';
-const MWindowEvent MWindowEvent_KeyDown    = 'K';
+enum {
+    MWindowEvent_Load       = 'L',
+    MWindowEvent_Show       = 'S',
+    MWindowEvent_Hide       = 'H',
+    MWindowEvent_Resize     = 'R',
+    MWindowEvent_Draw       = 'D',
+    MWindowEvent_TouchBegin = 'B',
+    MWindowEvent_TouchMove  = 'M',
+    MWindowEvent_TouchEnd   = 'E',
+    MWindowEvent_TextBox    = 'T',
+    MWindowEvent_KeyDown    = 'K',
+};
 
 //------------------------------------------------------------------------------
 //window:

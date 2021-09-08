@@ -9,24 +9,26 @@
 
 typedef int MType;
 
-const MType MType_void     = MEnumId("vid");    //void.
-const MType MType_bool     = MEnumId("bol");    //bool.
-const MType MType_int      = MEnumId("int");    //int.
-const MType MType_float    = MEnumId("flt");    //float.
-const MType MType_pointer  = MEnumId("ptr");    //uint8_t *.
-const MType MType_s8ptr    = MEnumId("s08");    //char *.
-const MType MType_s16ptr   = MEnumId("s16");    //char16_t *.
-const MType MType_MObject  = MEnumId("Obj");    //MObject.
-const MType MType_MBool    = MEnumId("Bol");    //MBool.
-const MType MType_MInt     = MEnumId("Int");    //MInt.
-const MType MType_MFloat   = MEnumId("Flt");    //MFloat.
-const MType MType_MPointer = MEnumId("Ptr");    //MPointer.
-const MType MType_MString  = MEnumId("Str");    //MString.
-const MType MType_MLambda  = MEnumId("Lmd");    //MLamdba.
-const MType MType_MData    = MEnumId("Dat");    //MData.
-const MType MType_MArray   = MEnumId("Arr");    //MArray.
-const MType MType_MImage   = MEnumId("Img");    //MImage.
-const MType MType_MSpecial = MEnumId("Spc");    //MSpecial.
+enum {
+    MType_void     = MEnumId("vid"),    //void.
+    MType_bool     = MEnumId("bol"),    //bool.
+    MType_int      = MEnumId("int"),    //int.
+    MType_float    = MEnumId("flt"),    //float.
+    MType_pointer  = MEnumId("ptr"),    //uint8_t *.
+    MType_s8ptr    = MEnumId("s08"),    //char *.
+    MType_s16ptr   = MEnumId("s16"),    //char16_t *.
+    MType_MObject  = MEnumId("Obj"),    //MObject.
+    MType_MBool    = MEnumId("Bol"),    //MBool.
+    MType_MInt     = MEnumId("Int"),    //MInt.
+    MType_MFloat   = MEnumId("Flt"),    //MFloat.
+    MType_MPointer = MEnumId("Ptr"),    //MPointer.
+    MType_MString  = MEnumId("Str"),    //MString.
+    MType_MLambda  = MEnumId("Lmd"),    //MLamdba.
+    MType_MData    = MEnumId("Dat"),    //MData.
+    MType_MArray   = MEnumId("Arr"),    //MArray.
+    MType_MImage   = MEnumId("Img"),    //MImage.
+    MType_MSpecial = MEnumId("Spc"),    //MSpecial.
+};
 
 //------------------------------------------------------------------------------
 //function meta information:
