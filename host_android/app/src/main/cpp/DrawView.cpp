@@ -1,8 +1,10 @@
 #include "AndroidApi.h"
 #include "mhostui.h"
 
-union AndroidColorPattern {
-    struct {
+union AndroidColorPattern
+{
+    struct
+    {
         uint8_t blue ;
         uint8_t green;
         uint8_t red  ;

@@ -3,8 +3,8 @@
 #include <jni.h>
 #include "mtypes.h"
 
-class MImageLoad : public MSpecial {
-
+class MImageLoad : public MSpecial
+{
 public:
     MImageLoad(jobject nativeImage);
     ~MImageLoad();

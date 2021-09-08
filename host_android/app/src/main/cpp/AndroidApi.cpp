@@ -7,23 +7,28 @@ static jclass  sJClass = nullptr;
 //------------------------------------------------------------------------------
 //MImageLoad:
 
-MImageLoad::MImageLoad(jobject nativeImage) {
+MImageLoad::MImageLoad(jobject nativeImage)
+{
     mNativeImage = sJniEnv->NewGlobalRef(nativeImage);
 }
 
-MImageLoad::~MImageLoad() {
+MImageLoad::~MImageLoad()
+{
     sJniEnv->DeleteGlobalRef(mNativeImage);
 }
 
-jobject MImageLoad::nativeImage() {
+jobject MImageLoad::nativeImage()
+{
     return mNativeImage;
 }
 
 //------------------------------------------------------------------------------
 //api assist:
 
-static jstring JNewString(MString *src) {
-    if (!src) {
+static jstring JNewString(MString *src)
+{
+    if (!src)
+    {
         return nullptr;
     }
 
@@ -33,8 +38,10 @@ static jstring JNewString(MString *src) {
     return sJniEnv->NewString(chars, size);
 }
 
-static jbyteArray JNewByteArray(MData *src) {
-    if (!src) {
+static jbyteArray JNewByteArray(MData *src)
+{
+    if (!src)
+    {
         return nullptr;
     }
 
@@ -46,8 +53,10 @@ static jbyteArray JNewByteArray(MData *src) {
     return dst;
 }
 
-static MString *CreateString(jstring src) {
-    if (!src) {
+static MString *CreateString(jstring src)
+{
+    if (!src)
+    {
         return nullptr;
     }
 
@@ -60,8 +69,10 @@ static MString *CreateString(jstring src) {
     return dst;
 }
 
-static MData *CreateData(jbyteArray src) {
-    if (!src) {
+static MData *CreateData(jbyteArray src)
+{
+    if (!src)
+    {
         return nullptr;
     }
 
@@ -74,8 +85,10 @@ static MData *CreateData(jbyteArray src) {
     return dst;
 }
 
-struct JLocalRefDeleteHelper {
-    template<typename T> std::shared_ptr<T> operator<<(T *object) {
+struct JLocalRefDeleteHelper
+{
+    template<typename T> std::shared_ptr<T> operator<<(T *object)
+    {
         return std::shared_ptr<T>(object, [](T *a) { sJniEnv->DeleteLocalRef(a); });
     }
 };
@@ -97,58 +110,69 @@ static jmethodID sPathExists        = nullptr;
 static jmethodID sDirectoryExists   = nullptr;
 static jmethodID sFileExists        = nullptr;
 
-static void PrintMessage(MString *text) {
+static void PrintMessage(MString *text)
+{
     auto string = j_auto_delete JNewString(text);
     sJniEnv->CallStaticVoidMethod(sJClass, sPrintMessage, string.get());
 }
 
-static MData *CopyBundleAsset(MString *path) {
+static MData *CopyBundleAsset(MString *path)
+{
     auto assetPath = j_auto_delete JNewString(path);
     auto assetData = j_auto_delete (jbyteArray)sJniEnv->CallStaticObjectMethod(sJClass, sCopyBundleAsset, assetPath.get());
     return CreateData(assetData.get());
 }
 
-static MImage *CreateImage(MData *data) {
+static MImage *CreateImage(MData *data)
+{
     auto imageData   = j_auto_delete JNewByteArray(data);
     auto imageObject = j_auto_delete sJniEnv->CallStaticObjectMethod(sJClass, sCreateImage, imageData.get());
 
-    if (imageObject) {
+    if (imageObject)
+    {
         return MImageCreate(new MImageLoad(imageObject.get()));
     }
     return nullptr;
 }
 
-static MString *CopyDocumentPath() {
+static MString *CopyDocumentPath()
+{
     auto path = j_auto_delete (jstring)sJniEnv->CallStaticObjectMethod(sJClass, sCopyDocumentPath);
     return CreateString(path.get());
 }
 
-static MString *CopyCachePath() {
+static MString *CopyCachePath()
+{
     auto path = j_auto_delete (jstring)sJniEnv->CallStaticObjectMethod(sJClass, sCopyCachePath);
     return CreateString(path.get());
 }
 
-static MString *CopyTemporaryPath() {
+static MString *CopyTemporaryPath()
+{
     auto path = j_auto_delete (jstring)sJniEnv->CallStaticObjectMethod(sJClass, sCopyTemporaryPath);
     return CreateString(path.get());
 }
 
-static bool MakeDirectory(MString *path) {
+static bool MakeDirectory(MString *path)
+{
     auto dirPath = j_auto_delete JNewString(path);
     return sJniEnv->CallStaticBooleanMethod(sJClass, sMakeDirectory, dirPath.get());
 }
 
-MArray *CopyPathSubItems(MString *path) {
+MArray *CopyPathSubItems(MString *path)
+{
     auto dirPath  = j_auto_delete JNewString(path);
     auto subFiles = j_auto_delete (jobjectArray)sJniEnv->CallStaticObjectMethod(sJClass, sCopyPathSubItems, dirPath.get());
-    if (subFiles == nullptr) {
+    if (subFiles == nullptr)
+    {
         return nullptr;
     }
 
     MArray *array = MArrayCreate();
 
     jsize count = sJniEnv->GetArrayLength(subFiles.get());
-    for (jsize index = 0; index < count; ++index) {
+    for (jsize index = 0; index < count; ++index)
+    {
         auto sub = (jstring)sJniEnv->GetObjectArrayElement(subFiles.get(), index);
 
         MStringRef item = m_auto_release CreateString(sub);
@@ -158,22 +182,26 @@ MArray *CopyPathSubItems(MString *path) {
     return array;
 }
 
-static void RemovePath(MString *path) {
+static void RemovePath(MString *path)
+{
     auto targetPath = j_auto_delete JNewString(path);
     sJniEnv->CallStaticVoidMethod(sJClass, sRemovePath, targetPath.get());
 }
 
-static bool PathExists(MString *path) {
+static bool PathExists(MString *path)
+{
     auto targetPath = j_auto_delete JNewString(path);
     return sJniEnv->CallStaticBooleanMethod(sJClass, sPathExists, targetPath.get());
 }
 
-static bool DirectoryExists(MString *path) {
+static bool DirectoryExists(MString *path)
+{
     auto targetPath = j_auto_delete JNewString(path);
     return sJniEnv->CallStaticBooleanMethod(sJClass, sDirectoryExists, targetPath.get());
 }
 
-static bool FileExists(MString *path) {
+static bool FileExists(MString *path)
+{
     auto targetPath = j_auto_delete JNewString(path);
     return sJniEnv->CallStaticBooleanMethod(sJClass, sFileExists, targetPath.get());
 }
@@ -217,7 +245,8 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_AndroidApi_assetBundleName(JNIEnv *env, jclass)
 {
     jsize size = 0;
-    for (const char16_t *it = _MAssetBundleU16Name; *it; ++it) {
+    for (const char16_t *it = _MAssetBundleU16Name; *it; ++it)
+    {
         size += 1;
     }
     return env->NewString((const jchar *)_MAssetBundleU16Name, size);
