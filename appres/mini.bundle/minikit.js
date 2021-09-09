@@ -1,14 +1,14 @@
 //minikit.js
 
-function _makeIndent(indent, out) {
+function _MakeIndent(indent, out) {
     while (indent-- > 0) {
         out.push("  ")
     }
 }
 
-function _makeStringWithShrink(shrink, indent, object, out) {
+function _MakeStringWithShrink(shrink, indent, object, out) {
     if (!shrink) {
-        _makeIndent(indent, out)
+        _MakeIndent(indent, out)
     }
 
     if (object === null) {
@@ -18,11 +18,11 @@ function _makeStringWithShrink(shrink, indent, object, out) {
         out.push("[\n")
 
         for (let item of object) {
-            _makeStringWithShrink(false, indent + 1, item, out)
+            _MakeStringWithShrink(false, indent + 1, item, out)
             out.push(",\n")
         }
 
-        _makeIndent(out, indent)
+        _MakeIndent(out, indent)
         out.push("]")
 
     } else if (typeof object == "object") {
@@ -31,14 +31,14 @@ function _makeStringWithShrink(shrink, indent, object, out) {
         for (let key in object) {
             let val = object[key]
 
-            _makeStringWithShrink(false, indent + 1, key, out)
+            _MakeStringWithShrink(false, indent + 1, key, out)
             out.push(": " )
 
-            _makeStringWithShrink(true , indent + 1, val, out)
+            _MakeStringWithShrink(true , indent + 1, val, out)
             out.push(",\n")
         }
 
-        _makeIndent(indent, out)
+        _MakeIndent(indent, out)
         out.push("}")
 
     } else {
@@ -48,7 +48,7 @@ function _makeStringWithShrink(shrink, indent, object, out) {
 
 function MString(object) {
     let array = []
-    _makeStringWithShrink(true, 0, object, array)
+    _MakeStringWithShrink(true, 0, object, array)
     return array.join("")
 }
 
@@ -83,26 +83,26 @@ Object.freeze(MType)
 let _jsLambdaPool = {}
 let _jsLambdaIden = 0
 
-function _insertJsLambda(func) {
+function _JsLambdaInsert(func) {
     let iden = ++_jsLambdaIden
     _jsLambdaPool[iden] = func
     return iden
 }
 
-function _invokeJsLambda(iden) {
+function _JsLambdaInvoke(iden) {
     let func = _jsLambdaPool[iden]
     if (func) {
         func()
     }
 }
 
-function _removeJsLambda(iden) {
+function _JsLambdaRemove(iden) {
     delete _jsLambdaPool[iden]
 }
 
 function MJsLambda(func) {
     if (typeof func == "function") {
-        let iden = _insertJsLambda(func)
+        let iden = _JsLambdaInsert(func)
         return MJsLambdaCreate(iden)
     }
     return null

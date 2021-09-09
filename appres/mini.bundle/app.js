@@ -1,4 +1,4 @@
 include("minikit.js")
 
-function launch() {
+function Launch() {
 }

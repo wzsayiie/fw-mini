@@ -37,11 +37,11 @@ public:
 
     static void call(MObject *load) {
         auto lambda = (JsLambdaActual *)load;
-        lambda->run("_invokeJsLambda(%d)");
+        lambda->run("_JsLambdaInvoke(%d)");
     }
 
     ~JsLambdaActual() {
-        run("_removeJsLambda(%d)");
+        run("_JsLambdaRemove(%d)");
     }
 
 private:
@@ -97,5 +97,5 @@ static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
     RegisterBuiltFuncs();
     SetErrorListener();
 
-    LaunchEntryFile("app.js", "launch()");
+    LaunchEntryFile("app.js", "Launch()");
 }
