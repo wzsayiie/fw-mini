@@ -132,7 +132,12 @@ static TextBox    *GetTextBox() { return GetWindow()->textBox.get(); }
 
 static void SendEvent(HostWindow *window, MWindowEvent event) {
     window->event = event;
-    for (const MLambdaRef &listener : window->listeners) {
+
+    //NOTE: create a copy of "listeners" to iterate.
+    //because it's possible to modify "listeners" during the traversal.
+    std::vector<MLambdaRef> copyListeners = window->listeners;
+
+    for (const MLambdaRef &listener : copyListeners) {
         MLambdaCall(listener.get());
     }
 }
