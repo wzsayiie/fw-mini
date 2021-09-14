@@ -4,6 +4,7 @@ class MainController : public CViewController {
 
 protected:
     void onViewLoad() override {
+        view()->setBackgroundColor(CColor::clearColor);
     }
 };
 

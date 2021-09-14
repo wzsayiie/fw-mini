@@ -1,5 +1,8 @@
 //minikit.js
 
+//------------------------------------------------------------------------------
+//string format & log:
+
 function _MakeIndent(indent, out) {
     while (indent-- > 0) {
         out.push("  ")
@@ -52,10 +55,13 @@ function MString(object) {
     return array.join("")
 }
 
-function MLog(object) {
+function I(object) {
     let message = MString(object)
     MPrintMessage(message)
 }
+
+//------------------------------------------------------------------------------
+//MEnumId:
 
 function MEnumId(string) {
     let id = 0
@@ -64,6 +70,9 @@ function MEnumId(string) {
     }
     return id
 }
+
+//------------------------------------------------------------------------------
+//MType:
 
 const MType = {
     Object : MEnumId("Obj"),
@@ -79,6 +88,26 @@ const MType = {
     Special: MEnumId("Spc"),
 }
 Object.freeze(MType)
+
+//------------------------------------------------------------------------------
+//MWindowEvent:
+
+const MWindowEvent = {
+    Load      : MEnumId("L"),
+    Show      : MEnumId("S"),
+    Hide      : MEnumId("H"),
+    Resize    : MEnumId("R"),
+    Draw      : MEnumId("D"),
+    TouchBegin: MEnumId("B"),
+    TouchMove : MEnumId("M"),
+    TouchEnd  : MEnumId("E"),
+    TextBox   : MEnumId("T"),
+    KeyDown   : MEnumId("K"),
+}
+Object.freeze(MWindowEvent)
+
+//------------------------------------------------------------------------------
+//MJsLambda:
 
 let _jsLambdaPool = {}
 let _jsLambdaIden = 0

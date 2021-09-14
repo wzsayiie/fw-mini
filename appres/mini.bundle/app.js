@@ -1,4 +1,4 @@
-include("minikit.js")
+include("gamekit.js")
 
 function Launch() {
 }
