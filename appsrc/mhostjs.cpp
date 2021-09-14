@@ -1,6 +1,7 @@
 #include "mhostjs.h"
 #include <cstring>
 #include <set>
+#include "mdebug.h"
 #include "mresource.h"
 
 static _MJsRegisterFunc sRegisterFunc = nullptr;
@@ -61,14 +62,17 @@ MString *MJsLastError() {
 }
 
 void MJsRegisterFunc(const char *name, MLambda *func) {
+    if (!sRegisterFunc) {
+        D("ERROR: no api 'MJsRegisterFunc'");
+        return;
+    }
+
     if (!name || !func) {
         return;
     }
 
-    if (sRegisterFunc) {
-        MStringRef func = m_auto_release MStringCreateU8(name);
-        sRegisterFunc(func.get());
-    }
+    MStringRef funcName = m_auto_release MStringCreateU8(name);
+    sRegisterFunc(funcName.get());
     sFuncMap()[name] = m_make_shared func;
 }
 
@@ -85,12 +89,22 @@ void MJsCallingReturn(MObject *value) {
 }
 
 void MJsRunScript(MString *name, MString *script) {
-    if (sRunScript && script) {
+    if (!sRunScript) {
+        D("ERROR: no api 'MJsRunScript'");
+        return;
+    }
+
+    if (script) {
         sRunScript(name, script);
     }
 }
 
 void MJsRunScriptNamed(MString *name) {
+    if (!sRunScript) {
+        D("ERROR: no api 'MJsRunScript'");
+        return;
+    }
+
     const char *nameChars = MStringU8Chars(name);
     if (!nameChars) {
         return;
@@ -116,18 +130,9 @@ void MJsRunScriptNamed(MString *name) {
     }
     
     if (!script) {
-        std::string builder;
-        builder.append("no javascript script named '");
-        builder.append(nameChars);
-        builder.append("'");
-        
-        MStringRef string = m_auto_release MStringCreateU8(builder.c_str());
-        _MJsOnHappenError(string.get());
-        
+        D("ERROR: no javascript script named '%s'", nameChars);
         return;
     }
 
-    if (sRunScript) {
-        sRunScript(name, script.get());
-    }
+    sRunScript(name, script.get());
 }
