@@ -74,7 +74,7 @@ function MEnumId(string) {
 //------------------------------------------------------------------------------
 //MType:
 
-const MType = {
+const MType = Object.freeze({
     Object : MEnumId("Obj"),
     Bool   : MEnumId("Bol"),
     Int    : MEnumId("Int"),
@@ -86,13 +86,12 @@ const MType = {
     Array  : MEnumId("Arr"),
     Image  : MEnumId("Img"),
     Special: MEnumId("Spc"),
-}
-Object.freeze(MType)
+})
 
 //------------------------------------------------------------------------------
 //MWindowEvent:
 
-const MWindowEvent = {
+const MWindowEvent = Object.freeze({
     Load      : MEnumId("L"),
     Show      : MEnumId("S"),
     Hide      : MEnumId("H"),
@@ -103,8 +102,7 @@ const MWindowEvent = {
     TouchEnd  : MEnumId("E"),
     TextBox   : MEnumId("T"),
     KeyDown   : MEnumId("K"),
-}
-Object.freeze(MWindowEvent)
+})
 
 //------------------------------------------------------------------------------
 //MJsLambda:
