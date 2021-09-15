@@ -73,7 +73,7 @@ class GCamera {
             let originY = y - height / 2
             GContext.current.setOffset(originX, originY)
 
-            site.sprite.facade.draw()
+            site.sprite.facade.onDraw()
         }
 
         site.children.forEach((subsite) => {

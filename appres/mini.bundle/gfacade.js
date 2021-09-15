@@ -1,6 +1,11 @@
 include("gcontext.js")
 include("gfeature.js")
 
+const GFacadeGraph = Object.freeze({
+    Ellipse: 1,
+    Rect   : 2,
+})
+
 class GFacade extends GFeature {
 
     constructor(sprite) {
@@ -9,10 +14,10 @@ class GFacade extends GFeature {
         this._width  = 0
         this._height = 0
 
-        this._drawHandler = null
-
-        this._color = 0
-        this._image = null
+        this._drawer = null
+        this._image  = null
+        this._graph  = GFacadeGraph.Rect
+        this._color  = 0xFFffFFff
     }
 
     setSize(width, height) {
@@ -23,21 +28,26 @@ class GFacade extends GFeature {
     get width () { return this._width  }
     get height() { return this._height }
 
-    set drawHandler(value) {
-        this._drawHandler = value
-    }
+    set drawer(value) { this._drawer = value }
+    set image (value) { this._image  = value }
+    set graph (value) { this._graph  = value }
+    set color (value) { this._color  = value }
 
-    set color(value) { this._color = value }
-    set image(value) { this._image = value }
+    onDraw() {
+        if (this._drawer) {
+            this._drawer.call(this.sprite, this._width, this._height)
 
-    draw() {
-        if (this._drawHandler) {
-            this._drawHandler(this._width, this._height)
-            return
+        } else if (this._image) {
+            GContext.current.selectImage(this._image)
+            GContext.current.drawImage(0, 0, this._width, this._height)
+
+        } else if (this._graph == GFacadeGraph.Ellipse) {
+            GContext.current.selectColor(this._color)
+            GContext.current.drawEllipse(0, 0, this._width, this._height)
+            
+        } else if (this._graph == GFacadeGraph.Rect) {
+            GContext.current.selectColor(this._color)
+            GContext.current.drawRect(0, 0, this._width, this._height)
         }
-
-        //default draw a ellipse.
-        GContext.current.selectColor(this._color)
-        GContext.current.drawEllipse(0, 0, this._width, this._height)
     }
 }
