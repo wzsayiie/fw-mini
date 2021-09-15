@@ -2,6 +2,9 @@
 
 #include "mhostui.h"
 
+//"MContext" takes the upper left corner as the origin,
+//the X axis is right and the Y axis is down.
+
 MFUNC_EXPORT void MContextSetOffset(float x, float y) MFUNC_META(MContextSetOffset);
 
 MFUNC_EXPORT void MContextSelectColor    (MColor   color ) MFUNC_META(MContextSelectColor    );

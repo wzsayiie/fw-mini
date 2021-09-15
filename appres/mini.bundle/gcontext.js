@@ -1,7 +1,8 @@
 include("minikit.js")
 
-//NOTE: "GContext" takes the lower left corner as the origin,
+//"GContext" takes the lower left corner as the origin,
 //the X axis is right and the Y axis is up.
+
 class GContext {
 
     static get current() {

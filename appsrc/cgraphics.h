@@ -76,6 +76,9 @@ enum class CVerticalAlign {
 //------------------------------------------------------------------------------
 //draw context:
 
+//"CContext" takes the upper left corner as the origin,
+//the X axis is right and the Y axis is down.
+
 void CContextSelectColor (const CColor      &color );
 void CContextSelectImage (CImageRef          image );
 void CContextSelectString(const std::string &string);
