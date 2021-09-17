@@ -85,10 +85,8 @@ Java_src_app_mini_DrawView_windowTriangleGraphColor(JNIEnv *, jobject, jint inde
 extern "C" JNIEXPORT jobject JNICALL
 Java_src_app_mini_DrawView_windowImageGraphObject(JNIEnv *, jobject, jint index)
 {
-    MImage *image = _MWindowImageGraphObject(index);
-    auto    load  = (MImageLoad *)MImageGetLoad(image);
-
-    return load->nativeImage();
+    auto image = (MAndroidImage *)_MWindowImageGraphObject(index);
+    return image->nativeImage();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL

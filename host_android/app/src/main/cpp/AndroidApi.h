@@ -1,13 +1,13 @@
 #pragma once
 
 #include <jni.h>
-#include "mtypes.h"
+#include "mhostapi.h"
 
-class MImageLoad : public MSpecial
+class MAndroidImage : public MImage
 {
 public:
-    MImageLoad(jobject nativeImage);
-    ~MImageLoad();
+    MAndroidImage(jobject nativeImage);
+    ~MAndroidImage();
 
     jobject nativeImage();
 

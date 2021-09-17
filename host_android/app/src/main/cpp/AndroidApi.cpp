@@ -1,23 +1,22 @@
 #include "AndroidApi.h"
-#include "mhostapi.h"
 
 static JNIEnv *sJniEnv = nullptr;
 static jclass  sJClass = nullptr;
 
 //------------------------------------------------------------------------------
-//MImageLoad:
+//MAndroidImage:
 
-MImageLoad::MImageLoad(jobject nativeImage)
+MAndroidImage::MAndroidImage(jobject nativeImage)
 {
     mNativeImage = sJniEnv->NewGlobalRef(nativeImage);
 }
 
-MImageLoad::~MImageLoad()
+MAndroidImage::~MAndroidImage()
 {
     sJniEnv->DeleteGlobalRef(mNativeImage);
 }
 
-jobject MImageLoad::nativeImage()
+jobject MAndroidImage::nativeImage()
 {
     return mNativeImage;
 }
@@ -130,7 +129,7 @@ static MImage *CreateImage(MData *data)
 
     if (imageObject)
     {
-        return MImageCreate(new MImageLoad(imageObject.get()));
+        return new MAndroidImage(imageObject.get());
     }
     return nullptr;
 }
