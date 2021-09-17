@@ -2,19 +2,18 @@
 
 #include "mwinapi.h"
 #include <shlobj.h>
-#include "mhostapi.h"
 
 //native types:
 
-MImageLoad::MImageLoad(Gdiplus::Image *nativeImage) {
+MWin32Image::MWin32Image(Gdiplus::Image *nativeImage) {
     mNativeImage = nativeImage;
 }
 
-MImageLoad::~MImageLoad() {
+MWin32Image::~MWin32Image() {
     delete mNativeImage;
 }
 
-Gdiplus::Image *MImageLoad::nativeImage() {
+Gdiplus::Image *MWin32Image::nativeImage() {
     return mNativeImage;
 }
 
@@ -146,7 +145,7 @@ static MImage *CreateImage(MData *data)
     stream->Release();
 
     if (image) {
-        return MImageCreate(new MImageLoad(image));
+        return new MWin32Image(image);
     }
     return nullptr;
 }

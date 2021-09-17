@@ -116,9 +116,9 @@ static JsValueRef JsValueFromObject(MObject *object) {
         return JS_INVALID_REFERENCE;
     }
 
-    switch (MGetType(object))
+    switch (MGetTypeId(object))
     {
-        case MType_MBool:
+        case MTypeIdOf<MBool *>::Value:
         {
             bool raw = MBoolValue((MBool *)object);
 
@@ -126,7 +126,7 @@ static JsValueRef JsValueFromObject(MObject *object) {
             JsBoolToBoolean(raw, &value);
             return value;
         }
-        case MType_MInt:
+        case MTypeIdOf<MInt *>::Value:
         {
             int raw = MIntValue((MInt *)object);
 
@@ -134,7 +134,7 @@ static JsValueRef JsValueFromObject(MObject *object) {
             JsIntToNumber(raw, &value);
             return value;
         }
-        case MType_MFloat:
+        case MTypeIdOf<MFloat *>::Value:
         {
             float raw = MFloatValue((MFloat *)object);
 
@@ -142,7 +142,7 @@ static JsValueRef JsValueFromObject(MObject *object) {
             JsDoubleToNumber(raw, &value);
             return value;
         }
-        case MType_MString:
+        case MTypeIdOf<MString *>::Value:
         {
             auto raw     = (const wchar_t *)MStringU16Chars((MString *)object);
             auto rawSize = (size_t)MStringU16Size((MString *)object);

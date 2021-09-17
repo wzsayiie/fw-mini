@@ -40,9 +40,8 @@ static void PaintTriangle(Gdiplus::Graphics *graphics, int index)
 static void PaintImage(Gdiplus::Graphics *graphics, int index)
 {
     //get the image.
-    MImage         *imageObject = _MWindowImageGraphObject(index);
-    auto            imageLoad   = (MImageLoad *)MImageGetLoad(imageObject);
-    Gdiplus::Image *nativeImage = imageLoad->nativeImage();
+    auto imageObject = (MWin32Image *)_MWindowImageGraphObject(index);
+    Gdiplus::Image *nativeImage  = imageObject->nativeImage();
 
     //get the position rectangle.
     float x      = _MWindowImageGraphX     (index);

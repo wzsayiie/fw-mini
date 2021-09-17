@@ -2,15 +2,15 @@
 
 #include <windows.h> //"gdiplus.h" need.
 #include <gdiplus.h>
-#include "mtypes.h"
+#include "mhostapi.h"
 
 //native types:
 
-class MImageLoad : public MSpecial {
+class MWin32Image : public MImage {
 
 public:
-    MImageLoad(Gdiplus::Image *nativeImage);
-    ~MImageLoad();
+    MWin32Image(Gdiplus::Image *nativeImage);
+    ~MWin32Image();
 
     Gdiplus::Image *nativeImage();
 
