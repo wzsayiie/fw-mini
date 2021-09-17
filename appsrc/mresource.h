@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mtypes.h"
+#include "mhostapi.h"
 
 MFUNC_EXPORT MData   *MCopyDataFromFile     (MString *path) MFUNC_META(MCopyDataFromFile     );
 MFUNC_EXPORT MString *MCopyStringFromFile   (MString *path) MFUNC_META(MCopyStringFromFile   );

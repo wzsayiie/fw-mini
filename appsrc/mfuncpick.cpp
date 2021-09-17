@@ -1,36 +1,10 @@
 #include <cstdint>
 #include <cstring>
 
-//define collection macro:
+//collection macro:
 
 #define MFUNC_META(name) ; static int _unused_##name = (SetFunc(#name, name), 0)
 #include "mconfig.h"
-
-//TypeOf:
-
-template<typename T> struct TypeOf;
-
-template<> struct TypeOf<void            > { static const MType Value = MType_void    ; };
-template<> struct TypeOf<bool            > { static const MType Value = MType_bool    ; };
-template<> struct TypeOf<int             > { static const MType Value = MType_int     ; };
-template<> struct TypeOf<float           > { static const MType Value = MType_float   ; };
-template<> struct TypeOf<uint8_t        *> { static const MType Value = MType_pointer ; };
-template<> struct TypeOf<const uint8_t  *> { static const MType Value = MType_pointer ; };
-template<> struct TypeOf<char           *> { static const MType Value = MType_s8ptr   ; };
-template<> struct TypeOf<const char     *> { static const MType Value = MType_s8ptr   ; };
-template<> struct TypeOf<char16_t       *> { static const MType Value = MType_s16ptr  ; };
-template<> struct TypeOf<const char16_t *> { static const MType Value = MType_s16ptr  ; };
-template<> struct TypeOf<class MObject  *> { static const MType Value = MType_MObject ; };
-template<> struct TypeOf<class MBool    *> { static const MType Value = MType_MBool   ; };
-template<> struct TypeOf<class MInt     *> { static const MType Value = MType_MInt    ; };
-template<> struct TypeOf<class MFloat   *> { static const MType Value = MType_MFloat  ; };
-template<> struct TypeOf<class MPointer *> { static const MType Value = MType_MPointer; };
-template<> struct TypeOf<class MString  *> { static const MType Value = MType_MString ; };
-template<> struct TypeOf<class MLambda  *> { static const MType Value = MType_MLambda ; };
-template<> struct TypeOf<class MData    *> { static const MType Value = MType_MData   ; };
-template<> struct TypeOf<class MArray   *> { static const MType Value = MType_MArray  ; };
-template<> struct TypeOf<class MImage   *> { static const MType Value = MType_MImage  ; };
-template<> struct TypeOf<class MSpecial *> { static const MType Value = MType_MSpecial; };
 
 //ArgCountOf:
 
@@ -50,7 +24,7 @@ template<typename R> void AppendArgs(_MFuncMeta *meta, R (*)()) {
 }
 
 template<typename R, typename A, typename... B> void AppendArgs(_MFuncMeta *meta, R (*)(A, B...)) {
-    meta->argTypes[(meta->argCount)++] = TypeOf<A>::Value;
+    meta->argTypeIds[(meta->argCount)++] = MTypeIdOf<A>::Value;
     AppendArgs(meta, (R (*)(B...))nullptr);
 }
 
@@ -63,7 +37,7 @@ template<typename R, typename... A> void SetFunc(const char *name, R (*func)(A..
     _MFuncMeta meta;
 
     meta.address   = (void *)func;
-    meta.retType   = TypeOf<R>::Value;
+    meta.retTypeId = MTypeIdOf<R>::Value;
     meta.retRetain = strstr(name, "Create") || strstr(name, "Retain") || strstr(name, "Copy");
 
     static_assert((ArgCountOf<R (A...)>::Value) <= MFuncMaxArgCount, "");

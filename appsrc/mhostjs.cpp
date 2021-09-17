@@ -1,6 +1,5 @@
 #include "mhostjs.h"
 #include <cstring>
-#include <set>
 #include "mdebug.h"
 #include "mresource.h"
 

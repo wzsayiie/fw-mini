@@ -23,12 +23,12 @@ static void Include() {
     MArray  *params = MJsCallingParams();
     MObject *target = MArrayItem(params, 0);
 
-    if (MGetType(target) == MType_MString) {
+    if (MGetTypeId(target) == MTypeIdOf<MString *>::Value) {
         MJsRunScriptNamed((MString *)target);
     }
 }
 
-class JsLambdaActual : public MSpecial {
+class JsLambdaActual : public MUnknown {
 
 public:
     JsLambdaActual(int iden) {
@@ -60,7 +60,7 @@ static void MJsLambdaCreate() {
     MArray  *params = MJsCallingParams();
     MObject *object = MArrayItem(params, 0);
 
-    if (MGetType(object) != MType_MInt) {
+    if (MGetTypeId(object) != MTypeIdOf<MInt *>::Value) {
         return;
     }
 

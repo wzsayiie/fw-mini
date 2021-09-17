@@ -1,11 +1,13 @@
 #pragma once
 
-#include "mtypes.h"
+#include "mbasics.h"
 
 static const char     *const _MPrivateDirectoryU8Name  =  "mini";
 static const char16_t *const _MPrivateDirectoryU16Name = u"mini";
 static const char     *const _MAssetBundleU8Name       =  "mini.bundle";
 static const char16_t *const _MAssetBundleU16Name      = u"mini.bundle";
+
+m_class(MImage, "Img") {};
 
 typedef void     (*_MApiPrintMessage     )(MString *text);
 typedef MData   *(*_MApiCopyBundleAsset  )(MString *path);

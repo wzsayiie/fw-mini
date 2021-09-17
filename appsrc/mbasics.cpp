@@ -1,4 +1,4 @@
-#include "mtypes.h"
+#include "mbasics.h"
 #include "mencode.h"
 
 //------------------------------------------------------------------------------
@@ -45,33 +45,29 @@ void MRelease(MObject *object) {
     }
 }
 
-MType MGetType(MObject *object) {
+MTypeId MGetTypeId(MObject *object) {
     if (object) {
-        return object->_type();
+        return object->_typeId();
     }
     return 0;
 }
 
 //------------------------------------------------------------------------------
-//MBool & MInt & MFloat:
+//MBool & MInt & MFloat & MPointer:
 
-template<typename T, int ID, typename BASE> struct _MNumber : BASE {
+template<typename T, typename SUPER> struct _Number : SUPER {
 
     T value;
     
-    _MNumber(T value) {
+    _Number(T value) {
         this->value = value;
-    }
-
-    MType _type() override {
-        return ID;
     }
 };
 
-typedef _MNumber<bool     , MType_MBool   , MBool   > MBoolImpl   ;
-typedef _MNumber<int      , MType_MInt    , MInt    > MIntImpl    ;
-typedef _MNumber<float    , MType_MFloat  , MFloat  > MFloatImpl  ;
-typedef _MNumber<uint8_t *, MType_MPointer, MPointer> MPointerImpl;
+typedef _Number<bool     , MBool   > MBoolImpl   ;
+typedef _Number<int      , MInt    > MIntImpl    ;
+typedef _Number<float    , MFloat  > MFloatImpl  ;
+typedef _Number<uint8_t *, MPointer> MPointerImpl;
 
 MBool    *MBoolCreate   (bool     value) { return new MBoolImpl   (value); }
 MInt     *MIntCreate    (int      value) { return new MIntImpl    (value); }
@@ -116,10 +112,6 @@ struct MStringImpl : MString {
         }
         return u16string;
     }
-    
-    MType _type() override {
-        return MType_MString;
-    }
 };
 
 MString *MStringCreateU8 (const char     *chs) { return chs ? new MStringImpl(chs) : nullptr; }
@@ -148,10 +140,6 @@ struct MLambdaImpl : MLambda {
     ~MLambdaImpl() {
         MRelease(load);
     }
-    
-    MType _type() override {
-        return MType_MLambda;
-    }
 };
 
 MLambda *MLambdaCreate(MLambdaFunc func, MObject *load) {
@@ -172,12 +160,7 @@ void MLambdaCall(MLambda *lambda) {
 //MData:
 
 struct MDataImpl : MData {
-    
     std::vector<uint8_t> bytes;
-    
-    MType _type() override {
-        return MType_MData;
-    }
 };
 
 MData *MDataCreate(const uint8_t *bytes, int size) {
@@ -223,10 +206,6 @@ struct MArrayImpl : MArray {
             MRelease(it);
         }
     }
-
-    MType _type() override {
-        return MType_MArray;
-    }
 };
 
 MArray *MArrayCreate() {
@@ -266,51 +245,9 @@ MObject *MArrayItem(MArray *array, int index) {
 }
 
 //------------------------------------------------------------------------------
-//MImage:
-
-struct MImageImpl : MImage {
-    
-    MObject *load;
-
-    MImageImpl(MObject *load) {
-        MRetain(load);
-        this->load = load;
-    }
-    
-    ~MImageImpl() {
-        MRelease(load);
-    }
-    
-    MType _type() override {
-        return MType_MImage;
-    }
-};
-
-MImage *MImageCreate(MObject *load) {
-    if (load) {
-        return new MImageImpl(load);
-    }
-    return nullptr;
-}
-
-MObject *MImageGetLoad(MImage *image) {
-    if (image) {
-        return ((MImageImpl *)image)->load;
-    }
-    return nullptr;
-}
-
-//------------------------------------------------------------------------------
-//MSpecial:
-
-MType MSpecial::_type() {
-    return MType_MSpecial;
-}
-
-//------------------------------------------------------------------------------
 //lambda cast:
 
-class LambdaCastWrapper : public MSpecial {
+class LambdaCastWrapper : public MUnknown {
 
 public:
     LambdaCastWrapper(std::function<void ()> func) {

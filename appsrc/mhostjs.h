@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mtypes.h"
+#include "mbasics.h"
 
 typedef void (*_MJsRegisterFunc)(MString *name);
 typedef void (*_MJsRunScript   )(MString *name, MString *script);

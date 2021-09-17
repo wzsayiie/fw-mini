@@ -3,21 +3,22 @@
 #include <cstdint>
 #include <functional>
 #include <map>
-#include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
 #include "mconfig.h"
 
 //------------------------------------------------------------------------------
-//c++ idioms:
-
-#define m_static_object(name, ...) static __VA_ARGS__ &name { static auto a = new __VA_ARGS__; return *a; }
-
-//------------------------------------------------------------------------------
 //MObject:
 
 typedef std::function<void (class MObject *object, int refCount)> _MRefObserver;
+
+template<> struct MTypeIdOf<class MObject *> {
+    static const MTypeId Value =  MEnumId("Obj");
+};
+
+typedef std::shared_ptr<class MObject> MObjectRef;
 
 class MObject {
 
@@ -25,7 +26,7 @@ public:
     void _retain ();
     void _release();
     
-    virtual MType _type() = 0;
+    virtual MTypeId _typeId() = 0;
 
     //for debugging.
     void _setRefObserver(_MRefObserver observer);
@@ -39,17 +40,17 @@ private:
     int mRefCount = 1;
 };
 
-MFUNC_EXPORT MObject *MRetain (MObject *object) MFUNC_META(MRetain );
-MFUNC_EXPORT void     MRelease(MObject *object) MFUNC_META(MRelease);
-MFUNC_EXPORT MType    MGetType(MObject *object) MFUNC_META(MGetType);
+MFUNC_EXPORT MObject *MRetain   (MObject *object) MFUNC_META(MRetain   );
+MFUNC_EXPORT void     MRelease  (MObject *object) MFUNC_META(MRelease  );
+MFUNC_EXPORT MTypeId  MGetTypeId(MObject *object) MFUNC_META(MGetTypeId);
 
 //------------------------------------------------------------------------------
 //MBool & MInt & MFloat & MPointer:
 
-class MBool    : public MObject {};
-class MInt     : public MObject {};
-class MFloat   : public MObject {};
-class MPointer : public MObject {};
+m_class(MBool   , "Bol") {};
+m_class(MInt    , "Int") {};
+m_class(MFloat  , "Flt") {};
+m_class(MPointer, "Ptr") {};
 
 MFUNC_EXPORT MBool    *MBoolCreate   (bool     value) MFUNC_META(MBoolCreate   );
 MFUNC_EXPORT MInt     *MIntCreate    (int      value) MFUNC_META(MIntCreate    );
@@ -64,7 +65,7 @@ MFUNC_EXPORT uint8_t *MPointerValue(MPointer *object) MFUNC_META(MPointerValue);
 //------------------------------------------------------------------------------
 //MString:
 
-class MString : public MObject {};
+m_class(MString, "Str") {};
 
 MFUNC_EXPORT MString *MStringCreateU8 (const char     *chars) MFUNC_META(MStringCreateU8 );
 MFUNC_EXPORT MString *MStringCreateU16(const char16_t *chars) MFUNC_META(MStringCreateU16);
@@ -80,7 +81,7 @@ MFUNC_EXPORT int MStringU16Size(MString *string) MFUNC_META(MStringU16Size);
 
 typedef void (*MLambdaFunc)(MObject *load);
 
-class MLambda : public MObject {};
+m_class(MLambda, "Lmd") {};
 
 MFUNC_EXPORT MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
 MFUNC_EXPORT void MLambdaCall(MLambda *lambda) MFUNC_META(MLambdaCall);
@@ -88,7 +89,7 @@ MFUNC_EXPORT void MLambdaCall(MLambda *lambda) MFUNC_META(MLambdaCall);
 //------------------------------------------------------------------------------
 //MData:
 
-class MData : public MObject {};
+m_class(MData, "Dat") {};
 
 MFUNC_EXPORT MData *MDataCreate(const uint8_t *bytes, int size)              MFUNC_META(MDataCreate);
 MFUNC_EXPORT void   MDataAppend(MData *data, const uint8_t *bytes, int size) MFUNC_META(MDataAppend);
@@ -99,7 +100,7 @@ MFUNC_EXPORT const uint8_t *MDataBytes(MData *data) MFUNC_META(MDataBytes);
 //------------------------------------------------------------------------------
 //MArray:
 
-class MArray : public MObject {};
+m_class(MArray, "Arr") {};
 
 MFUNC_EXPORT MArray  *MArrayCreate()                             MFUNC_META(MArrayCreate);
 MFUNC_EXPORT void     MArrayAppend(MArray *array, MObject *item) MFUNC_META(MArrayAppend);
@@ -107,76 +108,26 @@ MFUNC_EXPORT int      MArrayLength(MArray *array)                MFUNC_META(MArr
 MFUNC_EXPORT MObject *MArrayItem  (MArray *array, int index)     MFUNC_META(MArrayItem  );
 
 //------------------------------------------------------------------------------
-//MImage:
+//MUnknown:
 
-class MImage : public MObject {};
-
-MFUNC_EXPORT MImage  *MImageCreate (MObject *load ) MFUNC_META(MImageCreate );
-MFUNC_EXPORT MObject *MImageGetLoad(MImage  *image) MFUNC_META(MImageGetLoad);
-
-//------------------------------------------------------------------------------
-//MSpecial:
-
-class MSpecial : public MObject {
-    
-public:
-    MType _type() override;
-};
+m_class(MUnknown, "Uno") {};
 
 //------------------------------------------------------------------------------
 //smart pointer:
 
-typedef std::shared_ptr<MObject> MObjectRef;
-typedef std::shared_ptr<MBool  > MBoolRef  ;
-typedef std::shared_ptr<MInt   > MIntRef   ;
-typedef std::shared_ptr<MFloat > MFloatRef ;
-typedef std::shared_ptr<MString> MStringRef;
-typedef std::shared_ptr<MLambda> MLambdaRef;
-typedef std::shared_ptr<MData  > MDataRef  ;
-typedef std::shared_ptr<MArray > MArrayRef ;
-typedef std::shared_ptr<MImage > MImageRef ;
-
-class _MMakeSharedHelper {
-
-public:
-    MObjectRef operator<<(MObject *a) { return makeShared(a); }
-    MBoolRef   operator<<(MBool   *a) { return makeShared(a); }
-    MIntRef    operator<<(MInt    *a) { return makeShared(a); }
-    MFloatRef  operator<<(MFloat  *a) { return makeShared(a); }
-    MStringRef operator<<(MString *a) { return makeShared(a); }
-    MLambdaRef operator<<(MLambda *a) { return makeShared(a); }
-    MDataRef   operator<<(MData   *a) { return makeShared(a); }
-    MArrayRef  operator<<(MArray  *a) { return makeShared(a); }
-    MImageRef  operator<<(MImage  *a) { return makeShared(a); }
-
-private:
-    template<typename T> std::shared_ptr<T> makeShared(T *object) {
+struct _MMakeSharedHelper {
+    template<typename T> std::shared_ptr<T> operator<<(T *object) {
         MRetain(object);
         return std::shared_ptr<T>(object, MRelease);
     }
 };
-
 #define m_make_shared _MMakeSharedHelper()<<
 
-class _MAutoReleaseHelper {
-
-public:
-    MObjectRef operator<<(MObject *a) { return autoRelease(a); }
-    MBoolRef   operator<<(MBool   *a) { return autoRelease(a); }
-    MIntRef    operator<<(MInt    *a) { return autoRelease(a); }
-    MFloatRef  operator<<(MFloat  *a) { return autoRelease(a); }
-    MStringRef operator<<(MString *a) { return autoRelease(a); }
-    MLambdaRef operator<<(MLambda *a) { return autoRelease(a); }
-    MDataRef   operator<<(MData   *a) { return autoRelease(a); }
-    MArrayRef  operator<<(MArray  *a) { return autoRelease(a); }
-    MImageRef  operator<<(MImage  *a) { return autoRelease(a); }
-
-private:
-    template<typename T> std::shared_ptr<T> autoRelease(T *object) {
+struct _MAutoReleaseHelper {
+    template<typename T> std::shared_ptr<T> operator<<(T *object) {
         return std::shared_ptr<T>(object, MRelease);
     }
 };
-
 #define m_auto_release _MAutoReleaseHelper()<<
 
 //------------------------------------------------------------------------------
@@ -185,5 +136,4 @@ private:
 struct _MLambdaCastHelper {
     MLambdaRef operator<<(std::function<void ()> func);
 };
-
 #define m_cast_lambda _MLambdaCastHelper()<<

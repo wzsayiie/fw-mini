@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mtypes.h"
+#include "mbasics.h"
 
 void _MFuncSetMeta(const char *name, const _MFuncMeta &meta);
 
@@ -15,10 +15,10 @@ MFUNC_EXPORT bool MFuncSelect(const char *name) MFUNC_META(MFuncSelect);
 //the meta information of selected function:
 MFUNC_EXPORT const char *MFuncSelectedName() MFUNC_META(MFuncSelectedName);
 
-MFUNC_EXPORT MType MFuncSelectedRetType  ()          MFUNC_META(MFuncSelectedRetType  );
-MFUNC_EXPORT bool  MFuncSelectedRetRetain()          MFUNC_META(MFuncSelectedRetRetain);
-MFUNC_EXPORT int   MFuncSelectedArgCount ()          MFUNC_META(MFuncSelectedArgCount );
-MFUNC_EXPORT MType MFuncSelectedArgType  (int index) MFUNC_META(MFuncSelectedArgType  );
+MFUNC_EXPORT MTypeId MFuncSelectedRetTypeId()          MFUNC_META(MFuncSelectedRetTypeId);
+MFUNC_EXPORT bool    MFuncSelectedRetRetain()          MFUNC_META(MFuncSelectedRetRetain);
+MFUNC_EXPORT int     MFuncSelectedArgCount ()          MFUNC_META(MFuncSelectedArgCount );
+MFUNC_EXPORT MTypeId MFuncSelectedArgTypeId(int index) MFUNC_META(MFuncSelectedArgTypeId);
 
 //call function.
 MFUNC_EXPORT MObject *MFuncCallCopyRet(const char *name, MArray *args) MFUNC_META(MFuncCallCopyRet);

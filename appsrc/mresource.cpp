@@ -2,7 +2,6 @@
 
 #include "mresource.h"
 #include "mencode.h"
-#include "mhostapi.h"
 
 const int ReadFileBufferSize = 8 * 1024;
 

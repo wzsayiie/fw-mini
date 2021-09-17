@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mtypes.h"
+#include "mhostapi.h"
 
 //------------------------------------------------------------------------------
 //configuration:

@@ -1,34 +1,50 @@
 #pragma once
 
+#include <memory>
 #include "menviron.h"
 
 //------------------------------------------------------------------------------
-//available types enumeration:
+//type definition:
 
 #define MEnumId(n) (((int)n[0]) | ((int)n[1] << 8) | ((int)n[2] << 16))
 
-typedef int MType;
+typedef int MTypeId;
 
-enum {
-    MType_void     = MEnumId("vid"),    //void.
-    MType_bool     = MEnumId("bol"),    //bool.
-    MType_int      = MEnumId("int"),    //int.
-    MType_float    = MEnumId("flt"),    //float.
-    MType_pointer  = MEnumId("ptr"),    //uint8_t *.
-    MType_s8ptr    = MEnumId("s08"),    //char *.
-    MType_s16ptr   = MEnumId("s16"),    //char16_t *.
-    MType_MObject  = MEnumId("Obj"),    //MObject.
-    MType_MBool    = MEnumId("Bol"),    //MBool.
-    MType_MInt     = MEnumId("Int"),    //MInt.
-    MType_MFloat   = MEnumId("Flt"),    //MFloat.
-    MType_MPointer = MEnumId("Ptr"),    //MPointer.
-    MType_MString  = MEnumId("Str"),    //MString.
-    MType_MLambda  = MEnumId("Lmd"),    //MLamdba.
-    MType_MData    = MEnumId("Dat"),    //MData.
-    MType_MArray   = MEnumId("Arr"),    //MArray.
-    MType_MImage   = MEnumId("Img"),    //MImage.
-    MType_MSpecial = MEnumId("Spc"),    //MSpecial.
-};
+template<typename T> struct MTypeIdOf;
+
+template<> struct MTypeIdOf<void            > { static const MTypeId Value = MEnumId("vid"); };
+template<> struct MTypeIdOf<bool            > { static const MTypeId Value = MEnumId("bol"); };
+template<> struct MTypeIdOf<int             > { static const MTypeId Value = MEnumId("int"); };
+template<> struct MTypeIdOf<float           > { static const MTypeId Value = MEnumId("flt"); };
+template<> struct MTypeIdOf<uint8_t        *> { static const MTypeId Value = MEnumId("ptr"); };
+template<> struct MTypeIdOf<const uint8_t  *> { static const MTypeId Value = MEnumId("ptr"); };
+template<> struct MTypeIdOf<char           *> { static const MTypeId Value = MEnumId("s08"); };
+template<> struct MTypeIdOf<const char     *> { static const MTypeId Value = MEnumId("s08"); };
+template<> struct MTypeIdOf<char16_t       *> { static const MTypeId Value = MEnumId("s16"); };
+template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MEnumId("s16"); };
+
+//to define a class with type id.
+#define m_class(name, id)                               \
+/**/    template<> struct MTypeIdOf<class name *> {     \
+/**/        static const MTypeId Value = MEnumId(id);   \
+/**/    };                                              \
+/**/                                                    \
+/**/    typedef std::shared_ptr<class name> name##Ref;  \
+/**/                                                    \
+/**/    struct _##name##_Middler : MObject {            \
+/**/        MTypeId _typeId() override {                \
+/**/            return MEnumId(id);                     \
+/**/        }                                           \
+/**/    };                                              \
+/**/                                                    \
+/**/    class name : public _##name##_Middler
+
+//to create a inner static object.
+#define m_static_object(name, ...)              \
+/**/    static __VA_ARGS__ &name {              \
+/**/        static auto a = new __VA_ARGS__;    \
+/**/        return *a;                          \
+/**/    }
 
 //------------------------------------------------------------------------------
 //function meta information:
@@ -36,12 +52,12 @@ enum {
 const int MFuncMaxArgCount = 4;
 
 struct _MFuncMeta {
-    void *address   = nullptr;
-    MType retType   = 0;
-    bool  retRetain = false;
-    int   argCount  = 0;
+    void   *address   = nullptr;
+    MTypeId retTypeId = 0;
+    bool    retRetain = false;
+    int     argCount  = 0;
 
-    MType argTypes[MFuncMaxArgCount] = {0};
+    MTypeId argTypeIds[MFuncMaxArgCount] = {0};
 };
 
 //------------------------------------------------------------------------------
