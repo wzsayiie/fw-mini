@@ -1,5 +1,4 @@
 #include "mdebug.h"
-#include <cstdarg>
 #include <cstdio>
 
 #if M_OS_ANDROID
@@ -13,15 +12,12 @@
     }
 #endif
 
-const size_t MessageBufferSize = 4096;
-
 void MDebug(_Printf_format_string_ const char *format, ...) {
-    char buffer[MessageBufferSize] = "\0";
-    
-    va_list list;
-    va_start(list, format);
-    vsnprintf(buffer, MessageBufferSize, format, list);
-    va_end(list);
-    
-    PrintError(buffer);
+    const char *message = nullptr; {
+        va_list list;
+        va_start(list, format);
+        message = MFormatList(format, list);
+        va_end(list);
+    }
+    PrintError(message);
 }

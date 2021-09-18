@@ -1,9 +1,7 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "mmetaconst.h"
-#include <cstdio>
 #include <cstdlib>
 #include "mencode.h"
+#include "mformat.h"
 
 template<typename T> const T *csdup(const T *src) {
     size_t size = 0;
@@ -12,7 +10,7 @@ template<typename T> const T *csdup(const T *src) {
     }
     size += 1; //'\0' at the end.
 
-    auto copy = (T *)malloc(size * sizeof(T));
+    auto copy = new T[size];
     if (!copy) {
         return nullptr;
     }
@@ -58,11 +56,10 @@ void _MConstSetU16Chars(const char *name, const char16_t *value) {
 }
 
 void _MConstSetInt(const char *name, int value) {
-    char buffer[64] = "\0";
-    sprintf(buffer, "%d", value);
 
-    std::u16string  u16string    = MU16StringFromU8(buffer);
-    const char     *u8charsCopy  = csdup(buffer);
+    const char     *u16chars     = MFormat("%d", value);
+    std::u16string  u16string    = MU16StringFromU8(u16chars);
+    const char     *u8charsCopy  = csdup(u16chars);
     const char16_t *u16charsCopy = csdup(u16string.c_str());
 
     _MConstMeta meta;
@@ -76,11 +73,10 @@ void _MConstSetInt(const char *name, int value) {
 }
 
 void _MConstSetFloat(const char *name, float value) {
-    char buffer[64] = "\0";
-    sprintf(buffer, "%f", value);
 
-    std::u16string  u16string    = MU16StringFromU8(buffer);
-    const char     *u8charsCopy  = csdup(buffer);
+    const char     *u8chars      = MFormat("%f", value);
+    std::u16string  u16string    = MU16StringFromU8(u8chars);
+    const char     *u8charsCopy  = csdup(u8chars);
     const char16_t *u16charsCopy = csdup(u16string.c_str());
 
     _MConstMeta meta;

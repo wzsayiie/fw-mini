@@ -1,6 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <cstdio>
 #include "minikit.h"
 
 static void NativeFunc() {
@@ -46,10 +43,8 @@ public:
 
 private:
     void run(const char *format) {
-        char string[64] = "\0";
-        sprintf(string, format, mIden);
-
-        MStringRef script = m_auto_release MStringCreateU8(string);
+        const char *express = MFormat(format, mIden);
+        MStringRef script = m_auto_release MStringCreateU8(express);
         MJsRunScript(script.get(), script.get());
     }
 
