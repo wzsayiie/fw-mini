@@ -110,7 +110,8 @@ static MObject *CopyObjectFromJsValue(JsValueRef value)
     }
 }
 
-static JsValueRef JsValueFromObject(MObject *object) {
+static JsValueRef JsValueFromObject(MObject *object)
+{
     if (!object)
     {
         return JS_INVALID_REFERENCE;

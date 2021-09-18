@@ -75,14 +75,16 @@ static void PaintLabel(Gdiplus::Graphics *graphics, int index)
     //set the alignments:
     std::shared_ptr<Gdiplus::StringFormat> format(new Gdiplus::StringFormat());
     
-    switch (_MWindowLabelGraphHAlign(index)) {
+    switch (_MWindowLabelGraphHAlign(index))
+    {
         case MHAlign_Left  : format->SetAlignment(Gdiplus::StringAlignmentNear  ); break;
         case MHAlign_Center: format->SetAlignment(Gdiplus::StringAlignmentCenter); break;
         case MHAlign_Right : format->SetAlignment(Gdiplus::StringAlignmentFar   ); break;
         default:;
     }
 
-    switch (_MWindowLabelGraphVAlign(index)) {
+    switch (_MWindowLabelGraphVAlign(index))
+    {
         case MVAlign_Top   : format->SetLineAlignment(Gdiplus::StringAlignmentNear  ); break;
         case MVAlign_Center: format->SetLineAlignment(Gdiplus::StringAlignmentCenter); break;
         case MVAlign_Bottom: format->SetLineAlignment(Gdiplus::StringAlignmentFar   ); break;

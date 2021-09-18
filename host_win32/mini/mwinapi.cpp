@@ -5,15 +5,18 @@
 
 //native types:
 
-MWin32Image::MWin32Image(Gdiplus::Image *nativeImage) {
+MWin32Image::MWin32Image(Gdiplus::Image *nativeImage)
+{
     mNativeImage = nativeImage;
 }
 
-MWin32Image::~MWin32Image() {
+MWin32Image::~MWin32Image()
+{
     delete mNativeImage;
 }
 
-Gdiplus::Image *MWin32Image::nativeImage() {
+Gdiplus::Image *MWin32Image::nativeImage()
+{
     return mNativeImage;
 }
 
@@ -144,7 +147,8 @@ static MImage *CreateImage(MData *data)
     Gdiplus::Image *image = Gdiplus::Image::FromStream(stream, FALSE);
     stream->Release();
 
-    if (image) {
+    if (image)
+    {
         return new MWin32Image(image);
     }
     return nullptr;
