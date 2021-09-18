@@ -4,11 +4,11 @@
 
 const float _MAppUpdateInterval = 0.1f;
 
-MFUNC_HOST void _MAppLaunch();
-MFUNC_HOST void _MAppUpdate();
+M_FUNC_HOST void _MAppLaunch();
+M_FUNC_HOST void _MAppUpdate();
 
-MFUNC_EXPORT void _MAppAddLaunchListener(MLambda *listener, int priority);
-MFUNC_EXPORT void _MAppAddUpdateListener(MLambda *listener);
+M_FUNC_EXPORT void _MAppAddLaunchListener(MLambda *listener, int priority);
+M_FUNC_EXPORT void _MAppAddUpdateListener(MLambda *listener);
 
 struct _MAppLaunchAdder { _MAppLaunchAdder(void (*func)(), int priority); };
 struct _MAppUpdateAdder { _MAppUpdateAdder(void (*func)()); };

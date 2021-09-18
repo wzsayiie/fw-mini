@@ -98,97 +98,97 @@ enum {
 //this type is used to mark the graphics size of the host ui.
 typedef float _MPixel;
 
-MFUNC_HOST void _MWindowSetPixelDensity(float density);
+M_FUNC_HOST void _MWindowSetPixelDensity(float density);
 
 //window life cycle:
 
-MFUNC_HOST void _MWindowOnLoad();
-MFUNC_HOST void _MWindowOnShow();
-MFUNC_HOST void _MWindowOnHide();
+M_FUNC_HOST void _MWindowOnLoad();
+M_FUNC_HOST void _MWindowOnShow();
+M_FUNC_HOST void _MWindowOnHide();
 
-MFUNC_HOST void _MWindowOnResize(_MPixel width, _MPixel height);
-MFUNC_HOST void _MWindowOnDraw  ();
+M_FUNC_HOST void _MWindowOnResize(_MPixel width, _MPixel height);
+M_FUNC_HOST void _MWindowOnDraw  ();
 
-MFUNC_HOST void _MWindowOnTouchBegin(_MPixel x, _MPixel y);
-MFUNC_HOST void _MWindowOnTouchMove (_MPixel x, _MPixel y);
-MFUNC_HOST void _MWindowOnTouchEnd  (_MPixel x, _MPixel y);
-MFUNC_HOST void _MWindowOnTextBox   (MString *string, bool enter);
-MFUNC_HOST void _MWindowOnKeyDown   (MKey key);
+M_FUNC_HOST void _MWindowOnTouchBegin(_MPixel x, _MPixel y);
+M_FUNC_HOST void _MWindowOnTouchMove (_MPixel x, _MPixel y);
+M_FUNC_HOST void _MWindowOnTouchEnd  (_MPixel x, _MPixel y);
+M_FUNC_HOST void _MWindowOnTextBox   (MString *string, bool enter);
+M_FUNC_HOST void _MWindowOnKeyDown   (MKey key);
 
 //host draw:
 
-MFUNC_HOST int     _MWindowGraphCount();
-MFUNC_HOST _MGraph _MWindowGraphType (int index);
+M_FUNC_HOST int     _MWindowGraphCount();
+M_FUNC_HOST _MGraph _MWindowGraphType (int index);
 
-MFUNC_HOST _MPixel  _MWindowTriangleGraphX0   (int index);
-MFUNC_HOST _MPixel  _MWindowTriangleGraphY0   (int index);
-MFUNC_HOST _MPixel  _MWindowTriangleGraphX1   (int index);
-MFUNC_HOST _MPixel  _MWindowTriangleGraphY1   (int index);
-MFUNC_HOST _MPixel  _MWindowTriangleGraphX2   (int index);
-MFUNC_HOST _MPixel  _MWindowTriangleGraphY2   (int index);
-MFUNC_HOST MColor   _MWindowTriangleGraphColor(int index);
+M_FUNC_HOST _MPixel  _MWindowTriangleGraphX0   (int index);
+M_FUNC_HOST _MPixel  _MWindowTriangleGraphY0   (int index);
+M_FUNC_HOST _MPixel  _MWindowTriangleGraphX1   (int index);
+M_FUNC_HOST _MPixel  _MWindowTriangleGraphY1   (int index);
+M_FUNC_HOST _MPixel  _MWindowTriangleGraphX2   (int index);
+M_FUNC_HOST _MPixel  _MWindowTriangleGraphY2   (int index);
+M_FUNC_HOST MColor   _MWindowTriangleGraphColor(int index);
 
-MFUNC_HOST MImage  *_MWindowImageGraphObject  (int index);
-MFUNC_HOST _MPixel  _MWindowImageGraphX       (int index);
-MFUNC_HOST _MPixel  _MWindowImageGraphY       (int index);
-MFUNC_HOST _MPixel  _MWindowImageGraphWidth   (int index);
-MFUNC_HOST _MPixel  _MWindowImageGraphHeight  (int index);
+M_FUNC_HOST MImage  *_MWindowImageGraphObject  (int index);
+M_FUNC_HOST _MPixel  _MWindowImageGraphX       (int index);
+M_FUNC_HOST _MPixel  _MWindowImageGraphY       (int index);
+M_FUNC_HOST _MPixel  _MWindowImageGraphWidth   (int index);
+M_FUNC_HOST _MPixel  _MWindowImageGraphHeight  (int index);
 
-MFUNC_HOST MString *_MWindowLabelGraphString  (int index);
-MFUNC_HOST MColor   _MWindowLabelGraphColor   (int index);
-MFUNC_HOST _MPixel  _MWindowLabelGraphFontSize(int index);
-MFUNC_HOST MHAlign  _MWindowLabelGraphHAlign  (int index);
-MFUNC_HOST MVAlign  _MWindowLabelGraphVAlign  (int index);
-MFUNC_HOST _MPixel  _MWindowLabelGraphX       (int index);
-MFUNC_HOST _MPixel  _MWindowLabelGraphY       (int index);
-MFUNC_HOST _MPixel  _MWindowLabelGraphWidth   (int index);
-MFUNC_HOST _MPixel  _MWindowLabelGraphHeight  (int index);
+M_FUNC_HOST MString *_MWindowLabelGraphString  (int index);
+M_FUNC_HOST MColor   _MWindowLabelGraphColor   (int index);
+M_FUNC_HOST _MPixel  _MWindowLabelGraphFontSize(int index);
+M_FUNC_HOST MHAlign  _MWindowLabelGraphHAlign  (int index);
+M_FUNC_HOST MVAlign  _MWindowLabelGraphVAlign  (int index);
+M_FUNC_HOST _MPixel  _MWindowLabelGraphX       (int index);
+M_FUNC_HOST _MPixel  _MWindowLabelGraphY       (int index);
+M_FUNC_HOST _MPixel  _MWindowLabelGraphWidth   (int index);
+M_FUNC_HOST _MPixel  _MWindowLabelGraphHeight  (int index);
 
 //host text box:
 
-MFUNC_HOST bool     _MWindowTextBoxUpdated  ();
-MFUNC_HOST bool     _MWindowTextBoxEnabled  ();
-MFUNC_HOST MString *_MWindowTextBoxRawString();
+M_FUNC_HOST bool     _MWindowTextBoxUpdated  ();
+M_FUNC_HOST bool     _MWindowTextBoxEnabled  ();
+M_FUNC_HOST MString *_MWindowTextBoxRawString();
 
 //user listening:
 
-MFUNC_EXPORT void MWindowAddListener(MLambda *listener) MFUNC_META(MWindowAddListener);
+M_FUNC_EXPORT void MWindowAddListener(MLambda *listener) MFUNC_META(MWindowAddListener);
 
-MFUNC_EXPORT MWindowEvent MWindowCurrentEvent() MFUNC_META(MWindowCurrentEvent);
+M_FUNC_EXPORT MWindowEvent MWindowCurrentEvent() MFUNC_META(MWindowCurrentEvent);
 
-MFUNC_EXPORT float MWindowWidth () MFUNC_META(MWindowWidth );
-MFUNC_EXPORT float MWindowHeight() MFUNC_META(MWindowHeight);
+M_FUNC_EXPORT float MWindowWidth () MFUNC_META(MWindowWidth );
+M_FUNC_EXPORT float MWindowHeight() MFUNC_META(MWindowHeight);
 
-MFUNC_EXPORT bool MWindowLoaded() MFUNC_META(MWindowLoaded);
-MFUNC_EXPORT bool MWindowShown () MFUNC_META(MWindowShown );
+M_FUNC_EXPORT bool MWindowLoaded() MFUNC_META(MWindowLoaded);
+M_FUNC_EXPORT bool MWindowShown () MFUNC_META(MWindowShown );
 
-MFUNC_EXPORT float MWindowTouchX() MFUNC_META(MWindowTouchX);
-MFUNC_EXPORT float MWindowTouchY() MFUNC_META(MWindowTouchY);
+M_FUNC_EXPORT float MWindowTouchX() MFUNC_META(MWindowTouchX);
+M_FUNC_EXPORT float MWindowTouchY() MFUNC_META(MWindowTouchY);
 
-MFUNC_EXPORT MKey MWindowActiveKey() MFUNC_META(MWindowActiveKey);
+M_FUNC_EXPORT MKey MWindowActiveKey() MFUNC_META(MWindowActiveKey);
 
 //user draw:
 
-MFUNC_EXPORT void MWindowSelectString  (MString *string) MFUNC_META(MWindowSelectString  );
-MFUNC_EXPORT void MWindowSelectImage   (MImage  *image ) MFUNC_META(MWindowSelectImage   );
-MFUNC_EXPORT void MWindowSelectColor   (MColor   color ) MFUNC_META(MWindowSelectColor   );
-MFUNC_EXPORT void MWindowSelectFontSize(float    size  ) MFUNC_META(MWindowSelectFontSize);
-MFUNC_EXPORT void MWindowSelectHAlign  (MHAlign  align ) MFUNC_META(MWindowSelectHAlign  );
-MFUNC_EXPORT void MWindowSelectVAlign  (MVAlign  align ) MFUNC_META(MWindowSelectVAlign  );
+M_FUNC_EXPORT void MWindowSelectString  (MString *string) MFUNC_META(MWindowSelectString  );
+M_FUNC_EXPORT void MWindowSelectImage   (MImage  *image ) MFUNC_META(MWindowSelectImage   );
+M_FUNC_EXPORT void MWindowSelectColor   (MColor   color ) MFUNC_META(MWindowSelectColor   );
+M_FUNC_EXPORT void MWindowSelectFontSize(float    size  ) MFUNC_META(MWindowSelectFontSize);
+M_FUNC_EXPORT void MWindowSelectHAlign  (MHAlign  align ) MFUNC_META(MWindowSelectHAlign  );
+M_FUNC_EXPORT void MWindowSelectVAlign  (MVAlign  align ) MFUNC_META(MWindowSelectVAlign  );
 
-MFUNC_EXPORT void MWindowSelectPoint0(float x, float y) MFUNC_META(MWindowSelectPoint0);
-MFUNC_EXPORT void MWindowSelectPoint1(float x, float y) MFUNC_META(MWindowSelectPoint1);
-MFUNC_EXPORT void MWindowSelectPoint2(float x, float y) MFUNC_META(MWindowSelectPoint2);
+M_FUNC_EXPORT void MWindowSelectPoint0(float x, float y) MFUNC_META(MWindowSelectPoint0);
+M_FUNC_EXPORT void MWindowSelectPoint1(float x, float y) MFUNC_META(MWindowSelectPoint1);
+M_FUNC_EXPORT void MWindowSelectPoint2(float x, float y) MFUNC_META(MWindowSelectPoint2);
 
-MFUNC_EXPORT void MWindowDrawTriangle() MFUNC_META(MWindowDrawTriangle);
-MFUNC_EXPORT void MWindowDrawImage   () MFUNC_META(MWindowDrawImage   );
-MFUNC_EXPORT void MWindowDrawLabel   () MFUNC_META(MWindowDrawLabel   );
+M_FUNC_EXPORT void MWindowDrawTriangle() MFUNC_META(MWindowDrawTriangle);
+M_FUNC_EXPORT void MWindowDrawImage   () MFUNC_META(MWindowDrawImage   );
+M_FUNC_EXPORT void MWindowDrawLabel   () MFUNC_META(MWindowDrawLabel   );
 
 //text box control:
 
-MFUNC_EXPORT void MWindowSetTextBoxUpdated  (bool     updated ) MFUNC_META(MWindowSetTextBoxUpdated  );
-MFUNC_EXPORT void MWindowSetTextBoxEnabled  (bool     enabled ) MFUNC_META(MWindowSetTextBoxEnabled  );
-MFUNC_EXPORT void MWindowSetTextBoxRawString(MString *original) MFUNC_META(MWindowSetTextBoxRawString);
+M_FUNC_EXPORT void MWindowSetTextBoxUpdated  (bool     updated ) MFUNC_META(MWindowSetTextBoxUpdated  );
+M_FUNC_EXPORT void MWindowSetTextBoxEnabled  (bool     enabled ) MFUNC_META(MWindowSetTextBoxEnabled  );
+M_FUNC_EXPORT void MWindowSetTextBoxRawString(MString *original) MFUNC_META(MWindowSetTextBoxRawString);
 
-MFUNC_EXPORT MString *MWindowTextBoxString() MFUNC_META(MWindowTextBoxString);
-MFUNC_EXPORT bool     MWindowTextBoxEnter () MFUNC_META(MWindowTextBoxEnter );
+M_FUNC_EXPORT MString *MWindowTextBoxString() MFUNC_META(MWindowTextBoxString);
+M_FUNC_EXPORT bool     MWindowTextBoxEnter () MFUNC_META(MWindowTextBoxEnter );

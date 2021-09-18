@@ -2,7 +2,7 @@
 
 #include "menviron.h"
 
-#if MCPL_CL
+#if M_CPL_CL
     #include <sal.h>
     #define __printflike(format, list)
 #else

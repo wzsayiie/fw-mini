@@ -4,14 +4,14 @@
 //path join:
 
 inline bool IsPathSeperator(char chr) {
-    #if MOS_WIN32
+    #if M_OS_WIN32
         return chr == '/' || chr == '\\';
     #else
         return chr == '/';
     #endif
 }
 
-#if MOS_WIN32
+#if M_OS_WIN32
     const char PathSeperator = '\\';
 #else
     const char PathSeperator = '/';

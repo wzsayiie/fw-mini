@@ -54,7 +54,7 @@
 
 #pragma mark - main
 
-MFUNC_EXPORT void MAppMain() {
+M_FUNC_EXPORT void MAppMain() {
     Class clazz = NSClassFromString(@"MAppDelegate");
     id<NSApplicationDelegate> delegate = [[clazz alloc] init];
     

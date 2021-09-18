@@ -47,13 +47,13 @@ template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MEn
 /**/    }
 
 //functions that need to be called by the host.
-#define MFUNC_HOST extern "C"
+#define M_FUNC_HOST extern "C"
 
 //exported functions.
-#if MCPL_CL
-#define MFUNC_EXPORT extern "C" __declspec(dllexport)
+#if M_CPL_CL
+#define M_FUNC_EXPORT extern "C" __declspec(dllexport)
 #else
-#define MFUNC_EXPORT extern "C" __attribute((visibility("default")))
+#define M_FUNC_EXPORT extern "C" __attribute((visibility("default")))
 #endif
 
 //------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 #include <cstdarg>
 #include <cstdio>
 
-#if MOS_ANDROID
+#if M_OS_ANDROID
     #include <android/log.h>
     static void PrintError(const char *message) {
         __android_log_write(ANDROID_LOG_ERROR, "zzz", message);
