@@ -2,10 +2,10 @@
 
 #include "mbasics.h"
 
-static const char     *const _MPrivateDirectoryU8Name  =  "mini";
-static const char16_t *const _MPrivateDirectoryU16Name = u"mini";
-static const char     *const _MAssetBundleU8Name       =  "mini.bundle";
-static const char16_t *const _MAssetBundleU16Name      = u"mini.bundle";
+const char     *const MPrivateDirectoryU8Name  =  "mini"        M_META(MPrivateDirectoryU8Name );
+const char16_t *const MPrivateDirectoryU16Name = u"mini"        M_META(MPrivateDirectoryU16Name);
+const char     *const MAssetBundleU8Name       =  "mini.bundle" M_META(MAssetBundleU8Name      );
+const char16_t *const MAssetBundleU16Name      = u"mini.bundle" M_META(MAssetBundleU16Name     );
 
 m_class(MImage, "Img") {};
 
@@ -35,15 +35,15 @@ M_FUNC_HOST void _MSetApiPathExists       (_MApiPathExists        func);
 M_FUNC_HOST void _MSetApiDirectoryExists  (_MApiDirectoryExists   func);
 M_FUNC_HOST void _MSetApiFileExists       (_MApiFileExists        func);
 
-M_FUNC_EXPORT void     MPrintMessage     (MString *text) MFUNC_META(MPrintMessage     );
-M_FUNC_EXPORT MData   *MCopyBundleAsset  (MString *path) MFUNC_META(MCopyBundleAsset  );
-M_FUNC_EXPORT MImage  *MCreateImage      (MData   *data) MFUNC_META(MCreateImage      );
-M_FUNC_EXPORT MString *MCopyDocumentPath ()              MFUNC_META(MCopyDocumentPath );
-M_FUNC_EXPORT MString *MCopyCachePath    ()              MFUNC_META(MCopyCachePath    );
-M_FUNC_EXPORT MString *MCopyTemporaryPath()              MFUNC_META(MCopyTemporaryPath);
-M_FUNC_EXPORT bool     MMakeDirectory    (MString *path) MFUNC_META(MMakeDirectory    );
-M_FUNC_EXPORT MArray  *MCopyPathSubItems (MString *path) MFUNC_META(MCopyPathSubItems );
-M_FUNC_EXPORT void     MRemovePath       (MString *path) MFUNC_META(MRemovePath       );
-M_FUNC_EXPORT bool     MPathExists       (MString *path) MFUNC_META(MPathExists       );
-M_FUNC_EXPORT bool     MDirectoryExists  (MString *path) MFUNC_META(MDirectoryExists  );
-M_FUNC_EXPORT bool     MFileExists       (MString *path) MFUNC_META(MFileExists       );
+M_FUNC_EXPORT void     MPrintMessage     (MString *text) M_META(MPrintMessage     );
+M_FUNC_EXPORT MData   *MCopyBundleAsset  (MString *path) M_META(MCopyBundleAsset  );
+M_FUNC_EXPORT MImage  *MCreateImage      (MData   *data) M_META(MCreateImage      );
+M_FUNC_EXPORT MString *MCopyDocumentPath ()              M_META(MCopyDocumentPath );
+M_FUNC_EXPORT MString *MCopyCachePath    ()              M_META(MCopyCachePath    );
+M_FUNC_EXPORT MString *MCopyTemporaryPath()              M_META(MCopyTemporaryPath);
+M_FUNC_EXPORT bool     MMakeDirectory    (MString *path) M_META(MMakeDirectory    );
+M_FUNC_EXPORT MArray  *MCopyPathSubItems (MString *path) M_META(MCopyPathSubItems );
+M_FUNC_EXPORT void     MRemovePath       (MString *path) M_META(MRemovePath       );
+M_FUNC_EXPORT bool     MPathExists       (MString *path) M_META(MPathExists       );
+M_FUNC_EXPORT bool     MDirectoryExists  (MString *path) M_META(MDirectoryExists  );
+M_FUNC_EXPORT bool     MFileExists       (MString *path) M_META(MFileExists       );

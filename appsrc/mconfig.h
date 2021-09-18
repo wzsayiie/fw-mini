@@ -78,6 +78,6 @@ struct _MConstMeta {
     float           floatValue  = 0;
 };
 
-#ifndef MFUNC_META
-#define MFUNC_META(name)
+#ifndef M_META
+#define M_META(name)
 #endif

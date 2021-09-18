@@ -88,7 +88,7 @@ static MData *CopyBundleAsset(MString *path)
         bundlePath = new std::wstring;
         if (base)
         {
-            wcscat(buffer, (const WCHAR *)_MAssetBundleU16Name);
+            wcscat(buffer, (const WCHAR *)MAssetBundleU16Name);
             wcscat(buffer, L"\\");
             bundlePath->append(buffer);
         }
@@ -155,7 +155,7 @@ static MString *CopyDocumentPath()
     WCHAR document[MAX_PATH] = L"\0";
     SHGetFolderPathW(nullptr, CSIDL_PERSONAL, nullptr, 0, document);
 
-    return CopyAppDirectory(document, (const WCHAR *)_MPrivateDirectoryU16Name);
+    return CopyAppDirectory(document, (const WCHAR *)MPrivateDirectoryU16Name);
 }
 
 static MString *CopyCachePath()
@@ -163,7 +163,7 @@ static MString *CopyCachePath()
     WCHAR home[MAX_PATH] = L"\0";
     SHGetFolderPathW(nullptr, CSIDL_PROFILE, nullptr, 0, home);
 
-    return CopyAppDirectory(home, (const WCHAR *)_MPrivateDirectoryU16Name);
+    return CopyAppDirectory(home, (const WCHAR *)MPrivateDirectoryU16Name);
 }
 
 static MString *CopyTemporaryPath()
@@ -171,7 +171,7 @@ static MString *CopyTemporaryPath()
     WCHAR temporary[MAX_PATH] = L"\0";
     GetTempPathW(MAX_PATH, temporary);
 
-    return CopyAppDirectory(temporary, (const WCHAR *)_MPrivateDirectoryU16Name);
+    return CopyAppDirectory(temporary, (const WCHAR *)MPrivateDirectoryU16Name);
 }
 
 static bool MakeDirectory(MString *path)

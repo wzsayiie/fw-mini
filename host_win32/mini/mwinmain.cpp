@@ -362,7 +362,7 @@ M_FUNC_EXPORT void MAppMain()
     HWND wnd = CreateWindowExW(
         /* dwExStyle    */ 0,
         /* lpClassName  */ className,
-        /* lpWindowName */ (const WCHAR *)_MWindowTitleU16Name,
+        /* lpWindowName */ (const WCHAR *)MWindowTitleU16Name,
         /* dwStyle      */ WS_OVERLAPPEDWINDOW,
         /* x            */ WindowFrameX,
         /* y            */ WindowFrameY,

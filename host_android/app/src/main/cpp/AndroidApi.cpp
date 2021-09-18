@@ -244,9 +244,9 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_AndroidApi_assetBundleName(JNIEnv *env, jclass)
 {
     jsize size = 0;
-    for (const char16_t *it = _MAssetBundleU16Name; *it; ++it)
+    for (const char16_t *it = MAssetBundleU16Name; *it; ++it)
     {
         size += 1;
     }
-    return env->NewString((const jchar *)_MAssetBundleU16Name, size);
+    return env->NewString((const jchar *)MAssetBundleU16Name, size);
 }

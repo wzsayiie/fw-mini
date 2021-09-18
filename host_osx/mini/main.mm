@@ -15,7 +15,7 @@
     NSWindowStyleMask style = self.windowStyle;
     NSBackingStoreType backing = NSBackingStoreBuffered;
     NSWindow *window = [[NSWindow alloc] initWithContentRect:rect styleMask:style backing:backing defer:NO];
-    [window setTitle:@(_MWindowTitleU8Name)];
+    [window setTitle:@(MWindowTitleU8Name)];
     
     MWindowController *controller = [[MWindowController alloc] initWithWindow:window];
     window.contentViewController = [[MViewController alloc] init];

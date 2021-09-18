@@ -21,7 +21,7 @@ static MData *CopyBundleAsset(MString *path) {
     NSBundle *bundle = nil;
     if (!bundle) {
         NSString *appMainPath = NSBundle.mainBundle.bundlePath;
-        NSString *bundlePath  = [NSString stringWithFormat:@"%@/%s", appMainPath, _MAssetBundleU8Name];
+        NSString *bundlePath  = [NSString stringWithFormat:@"%@/%s", appMainPath, MAssetBundleU8Name];
         bundle = [NSBundle bundleWithPath:bundlePath];
     }
     
