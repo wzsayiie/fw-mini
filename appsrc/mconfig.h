@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <cstdint>
 #include "menviron.h"
 
 //------------------------------------------------------------------------------
@@ -71,11 +71,10 @@ struct _MFuncMeta {
 };
 
 struct _MConstMeta {
-    MTypeId         benchmarkId = 0;
-    const char     *u8chars     = nullptr;
-    const char16_t *u16chars    = nullptr;
-    int             intValue    = 0;
-    float           floatValue  = 0;
+    MTypeId        benchmarkId = 0;
+    class MString *stringValue = nullptr;
+    int            intValue    = 0;
+    float          floatValue  = 0;
 };
 
 #ifndef M_META

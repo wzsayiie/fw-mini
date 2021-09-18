@@ -1,5 +1,19 @@
 #include "minikit.h"
 
+static void RegisterNativeConsts() {
+    for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
+        const char *name = MConstSelectedName();
+
+        MTypeId typeId = MConstSelectedTypeId();
+        switch (typeId) {
+            case MTypeIdOf<MString *>::Value: MJsRegisterString(name, MConstSelectedString()); break;
+            case MTypeIdOf<int      >::Value: MJsRegisterInt   (name, MConstSelectedInt   ()); break;
+            case MTypeIdOf<float    >::Value: MJsRegisterFloat (name, MConstSelectedFloat ()); break;
+            default:;
+        }
+    }
+}
+
 static void NativeFunc() {
     const char *funcName = MJsCallingFuncName();
     MArray     *params   = MJsCallingParams();
@@ -88,6 +102,7 @@ static void LaunchEntryFile(const char *file, const char *func) {
 }
 
 static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
+    RegisterNativeConsts();
     RegisterNativeFuncs();
     RegisterBuiltFuncs();
     SetErrorListener();

@@ -16,9 +16,8 @@ M_FUNC_EXPORT void MConstSelectNext   () M_META(MConstSelectNext   );
 M_FUNC_EXPORT bool MConstSelect(const char *name) M_META(MConstSelect);
 
 //the meta information of selected constant.
-M_FUNC_EXPORT const char     *MConstSelectedName    () M_META(MConstSelectedName    );
-M_FUNC_EXPORT MTypeId         MConstSelectedTypeId  () M_META(MConstSelectedTypeId  );
-M_FUNC_EXPORT const char     *MConstSelectedU8Chars () M_META(MConstSelectedU8Chars );
-M_FUNC_EXPORT const char16_t *MConstSelectedU16Chars() M_META(MConstSelectedU16Chars);
-M_FUNC_EXPORT int             MConstSelectedInt     () M_META(MConstSelectedInt     );
-M_FUNC_EXPORT float           MConstSelectedFloat   () M_META(MConstSelectedFloat   );
+M_FUNC_EXPORT const char *MConstSelectedName  () M_META(MConstSelectedName  );
+M_FUNC_EXPORT MTypeId     MConstSelectedTypeId() M_META(MConstSelectedTypeId);
+M_FUNC_EXPORT MString    *MConstSelectedString() M_META(MConstSelectedString);
+M_FUNC_EXPORT int         MConstSelectedInt   () M_META(MConstSelectedInt   );
+M_FUNC_EXPORT float       MConstSelectedFloat () M_META(MConstSelectedFloat );

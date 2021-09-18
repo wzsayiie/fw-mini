@@ -15,7 +15,12 @@ M_FUNC_HOST void     _MJsOnHappenError(MString *info);
 M_FUNC_EXPORT void MJsSetErrorListener(MLambda *listener) M_META(MJsSetErrorListener);
 M_FUNC_EXPORT MString *MJsLastError() M_META(MJsLastError);
 
-//register native function:
+//register constant.
+M_FUNC_EXPORT void MJsRegisterString(const char *name, MString *value) M_META(MJsRegisterString);
+M_FUNC_EXPORT void MJsRegisterInt   (const char *name, int      value) M_META(MJsRegisterInt   );
+M_FUNC_EXPORT void MJsRegisterFloat (const char *name, float    value) M_META(MJsRegisterFloat );
+
+//register native function.
 M_FUNC_EXPORT void        MJsRegisterFunc   (const char *name, MLambda *func) M_META(MJsRegisterFunc   );
 M_FUNC_EXPORT const char *MJsCallingFuncName()                                M_META(MJsCallingFuncName);
 M_FUNC_EXPORT MArray     *MJsCallingParams  ()                                M_META(MJsCallingParams  );

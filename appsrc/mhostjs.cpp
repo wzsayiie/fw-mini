@@ -9,6 +9,22 @@ static _MJsRunScript    sRunScript    = nullptr;
 void _MJsSetRegisterFunc(_MJsRegisterFunc func) { sRegisterFunc = func; }
 void _MJsSetRunScript   (_MJsRunScript    func) { sRunScript    = func; }
 
+static void RegisterFunc(MString *name) {
+    if (sRegisterFunc) {
+        sRegisterFunc(name);
+    } else {
+        D("ERROR: no api 'MJsRegisterFunc'");
+    }
+}
+
+static void RunScript(MString *name, MString *script) {
+    if (sRunScript) {
+        sRunScript(name, script);
+    } else {
+        D("ERROR: no api 'MJsRunScript'");
+    }
+}
+
 struct CallingFrame {
 
     std::string funcName;
@@ -60,18 +76,57 @@ MString *MJsLastError() {
     return sLastError().get();
 }
 
-void MJsRegisterFunc(const char *name, MLambda *func) {
-    if (!sRegisterFunc) {
-        D("ERROR: no api 'MJsRegisterFunc'");
+static std::string EscapedString(MString *string) {
+    std::string escaped;
+    for (const char *ch = MStringU8Chars(string); *ch; ++ch) {
+        switch (*ch)  {
+            case '\\': escaped.append("\\\\"); break;
+            case '\'': escaped.append("\\\'"); break;
+            case '"' : escaped.append("\\\""); break;
+            default  : escaped.push_back(*ch);
+        }
+    }
+    return escaped;
+}
+
+void MJsRegisterString(const char *name, MString *value) {
+    if (!name || !*name || !value) {
         return;
     }
 
+    std::string escaped = EscapedString(value);
+    const char *express = MFormat("const %s = '%s'", name, escaped.c_str());
+    MStringRef script = m_auto_release MStringCreateU8(express);
+    RunScript(script.get(), script.get());
+}
+
+void MJsRegisterInt(const char *name, int value) {
+    if (!name || !*name) {
+        return;
+    }
+
+    const char *express = MFormat("const %s = %d", name, value);
+    MStringRef script = m_auto_release MStringCreateU8(express);
+    RunScript(script.get(), script.get());
+}
+
+void MJsRegisterFloat(const char *name, float value) {
+    if (!name || !*name) {
+        return;
+    }
+
+    const char *express = MFormat("const %s = %f", name, value);
+    MStringRef script = m_auto_release MStringCreateU8(express);
+    RunScript(script.get(), script.get());
+}
+
+void MJsRegisterFunc(const char *name, MLambda *func) {
     if (!name || !func) {
         return;
     }
 
     MStringRef funcName = m_auto_release MStringCreateU8(name);
-    sRegisterFunc(funcName.get());
+    RegisterFunc(funcName.get());
     sFuncMap()[name] = m_make_shared func;
 }
 
@@ -88,22 +143,10 @@ void MJsCallingReturn(MObject *value) {
 }
 
 void MJsRunScript(MString *name, MString *script) {
-    if (!sRunScript) {
-        D("ERROR: no api 'MJsRunScript'");
-        return;
-    }
-
-    if (script) {
-        sRunScript(name, script);
-    }
+    RunScript(name, script);
 }
 
 void MJsRunScriptNamed(MString *name) {
-    if (!sRunScript) {
-        D("ERROR: no api 'MJsRunScript'");
-        return;
-    }
-
     const char *nameChars = MStringU8Chars(name);
     if (!nameChars) {
         return;
@@ -133,5 +176,5 @@ void MJsRunScriptNamed(MString *name) {
         return;
     }
 
-    sRunScript(name, script.get());
+    RunScript(name, script.get());
 }
