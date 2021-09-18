@@ -36,9 +36,9 @@ class GCamera {
         let event = MWindowCurrentEvent()
 
         switch (event) {
-            case MWindowEvent.Load  : this._onLoad  (); break
-            case MWindowEvent.Resize: this._onResize(); break
-            case MWindowEvent.Draw  : this._onDraw  (); break
+            case MWindowEvent_Load  : this._onLoad  (); break
+            case MWindowEvent_Resize: this._onResize(); break
+            case MWindowEvent_Draw  : this._onDraw  (); break
         }
     }
 

@@ -25,7 +25,7 @@ function _MakeStringWithShrink(shrink, indent, object, out) {
             out.push(",\n")
         }
 
-        _MakeIndent(out, indent)
+        _MakeIndent(indent, out)
         out.push("]")
 
     } else if (typeof object == "object") {
@@ -59,50 +59,6 @@ function I(object) {
     let message = MString(object)
     MPrintMessage(message)
 }
-
-//------------------------------------------------------------------------------
-//MEnumId:
-
-function MEnumId(string) {
-    let id = 0
-    for (let index in string) {
-        id = (id << 8) | string.charCodeAt(index)
-    }
-    return id
-}
-
-//------------------------------------------------------------------------------
-//MType:
-
-const MType = Object.freeze({
-    Object : MEnumId("Obj"),
-    Bool   : MEnumId("Bol"),
-    Int    : MEnumId("Int"),
-    Float  : MEnumId("Flt"),
-    Pointer: MEnumId("Ptr"),
-    String : MEnumId("Str"),
-    Lambda : MEnumId("Lmd"),
-    Data   : MEnumId("Dat"),
-    Array  : MEnumId("Arr"),
-    Image  : MEnumId("Img"),
-    Special: MEnumId("Spc"),
-})
-
-//------------------------------------------------------------------------------
-//MWindowEvent:
-
-const MWindowEvent = Object.freeze({
-    Load      : MEnumId("L"),
-    Show      : MEnumId("S"),
-    Hide      : MEnumId("H"),
-    Resize    : MEnumId("R"),
-    Draw      : MEnumId("D"),
-    TouchBegin: MEnumId("B"),
-    TouchMove : MEnumId("M"),
-    TouchEnd  : MEnumId("E"),
-    TextBox   : MEnumId("T"),
-    KeyDown   : MEnumId("K"),
-})
 
 //------------------------------------------------------------------------------
 //MJsLambda:

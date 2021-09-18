@@ -22,7 +22,7 @@ class GContext {
 
     _onWindowEvent() {
         let event = MWindowCurrentEvent()
-        if (event == MWindowEvent.Load || event == MWindowEvent.Resize) {
+        if (event == MWindowEvent_Load || event == MWindowEvent_Resize) {
             this._windowHeight = MWindowHeight()
         }
     }
