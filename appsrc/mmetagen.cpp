@@ -12,10 +12,10 @@ void _MConstSetU16Chars(const char *name, const char16_t *value);
 void _MConstSetInt     (const char *name, int             value);
 void _MConstSetFloat   (const char *name, float           value);
 
-static void Collect(const char *name, const char     *value) { _MConstSetU8Chars (name, value); }
-static void Collect(const char *name, const char16_t *value) { _MConstSetU16Chars(name, value); }
-static void Collect(const char *name, int             value) { _MConstSetInt     (name, value); }
-static void Collect(const char *name, float           value) { _MConstSetFloat   (name, value); }
+/* static */ void Collect(const char *name, const char     *value) { _MConstSetU8Chars (name, value); }
+/* static */ void Collect(const char *name, const char16_t *value) { _MConstSetU16Chars(name, value); }
+/* static */ void Collect(const char *name, int             value) { _MConstSetInt     (name, value); }
+/* static */ void Collect(const char *name, float           value) { _MConstSetFloat   (name, value); }
 
 //collect functions:
 
