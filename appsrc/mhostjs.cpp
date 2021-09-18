@@ -147,8 +147,8 @@ void MJsRunScript(MString *name, MString *script) {
 }
 
 void MJsRunScriptNamed(MString *name) {
-    const char *nameChars = MStringU8Chars(name);
-    if (!nameChars) {
+    const char *chars = MStringU8Chars(name);
+    if (!chars) {
         return;
     }
 
@@ -158,21 +158,25 @@ void MJsRunScriptNamed(MString *name) {
         ranSet = new std::set<std::string>;
     }
     
-    if (ranSet->find(nameChars) != ranSet->end()) {
+    if (ranSet->find(chars) != ranSet->end()) {
         return;
     }
-    ranSet->insert(nameChars);
+    ranSet->insert(chars);
 
-    //if the target is a file path, load the corresponding file.
+    //if the target is a absolute path, load the corresponding file.
     MStringRef script;
-    if (strchr(nameChars, '/') || strchr(nameChars, '\\')) {
+    if (/* "x:\x" */ (strlen(chars) >= 4 && chars[1] == ':') ||
+        /* "/x"   */ (strlen(chars) >= 2 && chars[0] == '/') )
+    {
         script = m_auto_release MCopyStringFromFile(name);
-    } else {
+    }
+    else
+    {
         script = m_auto_release MCopyStringFromBundle(name);
     }
     
     if (!script) {
-        D("ERROR: no javascript script named '%s'", nameChars);
+        D("ERROR: no javascript script named '%s'", chars);
         return;
     }
 

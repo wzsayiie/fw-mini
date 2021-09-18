@@ -1,5 +1,13 @@
 #include "minikit.h"
 
+static void SetErrorListener() {
+    MLambdaRef listener = m_cast_lambda []() {
+        MString *error = MJsLastError();
+        MPrintMessage(error);
+    };
+    MJsSetErrorListener(listener.get());
+}
+
 static void RegisterNativeConsts() {
     for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
         const char *name = MConstSelectedName();
@@ -30,7 +38,7 @@ static void RegisterNativeFuncs() {
     }
 }
 
-static void Include() {
+static void MJsRunFile() {
     MArray  *params = MJsCallingParams();
     MObject *target = MArrayItem(params, 0);
 
@@ -65,7 +73,7 @@ private:
     int mIden;
 };
 
-static void MJsLambdaCreate() {
+static void MJsLambdaWrap() {
     MArray  *params = MJsCallingParams();
     MObject *object = MArrayItem(params, 0);
 
@@ -79,18 +87,28 @@ static void MJsLambdaCreate() {
     MJsCallingReturn(lambda.get());
 }
 
-static void RegisterBuiltFuncs() {
+static void RegisterBuiltinFuncs() {
 
-    MJsRegisterFunc("include"        , (m_cast_lambda Include        ).get());
-    MJsRegisterFunc("MJsLambdaCreate", (m_cast_lambda MJsLambdaCreate).get());
+    MJsRegisterFunc("MJsRunFile"   , (m_cast_lambda MJsRunFile   ).get());
+    MJsRegisterFunc("MJsLambdaWrap", (m_cast_lambda MJsLambdaWrap).get());
 }
 
-static void SetErrorListener() {
-    MLambdaRef listener = m_cast_lambda []() {
-        MString *error = MJsLastError();
-        MPrintMessage(error);
-    };
-    MJsSetErrorListener(listener.get());
+static void InstallSimulatedNodeJsEnvironment() {
+    const char *script =
+    "const module = {}                  //01.\n"
+    "                                   //02.\n"
+    "function require(name) {           //03.\n"
+    "   if (!name.endsWith('.js')) {    //04.\n"
+    "       name = `${name}.js`         //05.\n"
+    "   }                               //06.\n"
+    "   MJsRunFile(name)                //07.\n"
+    "                                   //07.\n"
+    "   return module.exports           //09.\n"
+    "}                                  //10.\n";
+
+    MStringRef name = m_auto_release MStringCreateU8("simulated-nodejs");
+    MStringRef code = m_auto_release MStringCreateU8(script);
+    MJsRunScript(name.get(), code.get());
 }
 
 static void LaunchEntryFile(const char *file, const char *func) {
@@ -102,10 +120,13 @@ static void LaunchEntryFile(const char *file, const char *func) {
 }
 
 static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
-    RegisterNativeConsts();
-    RegisterNativeFuncs();
-    RegisterBuiltFuncs();
     SetErrorListener();
+
+    RegisterNativeConsts();
+    RegisterNativeFuncs ();
+    RegisterBuiltinFuncs();
+
+    InstallSimulatedNodeJsEnvironment();
 
     LaunchEntryFile("app.js", "Launch()");
 }
