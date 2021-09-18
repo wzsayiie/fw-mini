@@ -1,4 +1,4 @@
-#include "mfuncs.h"
+#include "mmetafunc.h"
 
 m_static_object(sMetaMap (), std::map<std::string, _MFuncMeta>)
 m_static_object(sIterator(), std::map<std::string, _MFuncMeta>::iterator)

@@ -46,8 +46,18 @@ template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MEn
 /**/        return *a;                          \
 /**/    }
 
+//functions that need to be called by the host.
+#define MFUNC_HOST extern "C"
+
+//exported functions.
+#if MCPL_CL
+#define MFUNC_EXPORT extern "C" __declspec(dllexport)
+#else
+#define MFUNC_EXPORT extern "C" __attribute((visibility("default")))
+#endif
+
 //------------------------------------------------------------------------------
-//function meta information:
+//meta information:
 
 const int MFuncMaxArgCount = 4;
 
@@ -60,20 +70,14 @@ struct _MFuncMeta {
     MTypeId argTypeIds[MFuncMaxArgCount] = {0};
 };
 
-//------------------------------------------------------------------------------
-//macros for function descritpion:
+struct _MConstMeta {
+    MTypeId         benchmarkId = 0;
+    const char     *u8chars     = nullptr;
+    const char16_t *u16chars    = nullptr;
+    int             intValue    = 0;
+    float           floatValue  = 0;
+};
 
-//functions that need to be called by the host.
-#define MFUNC_HOST extern "C"
-
-//exported functions.
-#if MCPL_CL
-    #define MFUNC_EXPORT extern "C" __declspec(dllexport)
-#else
-    #define MFUNC_EXPORT extern "C" __attribute((visibility("default")))
-#endif
-
-//functions recorded meta data.
 #ifndef MFUNC_META
-    #define MFUNC_META(name)
+#define MFUNC_META(name)
 #endif
