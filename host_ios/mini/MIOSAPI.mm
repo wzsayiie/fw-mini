@@ -1,13 +1,12 @@
 #import "MIOSAPI.h"
-#import "mhostapi.h"
 
 #pragma mark - native types.
 
-MImageLoad::MImageLoad(UIImage *nativeImage) {
+MIOSImage::MIOSImage(UIImage *nativeImage) {
     mNativeImage = nativeImage;
 }
 
-UIImage *MImageLoad::nativeImage() {
+UIImage *MIOSImage::nativeImage() {
     return mNativeImage;
 }
 
@@ -36,7 +35,7 @@ static MImage *CreateImage(MData *data) {
     UIImage *imageObject = [[UIImage alloc] initWithData:imageData];
     
     if (imageObject) {
-        return MImageCreate(new MImageLoad(imageObject));
+        return new MIOSImage(imageObject);
     }
     return nullptr;
 }

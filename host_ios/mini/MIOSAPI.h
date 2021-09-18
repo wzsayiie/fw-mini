@@ -1,12 +1,12 @@
 #import <UIKit/UIKit.h>
-#import "mtypes.h"
+#import "mhostapi.h"
 
 #pragma mark - native types.
 
-class MImageLoad : public MSpecial {
+class MIOSImage : public MImage {
     
 public:
-    MImageLoad(UIImage *nativeImage);
+    MIOSImage(UIImage *nativeImage);
     UIImage *nativeImage();
     
 private:

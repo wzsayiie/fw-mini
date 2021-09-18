@@ -53,9 +53,8 @@
 
 - (void)drawImage:(int)index {
     //get the image.
-    MImage *imageObject  = _MWindowImageGraphObject(index);
-    auto    imageLoad    = (MImageLoad *)MImageGetLoad(imageObject);
-    UIImage *nativeImage = imageLoad->nativeImage();
+    auto imageObject = (MIOSImage *)_MWindowImageGraphObject(index);
+    UIImage *nativeImage = imageObject->nativeImage();
     
     //get the position rectangle.
     _MPixel X = _MWindowImageGraphX     (index);
