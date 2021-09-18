@@ -11,6 +11,6 @@
     #define _Printf_format_string_
 #endif
 
-const char *MFormatList(_Printf_format_string_ const char *format, va_list list);
+const char *MFormatList(_Printf_format_string_ const char *format, va_list list) __printflike(1, 0);
 
 const char *MFormat(_Printf_format_string_ const char *format, ...) __printflike(1, 2);
