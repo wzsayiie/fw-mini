@@ -42,24 +42,24 @@ static MObject *CopyObjectFromJSValue(JSValue *value) {
 }
 
 static JSValue *JSValueFromObject(MObject *object) {
-    MType type = MGetType(object);
+    MTypeId type = MGetTypeId(object);
     
     if (object == nullptr) {
         return nil;
         
-    } else if (type == MType_MBool) {
+    } else if (type == MTypeIdOf<MBool *>::Value) {
         bool raw = MBoolValue((MBool *)object);
         return [JSValue valueWithBool:raw inContext:sContext];
         
-    } else if (type == MType_MFloat) {
+    } else if (type == MTypeIdOf<MFloat *>::Value) {
         float raw = MFloatValue((MFloat *)object);
         return [JSValue valueWithDouble:raw inContext:sContext];
         
-    } else if (type == MType_MInt) {
+    } else if (type == MTypeIdOf<MInt *>::Value) {
         int raw = MIntValue((MInt *)object);
         return [JSValue valueWithInt32:raw inContext:sContext];
         
-    } else if (type == MType_MString) {
+    } else if (type == MTypeIdOf<MString *>::Value) {
         const char *raw = MStringU8Chars((MString *)object);
         return [JSValue valueWithObject:@(raw) inContext:sContext];
         

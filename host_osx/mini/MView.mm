@@ -55,9 +55,8 @@
 
 - (void)drawImage:(int)index withViewHeight:(float)viewHeight {
     //get the image.
-    MImage  *imageObject = _MWindowImageGraphObject(index);
-    auto     imageLoad   = (MImageLoad *)MImageGetLoad(imageObject);
-    NSImage *nativeImage = imageLoad->nativeImage();
+    auto imageObject = (MOSXImage *)_MWindowImageGraphObject(index);
+    NSImage *nativeImage = imageObject->nativeImage();
     
     //get the position rectangle.
     _MPixel W = _MWindowImageGraphWidth (index);

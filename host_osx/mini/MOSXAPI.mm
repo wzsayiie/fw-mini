@@ -1,13 +1,12 @@
 #import "MOSXAPI.h"
-#import "mhostapi.h"
 
 #pragma mark - native types.
 
-MImageLoad::MImageLoad(NSImage *nativeImage) {
+MOSXImage::MOSXImage(NSImage *nativeImage) {
     mNativeImage = nativeImage;
 }
 
-NSImage *MImageLoad::nativeImage() {
+NSImage *MOSXImage::nativeImage() {
     return mNativeImage;
 }
 
@@ -36,7 +35,7 @@ static MImage *CreateImage(MData *data) {
     NSImage *imageObject = [[NSImage alloc] initWithData:imageData];
     
     if (imageObject) {
-        return MImageCreate(new MImageLoad(imageObject));
+        return new MOSXImage(imageObject);
     }
     return nullptr;
 }

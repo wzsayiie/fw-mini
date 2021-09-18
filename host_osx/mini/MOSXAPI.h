@@ -1,12 +1,12 @@
 #import <Cocoa/Cocoa.h>
-#import "mtypes.h"
+#import "mhostapi.h"
 
 #pragma mark - native types.
 
-class MImageLoad : public MSpecial {
+class MOSXImage : public MImage {
     
 public:
-    MImageLoad(NSImage *nativeImage);
+    MOSXImage(NSImage *nativeImage);
     NSImage *nativeImage();
     
 private:
