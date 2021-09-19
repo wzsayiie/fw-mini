@@ -38,15 +38,6 @@ static void RegisterNativeFuncs() {
     }
 }
 
-static void MJsRunFile() {
-    MArray  *params = MJsCallingParams();
-    MObject *target = MArrayItem(params, 0);
-
-    if (MGetTypeId(target) == MTypeIdOf<MString *>::Value) {
-        MJsRunScriptNamed((MString *)target);
-    }
-}
-
 class JsLambdaActual : public MUnknown {
 
 public:
@@ -56,11 +47,11 @@ public:
 
     static void call(MObject *load) {
         auto lambda = (JsLambdaActual *)load;
-        lambda->run("_JsLambdaInvoke(%d)");
+        lambda->run("MJsLambdaInvoke(%d)");
     }
 
     ~JsLambdaActual() {
-        run("_JsLambdaRemove(%d)");
+        run("MJsLambdaRemove(%d)");
     }
 
 private:
@@ -88,35 +79,12 @@ static void MJsLambdaWrap() {
 }
 
 static void RegisterBuiltinFuncs() {
-
-    MJsRegisterFunc("MJsRunFile"   , (m_cast_lambda MJsRunFile   ).get());
     MJsRegisterFunc("MJsLambdaWrap", (m_cast_lambda MJsLambdaWrap).get());
 }
 
-static void InstallSimulatedNodeJsEnvironment() {
-    const char *script =
-    "const module = {}                  //01.\n"
-    "                                   //02.\n"
-    "function require(name) {           //03.\n"
-    "   if (!name.endsWith('.js')) {    //04.\n"
-    "       name = `${name}.js`         //05.\n"
-    "   }                               //06.\n"
-    "   MJsRunFile(name)                //07.\n"
-    "                                   //07.\n"
-    "   return module.exports           //09.\n"
-    "}                                  //10.\n";
-
-    MStringRef name = m_auto_release MStringCreateU8("simulated-nodejs");
-    MStringRef code = m_auto_release MStringCreateU8(script);
-    MJsRunScript(name.get(), code.get());
-}
-
-static void LaunchEntryFile(const char *file, const char *func) {
-    MStringRef launchFile = m_auto_release MStringCreateU8(file);
-    MJsRunScriptNamed(launchFile.get());
-
-    MStringRef launchFunc = m_auto_release MStringCreateU8(func);
-    MJsRunScript(launchFunc.get(), launchFunc.get());
+static void LoadFile(const char *name) {
+    MStringRef file = m_auto_release MStringCreateU8(name);
+    MJsRunFile(file.get());
 }
 
 static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
@@ -126,7 +94,6 @@ static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
     RegisterNativeFuncs ();
     RegisterBuiltinFuncs();
 
-    InstallSimulatedNodeJsEnvironment();
-
-    LaunchEntryFile("app.js", "Launch()");
+    LoadFile("runtime/runtime.js");
+    LoadFile("app.js");
 }

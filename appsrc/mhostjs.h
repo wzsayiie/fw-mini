@@ -28,4 +28,4 @@ M_FUNC_EXPORT void        MJsCallingReturn  (MObject *value)                  M_
 
 //execute javascript string.
 M_FUNC_EXPORT void MJsRunScript(MString *name, MString *script) M_META(MJsRunScript);
-M_FUNC_EXPORT void MJsRunScriptNamed(MString *name) M_META(MJsRunScriptNamed);
+M_FUNC_EXPORT void MJsRunFile  (MString *name) M_META(MJsRunFile);

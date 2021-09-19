@@ -146,7 +146,7 @@ void MJsRunScript(MString *name, MString *script) {
     RunScript(name, script);
 }
 
-void MJsRunScriptNamed(MString *name) {
+void MJsRunFile(MString *name) {
     const char *chars = MStringU8Chars(name);
     if (!chars) {
         return;
