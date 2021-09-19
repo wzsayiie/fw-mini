@@ -1,4 +1,7 @@
-include("gamekit.js")
+define(function () {
+    const Camera = require('./gamekit/Camera')
+    const Sprite = require('./gamekit/Sprite')
+    const util   = require('./minikit/util'  )
 
-function Launch() {
-}
+    Camera.mainCamera.moveTo(0, 0)
+})
