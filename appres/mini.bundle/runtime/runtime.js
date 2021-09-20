@@ -1,15 +1,19 @@
 //------------------------------------------------------------------------------
 //MJsLambda:
 
-let _lambdaPool = {}
+/** @type {Map<number, Function>} */
+let _lambdaPool = new Map()
+
 let _lambdaIden = 0
 
+/** @param {Function} func */
 function MJsLambdaInsert(func) {
     let iden = ++_lambdaIden
     _lambdaPool[iden] = func
     return iden
 }
 
+/** @param {number} iden */
 function MJsLambdaInvoke(iden) {
     let func = _lambdaPool[iden]
     if (func) {
@@ -17,10 +21,16 @@ function MJsLambdaInvoke(iden) {
     }
 }
 
+/** @param {number} iden */
 function MJsLambdaRemove(iden) {
     delete _lambdaPool[iden]
 }
 
+/**
+ * @param {Function} func
+ *
+ * @returns {Object}
+ */
 function MJsLambda(func) {
     if (typeof func == 'function') {
         let iden = MJsLambdaInsert(func)
@@ -32,6 +42,10 @@ function MJsLambda(func) {
 //------------------------------------------------------------------------------
 //require.js module support:
 
+/**
+ * @param {string} base
+ * @param {string} relative
+ */
 function _absolutePath(base, relative) {
     let array = base ? base.split('/') : []
     let fresh = relative.split('/')
@@ -66,42 +80,59 @@ function _absolutePath(base, relative) {
 //so that vs code can complete code.
 let module = {}
 
-let _locationStack = []
-let _moduleStack   = []
-let _loadedModules = {}
+/** @type {Set<string>} */
+let _loadingNameSet = new Set()
 
-function define(func) {
-    let module = func()
-    _moduleStack.push(module)
+/** @type {string[]} */
+let _baseDirStack = []
+
+/** @type {Object[]} */
+let _loadingModuleStack = []
+
+/** @type {Map<string, Object>} */
+let _loadedModuleMap = new Map()
+
+/** @param {Function} factory */
+function define(factory) {
+    let module = factory()
+    _loadingModuleStack.push(module)
 }
 
+/** @param {string} name */
 function require(name) {
     if (!name.endsWith('.js')) {
         name = `${name}.js`
     }
 
-    //get the absolute path of name.
-    let base = _locationStack.length > 0 ? _locationStack[_locationStack.length - 1] : null
+    let base = _baseDirStack.length > 0 ? _baseDirStack[_baseDirStack.length - 1] : null
     let path = _absolutePath(base, name)
 
     //is the module loaded?
-    let module = _loadedModules[path.file]
+    let module = _loadedModuleMap.get(path.file)
     if (module) {
         return module
     }
 
-    //load the module:
-    let count = _moduleStack.length
-
-    _locationStack.push(path.dir)
-    MJsRunFile(path.file)
-    _locationStack.pop()
-
-    if (count + 1 == _moduleStack.length) {
-        let fresh = _moduleStack.pop()
-        _loadedModules[path.file] = fresh
-        return fresh
-    } else {
+    //whether it's module circular dependency?
+    if (_loadingNameSet.has(path)) {
         return null
     }
+
+    //load the module:
+    let count = _loadingModuleStack.length
+
+    _loadingNameSet.add(path.file)
+    _baseDirStack.push(path.dir)
+
+    MJsRunFile(path.file)
+
+    _loadingNameSet.delete(path.file)
+    _baseDirStack.pop()
+
+    let fresh = null
+    if (count + 1 == _loadingModuleStack.length) {
+        fresh = _loadingModuleStack.pop()
+    }
+    _loadedModuleMap.set(path.file, fresh)
+    return fresh
 }
