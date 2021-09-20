@@ -17,7 +17,7 @@ static void PrintMessage(MString *text) {
 }
 
 static MData *CopyBundleAsset(MString *path) {
-    NSBundle *bundle = nil;
+    static NSBundle *bundle = nil;
     if (!bundle) {
         NSString *appMainPath = NSBundle.mainBundle.bundlePath;
         NSString *bundlePath  = [NSString stringWithFormat:@"%@/%s", appMainPath, MAssetBundleU8Name];
