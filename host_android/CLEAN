@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # sometimes, android studio can't work normally for variety of reasons,
 # use this script to clean the project.
