@@ -4,6 +4,14 @@
 
 @implementation MView
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        //by default, "UIView" will not clear the buffer before redrawing.
+        self.backgroundColor = UIColor.whiteColor;
+    }
+    return self;
+}
+
 - (void)drawRect:(CGRect)rect {
     _MWindowOnDraw();
     
