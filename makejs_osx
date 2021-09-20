@@ -1,5 +1,15 @@
-#!/bin/bash
+#!/bin/zsh
 
 set -e -u
 
 cd `dirname $0`
+
+nam="miniji"
+src="appsrc/js*.cpp appsrc/m*.cpp host_osx/mini/*.mm"
+inc="-Iappsrc"
+ref="-framework Cocoa -framework JavaScriptCore"
+flg="--std=c++14 -fobjc-arc"
+
+mkdir   -p BUILD
+rm      -f BUILD/$nam
+clang++ -o BUILD/$nam $inc $ref $flg $src
