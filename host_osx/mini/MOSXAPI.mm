@@ -17,11 +17,24 @@ static void PrintMessage(MString *text) {
 }
 
 static MData *CopyBundleAsset(MString *path) {
-    NSBundle *bundle = nil;
+    static NSBundle *bundle = nil;
     if (!bundle) {
-        NSString *appMainPath = NSBundle.mainBundle.bundlePath;
-        NSString *bundlePath  = [NSString stringWithFormat:@"%@/Contents/Resources/%s", appMainPath, MAssetBundleU8Name];
-        bundle = [NSBundle bundleWithPath:bundlePath];
+        NSString *mainPath = NSBundle.mainBundle.bundlePath;
+        
+        NSString *pathInBundle  = [NSString stringWithFormat:@"%@/Contents/Resources/%s", mainPath, MAssetBundleU8Name];
+        NSString *pathInFlat    = [NSString stringWithFormat:@"%@/%s", mainPath, MAssetBundleU8Name];
+        NSString *pathInProject = nil;
+        
+        NSRange projectName = [mainPath rangeOfString:@"fw-mini"];
+        if (projectName.location != NSNotFound) {
+            NSString *base = [mainPath substringToIndex:NSMaxRange(projectName)];
+            pathInProject = [NSString stringWithFormat:@"%@/appres/%s", base, MAssetBundleU8Name];
+        }
+        
+        NSFileManager *manager = NSFileManager.defaultManager;
+        if /**/ ([manager fileExistsAtPath:pathInBundle ]) { bundle = [NSBundle bundleWithPath:pathInBundle ]; }
+        else if ([manager fileExistsAtPath:pathInFlat   ]) { bundle = [NSBundle bundleWithPath:pathInFlat   ]; }
+        else if ([manager fileExistsAtPath:pathInProject]) { bundle = [NSBundle bundleWithPath:pathInProject]; }
     }
     
     NSString *assetPath = [bundle pathForResource:@(MStringU8Chars(path)) ofType:nil];
