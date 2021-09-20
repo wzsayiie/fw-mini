@@ -1,12 +1,17 @@
 //------------------------------------------------------------------------------
 //MJsLambda:
 
-/** @type {Map<number, Function>} */
+/**
+ * @callback runtime.LambdaFunction
+ * @returns {void} 
+ */
+
+/** @type {Map<number, runtime.LambdaFunction>} */
 let _lambdaPool = new Map()
 
 let _lambdaIden = 0
 
-/** @param {Function} func */
+/** @param {runtime.LambdaFunction} func */
 function MJsLambdaInsert(func) {
     let iden = ++_lambdaIden
     _lambdaPool[iden] = func
@@ -27,7 +32,7 @@ function MJsLambdaRemove(iden) {
 }
 
 /**
- * @param {Function} func
+ * @param {runtime.LambdaFunction} func
  *
  * @returns {Object}
  */
@@ -92,7 +97,12 @@ let _loadingModuleStack = []
 /** @type {Map<string, Object>} */
 let _loadedModuleMap = new Map()
 
-/** @param {Function} factory */
+/**
+ * @callback define.FactoryFunction
+ * @return {Object} 
+ */
+
+/** @param {define.FactoryFunction} factory */
 function define(factory) {
     let module = factory()
     _loadingModuleStack.push(module)

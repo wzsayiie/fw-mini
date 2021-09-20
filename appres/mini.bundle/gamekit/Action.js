@@ -16,6 +16,16 @@ define(function () {
         OnUpdate()
     }))
 
+    /**
+     * @callback Action.Awaker
+     * @returns {void}
+     */
+
+    /**
+     * @callback Action.Updater
+     * @returns {void}
+     */
+
     class Action extends Feature {
 
         constructor(sprite) {
@@ -26,22 +36,22 @@ define(function () {
 
             /**
              * @private
-             * @type {Function}
+             * @type {Action.Awaker}
              */
             this._awaker = null
 
             /**
              * @private
-             * @type {Function}
+             * @type {Action.Updater}
              */
             this._updater = null
         }
 
-        /** @param {Function} value */
-        set updater(value) { this._updater = value }
-
-        /** @param {Function} value */
+        /** @param {Action.Awaker} value */
         set awaker(value) { this._awaker = value }
+
+        /** @param {Action.Updater} value */
+        set updater(value) { this._updater = value }
 
         onCreate() {
             actionSet.add(this)

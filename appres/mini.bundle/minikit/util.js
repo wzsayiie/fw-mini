@@ -103,7 +103,12 @@ define(function () {
     }
 
     /**
-     * @param {Function} func
+     * @callback util.LambdaFunction
+     * @returns {void}
+     */
+
+    /**
+     * @param {util.LambdaFunction} func
      *
      * @returns {Object}
      */

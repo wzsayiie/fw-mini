@@ -2,6 +2,15 @@ define(function () {
     const Feature = require('./Feature')
     const context = require('./context')
 
+    /**
+     * @callback Facade.Drawer
+     * 
+     * @param {number} width
+     * @param {number} height
+     * 
+     * @returns {void}
+     */
+
     class Facade extends Feature {
 
         constructor(sprite) {
@@ -15,7 +24,7 @@ define(function () {
 
             /**
              * @private
-             * @type {Function}
+             * @type {Facade.Drawer}
              */
             this._drawer = null
 
@@ -38,7 +47,7 @@ define(function () {
         get width () { return this._width  }
         get height() { return this._height }
 
-        /** @param {Function} value */
+        /** @param {Facade.Drawer} value */
         set drawer(value) { this._drawer = value }
 
         /** @param {Object} value */
