@@ -7,14 +7,29 @@ define(function () {
         constructor(sprite) {
             super(sprite)
 
-            this._width  = 0
+            /** @private */
+            this._width = 0
+
+            /** @private */
             this._height = 0
 
+            /**
+             * @private
+             * @type {Function}
+             */
             this._drawer = null
-            this._image  = null
-            this._color  = 0x4488CCFF
+
+            /** @private */
+            this._image = null
+
+            /** @private */
+            this._color = 0x4488CCFF
         }
 
+        /**
+         * @param {number} width
+         * @param {number} height
+         */
         setSize(width, height) {
             this._width  = width
             this._height = height
@@ -23,9 +38,14 @@ define(function () {
         get width () { return this._width  }
         get height() { return this._height }
 
+        /** @param {Function} value */
         set drawer(value) { this._drawer = value }
-        set image (value) { this._image  = value }
-        set color (value) { this._color  = value }
+
+        /** @param {Object} value */
+        set image(value) { this._image = value }
+
+        /** @param {number} value */
+        set color(value) { this._color = value }
 
         onDraw() {
             if (this._drawer) {

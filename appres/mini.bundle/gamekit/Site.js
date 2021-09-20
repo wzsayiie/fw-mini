@@ -1,6 +1,7 @@
 define(function () {
     const Feature = require('./Feature')
 
+    /** @type {Set<Site>} */
     let topSites = new Set()
 
     class Site extends Feature {
@@ -12,10 +13,22 @@ define(function () {
         constructor(sprite) {
             super(sprite)
             
+            /**
+             * @private
+             * @type {Set<Site>}
+             */
             this._children = new Set()
+
+            /**
+             * @private
+             * @type {Site}
+             */
             this._parent = null
 
+            /** @private */
             this._x = 0
+
+            /** @private */
             this._y = 0
         }
 
@@ -32,6 +45,7 @@ define(function () {
             }
         }
 
+        /** @param {Site} fresh */
         set parent(fresh) {
             if (fresh == this._parent) {
                 return
@@ -69,6 +83,10 @@ define(function () {
         get parent  () { return this._parent   }
         get children() { return this._children }
 
+        /**
+         * @param {number} x
+         * @param {number} y
+         */
         moveTo(x, y) {
             this._x = x
             this._y = y

@@ -1,26 +1,42 @@
 define(function () {
     const Site    = require('./Site')
+    const Sprite  = require('./Sprite')
     const context = require('./context')
     const util    = require('../minikit/util')
+
+    /** @type {Camera} */
+    let mainCamera = null
 
     class Camera {
 
         static get mainCamera() {
-            if (!this._mainCamera) {
-                this._mainCamera = new Camera()
+            if (!mainCamera) {
+                mainCamera = new Camera()
             }
-            return this._mainCamera
+            return mainCamera
         }
 
         constructor() {
-            this._viewWidth  = MWindowWidth ()
+            /**
+             * @private
+             * @type {number}
+             */
+            this._viewWidth = MWindowWidth()
+
+            /**
+             * @private
+             * @type {number}
+             */
             this._viewHeight = MWindowHeight()
 
+            /** @private */
             this._x = 0
+
+            /** @private */
             this._y = 0
 
             MWindowAddListener(util.lambda(() => {
-                this._onWindowEvent()
+                this.onWindowEvent()
             }))
         }
 
@@ -30,61 +46,83 @@ define(function () {
         get x() { return this._x }
         get y() { return this._y }
 
+        /**
+         * @param {number} x
+         * @param {number} y
+         */
         moveTo(x, y) {
             this._x = x
             this._y = y
         }
 
-        _onWindowEvent() {
+        /** @private */
+        onWindowEvent() {
             let event = MWindowCurrentEvent()
 
             switch (event) {
-                case MWindowEvent_Load  : this._onLoad  (); break
-                case MWindowEvent_Resize: this._onResize(); break
-                case MWindowEvent_Draw  : this._onDraw  (); break
+                case MWindowEvent_Load  : this.onLoad  (); break
+                case MWindowEvent_Resize: this.onResize(); break
+                case MWindowEvent_Draw  : this.onDraw  (); break
             }
         }
 
-        _onLoad() {
+        /** @private */
+        onLoad() {
             this._viewWidth  = MWindowWidth ()
             this._viewHeight = MWindowHeight()
         }
 
-        _onResize() {
+        /** @private */
+        onResize() {
             this._viewWidth  = MWindowWidth ()
             this._viewHeight = MWindowHeight()
         }
 
-        _onDraw() {
+        /** @private */
+        onDraw() {
             let viewOffsetX = this._viewWidth  / 2 - this._x
             let viewOffsetY = this._viewHeight / 2 - this._y
 
             Site.topSites.forEach((site) => {
-                this._drawSprites(viewOffsetX, viewOffsetY, site)
+                this.drawSprites(viewOffsetX, viewOffsetY, site)
             })
         }
 
-        _drawSprites(viewOffsetX, viewOffsetY, site) {
+        /**
+         * @private
+         * @param {number} viewOffsetX
+         * @param {number} viewOffsetY
+         * @param {Site}   site
+         */
+        drawSprites(viewOffsetX, viewOffsetY, site) {
             let x = viewOffsetX + site.x
             let y = viewOffsetY + site.y
 
-            let width  = site.sprite.facade.width
-            let height = site.sprite.facade.height
+            let facade = Sprite.getSprite(site).facade
+            let width  = facade.width
+            let height = facade.height
 
-            if (this._isInView(x, y, width, height)) {
+            if (this.isInView(x, y, width, height)) {
                 let originX = x - width  / 2
                 let originY = y - height / 2
                 context.setOffset(originX, originY)
 
-                site.sprite.facade.onDraw()
+                facade.onDraw()
             }
 
             site.children.forEach((subsite) => {
-                this._drawSprites(x, y, subsite)
+                this.drawSprites(x, y, subsite)
             })
         }
 
-        _isInView(x, y, width, height) {
+        /**
+         * @private
+         * @param {number} x
+         * @param {number} y
+         * @param {number} width
+         * @param {number} height
+         */
+        isInView(x, y, width, height) {
             if (width  <= 0) { return false }
             if (height <= 0) { return false }
 

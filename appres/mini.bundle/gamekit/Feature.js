@@ -2,6 +2,7 @@ define(function () {
     class Feature {
 
         constructor(sprite) {
+            /** @private */
             this._sprite = sprite
         }
 

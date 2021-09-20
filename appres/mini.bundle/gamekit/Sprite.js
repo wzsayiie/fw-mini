@@ -1,55 +1,70 @@
 define(function () {
-    const Action = require('./Action')
-    const Facade = require('./Facade')
-    const Site   = require('./Site'  )
-
-    let classes = {
-        'action': Action,
-        'facade': Facade,
-        'site'  : Site  ,
-    }
+    const Action  = require('./Action' )
+    const Facade  = require('./Facade' )
+    const Feature = require('./Feature')
+    const Site    = require('./Site'   )
 
     class Sprite {
 
-        constructor() {
-            this._destroyed = false
-            this._features = {}
-
-            //feature 'site' is default.
-            this.getFeature('site')
+        /**
+         * @param {Feature} feature
+         * 
+         * @returns {Sprite}
+         */
+        static getSprite(feature) {
+            return feature.sprite
         }
 
-        getFeature(name) {
+        constructor() {
+            /** @private */
+            this._destroyed = false
+
+            /**
+             * @private
+             * @type {Map<Object, Feature>}
+             */
+            this._features = new Map()
+
+            //feature 'site' is default.
+            this.getFeature(Site)
+        }
+
+        /**
+         * @param {Object} cls
+         *
+         * @returns {Feature}
+         */
+        getFeature(cls) {
             if (this._destroyed) {
                 return null
             }
 
             //is the feature exist?
-            let feature = this._features[name]
+            let feature = this._features[cls]
             if (feature) {
                 return feature
             }
 
-            //try create the feature.
-            let cls = classes[name]
-            if (cls) {
-                let fresh = new cls(this)
-                fresh.onCreate()
-                this._features[name] = fresh
-                return fresh
-            }
-
-            return null
+            //create the feature.
+            let fresh = new cls(this)
+            fresh.onCreate()
+            this._features[cls] = fresh
+            return fresh
         }
 
-        get action() { return this.getFeature('action') }
-        get facade() { return this.getFeature('facade') }
-        get site  () { return this.getFeature('site'  ) }
+        /** @returns {Action} */
+        get action() { return this.getFeature(Action) }
+
+        /** @returns {Facade} */
+        get facade() { return this.getFeature(Facade) }
+
+        /** @returns {Site} */
+        get site() { return this.getFeature(Site) }
 
         destroy() {
             //destroy children.
             this.site.children.forEach((site) => {
-                site.sprite.destroy()
+                Sprite.getSprite(site).destroy()
             })
 
             //destroy self.
