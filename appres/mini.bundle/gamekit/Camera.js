@@ -3,6 +3,7 @@ define(function () {
     const Sprite   = require('./Sprite')
     const context  = require('./context')
     const util     = require('../minikit/util')
+    const viewport = require('./viewport')
 
     /** @type {Camera} */
     let mainCamera = null
@@ -17,71 +18,36 @@ define(function () {
         }
 
         constructor() {
-            /**
-             * @private
-             * @type {number}
-             */
-            this._viewWidth = MWindowWidth()
-
-            /**
-             * @private
-             * @type {number}
-             */
-            this._viewHeight = MWindowHeight()
-
-            /** @private */
-            this._x = 0
-
-            /** @private */
-            this._y = 0
-
             MWindowAddListener(util.lambda(() => {
-                this.onWindowEvent()
+                this.onDraw()
             }))
         }
-
-        get viewWidth () { return this._viewWidth  }
-        get viewHeight() { return this._viewHeight }
-
-        get x() { return this._x }
-        get y() { return this._y }
 
         /**
          * @param {number} x
          * @param {number} y
          */
         moveTo(x, y) {
-            this._x = x
-            this._y = y
+            viewport.x = x
+            viewport.y = y
         }
 
-        /** @private */
-        onWindowEvent() {
-            let event = MWindowCurrentEvent()
+        /** @param {number} value */
+        set x(value) { viewport.x = value }
 
-            switch (event) {
-                case MWindowEvent_Load  : this.onLoad  (); break
-                case MWindowEvent_Resize: this.onResize(); break
-                case MWindowEvent_Draw  : this.onDraw  (); break
-            }
-        }
+        /** @param {number} value */
+        set y(value) { viewport.y = value }
 
-        /** @private */
-        onLoad() {
-            this._viewWidth  = MWindowWidth ()
-            this._viewHeight = MWindowHeight()
-        }
+        get x() { return viewport.x }
+        get y() { return viewport.y }
 
-        /** @private */
-        onResize() {
-            this._viewWidth  = MWindowWidth ()
-            this._viewHeight = MWindowHeight()
-        }
+        get viewWidth () { return viewport.width  }
+        get viewHeight() { return viewport.height }
 
         /** @private */
         onDraw() {
-            let viewOffsetX = this._viewWidth  / 2 - this._x
-            let viewOffsetY = this._viewHeight / 2 - this._y
+            let viewOffsetX = viewport.width  / 2 - viewport.x
+            let viewOffsetY = viewport.height / 2 - viewport.y
 
             Position.topPositions.forEach((item) => {
                 this.drawSprites(viewOffsetX, viewOffsetY, item)
@@ -98,16 +64,19 @@ define(function () {
             let x = viewOffsetX + position.x
             let y = viewOffsetY + position.y
 
-            let renderer = Sprite.getSprite(position).renderer
-            let width    = renderer.width
-            let height   = renderer.height
+            let sprite = Sprite.getSpriteOf(position)
+            if (sprite.hasRenderer) {
+                let renderer = sprite.renderer
+                let width    = renderer.width
+                let height   = renderer.height
 
-            if (this.isInView(x, y, width, height)) {
-                let originX = x - width  / 2
-                let originY = y - height / 2
-                context.setOffset(originX, originY)
+                if (this.isInView(x, y, width, height)) {
+                    let originX = x - width  / 2
+                    let originY = y - height / 2
+                    context.setOffset(originX, originY)
 
-                renderer.onDraw()
+                    renderer.onDraw()
+                }
             }
 
             position.children.forEach((item) => {
@@ -126,10 +95,10 @@ define(function () {
             if (width  <= 0) { return false }
             if (height <= 0) { return false }
 
-            if (x + width  / 2 < 0               ) { return false }
-            if (x - width  / 2 > this._viewWidth ) { return false }
-            if (y + height / 2 < 0               ) { return false }
-            if (y - height / 2 > this._viewHeight) { return false }
+            if (x + width  / 2 < 0              ) { return false }
+            if (x - width  / 2 > viewport.width ) { return false }
+            if (y + height / 2 < 0              ) { return false }
+            if (y - height / 2 > viewport.height) { return false }
 
             return true
         }
