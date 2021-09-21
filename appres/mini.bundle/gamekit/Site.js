@@ -92,6 +92,12 @@ define(function () {
             this._y = y
         }
 
+        /** @param {number} value */
+        set x(value) { this._x = value }
+
+        /** @param {number} value */
+        set y(value) { this._y = value }
+
         get x() { return this._x }
         get y() { return this._y }
 

@@ -44,6 +44,12 @@ define(function () {
             this._height = height
         }
 
+        /** @param {number} value */
+        set width(value) { this._width = value }
+
+        /** @param {number} value */
+        set height(value) { this._height = value }
+
         get width () { return this._width  }
         get height() { return this._height }
 
