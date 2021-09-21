@@ -4,12 +4,12 @@ define(function () {
 
     const UpdateInterval = 0.1
 
-    /** @type {Set<Action>} */
-    let actionSet = new Set()
+    /** @type {Set<Behaviour>} */
+    let behaviourSet = new Set()
 
     function OnUpdate() {
-        actionSet.forEach((action) => {
-            action.onUpdate()
+        behaviourSet.forEach((item) => {
+            item.onUpdate()
         })
     }
     MRunEverySeconds(UpdateInterval, util.lambda(() => {
@@ -17,16 +17,16 @@ define(function () {
     }))
 
     /**
-     * @callback Action.Awaker
+     * @callback Behaviour.Awaker
      * @returns {void}
      */
 
     /**
-     * @callback Action.Updater
+     * @callback Behaviour.Updater
      * @returns {void}
      */
 
-    class Action extends Feature {
+    class Behaviour extends Feature {
 
         constructor(sprite) {
             super(sprite)
@@ -36,29 +36,29 @@ define(function () {
 
             /**
              * @private
-             * @type {Action.Awaker}
+             * @type {Behaviour.Awaker}
              */
             this._awaker = null
 
             /**
              * @private
-             * @type {Action.Updater}
+             * @type {Behaviour.Updater}
              */
             this._updater = null
         }
 
-        /** @param {Action.Awaker} value */
+        /** @param {Behaviour.Awaker} value */
         set awaker(value) { this._awaker = value }
 
-        /** @param {Action.Updater} value */
+        /** @param {Behaviour.Updater} value */
         set updater(value) { this._updater = value }
 
         onCreate() {
-            actionSet.add(this)
+            behaviourSet.add(this)
         }
 
         onDestroy() {
-            actionSet.delete(this)
+            behaviourSet.delete(this)
         }
 
         /** @private */
@@ -76,5 +76,5 @@ define(function () {
         }
     }
 
-    return module.exports = Action
+    return module.exports = Behaviour
 })

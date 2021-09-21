@@ -1,13 +1,13 @@
 define(function () {
     const Feature = require('./Feature')
 
-    /** @type {Set<Site>} */
-    let topSites = new Set()
+    /** @type {Set<Position>} */
+    let topPositions = new Set()
 
-    class Site extends Feature {
+    class Position extends Feature {
 
-        static get topSites() {
-            return topSites
+        static get topPositions() {
+            return topPositions
         }
 
         constructor(sprite) {
@@ -15,13 +15,13 @@ define(function () {
             
             /**
              * @private
-             * @type {Set<Site>}
+             * @type {Set<Position>}
              */
             this._children = new Set()
 
             /**
              * @private
-             * @type {Site}
+             * @type {Position}
              */
             this._parent = null
 
@@ -34,18 +34,18 @@ define(function () {
 
         onCreate() {
             //default as top-level object.
-            topSites.add(this)
+            topPositions.add(this)
         }
 
         onDestroy() {
             if (this._parent) {
                 this._parent.delete(this)
             } else {
-                topSites.delete(this)
+                topPositions.delete(this)
             }
         }
 
-        /** @param {Site} fresh */
+        /** @param {Position} fresh */
         set parent(fresh) {
             if (fresh == this._parent) {
                 return
@@ -61,7 +61,7 @@ define(function () {
             if (this._parent) {
                 this._parent._children.delete(this)
             } else {
-                topSites.delete(this)
+                topPositions.delete(this)
             }
 
             //add to new parent:
@@ -71,7 +71,7 @@ define(function () {
                 this._x = currentWorldX - fresh.worldX
                 this._y = currentWorldY - fresh.worldY
             } else {
-                topSites.add(this)
+                topPositions.add(this)
 
                 this._x = currentWorldX
                 this._y = currentWorldY
@@ -103,20 +103,20 @@ define(function () {
 
         get worldX() {
             let value = this._x
-            for (let site = this._parent; site; site = site._parent) {
-                value += site._x
+            for (let position = this._parent; position; position = position._parent) {
+                value += position._x
             }
             return value
         }
 
         get worldY() {
             let value = this._y
-            for (let site = this._parent; site; site = site._parent) {
-                value += site._y
+            for (let position = this._parent; position; position = position._parent) {
+                value += position._y
             }
             return value
         }
     }
 
-    return module.exports = Site
+    return module.exports = Position
 })

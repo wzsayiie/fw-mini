@@ -1,8 +1,8 @@
 define(function () {
-    const Action  = require('./Action' )
-    const Facade  = require('./Facade' )
-    const Feature = require('./Feature')
-    const Site    = require('./Site'   )
+    const Behaviour = require('./Behaviour')
+    const Feature   = require('./Feature'  )
+    const Position  = require('./Position' )
+    const Renderer  = require('./Renderer' )
 
     class Sprite {
 
@@ -25,8 +25,8 @@ define(function () {
              */
             this._features = new Map()
 
-            //feature 'site' is default.
-            this.getFeature(Site)
+            //feature 'position' is default.
+            this.getFeature(Position)
         }
 
         /**
@@ -52,19 +52,19 @@ define(function () {
             return fresh
         }
 
-        /** @returns {Action} */
-        get action() { return this.getFeature(Action) }
+        /** @returns {Behaviour} */
+        get behaviour() { return this.getFeature(Behaviour) }
 
-        /** @returns {Facade} */
-        get facade() { return this.getFeature(Facade) }
+        /** @returns {Position} */
+        get position() { return this.getFeature(Position) }
 
-        /** @returns {Site} */
-        get site() { return this.getFeature(Site) }
+        /** @returns {Renderer} */
+        get renderer() { return this.getFeature(Renderer) }
 
         destroy() {
             //destroy children.
-            this.site.children.forEach((site) => {
-                Sprite.getSprite(site).destroy()
+            this.position.children.forEach((item) => {
+                Sprite.getSprite(item).destroy()
             })
 
             //destroy self.

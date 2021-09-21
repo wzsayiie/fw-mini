@@ -3,7 +3,7 @@ define(function () {
     const context = require('./context')
 
     /**
-     * @callback Facade.Drawer
+     * @callback Renderer.Drawer
      * 
      * @param {number} width
      * @param {number} height
@@ -11,7 +11,7 @@ define(function () {
      * @returns {void}
      */
 
-    class Facade extends Feature {
+    class Renderer extends Feature {
 
         constructor(sprite) {
             super(sprite)
@@ -24,7 +24,7 @@ define(function () {
 
             /**
              * @private
-             * @type {Facade.Drawer}
+             * @type {Renderer.Drawer}
              */
             this._drawer = null
 
@@ -53,7 +53,7 @@ define(function () {
         get width () { return this._width  }
         get height() { return this._height }
 
-        /** @param {Facade.Drawer} value */
+        /** @param {Renderer.Drawer} value */
         set drawer(value) { this._drawer = value }
 
         /** @param {Object} value */
@@ -77,5 +77,5 @@ define(function () {
         }
     }
 
-    return module.exports = Facade
+    return module.exports = Renderer
 })

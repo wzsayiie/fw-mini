@@ -1,8 +1,8 @@
 define(function () {
-    const Site    = require('./Site')
-    const Sprite  = require('./Sprite')
-    const context = require('./context')
-    const util    = require('../minikit/util')
+    const Position = require('./Position')
+    const Sprite   = require('./Sprite')
+    const context  = require('./context')
+    const util     = require('../minikit/util')
 
     /** @type {Camera} */
     let mainCamera = null
@@ -83,35 +83,35 @@ define(function () {
             let viewOffsetX = this._viewWidth  / 2 - this._x
             let viewOffsetY = this._viewHeight / 2 - this._y
 
-            Site.topSites.forEach((site) => {
-                this.drawSprites(viewOffsetX, viewOffsetY, site)
+            Position.topPositions.forEach((item) => {
+                this.drawSprites(viewOffsetX, viewOffsetY, item)
             })
         }
 
         /**
          * @private
-         * @param {number} viewOffsetX
-         * @param {number} viewOffsetY
-         * @param {Site}   site
+         * @param {number}   viewOffsetX
+         * @param {number}   viewOffsetY
+         * @param {Position} position
          */
-        drawSprites(viewOffsetX, viewOffsetY, site) {
-            let x = viewOffsetX + site.x
-            let y = viewOffsetY + site.y
+        drawSprites(viewOffsetX, viewOffsetY, position) {
+            let x = viewOffsetX + position.x
+            let y = viewOffsetY + position.y
 
-            let facade = Sprite.getSprite(site).facade
-            let width  = facade.width
-            let height = facade.height
+            let renderer = Sprite.getSprite(position).renderer
+            let width    = renderer.width
+            let height   = renderer.height
 
             if (this.isInView(x, y, width, height)) {
                 let originX = x - width  / 2
                 let originY = y - height / 2
                 context.setOffset(originX, originY)
 
-                facade.onDraw()
+                renderer.onDraw()
             }
 
-            site.children.forEach((subsite) => {
-                this.drawSprites(x, y, subsite)
+            position.children.forEach((item) => {
+                this.drawSprites(x, y, item)
             })
         }
 
