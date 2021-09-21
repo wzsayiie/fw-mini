@@ -11,7 +11,7 @@ define(function () {
          * 
          * @returns {Sprite}
          */
-        static getSprite(feature) {
+        static getSpriteOf(feature) {
             return feature.sprite
         }
 
@@ -61,10 +61,23 @@ define(function () {
         /** @returns {Renderer} */
         get renderer() { return this.getFeature(Renderer) }
 
+        /**
+         * @param {Object} cls
+         *
+         * @returns {boolean}
+         */
+        isThereFeature(cls) {
+            return !this._destroyed && !!this._features[cls]
+        }
+
+        get hasBehaviour() { return this.isThereFeature(Behaviour) }
+        get hasPosition () { return this.isThereFeature(Position ) }
+        get hasRenderer () { return this.isThereFeature(Renderer ) }
+
         destroy() {
             //destroy children.
             this.position.children.forEach((item) => {
-                Sprite.getSprite(item).destroy()
+                Sprite.getSpriteOf(item).destroy()
             })
 
             //destroy self.
