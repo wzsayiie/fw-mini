@@ -24,7 +24,7 @@ void _MAppUpdate() {
     }
 }
 
-void _MAppAddLaunchListener(MLambda *listener, int priority) {
+void MAppAddLaunchListener(MLambda *listener, int priority) {
     if (!listener) {
         return;
     }
@@ -41,7 +41,7 @@ void _MAppAddLaunchListener(MLambda *listener, int priority) {
     sLaunchItems().push_back(fresh);
 }
 
-void _MAppAddUpdateListener(MLambda *listener) {
+void MAppAddUpdateListener(MLambda *listener) {
     if (!listener) {
         return;
     }
@@ -55,12 +55,12 @@ _MAppLaunchAdder::_MAppLaunchAdder(void (*func)(), int priority) {
     MLambdaRef listener = m_cast_lambda [func]() {
         func();
     };
-    _MAppAddLaunchListener(listener.get(), priority);
+    MAppAddLaunchListener(listener.get(), priority);
 }
 
 _MAppUpdateAdder::_MAppUpdateAdder(void (*func)()) {
     MLambdaRef listener = m_cast_lambda [func]() {
         func();
     };
-    _MAppAddUpdateListener(listener.get());
+    MAppAddUpdateListener(listener.get());
 }

@@ -101,21 +101,8 @@ define(function () {
         get x() { return this._x }
         get y() { return this._y }
 
-        get worldX() {
-            let value = this._x
-            for (let position = this._parent; position; position = position._parent) {
-                value += position._x
-            }
-            return value
-        }
-
-        get worldY() {
-            let value = this._y
-            for (let position = this._parent; position; position = position._parent) {
-                value += position._y
-            }
-            return value
-        }
+        get worldX() { return this._parent ? this._parent.worldX + this._x : this._x }
+        get worldY() { return this._parent ? this._parent.worldY + this._y : this._y }
     }
 
     return module.exports = Position
