@@ -1,26 +1,52 @@
 define(function () {
-    const Position = require('./Position')
-    const Sprite   = require('./Sprite')
-    const context  = require('./context')
+    const Renderer = require('./Renderer')
     const util     = require('../minikit/util')
     const viewport = require('./viewport')
 
+    /** @type {Set<Camera>} */
+    let cameraSet = new Set()
+
     /** @type {Camera} */
-    let mainCamera = null
+    let uiCamera = null
+
+    function Draw() {
+        //the ui camera is processed finally,
+        //so that the image drawn by the ui camera is on the top.
+        for (let camera of cameraSet) {
+            if (camera != uiCamera) {
+                camera.draw()
+            }
+        }
+
+        if (uiCamera && uiCamera.active) {
+            uiCamera.draw()
+        }
+    }
+
+    MWindowAddListener(util.lambda(() => {
+        let event = MWindowCurrentEvent()
+        if (event == MWindowEvent_Draw) {
+            Draw()
+        }
+    }))
 
     class Camera {
 
         static get mainCamera() {
-            if (!mainCamera) {
-                mainCamera = new Camera()
+            if (!uiCamera) {
+                uiCamera = new Camera()
             }
-            return mainCamera
+            return uiCamera
         }
 
         constructor() {
-            MWindowAddListener(util.lambda(() => {
-                this.onDraw()
-            }))
+            /** @private */ this._x = 0
+            /** @private */ this._y = 0
+
+            /** @private */
+            this._active = true
+
+            cameraSet.add(this)
         }
 
         /**
@@ -28,79 +54,38 @@ define(function () {
          * @param {number} y
          */
         moveTo(x, y) {
-            viewport.x = x
-            viewport.y = y
+            this._x = x
+            this._y = y
+
+            if (this == uiCamera) {
+                viewport.moveTo(x, y)
+            }
         }
 
-        /** @param {number} value */
-        set x(value) { viewport.x = value }
+        /** @param {number} value */ set x(value) { this.moveTo(value  , this._y) }
+        /** @param {number} value */ set y(value) { this.moveTo(this._x, value  ) }
 
-        /** @param {number} value */
-        set y(value) { viewport.y = value }
-
-        get x() { return viewport.x }
-        get y() { return viewport.y }
+        get x() { return this._x }
+        get y() { return this._y }
 
         get viewWidth () { return viewport.width  }
         get viewHeight() { return viewport.height }
 
-        /** @private */
-        onDraw() {
-            let viewOffsetX = viewport.width  / 2 - viewport.x
-            let viewOffsetY = viewport.height / 2 - viewport.y
+        /** @param {boolean} value */
+        set active(value) {
+            if /**/ ( value && !this._active) { cameraSet.add   (this) }
+            else if (!value &&  this._active) { cameraSet.delete(this) }
 
-            Position.topPositions.forEach((item) => {
-                this.drawSprites(viewOffsetX, viewOffsetY, item)
-            })
+            this._active = value
         }
 
-        /**
-         * @private
-         * @param {number}   viewOffsetX
-         * @param {number}   viewOffsetY
-         * @param {Position} position
-         */
-        drawSprites(viewOffsetX, viewOffsetY, position) {
-            let x = viewOffsetX + position.x
-            let y = viewOffsetY + position.y
-
-            let sprite = Sprite.getSpriteOf(position)
-            if (sprite.hasRenderer) {
-                let renderer = sprite.renderer
-                let width    = renderer.width
-                let height   = renderer.height
-
-                if (this.isInView(x, y, width, height)) {
-                    let originX = x - width  / 2
-                    let originY = y - height / 2
-                    context.setOffset(originX, originY)
-
-                    renderer.onDraw()
-                }
-            }
-
-            position.children.forEach((item) => {
-                this.drawSprites(x, y, item)
-            })
+        get active() {
+            return this._active
         }
 
-        /**
-         * @private
-         * @param {number} x
-         * @param {number} y
-         * @param {number} width
-         * @param {number} height
-         */
-        isInView(x, y, width, height) {
-            if (width  <= 0) { return false }
-            if (height <= 0) { return false }
-
-            if (x + width  / 2 < 0              ) { return false }
-            if (x - width  / 2 > viewport.width ) { return false }
-            if (y + height / 2 < 0              ) { return false }
-            if (y - height / 2 > viewport.height) { return false }
-
-            return true
+        /** @protected */
+        draw() {
+            Renderer.drawCenteredOn(this._x, this._y)
         }
     }
 

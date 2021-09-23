@@ -4,11 +4,8 @@ define(function () {
     let centerX = 0
     let centerY = 0
 
-    /** @type {number} */
-    let windowWidth = MWindowWidth()
-
-    /** @type {number} */
-    let windowHeight = MWindowHeight()
+    /** @type {number} */ let windowWidth  = MWindowWidth ()
+    /** @type {number} */ let windowHeight = MWindowHeight()
 
     function UpdateWindowSize() {
         windowWidth  = MWindowWidth ()
@@ -31,11 +28,8 @@ define(function () {
             centerY = y
         }
 
-        /** @params {number} value */
-        set x(value) { centerX = value }
-
-        /** @params {number} value */
-        set y(value) { centerY = value }
+        /** @param {number} value */ set x(value) { centerX = value }
+        /** @param {number} value */ set y(value) { centerY = value }
 
         get x() { return centerX }
         get y() { return centerY }
