@@ -32,11 +32,13 @@ define(function () {
             this._y = 0
         }
 
+        /** @protected */
         onCreate() {
             //default as top-level object.
             topPositions.add(this)
         }
 
+        /** @protected */
         onDestroy() {
             if (this._parent) {
                 this._parent.delete(this)
