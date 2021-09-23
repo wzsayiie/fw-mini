@@ -46,10 +46,10 @@ define(function () {
         } else if (util.is('Array', object) || util.is('Set', object)) {
             out.push('[\n')
 
-            object.forEach((item) => {
+            for (let item of object) {
                 MakeStringWithShrink(false, indent + 1, item, out)
                 out.push(',\n')
-            })
+            }
 
             MakeIndent(indent, out)
             out.push(']')
@@ -57,13 +57,13 @@ define(function () {
         } else if (util.is('Map', object)) {
             out.push('{\n')
 
-            object.forEach((val, key) => {
+            for (let [key, val] of object) {
                 MakeStringWithShrink(false, indent + 1, key, out)
                 out.push(': ' )
 
                 MakeStringWithShrink(true , indent + 1, val, out)
                 out.push(',\n')
-            })
+            }
 
             MakeIndent(indent, out)
             out.push('}')

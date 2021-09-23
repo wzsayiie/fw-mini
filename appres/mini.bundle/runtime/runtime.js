@@ -54,7 +54,7 @@ function _absolutePath(base, relative) {
     let array = base ? base.split('/') : []
     let fresh = relative.split('/')
 
-    fresh.forEach((item) => {
+    for (let item of fresh) {
         if (item == '..') {
             if (array.length == 0 || array[array.length - 1] == '..') {
                 array.push('..')
@@ -63,12 +63,12 @@ function _absolutePath(base, relative) {
             }
 
         } else if (item == '.') {
-            return
+            continue
 
         } else {
             array.push(item)
         }
-    })
+    }
 
     let last = array.pop()
     let dir  = array.join('/')

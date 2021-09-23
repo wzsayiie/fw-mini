@@ -22,7 +22,7 @@ define(function () {
              * @private
              * @type {Map<Object, Feature>}
              */
-            this._features = new Map()
+            this._featureMap = new Map()
 
             //feature 'position' is default.
             this.getFeature(Position)
@@ -38,7 +38,7 @@ define(function () {
             }
 
             //is the feature exist?
-            let feature = this._features[cls]
+            let feature = this._featureMap[cls]
             if (feature) {
                 return feature
             }
@@ -46,7 +46,7 @@ define(function () {
             //create the feature.
             let fresh = new cls(this)
             fresh.onCreate()
-            this._features[cls] = fresh
+            this._featureMap[cls] = fresh
             return fresh
         }
 
@@ -59,7 +59,7 @@ define(function () {
          * @returns {boolean}
          */
         isThereFeature(cls) {
-            return !this._destroyed && !!this._features[cls]
+            return !this._destroyed && !!this._featureMap[cls]
         }
 
         get hasBehaviour() { return this.isThereFeature(Behaviour) }
@@ -68,15 +68,15 @@ define(function () {
 
         destroy() {
             //destroy children.
-            this.position.childSet.forEach((item) => {
-                Sprite.getSpriteOf(item).destroy()
-            })
+            for (let child of this.position.childSet) {
+                Sprite.getSpriteOf(child).destroy()
+            }
 
             //destroy self.
-            this._features.forEach((feature) => {
+            for (let [_, feature] of this._featureMap) {
                 feature.onDestroy()
-            })
-            this._features = null
+            }
+            this._featureMap = null
 
             this._destroyed = true
         }
