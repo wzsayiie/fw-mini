@@ -68,7 +68,7 @@ define(function () {
 
         destroy() {
             //destroy children.
-            this.position.children.forEach((item) => {
+            this.position.childSet.forEach((item) => {
                 Sprite.getSpriteOf(item).destroy()
             })
 

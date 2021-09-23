@@ -2,13 +2,9 @@ define(function () {
     const Feature = require('./Feature')
 
     /** @type {Set<Position>} */
-    let topPositions = new Set()
+    let topPositionSet = new Set()
 
     class Position extends Feature {
-
-        static get topPositions() {
-            return topPositions
-        }
 
         constructor(sprite) {
             super(sprite)
@@ -17,7 +13,7 @@ define(function () {
              * @private
              * @type {Set<Position>}
              */
-            this._children = new Set()
+            this._childSet = new Set()
 
             /**
              * @private
@@ -32,7 +28,7 @@ define(function () {
         /** @protected */
         onCreate() {
             //default as top-level object.
-            topPositions.add(this)
+            topPositionSet.add(this)
         }
 
         /** @protected */
@@ -40,7 +36,7 @@ define(function () {
             if (this._parent) {
                 this._parent.delete(this)
             } else {
-                topPositions.delete(this)
+                topPositionSet.delete(this)
             }
         }
 
@@ -58,19 +54,19 @@ define(function () {
             let currentWorldY = this.worldY
 
             if (this._parent) {
-                this._parent._children.delete(this)
+                this._parent._childSet.delete(this)
             } else {
-                topPositions.delete(this)
+                topPositionSet.delete(this)
             }
 
             //add to new parent:
             if (fresh) {
-                fresh._children.add(this)
+                fresh._childSet.add(this)
 
                 this._x = currentWorldX - fresh.worldX
                 this._y = currentWorldY - fresh.worldY
             } else {
-                topPositions.add(this)
+                topPositionSet.add(this)
 
                 this._x = currentWorldX
                 this._y = currentWorldY
@@ -80,7 +76,7 @@ define(function () {
         }
 
         get parent  () { return this._parent   }
-        get children() { return this._children }
+        get childSet() { return this._childSet }
 
         /**
          * @param {number} x
