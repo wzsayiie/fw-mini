@@ -25,11 +25,8 @@ define(function () {
              */
             this._parent = null
 
-            /** @private */
-            this._x = 0
-
-            /** @private */
-            this._y = 0
+            /** @private */ this._x = 0
+            /** @private */ this._y = 0
         }
 
         /** @protected */
@@ -94,17 +91,27 @@ define(function () {
             this._y = y
         }
 
-        /** @param {number} value */
-        set x(value) { this._x = value }
-
-        /** @param {number} value */
-        set y(value) { this._y = value }
+        /** @param {number} value */ set x(value) { this._x = value }
+        /** @param {number} value */ set y(value) { this._y = value }
 
         get x() { return this._x }
         get y() { return this._y }
 
-        get worldX() { return this._parent ? this._parent.worldX + this._x : this._x }
-        get worldY() { return this._parent ? this._parent.worldY + this._y : this._y }
+        get worldX() {
+            if (this._parent) {
+                return this._parent.worldX + this._x
+            } else {
+                return this._x
+            }
+        }
+
+        get worldY() {
+            if (this._parent) {
+                return this._parent.worldY + this._y
+            } else {
+                return this._y
+            }
+        }
     }
 
     return module.exports = Position

@@ -14,7 +14,9 @@ define(function () {
     }
 
     /** @param {number} color */
-    context.selectColor = function (color) { MContextSelectColor(color) }
+    context.selectColor = function (color) {
+        MContextSelectColor(color)
+    }
 
     /** @param {Object} image */
     context.selectImage = function (image) {

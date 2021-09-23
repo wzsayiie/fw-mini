@@ -11,6 +11,7 @@ define(function () {
         windowWidth  = MWindowWidth ()
         windowHeight = MWindowHeight()
     }
+
     MWindowAddListener(util.lambda(() => {
         let event = MWindowCurrentEvent()
         if (event == MWindowEvent_Load || event == MWindowEvent_Resize) {

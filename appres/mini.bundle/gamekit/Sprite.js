@@ -29,7 +29,7 @@ define(function () {
         }
 
         /**
-         * @param   {Object} cls
+         * @param   {Object } cls
          * @returns {Feature}
          */
         getFeature(cls) {
@@ -50,17 +50,12 @@ define(function () {
             return fresh
         }
 
-        /** @returns {Behaviour} */
-        get behaviour() { return this.getFeature(Behaviour) }
-
-        /** @returns {Position} */
-        get position() { return this.getFeature(Position) }
-
-        /** @returns {Renderer} */
-        get renderer() { return this.getFeature(Renderer) }
+        /** @returns {Behaviour} */ get behaviour() { return this.getFeature(Behaviour) }
+        /** @returns {Position } */ get position () { return this.getFeature(Position ) }
+        /** @returns {Renderer } */ get renderer () { return this.getFeature(Renderer ) }
 
         /**
-         * @param   {Object} cls
+         * @param   {Object } cls
          * @returns {boolean}
          */
         isThereFeature(cls) {

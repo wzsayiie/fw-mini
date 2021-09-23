@@ -149,21 +149,7 @@ define(function () {
      */
 
     /**
-     * @callback Behaviour.TouchBeginListener
-     * @param   {number} x
-     * @param   {number} y
-     * @returns {void}
-     */
-
-    /**
-     * @callback Behaviour.TouchMoveListener
-     * @param   {number} x
-     * @param   {number} y
-     * @returns {void}
-     */
-
-    /**
-     * @callback Behaviour.TouchEndListener
+     * @callback Behaviour.TouchListener
      * @param   {number} x
      * @param   {number} y
      * @returns {void}
@@ -192,13 +178,13 @@ define(function () {
             /** @private */ this._touchableWidth  = 0
             /** @private */ this._touchableHeight = 0
 
-            /** @private @type {Behaviour.AwakeListener     } */ this._awakeListener      = null
-            /** @private @type {Behaviour.UpdateListener    } */ this._updateListener     = null
-            /** @private @type {Behaviour.TouchBeginListener} */ this._touchBeginListener = null
-            /** @private @type {Behaviour.TouchMoveListener } */ this._touchMoveListener  = null
-            /** @private @type {Behaviour.TouchEndListener  } */ this._touchEndListener   = null
-            /** @private @type {Behaviour.TextBoxListener   } */ this._textBoxListener    = null
-            /** @private @type {Behaviour.KeyDownListener   } */ this._keyDownListener    = null
+            /** @private @type {Behaviour.AwakeListener  } */ this._awakeListener      = null
+            /** @private @type {Behaviour.UpdateListener } */ this._updateListener     = null
+            /** @private @type {Behaviour.TouchListener  } */ this._touchBeginListener = null
+            /** @private @type {Behaviour.TouchListener  } */ this._touchMoveListener  = null
+            /** @private @type {Behaviour.TouchListener  } */ this._touchEndListener   = null
+            /** @private @type {Behaviour.TextBoxListener} */ this._textBoxListener    = null
+            /** @private @type {Behaviour.KeyDownListener} */ this._keyDownListener    = null
         }
 
         /**
@@ -213,13 +199,13 @@ define(function () {
         /** @param {number} value */ set touchableWidth (value) { this._touchableWidth  = value }
         /** @param {number} value */ set touchableHeight(value) { this._touchableHeight = value }
 
-        /** @param {Behaviour.AwakeListener     } v */ set awakeListenrt     (v) { this._awakeListener      = v }
-        /** @param {Behaviour.UpdateListener    } v */ set updateListener    (v) { this._updateListener     = v }
-        /** @param {Behaviour.TouchBeginListener} v */ set touchBeginListener(v) { this._touchBeginListener = v }
-        /** @param {Behaviour.TouchMoveListener } v */ set touchMoveListener (v) { this._touchMoveListener  = v }
-        /** @param {Behaviour.TouchEndListener  } v */ set touchEndListener  (v) { this._touchEndListener   = v }
-        /** @param {Behaviour.TextBoxListener   } v */ set textBoxListener   (v) { this._textBoxListener    = v }
-        /** @param {Behaviour.KeyDownListener   } v */ set keydownListener   (v) { this._keyDownListener    = v }
+        /** @param {Behaviour.AwakeListener  } v */ set awakeListenrt     (v) { this._awakeListener      = v }
+        /** @param {Behaviour.UpdateListener } v */ set updateListener    (v) { this._updateListener     = v }
+        /** @param {Behaviour.TouchListener  } v */ set touchBeginListener(v) { this._touchBeginListener = v }
+        /** @param {Behaviour.TouchListener  } v */ set touchMoveListener (v) { this._touchMoveListener  = v }
+        /** @param {Behaviour.TouchListener  } v */ set touchEndListener  (v) { this._touchEndListener   = v }
+        /** @param {Behaviour.TextBoxListener} v */ set textBoxListener   (v) { this._textBoxListener    = v }
+        /** @param {Behaviour.KeyDownListener} v */ set keydownListener   (v) { this._keyDownListener    = v }
 
         /** @protected */
         onCreate() {
