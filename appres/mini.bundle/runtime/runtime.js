@@ -32,8 +32,7 @@ function MJsLambdaRemove(iden) {
 }
 
 /**
- * @param {runtime.LambdaFunction} func
- *
+ * @param   {runtime.LambdaFunction} func
  * @returns {Object}
  */
 function MJsLambda(func) {

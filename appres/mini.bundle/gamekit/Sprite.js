@@ -7,8 +7,7 @@ define(function () {
     class Sprite {
 
         /**
-         * @param {Feature} feature
-         * 
+         * @param   {Feature} feature
          * @returns {Sprite}
          */
         static getSpriteOf(feature) {
@@ -30,8 +29,7 @@ define(function () {
         }
 
         /**
-         * @param {Object} cls
-         *
+         * @param   {Object} cls
          * @returns {Feature}
          */
         getFeature(cls) {
@@ -62,8 +60,7 @@ define(function () {
         get renderer() { return this.getFeature(Renderer) }
 
         /**
-         * @param {Object} cls
-         *
+         * @param   {Object} cls
          * @returns {boolean}
          */
         isThereFeature(cls) {

@@ -108,8 +108,7 @@ define(function () {
      */
 
     /**
-     * @param {util.LambdaFunction} func
-     *
+     * @param   {util.LambdaFunction} func
      * @returns {Object}
      */
     util.lambda = function (func) {
