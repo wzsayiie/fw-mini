@@ -28,8 +28,8 @@ define(function () {
         constructor(sprite) {
             super(sprite)
 
-            /** @private */ this._width  = 0
-            /** @private */ this._height = 0
+            /** @private */ this._renderingWidth  = 0
+            /** @private */ this._renderingHeight = 0
 
             /**
              * @private
@@ -48,16 +48,16 @@ define(function () {
          * @param {number} width
          * @param {number} height
          */
-        setSize(width, height) {
-            this._width  = width
-            this._height = height
+        setRenderingSize(width, height) {
+            this._renderingWidth  = width
+            this._renderingHeight = height
         }
 
-        /** @param {number} value */ set width (value) { this._width  = value }
-        /** @param {number} value */ set height(value) { this._height = value }
+        /** @param {number} v */ set renderingWidth (v) { this._renderingWidth  = v }
+        /** @param {number} v */ set renderingHeight(v) { this._renderingHeight = v }
 
-        get width () { return this._width  }
-        get height() { return this._height }
+        get renderingWidth () { return this._renderingWidth  }
+        get renderingHeight() { return this._renderingHeight }
 
         /** @param {Renderer.Drawer} value */
         set drawer(value) { this._drawer = value }
@@ -85,8 +85,8 @@ define(function () {
          */
         drawIfNeed(centerX, centerY) {
             //is rendering size empty?
-            if (this._width  <= 0) { return }
-            if (this._height <= 0) { return }
+            if (this._renderingWidth  <= 0) { return }
+            if (this._renderingHeight <= 0) { return }
 
             //is in the viewport?
             let worldX = this.sprite.position.worldX
@@ -94,10 +94,10 @@ define(function () {
             let viewX  = worldX - centerX
             let viewY  = worldY - centerY
 
-            let viewHalfW = viewport.width  / 2
-            let viewHalfH = viewport.height / 2
-            let selfHalfW = this._width     / 2
-            let selfHalfH = this._height    / 2
+            let viewHalfW = viewport.width        / 2
+            let viewHalfH = viewport.height       / 2
+            let selfHalfW = this._renderingWidth  / 2
+            let selfHalfH = this._renderingHeight / 2
 
             if (viewX + selfHalfW < -viewHalfW) { return }
             if (viewX - selfHalfW >  viewHalfW) { return }
@@ -114,16 +114,19 @@ define(function () {
 
         /** @protected */
         onDraw() {
+            let width  = this._renderingWidth
+            let height = this._renderingHeight
+
             if (this._drawer) {
-                this._drawer.call(this.sprite, this._width, this._height)
+                this._drawer.call(this.sprite, width, height)
 
             } else if (this._image) {
                 context.selectImage(this._image)
-                context.drawImage(0, 0, this._width, this._height)
+                context.drawImage(0, 0, width, height)
 
             } else {
                 context.selectColor(this._color)
-                context.drawRect(0, 0, this._width, this._height)
+                context.drawRect(0, 0, width, height)
             }
         }
     }
