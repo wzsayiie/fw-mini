@@ -6,9 +6,16 @@ define(function () {
 
     class Position extends Feature {
 
+        static get topPositionSet() {
+            return topPositionSet
+        }
+
         constructor(sprite) {
             super(sprite)
             
+            /** @private */ this._worldX = 0
+            /** @private */ this._worldY = 0
+
             /**
              * @private
              * @type {Set<Position>}
@@ -20,9 +27,6 @@ define(function () {
              * @type {Position}
              */
             this._parent = null
-
-            /** @private */ this._x = 0
-            /** @private */ this._y = 0
         }
 
         /** @protected */
@@ -34,11 +38,14 @@ define(function () {
         /** @protected */
         onDestroy() {
             if (this._parent) {
-                this._parent.delete(this)
+                this._parent._childSet.delete(this)
             } else {
                 topPositionSet.delete(this)
             }
         }
+
+        get worldX() { return this._worldX }
+        get worldY() { return this._worldY }
 
         /** @param {Position} fresh */
         set parent(fresh) {
@@ -49,65 +56,56 @@ define(function () {
                 return
             }
 
-            //remove from old parent:
-            let currentWorldX = this.worldX
-            let currentWorldY = this.worldY
-
+            //remove from old parent.
             if (this._parent) {
                 this._parent._childSet.delete(this)
             } else {
                 topPositionSet.delete(this)
             }
 
-            //add to new parent:
+            //add to new parent.
             if (fresh) {
                 fresh._childSet.add(this)
-
-                this._x = currentWorldX - fresh.worldX
-                this._y = currentWorldY - fresh.worldY
             } else {
                 topPositionSet.add(this)
-
-                this._x = currentWorldX
-                this._y = currentWorldY
             }
-
             this._parent = fresh
         }
 
         get parent  () { return this._parent   }
         get childSet() { return this._childSet }
 
+        /** @private */
+        get parentX() {
+            return this._parent ? this._parent._worldX : 0
+        }
+
+        /** @private */
+        get parentY() {
+            return this._parent ? this._parent._worldY : 0
+        }
+
         /**
          * @param {number} x
          * @param {number} y
          */
         moveTo(x, y) {
-            this._x = x
-            this._y = y
+            this._worldX = this.parentX + x
+            this._worldY = this.parentY + y
         }
 
-        /** @param {number} value */ set x(value) { this._x = value }
-        /** @param {number} value */ set y(value) { this._y = value }
-
-        get x() { return this._x }
-        get y() { return this._y }
-
-        get worldX() {
-            if (this._parent) {
-                return this._parent.worldX + this._x
-            } else {
-                return this._x
-            }
+        /** @param {number} value */
+        set x(value) {
+            this._worldX = this.parentX + value
         }
 
-        get worldY() {
-            if (this._parent) {
-                return this._parent.worldY + this._y
-            } else {
-                return this._y
-            }
+        /** @param {number} value */
+        set y(value) {
+            this._worldY = this.parentY + value
         }
+
+        get x() { return this._worldX - this.parentX }
+        get y() { return this._worldY - this.parentY }
     }
 
     return module.exports = Position
