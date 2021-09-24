@@ -38,7 +38,7 @@ define(function () {
             }
 
             //is the feature exist?
-            let feature = this._featureMap[cls]
+            let feature = this._featureMap.get(cls)
             if (feature) {
                 return feature
             }
@@ -46,7 +46,7 @@ define(function () {
             //create the feature.
             let fresh = new cls(this)
             fresh.onCreate()
-            this._featureMap[cls] = fresh
+            this._featureMap.set(cls, fresh)
             return fresh
         }
 
@@ -59,7 +59,7 @@ define(function () {
          * @returns {boolean}
          */
         isThereFeature(cls) {
-            return !this._destroyed && !!this._featureMap[cls]
+            return !this._destroyed && !!this._featureMap.get(cls)
         }
 
         get hasBehaviour() { return this.isThereFeature(Behaviour) }
