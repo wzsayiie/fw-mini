@@ -1,7 +1,7 @@
 # macos finder cache files.
 .DS_Store
 
-# android studio local files.
+# android studio cache files.
 host_android/**/*.iml
 host_android/**/.cxx/
 host_android/**/.externalNativeBuild/
@@ -10,18 +10,21 @@ host_android/**/.idea/
 host_android/**/build/
 host_android/**/local.properties
 
-# xcode local files.
+# xcode cache files.
 host_ios/**/build/
 host_ios/**/xcuserdata/
 host_osx/**/build/
 host_osx/**/xcuserdata/
 
-# visual studio local files.
+# visual studio cache files.
 host_win32/**/*.vcxproj.user
 host_win32/**/Debug/
 host_win32/**/Release/
 host_win32/**/x64/
 host_win32/.vs/
 
-# the framework local files:
+# vs code setting files.
+.vscode/
+
+# the framework built files:
 BUILD/*
