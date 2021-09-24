@@ -6,6 +6,8 @@ define(function () {
 
     function Main() {
         Camera.mainCamera.moveTo(0, 0)
+
+        let root = new Sprite()
     }
 
     Main()
