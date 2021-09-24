@@ -3,6 +3,7 @@ define(function () {
     const Feature   = require('./Feature'  )
     const Position  = require('./Position' )
     const Renderer  = require('./Renderer' )
+    const RigidBody = require('./RigidBody')
 
     class Sprite {
 
@@ -53,6 +54,7 @@ define(function () {
         /** @returns {Behaviour} */ get behaviour() { return this.getFeature(Behaviour) }
         /** @returns {Position } */ get position () { return this.getFeature(Position ) }
         /** @returns {Renderer } */ get renderer () { return this.getFeature(Renderer ) }
+        /** @returns {RigidBody} */ get rigidBody() { return this.getFeature(RigidBody) }
 
         /**
          * @param   {Object } cls
@@ -65,6 +67,7 @@ define(function () {
         get hasBehaviour() { return this.isThereFeature(Behaviour) }
         get hasPosition () { return this.isThereFeature(Position ) }
         get hasRenderer () { return this.isThereFeature(Renderer ) }
+        get hasRigidBody() { return this.isThereFeature(RigidBody) }
 
         destroy() {
             //destroy children.
@@ -84,6 +87,22 @@ define(function () {
         get destroyed() {
             return this._destroyed
         }
+
+        /** @param {number} v */ set x     (v) { this.position.x       = v }
+        /** @param {number} v */ set y     (v) { this.position.y       = v }
+        /** @param {number} v */ set width (v) { this.rigidBody.width  = v }
+        /** @param {number} v */ set height(v) { this.rigidBody.height = v }
+        /** @param {number} v */ set mass  (v) { this.rigidBody.mass   = v }
+        /** @param {number} v */ set vx    (v) { this.rigidBody.vx     = v }
+        /** @param {number} v */ set vy    (v) { this.rigidBody.vy     = v }
+
+        get x     () { return this.position.x       }
+        get y     () { return this.position.y       }
+        get width () { return this.rigidBody.width  }
+        get height() { return this.rigidBody.height }
+        get mass  () { return this.rigidBody.mass   }
+        get vx    () { return this.rigidBody.vx     }
+        get vy    () { return this.rigidBody.vy     }
     }
 
     return module.exports = Sprite
