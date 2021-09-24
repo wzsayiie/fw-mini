@@ -196,16 +196,43 @@ define(function () {
             this._touchableHeight = height
         }
 
-        /** @param {number} value */ set touchableWidth (value) { this._touchableWidth  = value }
-        /** @param {number} value */ set touchableHeight(value) { this._touchableHeight = value }
+        /** @param {number} v */ set touchableWidth (v) { this._touchableWidth  = v }
+        /** @param {number} v */ set touchableHeight(v) { this._touchableHeight = v }
 
-        /** @param {Behaviour.AwakeListener  } v */ set awakeListenrt     (v) { this._awakeListener      = v }
-        /** @param {Behaviour.UpdateListener } v */ set updateListener    (v) { this._updateListener     = v }
-        /** @param {Behaviour.TouchListener  } v */ set touchBeginListener(v) { this._touchBeginListener = v }
-        /** @param {Behaviour.TouchListener  } v */ set touchMoveListener (v) { this._touchMoveListener  = v }
-        /** @param {Behaviour.TouchListener  } v */ set touchEndListener  (v) { this._touchEndListener   = v }
-        /** @param {Behaviour.TextBoxListener} v */ set textBoxListener   (v) { this._textBoxListener    = v }
-        /** @param {Behaviour.KeyDownListener} v */ set keydownListener   (v) { this._keyDownListener    = v }
+        /** @param {Behaviour.AwakeListener} value */
+        set awakeListenrt(value) {
+            this._awakeListener = value
+        }
+
+        /** @param {Behaviour.UpdateListener} value */
+        set updateListener(value) {
+            this._updateListener = value
+        }
+        
+        /** @param {Behaviour.TouchListener} value */
+        set touchBeginListener(value) {
+            this._touchBeginListener = value
+        }
+        
+        /** @param {Behaviour.TouchListener} value */
+        set touchMoveListener(value) {
+            this._touchMoveListener = value
+        }
+        
+        /** @param {Behaviour.TouchListener} value */
+        set touchEndListener(value) {
+            this._touchEndListener = value
+        }
+        
+        /** @param {Behaviour.TextBoxListener} value */
+        set textBoxListener(value) {
+            this._textBoxListener = value
+        }
+        
+        /** @param {Behaviour.KeyDownListener} value */
+        set keydownListener(value) {
+            this._keyDownListener = value
+        }
 
         /** @protected */
         onCreate() {

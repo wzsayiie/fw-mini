@@ -84,7 +84,7 @@ define(function () {
          * @param {number} centerY
          */
         drawIfNeed(centerX, centerY) {
-            //is render size empty?
+            //is rendering size empty?
             if (this._width  <= 0) { return }
             if (this._height <= 0) { return }
 
