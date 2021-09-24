@@ -7,20 +7,20 @@
  */
 
 /** @type {Map<number, runtime.LambdaFunction>} */
-let _lambdaPool = new Map()
+let _lambdaMap = new Map()
 
 let _lambdaIden = 0
 
 /** @param {runtime.LambdaFunction} func */
 function MJsLambdaInsert(func) {
     let iden = ++_lambdaIden
-    _lambdaPool[iden] = func
+    _lambdaMap.set(iden, func)
     return iden
 }
 
 /** @param {number} iden */
 function MJsLambdaInvoke(iden) {
-    let func = _lambdaPool[iden]
+    let func = _lambdaMap.get(iden)
     if (func) {
         func()
     }
@@ -28,7 +28,7 @@ function MJsLambdaInvoke(iden) {
 
 /** @param {number} iden */
 function MJsLambdaRemove(iden) {
-    delete _lambdaPool[iden]
+    _lambdaMap.delete(iden)
 }
 
 /**
@@ -50,7 +50,7 @@ function MJsLambda(func) {
  * @param {string} base
  * @param {string} relative
  */
-function _absolutePath(base, relative) {
+function _AbsolutePath(base, relative) {
     let array = base ? base.split('/') : []
     let fresh = relative.split('/')
 
@@ -87,11 +87,11 @@ let module = {}
 /** @type {Set<string>} */
 let _loadingNameSet = new Set()
 
-/** @type {string[]} */
-let _baseDirStack = []
-
 /** @type {Object[]} */
 let _loadingModuleStack = []
+
+/** @type {string[]} */
+let _baseDirStack = []
 
 /** @type {Map<string, Object>} */
 let _loadedModuleMap = new Map()
@@ -114,7 +114,7 @@ function require(name) {
     }
 
     let base = _baseDirStack.length > 0 ? _baseDirStack[_baseDirStack.length - 1] : null
-    let path = _absolutePath(base, name)
+    let path = _AbsolutePath(base, name)
 
     //is the module loaded?
     let module = _loadedModuleMap.get(path.file)
@@ -123,7 +123,7 @@ function require(name) {
     }
 
     //whether it's module circular dependency?
-    if (_loadingNameSet.has(path)) {
+    if (_loadingNameSet.has(path.file)) {
         return null
     }
 
