@@ -6,20 +6,21 @@ define(function () {
     /** @type {Set<Camera>} */
     let cameraSet = new Set()
 
-    /** @type {Camera} */
-    let uiCamera = null
-
     function Draw() {
-        //the ui camera is processed finally,
-        //so that the image drawn by the ui camera is on the top.
+        //the main camera is processed finally,
+        //so that the image drawn by the main camera is on the top.
+
         for (let camera of cameraSet) {
-            if (camera != uiCamera) {
+            if (!camera.isMainCamera) {
                 camera.draw()
             }
         }
 
-        if (uiCamera && uiCamera.active) {
-            uiCamera.draw()
+        for (let camera of cameraSet) {
+            if (camera.isMainCamera) {
+                camera.draw()
+                break
+            }
         }
     }
 
@@ -30,16 +31,23 @@ define(function () {
         }
     }))
 
+    /** @type {Camera} */
+    let mainCamera = null
+
     class Camera {
 
         static get mainCamera() {
-            if (!uiCamera) {
-                uiCamera = new Camera()
+            if (!mainCamera) {
+                mainCamera = new Camera(true)
             }
-            return uiCamera
+            return mainCamera
         }
 
-        constructor() {
+        /** @param {(boolean | undefined)} isMainCamera */
+        constructor(isMainCamera) {
+            /** @private */
+            this._isMainCamera = isMainCamera
+
             /** @private */ this._x = 0
             /** @private */ this._y = 0
 
@@ -47,6 +55,10 @@ define(function () {
             this._active = true
 
             cameraSet.add(this)
+        }
+
+        get isMainCamera() {
+            return this._isMainCamera
         }
 
         /**
@@ -57,7 +69,7 @@ define(function () {
             this._x = x
             this._y = y
 
-            if (this == uiCamera) {
+            if (this._isMainCamera) {
                 viewport.moveTo(x, y)
             }
         }
@@ -67,9 +79,6 @@ define(function () {
 
         get x() { return this._x }
         get y() { return this._y }
-
-        get viewWidth () { return viewport.width  }
-        get viewHeight() { return viewport.height }
 
         /** @param {boolean} value */
         set active(value) {
@@ -82,6 +91,9 @@ define(function () {
         get active() {
             return this._active
         }
+
+        get viewWidth () { return viewport.width  }
+        get viewHeight() { return viewport.height }
 
         /** @protected */
         draw() {
