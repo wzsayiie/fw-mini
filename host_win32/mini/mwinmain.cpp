@@ -16,13 +16,12 @@ const int WindowFrameHeight =  679;
 
 static void OpenConsole(void)
 {
+    //is there a console?
     if (_isatty(_fileno(stdout)))
     {
-        //currently there is a console.
         return;
     }
 
-    //create a console window:
     AllocConsole();
 
     FILE* newStdin  = nullptr;
@@ -35,12 +34,20 @@ static void OpenConsole(void)
     //IMPORTANT: use local character set.
     setlocale(LC_CTYPE, "");
 
-    //move the console window:
-    WCHAR title[MAX_PATH];
-    GetConsoleTitleW(title, MAX_PATH);
+    HWND wnd = nullptr;
+    {
+        WCHAR title[MAX_PATH] = L"\0";
+        GetConsoleTitleW(title, MAX_PATH);
+        wnd = FindWindowW(nullptr, title);
+    }
 
-    HWND wnd = FindWindowW(nullptr, title);
+    //move the console window.
     SetWindowPos(wnd, HWND_TOP, ConsoleFrameX, ConsoleFrameY, 0, 0, SWP_NOSIZE);
+
+    //disable the close button of console window.
+    //clicking it will cause the program to exit abnormally.
+    HMENU menu = GetSystemMenu(wnd, FALSE);
+    EnableMenuItem(menu, SC_CLOSE, MF_DISABLED);
 }
 
 static void GetClientSize(HWND wnd, int *width, int *height)
