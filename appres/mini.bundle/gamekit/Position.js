@@ -85,23 +85,36 @@ define(function () {
             return this._parent ? this._parent._worldY : 0
         }
 
+        /** @private */
+        moveWith(offsetX, offsetY) {
+            this._worldX += offsetX
+            this._worldY += offsetY
+
+            for (let child of this._childSet) {
+                child.moveWith(offsetX, offsetY)
+            }
+        }
+
         /**
          * @param {number} x
          * @param {number} y
          */
         moveTo(x, y) {
-            this._worldX = this.parentX + x
-            this._worldY = this.parentY + y
+            let offsetX = x - (this._worldX - this.parentX)
+            let offsetY = y - (this._worldX - this.parentY)
+            this.moveWith(offsetX, offsetY)
         }
 
         /** @param {number} value */
         set x(value) {
-            this._worldX = this.parentX + value
+            let offset = value - (this._worldX - this.parentX)
+            this.moveWith(offset, 0)
         }
 
         /** @param {number} value */
         set y(value) {
-            this._worldY = this.parentY + value
+            let offset = value - (this._worldY - this.parentY)
+            this.moveWith(0, offset)
         }
 
         get x() { return this._worldX - this.parentX }
