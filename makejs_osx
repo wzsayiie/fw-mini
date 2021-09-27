@@ -4,7 +4,7 @@ set -e -u
 
 cd `dirname $0`
 
-nam="miniji"
+nam="minijs"
 src="appsrc/js*.cpp appsrc/m*.cpp host_osx/mini/*.mm"
 inc="-Iappsrc"
 ref="-framework Cocoa -framework JavaScriptCore"
