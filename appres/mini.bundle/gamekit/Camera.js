@@ -1,4 +1,11 @@
-define(function () {
+define([
+    'require'        ,
+    'module'         ,
+    './Renderer'     ,
+    '../minikit/util',
+    './viewport'     ,
+],
+function (require, module) {
     const Renderer = require('./Renderer')
     const util     = require('../minikit/util')
     const viewport = require('./viewport')

@@ -1,4 +1,7 @@
-define(function () {
+define([
+    'module',
+],
+function (module) {
     const util = {}
 
     /**
@@ -103,12 +106,12 @@ define(function () {
     }
 
     /**
-     * @callback util.LambdaFunction
-     * @returns {void}
+     * @callback LambdaFunction
+     * @returns  {void}
      */
 
     /**
-     * @param   {util.LambdaFunction} func
+     * @param   {LambdaFunction} func
      * @returns {Object}
      */
     util.lambda = function (func) {

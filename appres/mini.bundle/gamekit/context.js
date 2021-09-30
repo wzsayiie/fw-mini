@@ -1,4 +1,9 @@
-define(function () {
+define([
+    'require'   ,
+    'module'    ,
+    './viewport',
+],
+function (require, module) {
     const viewport = require('./viewport')
 
     //'context' takes the lower left corner as the origin,

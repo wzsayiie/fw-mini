@@ -1,4 +1,13 @@
-define(function () {
+define([
+    'require'    ,
+    'module'     ,
+    './Behaviour',
+    './Feature'  ,
+    './Position' ,
+    './Renderer' ,
+    './RigidBody',
+],
+function (require, module) {
     const Behaviour = require('./Behaviour')
     const Feature   = require('./Feature'  )
     const Position  = require('./Position' )

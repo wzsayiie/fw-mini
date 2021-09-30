@@ -1,4 +1,11 @@
-define(function () {
+define([
+    'require'   ,
+    'module'    ,
+    './Feature' ,
+    './context' ,
+    './viewport',
+]
+,function (require, module) {
     const Feature  = require('./Feature' )
     const context  = require('./context' )
     const viewport = require('./viewport')
@@ -7,10 +14,10 @@ define(function () {
     let rendererSet = new Set()
 
     /**
-     * @callback Renderer.Drawer
-     * @param   {number} width
-     * @param   {number} height
-     * @returns {void}
+     * @callback Drawer
+     * @param    {number} width
+     * @param    {number} height
+     * @returns  {void}
      */
 
     class Renderer extends Feature {
@@ -33,7 +40,7 @@ define(function () {
 
             /**
              * @private
-             * @type {Renderer.Drawer}
+             * @type {Drawer}
              */
             this._drawer = null
 
@@ -59,7 +66,7 @@ define(function () {
         get renderingWidth () { return this._renderingWidth  }
         get renderingHeight() { return this._renderingHeight }
 
-        /** @param {Renderer.Drawer} value */
+        /** @param {Drawer} value */
         set drawer(value) { this._drawer = value }
 
         /** @param {Object} value */

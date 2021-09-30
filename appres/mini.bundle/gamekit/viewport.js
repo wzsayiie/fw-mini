@@ -1,4 +1,9 @@
-define(function () {
+define([
+    'require'        ,
+    'module'         ,
+    '../minikit/util',
+],
+function (require, module) {
     const util = require('../minikit/util')
 
     let centerX = 0

@@ -1,4 +1,11 @@
-define(function () {
+define([
+    'require'        ,
+    'module'         ,
+    './Feature'      ,
+    '../minikit/util',
+    './viewport'     ,
+],
+function (require, module) {
     const Feature  = require('./Feature')
     const util     = require('../minikit/util')
     const viewport = require('./viewport')
@@ -139,33 +146,33 @@ define(function () {
     }))
 
     /**
-     * @callback Behaviour.AwakeListener
-     * @returns {void}
+     * @callback AwakeListener
+     * @returns  {void}
      */
 
     /**
-     * @callback Behaviour.UpdateListener
-     * @returns {void}
+     * @callback UpdateListener
+     * @returns  {void}
      */
 
     /**
-     * @callback Behaviour.TouchListener
-     * @param   {number} x
-     * @param   {number} y
-     * @returns {void}
+     * @callback TouchListener
+     * @param    {number} x
+     * @param    {number} y
+     * @returns  {void}
      */
 
     /**
-     * @callback Behaviour.TextBoxListener
-     * @param   {string}  string
-     * @param   {boolean} enter
-     * @returns {void}
+     * @callback TextBoxListener
+     * @param    {string}  string
+     * @param    {boolean} enter
+     * @returns  {void}
      */
 
     /**
-     * @callback Behaviour.KeyDownListener
-     * @param   {number} key
-     * @returns {void}
+     * @callback KeyDownListener
+     * @param    {number} key
+     * @returns  {void}
      */
 
     class Behaviour extends Feature {
@@ -178,13 +185,13 @@ define(function () {
             /** @private */ this._touchableWidth  = 0
             /** @private */ this._touchableHeight = 0
 
-            /** @private @type {Behaviour.AwakeListener  } */ this._awakeListener      = null
-            /** @private @type {Behaviour.UpdateListener } */ this._updateListener     = null
-            /** @private @type {Behaviour.TouchListener  } */ this._touchBeginListener = null
-            /** @private @type {Behaviour.TouchListener  } */ this._touchMoveListener  = null
-            /** @private @type {Behaviour.TouchListener  } */ this._touchEndListener   = null
-            /** @private @type {Behaviour.TextBoxListener} */ this._textBoxListener    = null
-            /** @private @type {Behaviour.KeyDownListener} */ this._keyDownListener    = null
+            /** @private @type {AwakeListener  } */ this._awakeListener      = null
+            /** @private @type {UpdateListener } */ this._updateListener     = null
+            /** @private @type {TouchListener  } */ this._touchBeginListener = null
+            /** @private @type {TouchListener  } */ this._touchMoveListener  = null
+            /** @private @type {TouchListener  } */ this._touchEndListener   = null
+            /** @private @type {TextBoxListener} */ this._textBoxListener    = null
+            /** @private @type {KeyDownListener} */ this._keyDownListener    = null
         }
 
         /**
@@ -199,37 +206,37 @@ define(function () {
         /** @param {number} v */ set touchableWidth (v) { this._touchableWidth  = v }
         /** @param {number} v */ set touchableHeight(v) { this._touchableHeight = v }
 
-        /** @param {Behaviour.AwakeListener} value */
+        /** @param {AwakeListener} value */
         set awakeListenrt(value) {
             this._awakeListener = value
         }
 
-        /** @param {Behaviour.UpdateListener} value */
+        /** @param {UpdateListener} value */
         set updateListener(value) {
             this._updateListener = value
         }
         
-        /** @param {Behaviour.TouchListener} value */
+        /** @param {TouchListener} value */
         set touchBeginListener(value) {
             this._touchBeginListener = value
         }
         
-        /** @param {Behaviour.TouchListener} value */
+        /** @param {TouchListener} value */
         set touchMoveListener(value) {
             this._touchMoveListener = value
         }
         
-        /** @param {Behaviour.TouchListener} value */
+        /** @param {TouchListener} value */
         set touchEndListener(value) {
             this._touchEndListener = value
         }
         
-        /** @param {Behaviour.TextBoxListener} value */
+        /** @param {TextBoxListener} value */
         set textBoxListener(value) {
             this._textBoxListener = value
         }
         
-        /** @param {Behaviour.KeyDownListener} value */
+        /** @param {KeyDownListener} value */
         set keydownListener(value) {
             this._keyDownListener = value
         }

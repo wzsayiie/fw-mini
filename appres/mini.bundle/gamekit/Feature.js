@@ -1,4 +1,7 @@
-define(function () {
+define([
+    'module',
+],
+function (module) {
     class Feature {
 
         constructor(sprite) {

@@ -1,4 +1,9 @@
-define(function () {
+define([
+    'require'  ,
+    'module'   ,
+    './Feature',
+],
+function (require, module) {
     const Feature = require('./Feature')
 
     class RigidBody extends Feature {
