@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "mconfig.h"
+#include "mdebug.h"
 
 //------------------------------------------------------------------------------
 //MObject:

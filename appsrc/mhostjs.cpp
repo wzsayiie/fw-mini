@@ -1,6 +1,5 @@
 #include "mhostjs.h"
 #include <cstring>
-#include "mdebug.h"
 #include "mresource.h"
 
 static _MJsRegisterFunc  sRegisterFunc  = nullptr;
