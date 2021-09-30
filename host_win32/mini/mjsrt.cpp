@@ -7,6 +7,7 @@
 m_static_object(sObjectMap   (), std::map<JsValueRef, MObject *>)
 m_static_object(sDelayedTasks(), std::vector<MLambdaRef>)
 
+static HWND            sHostWnd = nullptr;
 static JsRuntimeHandle sRuntime = JS_INVALID_RUNTIME_HANDLE;
 static JsContextRef    sContext = JS_INVALID_REFERENCE;
 static JsSourceContext sSource  = 0;
@@ -234,6 +235,7 @@ static void AsyncDoScript(MString *name, MString *script, MLambda *complete)
     {
         MLambdaRef callback = m_make_shared complete;
         sDelayedTasks().push_back(callback);
+        PostMessageW(sHostWnd, WM_USER_JSTASK, 0, 0);
     }
 
     //print runtime exception if need.
@@ -257,8 +259,10 @@ static void AsyncDoScript(MString *name, MString *script, MLambda *complete)
     _MJsOnHappenError(infoString.get());
 }
 
-void MInstallJSRuntime()
+void MInstallJSRuntime(HWND wnd)
 {
+    sHostWnd = wnd;
+
     InitializeRuntime();
 
     _MJsSetRegisterFunc (RegisterFunc );
