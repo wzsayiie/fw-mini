@@ -4,7 +4,8 @@
 #include <jsrt.h>
 #include "mhostjs.h"
 
-m_static_object(sObjectMap(), std::map<JsValueRef, MObject *>)
+m_static_object(sObjectMap   (), std::map<JsValueRef, MObject *>)
+m_static_object(sDelayedTasks(), std::vector<MLambdaRef>)
 
 static JsRuntimeHandle sRuntime = JS_INVALID_RUNTIME_HANDLE;
 static JsContextRef    sContext = JS_INVALID_REFERENCE;
@@ -220,7 +221,7 @@ static void AppendExceptionInfo(
     info->append(L"\n");
 }
 
-static void RunScript(MString *name, MString *script)
+static void AsyncDoScript(MString *name, MString *script, MLambda *complete)
 {
     //execute the script.
     auto scriptCode = (const wchar_t *)MStringU16Chars(script);
@@ -228,6 +229,12 @@ static void RunScript(MString *name, MString *script)
 
     JsValueRef result = JS_INVALID_REFERENCE;
     JsErrorCode error = JsRunScript(scriptCode, ++sSource, scriptName, &result);
+
+    if (complete)
+    {
+        MLambdaRef callback = m_make_shared complete;
+        sDelayedTasks().push_back(callback);
+    }
 
     //print runtime exception if need.
     if (error == JsNoError)
@@ -250,10 +257,22 @@ static void RunScript(MString *name, MString *script)
     _MJsOnHappenError(infoString.get());
 }
 
-void MInstallJSRT()
+void MInstallJSRuntime()
 {
     InitializeRuntime();
 
-    _MJsSetRegisterFunc(RegisterFunc);
-    _MJsSetRunScript(RunScript);
+    _MJsSetRegisterFunc (RegisterFunc );
+    _MJsSetAsyncDoScript(AsyncDoScript);
+}
+
+void MConsumeJSTasks() {
+    //NOTE: do not iterate "sDelayedTasks" directly.
+    //it may change in the iteration process.
+    std::vector<MLambdaRef> tasks;
+    tasks.swap(sDelayedTasks());
+
+    for (auto &task : tasks)
+    {
+        MLambdaCall(task.get());
+    }
 }

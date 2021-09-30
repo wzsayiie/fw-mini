@@ -1,3 +1,4 @@
 ﻿#pragma once
 
-void MInstallJSRT();
+void MInstallJSRuntime();
+void MConsumeJSTasks();

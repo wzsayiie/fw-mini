@@ -8,20 +8,6 @@ static void SetErrorListener() {
     MJsSetErrorListener(listener.get());
 }
 
-static void RegisterNativeConsts() {
-    for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
-        const char *name = MConstSelectedName();
-
-        MTypeId typeId = MConstSelectedTypeId();
-        switch (typeId) {
-            case MTypeIdOf<MString *>::Value: MJsRegisterString(name, MConstSelectedString()); break;
-            case MTypeIdOf<int      >::Value: MJsRegisterInt   (name, MConstSelectedInt   ()); break;
-            case MTypeIdOf<float    >::Value: MJsRegisterFloat (name, MConstSelectedFloat ()); break;
-            default:;
-        }
-    }
-}
-
 static void NativeFunc() {
     const char *funcName = MJsCallingFuncName();
     MArray     *params   = MJsCallingParams();
@@ -56,9 +42,10 @@ public:
 
 private:
     void run(const char *format) {
-        const char *express = MFormat(format, mIden);
-        MStringRef script = m_auto_release MStringCreateU8(express);
-        MJsRunScript(script.get(), script.get());
+        const char *string = MFormat(format, mIden);
+        MStringRef  script = m_auto_release MStringCreateU8(string);
+
+        MJsAsyncDoScript(script.get(), script.get(), nullptr);
     }
 
     int mIden;
@@ -82,18 +69,64 @@ static void RegisterBuiltinFuncs() {
     MJsRegisterFunc("MJsLambdaWrap", (m_cast_lambda MJsLambdaWrap).get());
 }
 
-static void LoadFile(const char *name) {
+static std::string EscapedString(MString *string) {
+    std::string escaped;
+    for (const char *ch = MStringU8Chars(string); *ch; ++ch) {
+        switch (*ch)  {
+        case '\\': escaped.append("\\\\"); break;
+        case '\'': escaped.append("\\\'"); break;
+        case '"' : escaped.append("\\\""); break;
+        default  : escaped.push_back(*ch);
+        }
+    }
+    return escaped;
+}
+
+static void AsyncRegisterConsts() {
+    std::string script;
+
+    for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
+        const char *name = MConstSelectedName();
+        const char *desc = nullptr;
+
+        MTypeId typeId = MConstSelectedTypeId();
+        if (typeId == MTypeIdOf<MString *>::Value) {
+            MString *value = MConstSelectedString();
+            std::string escaped = EscapedString(value);
+            desc = MFormat("const %s = '%s'\n" , name, escaped.c_str());
+
+        } else if (typeId == MTypeIdOf<float>::Value) {
+            float value = MConstSelectedFloat();
+            desc = MFormat("const %s = %f\n", name, value);
+
+        } else if (typeId == MTypeIdOf<int>::Value) {
+            int value = MConstSelectedInt();
+            desc = MFormat("const %s = %d\n", name, value);
+        }
+
+        if (desc) {
+            script.append(desc);
+        }
+    }
+
+    MStringRef name = m_auto_release MStringCreateU8("builtin_consts");
+    MStringRef code = m_auto_release MStringCreateU8(script.c_str());
+    MJsAsyncDoScript(name.get(), code.get(), nullptr);
+}
+
+static void AsyncDoFile(const char *name) {
     MStringRef file = m_auto_release MStringCreateU8(name);
-    MJsRunFile(file.get());
+    MJsAsyncDoFile(file.get(), nullptr);
 }
 
 static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
     SetErrorListener();
 
-    RegisterNativeConsts();
-    RegisterNativeFuncs ();
+    RegisterNativeFuncs();
     RegisterBuiltinFuncs();
 
-    LoadFile("runtime/runtime.js");
-    LoadFile("app.js");
+    //there is no waiting for completion to avoid startup delay.
+    AsyncRegisterConsts();
+    AsyncDoFile("runtime/runtime.js");
+    AsyncDoFile("app.js");
 }

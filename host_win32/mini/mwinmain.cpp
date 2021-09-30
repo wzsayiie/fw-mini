@@ -152,7 +152,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     OpenConsole();
     MPaintStart();
 
-    MInstallJSRT();
+    MInstallJSRuntime();
     MRegisterApi();
 
     int width  = 0;
@@ -208,6 +208,7 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
     if (timerID == UpdateTimerID)
     {
         UpdateEditState();
+        MConsumeJSTasks();
         _MAppUpdate();
     }
     else if (timerID == DrawTimerID)
