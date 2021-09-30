@@ -1,147 +1,203 @@
 //------------------------------------------------------------------------------
-//MJsLambda:
+//javascript native lambda:
 
-/**
- * @callback runtime.LambdaFunction
- * @returns {void} 
- */
+const _lambda = (function () {
+    const lambda = {}
 
-/** @type {Map<number, runtime.LambdaFunction>} */
-let _lambdaMap = new Map()
+    /**
+     * @callback LambdaFunction
+     * @returns  {void} 
+     */
 
-let _lambdaIden = 0
+    /** @type {Map<number, LambdaFunction>} */
+    let lambdaMap = new Map()
 
-/** @param {runtime.LambdaFunction} func */
-function MJsLambdaInsert(func) {
-    let iden = ++_lambdaIden
-    _lambdaMap.set(iden, func)
-    return iden
-}
+    let lambdaIden = 0
 
-/** @param {number} iden */
-function MJsLambdaInvoke(iden) {
-    let func = _lambdaMap.get(iden)
-    if (func) {
-        func()
-    }
-}
+    /** @param {LambdaFunction} func */
+    lambda.MJsLambda = function (func) {
+        if (typeof(func) != 'function') {
+            return null
+        }
 
-/** @param {number} iden */
-function MJsLambdaRemove(iden) {
-    _lambdaMap.delete(iden)
-}
+        let iden = ++lambdaIden
+        lambdaMap.set(iden, func)
 
-/**
- * @param   {runtime.LambdaFunction} func
- * @returns {Object}
- */
-function MJsLambda(func) {
-    if (typeof func == 'function') {
-        let iden = MJsLambdaInsert(func)
         return MJsLambdaWrap(iden)
     }
-    return null
-}
 
-//------------------------------------------------------------------------------
-//require.js module support:
-
-/**
- * @param {string} base
- * @param {string} relative
- */
-function _AbsolutePath(base, relative) {
-    let array = base ? base.split('/') : []
-    let fresh = relative.split('/')
-
-    for (let item of fresh) {
-        if (item == '..') {
-            if (array.length == 0 || array[array.length - 1] == '..') {
-                array.push('..')
-            } else {
-                array.pop()
-            }
-
-        } else if (item == '.') {
-            continue
-
-        } else {
-            array.push(item)
+    /** @param {number} iden */
+    lambda.MJsLambdaInvoke = function (iden) {
+        let func = lambdaMap.get(iden)
+        if (func) {
+            func()
         }
     }
 
-    let last = array.pop()
-    let dir  = array.join('/')
-    let file = `${dir}/${last}`
-
-    return {
-        file: file,
-        dir : dir ,
-    }
-}
-
-//this variable is useless. only for writing 'module.exports = x',
-//so that vs code can complete code.
-let module = {}
-
-/** @type {Set<string>} */
-let _loadingNameSet = new Set()
-
-/** @type {Object[]} */
-let _loadingModuleStack = []
-
-/** @type {string[]} */
-let _baseDirStack = []
-
-/** @type {Map<string, Object>} */
-let _loadedModuleMap = new Map()
-
-/**
- * @callback define.FactoryFunction
- * @return {Object} 
- */
-
-/** @param {define.FactoryFunction} factory */
-function define(factory) {
-    let module = factory()
-    _loadingModuleStack.push(module)
-}
-
-/** @param {string} name */
-function require(name) {
-    if (!name.endsWith('.js')) {
-        name = `${name}.js`
+    /** @param {number} iden */
+    lambda.MJsLambdaRemove = function (iden) {
+        lambdaMap.delete(iden)
     }
 
-    let base = _baseDirStack.length > 0 ? _baseDirStack[_baseDirStack.length - 1] : null
-    let path = _AbsolutePath(base, name)
+    return Object.freeze(lambda)
+})()
 
-    //is the module loaded?
-    let module = _loadedModuleMap.get(path.file)
-    if (module) {
-        return module
+const MJsLambda       = _lambda.MJsLambda
+const MJsLambdaInvoke = _lambda.MJsLambdaInvoke
+const MJsLambdaRemove = _lambda.MJsLambdaRemove
+
+//------------------------------------------------------------------------------
+//amd module support:
+
+let _amd = (function () {
+    const amd = {}
+
+    /**
+     * @param {string} base
+     * @param {string} relative
+     */
+    function AbsolutePath(base, relative) {
+        if (!relative.startsWith('./') && !relative.startsWith('../')) {
+            return relative
+        }
+
+        let array = base ? base.split('/') : []
+        let added = relative.split('/')
+
+        for (let item of added) {
+            if (item == '..') {
+                if (array.length == 0 || array[array.length - 1] == '..') {
+                    array.push('..')
+                } else {
+                    array.pop()
+                }
+
+            } else if (item == '.') {
+                continue
+
+            } else {
+                array.push(item)
+            }
+        }
+
+        return array.join('/')
     }
 
-    //whether it's module circular dependency?
-    if (_loadingNameSet.has(path.file)) {
-        return null
+    /**
+     * @param {string}   base
+     * @param {string[]} relativePaths
+     */
+    function AbsolutePathArray(base, relativePaths) {
+        let absolutePaths = []
+        for (let relative of relativePaths) {
+            let absolute = AbsolutePath(base, relative)
+            absolutePaths.push(absolute)
+        }
+        return absolutePaths
     }
 
-    //load the module:
-    let count = _loadingModuleStack.length
-
-    _loadingNameSet.add(path.file)
-    _baseDirStack.push(path.dir)
-
-    MJsRunFile(path.file)
-
-    _loadingNameSet.delete(path.file)
-    _baseDirStack.pop()
-
-    let fresh = null
-    if (count + 1 == _loadingModuleStack.length) {
-        fresh = _loadingModuleStack.pop()
+    /** @param {Object[]} array */
+    function LastOf(array) {
+        return array.length > 0 ? array[array.length - 1] : null
     }
-    _loadedModuleMap.set(path.file, fresh)
-    return fresh
-}
+
+    /**
+     * @callback ModuleFactory
+     * @param    {Object[]}
+     * @returns  {Object}
+     */
+
+    /**
+     * @typedef  ModuleItem
+     * @type     {Object}
+     * @property {string}        dir
+     * @property {string[]}      needArray
+     * @property {ModuleFactory} factory
+     * @property {Object}        module
+     */
+
+    /** @type {Map<string, ModuleItem>} */
+    let moduleMap = new Map()
+
+    function requireSync(path) {
+        let item = moduleMap.get(path)
+        if (item.module) {
+            return item.module
+        }
+
+        let moduleArray = []
+        for (let need of item.needArray) {
+            let module = requireSync(need)
+            moduleArray.push(module)
+        }
+        item.module = item.factory.apply(undefined, moduleArray)
+
+        return item.module
+    }
+
+    //builtin modules.
+    moduleMap.set('require', {module: requireSync})
+    moduleMap.set('module' , {module: {}})
+
+    /** @type {string[]} */ let currentPathStack = []
+    /** @type {string[]} */ let currentDirStack  = []
+
+    /**
+     * @param {string[]}      needs
+     * @param {ModuleFactory} factory
+     */
+    amd.define = function (needs, factory) {
+        let path = LastOf(currentPathStack)
+        let dir  = LastOf(currentDirStack )
+
+        let item = {
+            dir      : dir,
+            needArray: AbsolutePathArray(dir, needs),
+            factory  : factory,
+        }
+        moduleMap.set(path, item)
+    }
+
+    /**
+     * @callback AsyncCallback
+     * @returns  {void}
+     */
+
+    /**
+     * @param {string}        base
+     * @param {string[]}      absolutePaths
+     * @param {AsyncCallback} complete
+     */
+    function RequestDefinitions(base, absolutePaths, complete) {
+    }
+
+    /**
+     * @callback ProcFunction
+     * @param    {Object[]}
+     * @returns  {void}
+     */
+
+    /**
+     * @param {string[]}     needs
+     * @param {ProcFunction} proc
+     */
+    amd.require = function (needs, proc) {
+        let needArray = AbsolutePathArray(needs)
+
+        RequestDefinitions(null, needArray, () => {
+            let moduleArray = []
+
+            for (let need of needArray) {
+                let module = requireSync(need)
+                moduleArray.push(module)
+            }
+
+            proc.apply(undefined, moduleArray)
+        })
+    }
+
+    return Object.freeze(amd)
+})()
+
+const define  = _amd.define
+const require = _amd.require
