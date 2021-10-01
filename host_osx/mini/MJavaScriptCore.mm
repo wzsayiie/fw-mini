@@ -108,12 +108,20 @@ static void RegisterFunc(MString *name) {
     };
 }
 
-static void RunScript(MString *name, MString *script) {
+static void AsyncDoScript(MString *name, MString *script, MLambda *complete) {
     NSString *scriptText = @(MStringU8Chars(script));
     NSString *scriptName = @(MStringU8Chars(name));
     NSURL    *scriptURL  = [NSURL URLWithString:scriptName];
     
     [sContext evaluateScript:scriptText withSourceURL:scriptURL];
+    
+    if (complete) {
+        MRetain(complete);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            MLambdaCall(complete);
+            MRelease(complete);
+        });
+    }
 }
 
 static void OnException(JSValue *exception) {
@@ -138,6 +146,6 @@ void MInstallJSVirtualMachine() {
         OnException(exception);
     };
     
-    _MJsSetRegisterFunc(RegisterFunc);
-    _MJsSetRunScript(RunScript);
+    _MJsSetRegisterFunc (RegisterFunc );
+    _MJsSetAsyncDoScript(AsyncDoScript);
 }
