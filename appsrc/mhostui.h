@@ -46,7 +46,7 @@ union MColorPattern {
         uint8_t green;
         uint8_t red  ;
     };
-    MColor rgba = 0;
+    MColor color = 0;
 };
 
 //------------------------------------------------------------------------------

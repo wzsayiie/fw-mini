@@ -10,7 +10,7 @@ union AndroidColorPattern
         uint8_t red  ;
         uint8_t alpha;
     };
-    int argb = 0;
+    int color = 0;
 };
 
 extern "C" JNIEXPORT void JNICALL
@@ -71,7 +71,7 @@ extern "C" JNIEXPORT jint JNICALL
 Java_src_app_mini_DrawView_windowTriangleGraphColor(JNIEnv *, jobject, jint index)
 {
     MColorPattern src;
-    src.rgba = _MWindowTriangleGraphColor(index);
+    src.color = _MWindowTriangleGraphColor(index);
 
     AndroidColorPattern dst;
     dst.red   = src.red;
@@ -79,7 +79,7 @@ Java_src_app_mini_DrawView_windowTriangleGraphColor(JNIEnv *, jobject, jint inde
     dst.blue  = src.blue;
     dst.alpha = src.alpha;
 
-    return dst.argb;
+    return dst.color;
 }
 
 extern "C" JNIEXPORT jobject JNICALL
@@ -128,7 +128,7 @@ extern "C" JNIEXPORT jint JNICALL
 Java_src_app_mini_DrawView_windowLabelGraphColor(JNIEnv *, jobject, jint index)
 {
     MColorPattern src;
-    src.rgba = _MWindowLabelGraphColor(index);
+    src.color = _MWindowLabelGraphColor(index);
 
     AndroidColorPattern dst;
     dst.red   = src.red;
@@ -136,7 +136,7 @@ Java_src_app_mini_DrawView_windowLabelGraphColor(JNIEnv *, jobject, jint index)
     dst.blue  = src.blue;
     dst.alpha = src.alpha;
 
-    return dst.argb;
+    return dst.color;
 }
 
 extern "C" JNIEXPORT jfloat JNICALL

@@ -18,11 +18,11 @@ void MPaintStop()
 static void PaintTriangle(Gdiplus::Graphics *graphics, int index)
 {
     //set the color:
-    MColorPattern rgba;
-    rgba.rgba = _MWindowTriangleGraphColor(index);
+    MColorPattern color;
+    color.color = _MWindowTriangleGraphColor(index);
 
-    Gdiplus::Color color(rgba.alpha, rgba.red, rgba.green, rgba.blue);
-    std::shared_ptr<Gdiplus::SolidBrush> brush(new Gdiplus::SolidBrush(color));
+    Gdiplus::Color brushColor(color.alpha, color.red, color.green, color.blue);
+    std::shared_ptr<Gdiplus::SolidBrush> brush(new Gdiplus::SolidBrush(brushColor));
 
     //connect points.
     Gdiplus::PointF vertices[3];
@@ -92,11 +92,11 @@ static void PaintLabel(Gdiplus::Graphics *graphics, int index)
     }
 
     //set the color:
-    MColorPattern rgba;
-    rgba.rgba = _MWindowLabelGraphColor(index);
+    MColorPattern color;
+    color.color = _MWindowLabelGraphColor(index);
 
-    Gdiplus::Color color(rgba.alpha, rgba.red, rgba.green, rgba.blue);
-    std::shared_ptr<Gdiplus::Brush> brush(new Gdiplus::SolidBrush(color));
+    Gdiplus::Color brushColor(color.alpha, color.red, color.green, color.blue);
+    std::shared_ptr<Gdiplus::Brush> brush(new Gdiplus::SolidBrush(brushColor));
 
     //draw.
     graphics->DrawString(wchars, wsize, font.get(), rect, format.get(), brush.get());

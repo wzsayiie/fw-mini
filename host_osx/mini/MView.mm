@@ -27,7 +27,7 @@
     
     //set the color:
     MColorPattern color;
-    color.rgba = _MWindowTriangleGraphColor(index);
+    color.color = _MWindowTriangleGraphColor(index);
     
     float red   = color.red   / 255.f;
     float green = color.green / 255.f;
@@ -71,7 +71,7 @@
 - (void)drawLabel:(int)index withViewHeight:(float)viewHeight {
     //set the color:
     MColorPattern nativeColor;
-    nativeColor.rgba = _MWindowLabelGraphColor(index);
+    nativeColor.color = _MWindowLabelGraphColor(index);
     
     float red   = nativeColor.red   / 255.f;
     float green = nativeColor.green / 255.f;

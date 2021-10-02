@@ -19,7 +19,7 @@ float CColor::green() const { return mGreen; }
 float CColor::blue () const { return mBlue ; }
 float CColor::alpha() const { return mAlpha; }
 
-MColor CColor::rgba() const {
+MColor CColor::color() const {
     MColorPattern color;
     
     color.red   = (uint8_t)(mRed   * 255);
@@ -27,7 +27,7 @@ MColor CColor::rgba() const {
     color.blue  = (uint8_t)(mBlue  * 255);
     color.alpha = (uint8_t)(mAlpha * 255);
     
-    return color.rgba;
+    return color.color;
 }
 
 bool CColor::isClear() const {
@@ -88,7 +88,7 @@ CImage::CImage(MImageRef nativeImage) {
 //draw context:
 
 void CContextSelectColor(const CColor &color) {
-    MContextSelectColor(color.rgba());
+    MContextSelectColor(color.color());
 }
 
 void CContextSelectImage(CImageRef image) {

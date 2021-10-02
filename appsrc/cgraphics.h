@@ -17,7 +17,7 @@ public:
     float blue () const;
     float alpha() const;
     
-    MColor rgba() const;
+    MColor color() const;
 
     bool isClear() const;
 
