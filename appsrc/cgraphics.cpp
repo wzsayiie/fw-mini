@@ -4,44 +4,54 @@
 //CColor:
 
 CColor::CColor(float red, float green, float blue, float alpha) {
-    set(red, green, blue, alpha);
+    MColorPattern pattern;
+    
+    pattern.red   = (uint8_t)(red   * 255.f);
+    pattern.green = (uint8_t)(green * 255.f);
+    pattern.blue  = (uint8_t)(blue  * 255.f);
+    pattern.alpha = (uint8_t)(alpha * 255.f);
+    
+    mColor = pattern.color;
 }
 
-void CColor::set(float red, float green, float blue, float alpha) {
-    mRed   = red  ;
-    mGreen = green;
-    mBlue  = blue ;
-    mAlpha = alpha;
+CColor::CColor(MColor color) {
+    mColor = color;
 }
 
-float CColor::red  () const { return mRed  ; }
-float CColor::green() const { return mGreen; }
-float CColor::blue () const { return mBlue ; }
-float CColor::alpha() const { return mAlpha; }
+float CColor::redComponent  () const { return pattern().red   / 255.f; }
+float CColor::greenComponent() const { return pattern().green / 255.f; }
+float CColor::blueComponent () const { return pattern().blue  / 255.f; }
+float CColor::alphaComponent() const { return pattern().alpha / 255.f; }
 
 MColor CColor::color() const {
-    MColorPattern color;
-    
-    color.red   = (uint8_t)(mRed   * 255);
-    color.green = (uint8_t)(mGreen * 255);
-    color.blue  = (uint8_t)(mBlue  * 255);
-    color.alpha = (uint8_t)(mAlpha * 255);
-    
-    return color.color;
+    return mColor;
 }
 
 bool CColor::isClear() const {
-    return mAlpha == 0 || (mRed == 0 && mGreen == 0 && mBlue == 0);
+    return pattern().alpha == 0;
 }
 
-const CColor CColor::blackColor(0.00f, 0.00f, 0.00f);
-const CColor CColor::grayColor (0.90f, 0.90f, 0.90f);
-const CColor CColor::whiteColor(1.00f, 1.00f, 1.00f);
-const CColor CColor::redColor  (0.79f, 0.36f, 0.30f);
-const CColor CColor::greenColor(0.12f, 0.63f, 0.52f);
-const CColor CColor::blueColor (0.31f, 0.54f, 0.79f);
+const CColor CColor::blackColor    (MColor_BlackColor    );
+const CColor CColor::darkGrayColor (MColor_DarkGrayColor );
+const CColor CColor::grayColor     (MColor_GrayColor     );
+const CColor CColor::lightGrayColor(MColor_LightGrayColor);
+const CColor CColor::whiteColor    (MColor_WhiteColor    );
+const CColor CColor::redColor      (MColor_RedColor      );
+const CColor CColor::greenColor    (MColor_GreenColor    );
+const CColor CColor::blueColor     (MColor_BlueColor     );
+const CColor CColor::cyanColor     (MColor_CyanColor     );
+const CColor CColor::yellowColor   (MColor_YellowColor   );
+const CColor CColor::magentaColor  (MColor_MagentaColor  );
+const CColor CColor::orangeColor   (MColor_OrangeColor   );
+const CColor CColor::purpleColor   (MColor_PurpleColor   );
+const CColor CColor::brownColor    (MColor_BrownColor    );
+const CColor CColor::clearColor    (MColor_ClearColor    );
 
-const CColor CColor::clearColor(0, 0, 0, 0);
+MColorPattern CColor::pattern() const {
+    MColorPattern pattern;
+    pattern.color = mColor;
+    return pattern;
+}
 
 //------------------------------------------------------------------------------
 //CImage:

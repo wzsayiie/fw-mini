@@ -9,31 +9,36 @@ class CColor {
     
 public:
     CColor(float red, float green, float blue, float alpha = 1);
+    CColor(MColor color);
     
-    void set(float red, float green, float blue, float alpha = 1);
-    
-    float red  () const;
-    float green() const;
-    float blue () const;
-    float alpha() const;
+    float redComponent  () const;
+    float greenComponent() const;
+    float blueComponent () const;
+    float alphaComponent() const;
     
     MColor color() const;
-
     bool isClear() const;
 
-    static const CColor blackColor;
-    static const CColor grayColor;
-    static const CColor whiteColor;
-    static const CColor redColor;
-    static const CColor greenColor;
-    static const CColor blueColor;
-    static const CColor clearColor;
+    static const CColor blackColor    ;
+    static const CColor darkGrayColor ;
+    static const CColor grayColor     ;
+    static const CColor lightGrayColor;
+    static const CColor whiteColor    ;
+    static const CColor redColor      ;
+    static const CColor greenColor    ;
+    static const CColor blueColor     ;
+    static const CColor cyanColor     ;
+    static const CColor yellowColor   ;
+    static const CColor magentaColor  ;
+    static const CColor orangeColor   ;
+    static const CColor purpleColor   ;
+    static const CColor brownColor    ;
+    static const CColor clearColor    ;
     
 private:
-    float mRed   = 0;
-    float mGreen = 0;
-    float mBlue  = 0;
-    float mAlpha = 0;
+    MColorPattern pattern() const;
+    
+    MColor mColor;
 };
 
 //------------------------------------------------------------------------------
