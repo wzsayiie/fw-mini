@@ -77,10 +77,33 @@ const MKey MKey_Left  = 0x25 M_META(MKey_Left );
 const MKey MKey_Up    = 0x26 M_META(MKey_Up   );
 const MKey MKey_Right = 0x27 M_META(MKey_Right);
 const MKey MKey_Down  = 0x28 M_META(MKey_Down );
-const MKey MKey_A     = 'A'  M_META(MKey_A    );
-const MKey MKey_W     = 'W'  M_META(MKey_W    );
-const MKey MKey_D     = 'D'  M_META(MKey_D    );
-const MKey MKey_S     = 'S'  M_META(MKey_S    );
+
+const MKey MKey_A = 'A' M_META(MKey_A);
+const MKey MKey_B = 'B' M_META(MKey_B);
+const MKey MKey_C = 'C' M_META(MKey_C);
+const MKey MKey_D = 'D' M_META(MKey_D);
+const MKey MKey_E = 'E' M_META(MKey_E);
+const MKey MKey_F = 'F' M_META(MKey_F);
+const MKey MKey_G = 'G' M_META(MKey_G);
+const MKey MKey_H = 'H' M_META(MKey_H);
+const MKey MKey_I = 'I' M_META(MKey_I);
+const MKey MKey_J = 'J' M_META(MKey_J);
+const MKey MKey_K = 'K' M_META(MKey_K);
+const MKey MKey_L = 'L' M_META(MKey_L);
+const MKey MKey_M = 'M' M_META(MKey_M);
+const MKey MKey_N = 'N' M_META(MKey_N);
+const MKey MKey_O = 'O' M_META(MKey_O);
+const MKey MKey_P = 'P' M_META(MKey_P);
+const MKey MKey_Q = 'Q' M_META(MKey_Q);
+const MKey MKey_R = 'R' M_META(MKey_R);
+const MKey MKey_S = 'S' M_META(MKey_S);
+const MKey MKey_T = 'T' M_META(MKey_T);
+const MKey MKey_U = 'U' M_META(MKey_U);
+const MKey MKey_V = 'V' M_META(MKey_V);
+const MKey MKey_W = 'W' M_META(MKey_W);
+const MKey MKey_X = 'X' M_META(MKey_X);
+const MKey MKey_Y = 'Y' M_META(MKey_Y);
+const MKey MKey_Z = 'Z' M_META(MKey_Z);
 
 //------------------------------------------------------------------------------
 //window event:

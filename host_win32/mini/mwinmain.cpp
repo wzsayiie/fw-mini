@@ -315,11 +315,35 @@ static LRESULT OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
         case VK_UP    : _MWindowOnKeyDown(MKey_Up   ); break;
         case VK_RIGHT : _MWindowOnKeyDown(MKey_Right); break;
         case VK_DOWN  : _MWindowOnKeyDown(MKey_Down ); break;
-        case 'A'      : _MWindowOnKeyDown(MKey_A    ); break;
-        case 'W'      : _MWindowOnKeyDown(MKey_W    ); break;
-        case 'D'      : _MWindowOnKeyDown(MKey_D    ); break;
-        case 'S'      : _MWindowOnKeyDown(MKey_S    ); break;
-        default       : ;
+
+        case 'A': _MWindowOnKeyDown(MKey_A); break;
+        case 'B': _MWindowOnKeyDown(MKey_B); break;
+        case 'C': _MWindowOnKeyDown(MKey_C); break;
+        case 'D': _MWindowOnKeyDown(MKey_D); break;
+        case 'E': _MWindowOnKeyDown(MKey_E); break;
+        case 'F': _MWindowOnKeyDown(MKey_F); break;
+        case 'G': _MWindowOnKeyDown(MKey_G); break;
+        case 'H': _MWindowOnKeyDown(MKey_H); break;
+        case 'I': _MWindowOnKeyDown(MKey_I); break;
+        case 'J': _MWindowOnKeyDown(MKey_J); break;
+        case 'K': _MWindowOnKeyDown(MKey_K); break;
+        case 'L': _MWindowOnKeyDown(MKey_L); break;
+        case 'M': _MWindowOnKeyDown(MKey_M); break;
+        case 'N': _MWindowOnKeyDown(MKey_N); break;
+        case 'O': _MWindowOnKeyDown(MKey_O); break;
+        case 'P': _MWindowOnKeyDown(MKey_P); break;
+        case 'Q': _MWindowOnKeyDown(MKey_Q); break;
+        case 'R': _MWindowOnKeyDown(MKey_R); break;
+        case 'S': _MWindowOnKeyDown(MKey_S); break;
+        case 'T': _MWindowOnKeyDown(MKey_T); break;
+        case 'U': _MWindowOnKeyDown(MKey_U); break;
+        case 'V': _MWindowOnKeyDown(MKey_V); break;
+        case 'W': _MWindowOnKeyDown(MKey_W); break;
+        case 'X': _MWindowOnKeyDown(MKey_X); break;
+        case 'Y': _MWindowOnKeyDown(MKey_Y); break;
+        case 'Z': _MWindowOnKeyDown(MKey_Z); break;
+
+        default:;
     }
     return 0;
 }

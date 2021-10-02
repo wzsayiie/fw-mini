@@ -142,23 +142,48 @@
             //pass the event to the textfield.
             return event;
         }
-    } else {
-        switch (event.keyCode) {
-            case  51: _MWindowOnKeyDown(MKey_Back ); break;
-            case  36: _MWindowOnKeyDown(MKey_Enter); break;
-            case  49: _MWindowOnKeyDown(MKey_Space); break;
-            case 123: _MWindowOnKeyDown(MKey_Left ); break;
-            case 126: _MWindowOnKeyDown(MKey_Up   ); break;
-            case 124: _MWindowOnKeyDown(MKey_Right); break;
-            case 125: _MWindowOnKeyDown(MKey_Down ); break;
-            case   0: _MWindowOnKeyDown(MKey_A    ); break;
-            case  13: _MWindowOnKeyDown(MKey_W    ); break;
-            case   2: _MWindowOnKeyDown(MKey_D    ); break;
-            case   1: _MWindowOnKeyDown(MKey_S    ); break;
-            default :;
-        }
-        return nil;
     }
+    
+    switch (event.keyCode) {
+        
+        case  51: _MWindowOnKeyDown(MKey_Back ); break;
+        case  36: _MWindowOnKeyDown(MKey_Enter); break;
+        case  49: _MWindowOnKeyDown(MKey_Space); break;
+        case 123: _MWindowOnKeyDown(MKey_Left ); break;
+        case 126: _MWindowOnKeyDown(MKey_Up   ); break;
+        case 124: _MWindowOnKeyDown(MKey_Right); break;
+        case 125: _MWindowOnKeyDown(MKey_Down ); break;
+        
+        case   0: _MWindowOnKeyDown(MKey_A); break;
+        case  11: _MWindowOnKeyDown(MKey_B); break;
+        case   8: _MWindowOnKeyDown(MKey_C); break;
+        case   2: _MWindowOnKeyDown(MKey_D); break;
+        case  14: _MWindowOnKeyDown(MKey_E); break;
+        case   3: _MWindowOnKeyDown(MKey_F); break;
+        case   5: _MWindowOnKeyDown(MKey_G); break;
+        case   4: _MWindowOnKeyDown(MKey_H); break;
+        case  34: _MWindowOnKeyDown(MKey_I); break;
+        case  38: _MWindowOnKeyDown(MKey_J); break;
+        case  40: _MWindowOnKeyDown(MKey_K); break;
+        case  37: _MWindowOnKeyDown(MKey_L); break;
+        case  46: _MWindowOnKeyDown(MKey_M); break;
+        case  45: _MWindowOnKeyDown(MKey_N); break;
+        case  31: _MWindowOnKeyDown(MKey_O); break;
+        case  35: _MWindowOnKeyDown(MKey_P); break;
+        case  12: _MWindowOnKeyDown(MKey_Q); break;
+        case  15: _MWindowOnKeyDown(MKey_R); break;
+        case   1: _MWindowOnKeyDown(MKey_S); break;
+        case  17: _MWindowOnKeyDown(MKey_T); break;
+        case  32: _MWindowOnKeyDown(MKey_U); break;
+        case   9: _MWindowOnKeyDown(MKey_V); break;
+        case  13: _MWindowOnKeyDown(MKey_W); break;
+        case   7: _MWindowOnKeyDown(MKey_X); break;
+        case  16: _MWindowOnKeyDown(MKey_Y); break;
+        case   6: _MWindowOnKeyDown(MKey_Z); break;
+        
+        default:;
+    }
+    return nil;
 }
 
 @end
