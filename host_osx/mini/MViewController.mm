@@ -1,4 +1,5 @@
 #import "MViewController.h"
+#import <Carbon/Carbon.h>
 #import "MJavaScriptCore.h"
 #import "MOSXAPI.h"
 #import "MView.h"
@@ -146,40 +147,40 @@
     
     switch (event.keyCode) {
         
-        case  51: _MWindowOnKeyDown(MKey_Back ); break;
-        case  36: _MWindowOnKeyDown(MKey_Enter); break;
-        case  49: _MWindowOnKeyDown(MKey_Space); break;
-        case 123: _MWindowOnKeyDown(MKey_Left ); break;
-        case 126: _MWindowOnKeyDown(MKey_Up   ); break;
-        case 124: _MWindowOnKeyDown(MKey_Right); break;
-        case 125: _MWindowOnKeyDown(MKey_Down ); break;
+        case kVK_Delete    : _MWindowOnKeyDown(MKey_Back ); break;
+        case kVK_Return    : _MWindowOnKeyDown(MKey_Enter); break;
+        case kVK_Space     : _MWindowOnKeyDown(MKey_Space); break;
+        case kVK_LeftArrow : _MWindowOnKeyDown(MKey_Left ); break;
+        case kVK_UpArrow   : _MWindowOnKeyDown(MKey_Up   ); break;
+        case kVK_RightArrow: _MWindowOnKeyDown(MKey_Right); break;
+        case kVK_DownArrow : _MWindowOnKeyDown(MKey_Down ); break;
         
-        case   0: _MWindowOnKeyDown(MKey_A); break;
-        case  11: _MWindowOnKeyDown(MKey_B); break;
-        case   8: _MWindowOnKeyDown(MKey_C); break;
-        case   2: _MWindowOnKeyDown(MKey_D); break;
-        case  14: _MWindowOnKeyDown(MKey_E); break;
-        case   3: _MWindowOnKeyDown(MKey_F); break;
-        case   5: _MWindowOnKeyDown(MKey_G); break;
-        case   4: _MWindowOnKeyDown(MKey_H); break;
-        case  34: _MWindowOnKeyDown(MKey_I); break;
-        case  38: _MWindowOnKeyDown(MKey_J); break;
-        case  40: _MWindowOnKeyDown(MKey_K); break;
-        case  37: _MWindowOnKeyDown(MKey_L); break;
-        case  46: _MWindowOnKeyDown(MKey_M); break;
-        case  45: _MWindowOnKeyDown(MKey_N); break;
-        case  31: _MWindowOnKeyDown(MKey_O); break;
-        case  35: _MWindowOnKeyDown(MKey_P); break;
-        case  12: _MWindowOnKeyDown(MKey_Q); break;
-        case  15: _MWindowOnKeyDown(MKey_R); break;
-        case   1: _MWindowOnKeyDown(MKey_S); break;
-        case  17: _MWindowOnKeyDown(MKey_T); break;
-        case  32: _MWindowOnKeyDown(MKey_U); break;
-        case   9: _MWindowOnKeyDown(MKey_V); break;
-        case  13: _MWindowOnKeyDown(MKey_W); break;
-        case   7: _MWindowOnKeyDown(MKey_X); break;
-        case  16: _MWindowOnKeyDown(MKey_Y); break;
-        case   6: _MWindowOnKeyDown(MKey_Z); break;
+        case kVK_ANSI_A: _MWindowOnKeyDown(MKey_A); break;
+        case kVK_ANSI_B: _MWindowOnKeyDown(MKey_B); break;
+        case kVK_ANSI_C: _MWindowOnKeyDown(MKey_C); break;
+        case kVK_ANSI_D: _MWindowOnKeyDown(MKey_D); break;
+        case kVK_ANSI_E: _MWindowOnKeyDown(MKey_E); break;
+        case kVK_ANSI_F: _MWindowOnKeyDown(MKey_F); break;
+        case kVK_ANSI_G: _MWindowOnKeyDown(MKey_G); break;
+        case kVK_ANSI_H: _MWindowOnKeyDown(MKey_H); break;
+        case kVK_ANSI_I: _MWindowOnKeyDown(MKey_I); break;
+        case kVK_ANSI_J: _MWindowOnKeyDown(MKey_J); break;
+        case kVK_ANSI_K: _MWindowOnKeyDown(MKey_K); break;
+        case kVK_ANSI_L: _MWindowOnKeyDown(MKey_L); break;
+        case kVK_ANSI_M: _MWindowOnKeyDown(MKey_M); break;
+        case kVK_ANSI_N: _MWindowOnKeyDown(MKey_N); break;
+        case kVK_ANSI_O: _MWindowOnKeyDown(MKey_O); break;
+        case kVK_ANSI_P: _MWindowOnKeyDown(MKey_P); break;
+        case kVK_ANSI_Q: _MWindowOnKeyDown(MKey_Q); break;
+        case kVK_ANSI_R: _MWindowOnKeyDown(MKey_R); break;
+        case kVK_ANSI_S: _MWindowOnKeyDown(MKey_S); break;
+        case kVK_ANSI_T: _MWindowOnKeyDown(MKey_T); break;
+        case kVK_ANSI_U: _MWindowOnKeyDown(MKey_U); break;
+        case kVK_ANSI_V: _MWindowOnKeyDown(MKey_V); break;
+        case kVK_ANSI_W: _MWindowOnKeyDown(MKey_W); break;
+        case kVK_ANSI_X: _MWindowOnKeyDown(MKey_X); break;
+        case kVK_ANSI_Y: _MWindowOnKeyDown(MKey_Y); break;
+        case kVK_ANSI_Z: _MWindowOnKeyDown(MKey_Z); break;
         
         default:;
     }
