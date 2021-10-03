@@ -1,4 +1,4 @@
-#include <jni.h>
+#include "jnihelper.h"
 #include "mhostloop.h"
 #include "mhostui.h"
 
@@ -77,13 +77,8 @@ Java_src_app_mini_MainActivity_windowOnTouchEnd(JNIEnv *, jobject, jfloat x, jfl
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MainActivity_windowOnTextBox(JNIEnv *env, jobject, jstring string, jboolean enter)
 {
-    //use GetStringUTFChars (the return string of GetStringChars has no terminator '\0').
-    const char *chars = env->GetStringUTFChars(string, nullptr);
-
-    MStringRef ref = m_auto_release MStringCreateU8(chars);
-    env->ReleaseStringUTFChars(string, chars);
-
-    _MWindowOnTextBox(ref.get(), enter);
+    MStringRef text = m_auto_release MStringCopyJObject(env, string);
+    _MWindowOnTextBox(text.get(), enter);
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
@@ -102,11 +97,7 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_MainActivity_windowTextBoxRawString(JNIEnv *env, jobject)
 {
     MString *string = _MWindowTextBoxRawString();
-
-    auto chars = (const jchar *)MStringU16Chars(string);
-    auto size  = (jsize)MStringU16Size(string);
-
-    return env->NewString(chars, size);
+    return JNewString(env, string);
 }
 
 extern "C" JNIEXPORT void JNICALL

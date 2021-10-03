@@ -1,6 +1,6 @@
 #pragma once
 
-#include <jni.h>
+#include "jnihelper.h"
 #include "mhostapi.h"
 
 class MAndroidImage : public MImage

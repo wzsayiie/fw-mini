@@ -71,6 +71,9 @@ m_class(MString, "Str") {};
 M_FUNC_EXPORT MString *MStringCreateU8 (const char     *chars) M_META(MStringCreateU8 );
 M_FUNC_EXPORT MString *MStringCreateU16(const char16_t *chars) M_META(MStringCreateU16);
 
+M_FUNC_EXPORT MString *MStringCopyU8 (const char     *begin, int size) M_META(MStringCopyU8 );
+M_FUNC_EXPORT MString *MStringCopyU16(const char16_t *begin, int size) M_META(MStringCopyU16);
+
 M_FUNC_EXPORT const char     *MStringU8Chars (MString *string) M_META(MStringU8Chars );
 M_FUNC_EXPORT const char16_t *MStringU16Chars(MString *string) M_META(MStringU16Chars);
 

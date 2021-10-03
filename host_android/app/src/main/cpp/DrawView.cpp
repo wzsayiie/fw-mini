@@ -117,11 +117,7 @@ extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_DrawView_windowLabelGraphString(JNIEnv *env, jobject, jint index)
 {
     MString *string = _MWindowLabelGraphString(index);
-
-    auto chars = (const jchar *)MStringU16Chars(string);
-    auto size  = (jsize)MStringU16Size(string);
-
-    return env->NewString(chars, size);
+    return JNewString(env, string);
 }
 
 extern "C" JNIEXPORT jint JNICALL

@@ -87,15 +87,19 @@ struct MStringImpl : MString {
     std::string    u8string ;
     std::u16string u16string;
     
-    MStringImpl(const char *chars) {
-        if (chars) {
-            u8string = chars;
+    MStringImpl(const char *chars, int length) {
+        if (length > 0) {
+            u8string.append(chars, chars + length);
+        } else {
+            u8string.append(chars);
         }
     }
 
-    MStringImpl(const char16_t *chars) {
-        if (chars) {
-            u16string = chars;
+    MStringImpl(const char16_t *chars, int length) {
+        if (length > 0) {
+            u16string.append(chars, chars + length);
+        } else {
+            u16string.append(chars);
         }
     }
     
@@ -114,8 +118,11 @@ struct MStringImpl : MString {
     }
 };
 
-MString *MStringCreateU8 (const char     *chs) { return chs ? new MStringImpl(chs) : nullptr; }
-MString *MStringCreateU16(const char16_t *chs) { return chs ? new MStringImpl(chs) : nullptr; }
+MString *MStringCreateU8 (const char     *chs) { return chs ? new MStringImpl(chs, 0) : nullptr; }
+MString *MStringCreateU16(const char16_t *chs) { return chs ? new MStringImpl(chs, 0) : nullptr; }
+
+MString *MStringCopyU8 (const char     *bgn, int len) { return bgn && len > 0 ? new MStringImpl(bgn, len) : nullptr; }
+MString *MStringCopyU16(const char16_t *bgn, int len) { return bgn && len > 0 ? new MStringImpl(bgn, len) : nullptr; }
 
 const char     *MStringU8Chars (MString *str) { return str ? ((MStringImpl *)str)->u8s ().c_str() : nullptr; }
 const char16_t *MStringU16Chars(MString *str) { return str ? ((MStringImpl *)str)->u16s().c_str() : nullptr; }
