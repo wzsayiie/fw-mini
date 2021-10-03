@@ -30,7 +30,7 @@ const _lambda = (function () {
     lambda.MJsLambdaInvoke = function (iden) {
         let func = lambdaMap.get(iden)
         if (func) {
-            func()
+            func.call(undefined)
         }
     }
 
@@ -61,7 +61,7 @@ let _amd = (function () {
             return relative
         }
 
-        let array = base ? base.split('/') : []
+        let array = !!base ? base.split('/') : []
         let added = relative.split('/')
 
         for (let item of added) {
@@ -85,114 +85,218 @@ let _amd = (function () {
 
     /**
      * @param {string}   base
-     * @param {string[]} relativePaths
+     * @param {string[]} relativeArray
      */
-    function AbsolutePathArray(base, relativePaths) {
-        let absolutePaths = []
-        for (let relative of relativePaths) {
+    function AbsolutePathArray(base, relativeArray) {
+        let absoluteArray = []
+
+        for (let relative of relativeArray) {
             let absolute = AbsolutePath(base, relative)
-            absolutePaths.push(absolute)
+            absoluteArray.push(absolute)
         }
-        return absolutePaths
+
+        return absoluteArray
     }
 
-    /** @param {Object[]} array */
-    function LastOf(array) {
-        return array.length > 0 ? array[array.length - 1] : null
+    /** @param {string} path */
+    function DirOf(path) {
+        let div = path.lastIndexOf('/')
+        if (div >= 0) {
+            return path.substring(0, div)
+        } else {
+            return ''
+        }
+    }
+
+    /** @param {string} name */
+    function JsFilename(name) {
+        return !name.endsWith('.js') ? `${name}.js` : name
+    }
+
+    /** @param {string[]} srcArray */
+    function JsFilenameArray(srcArray) {
+        let dstArray = []
+
+        for (let src of srcArray) {
+            let dst = JsFilename(src)
+            dstArray.push(dst)
+        }
+
+        return dstArray
     }
 
     /**
-     * @callback ModuleFactory
-     * @param    {Object[]}
-     * @returns  {Object}
+     * @callback Generator
+     * @param    {any[]} module
+     * @returns  {any}
      */
 
     /**
-     * @typedef  ModuleItem
+     * @typedef  GenerationData
      * @type     {Object}
-     * @property {string}        dir
-     * @property {string[]}      needArray
-     * @property {ModuleFactory} factory
-     * @property {Object}        module
+     * @property {string}    localedDir
+     * @property {string[]}  needArray
+     * @property {Generator} generator
+     * @property {boolean}   isGenerated
+     * @property {any}       module
      */
 
-    /** @type {Map<string, ModuleItem>} */
-    let moduleMap = new Map()
+    /** @type {Map<string, GenerationData>} */
+    let generationMap = new Map()
 
-    function requireSync(path) {
-        let item = moduleMap.get(path)
-        if (item.module) {
-            return item.module
-        }
+    /** @type {string[]} */
+    let generationDirStack = []
 
-        let moduleArray = []
-        for (let need of item.needArray) {
-            let module = requireSync(need)
-            moduleArray.push(module)
-        }
-        item.module = item.factory.apply(undefined, moduleArray)
+    /** @type {string} path */
+    function requireInner(path) {
+        path = JsFilename(path)
 
-        return item.module
+        let directory = generationDirStack[generationDirStack.length - 1]
+        let absolute  = AbsolutePath(directory, path)
+
+        let data = generationMap.get(absolute)
+        return data ? data.module : undefined
     }
 
     //builtin modules.
-    moduleMap.set('require', {module: requireSync})
-    moduleMap.set('module' , {module: {}})
-
-    /** @type {string[]} */ let currentPathStack = []
-    /** @type {string[]} */ let currentDirStack  = []
+    generationMap.set('require.js', { isGenerated: true, module: requireInner })
+    generationMap.set('module.js' , { isGenerated: true, module: {} })
 
     /**
-     * @param {string[]}      needs
-     * @param {ModuleFactory} factory
+     * @param {string}    path
+     * @param {string}    dir
+     * @param {string[]}  needArray
+     * @param {Generator} generator
      */
-    amd.define = function (needs, factory) {
-        let path = LastOf(currentPathStack)
-        let dir  = LastOf(currentDirStack )
-
-        let item = {
-            dir      : dir,
-            needArray: AbsolutePathArray(dir, needs),
-            factory  : factory,
+    function AppendGenerationMap(path, dir, needArray, generator) {
+        if (generationMap.has(path)) {
+            return
         }
-        moduleMap.set(path, item)
+
+        let data = {}
+        data.localedDir = dir
+        data.needArray  = needArray
+        data.generator  = generator
+
+        generationMap.set(path, data)
     }
 
-    /**
-     * @callback AsyncCallback
-     * @returns  {void}
-     */
+    /** @param {string} path */
+    function GenerateModule(path) {
+        let data = generationMap.get(path)
+        if (!data) {
+            return undefined
+        }
 
-    /**
-     * @param {string}        base
-     * @param {string[]}      absolutePaths
-     * @param {AsyncCallback} complete
-     */
-    function RequestDefinitions(base, absolutePaths, complete) {
+        if (data.isGenerated) {
+            return data.module
+        }
+
+        //NOTE: first set this flag, to avoid circular dependences.
+        data.isGenerated = true
+
+        let dependences = []
+        if (data.needArray) {
+            for (let need of data.needArray) {
+                let module = GenerateModule(need)
+                dependences.push(module)
+            }
+        }
+
+        generationDirStack.push(data.localedDir)
+        data.module = data.generator.apply(undefined, dependences)
+        generationDirStack.pop()
+
+        return data.module
     }
 
-    /**
-     * @callback ProcFunction
-     * @param    {Object[]}
-     * @returns  {void}
-     */
+    /** @type {Set<string>} */ let requestSet   = new Set()
+    /** @type {string[]}    */ let requestQueue = []
+    /** @type {number}      */ let requestIndex = 0
 
-    /**
-     * @param {string[]}     needs
-     * @param {ProcFunction} proc
-     */
-    amd.require = function (needs, proc) {
-        let needArray = AbsolutePathArray(needs)
-
-        RequestDefinitions(null, needArray, () => {
-            let moduleArray = []
-
-            for (let need of needArray) {
-                let module = requireSync(need)
-                moduleArray.push(module)
+    /** @para {string[]} paths */
+    function AppendRequestQueue(pathArray) {
+        for (let path of pathArray) {
+            if (generationMap.has(path)) {
+                continue
+            }
+            if (requestSet.has(path)) {
+                continue
             }
 
-            proc.apply(undefined, moduleArray)
+            requestQueue.push(path)
+            requestSet.add(path)
+        }
+    }
+
+    function CurrentRequestPath() {
+        if (requestIndex < requestQueue.length) {
+            return requestQueue[requestIndex]
+        } else {
+            return ''
+        }
+    }
+
+    /**
+     * @callback Callback
+     * @returns  {void}
+     */
+
+    /** @param {Callback} complete */
+    function RequestModules(complete) {
+        if (requestIndex == requestQueue.length) {
+            if (complete) {
+                complete.call(undefined)
+            }
+            return
+        }
+
+        let current = requestQueue[requestIndex]
+        MJsAsyncDoFile(current, MJsLambda(() => {
+            requestIndex += 1
+            RequestModules(complete)
+        }))
+    }
+
+    /**
+     * @param {string[]}  needs
+     * @param {Generator} generator
+     */
+    amd.define = function (needs, generator) {
+        needs = JsFilenameArray(needs)
+
+        let currentPath = CurrentRequestPath()
+        let currentDir  = DirOf(currentPath)
+        let dependences = AbsolutePathArray(currentDir, needs)
+
+        //NOTE: first put the current module generator into the map,
+        //it's convenient to check for circular dependences.
+        AppendGenerationMap(currentPath, currentDir, dependences, generator)
+
+        AppendRequestQueue(dependences)
+    }
+
+    /**
+     * @param {string[]}  needs
+     * @param {Generator} generator
+     */
+    amd.require = function (needs, generator) {
+        needs = JsFilenameArray(needs)
+
+        let currentPath = CurrentRequestPath()
+        if (!currentPath) {
+            //assume it is the launch entry.
+            currentPath = 'app.js'
+        }
+
+        let currentDir  = DirOf(currentPath)
+        let dependences = AbsolutePathArray(currentDir, needs)
+
+        AppendGenerationMap(currentPath, currentDir, dependences, generator)
+
+        AppendRequestQueue(dependences)
+        RequestModules(() => {
+            GenerateModule(currentPath)
         })
     }
 
