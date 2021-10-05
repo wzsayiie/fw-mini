@@ -1,6 +1,6 @@
 #pragma once
 
-#include "minikit.h"
+#include "cprime.h"
 
 //------------------------------------------------------------------------------
 //CColor:
@@ -44,9 +44,7 @@ private:
 //------------------------------------------------------------------------------
 //CImage:
 
-typedef std::shared_ptr<class CImage> CImageRef;
-
-class CImage {
+c_class(CImage) {
 
 public:
     static CImageRef fromData  (const std::vector<uint8_t> &data);

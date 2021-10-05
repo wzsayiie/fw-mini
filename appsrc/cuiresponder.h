@@ -1,10 +1,8 @@
 #pragma once
 
-#include "minikit.h"
+#include "cprime.h"
 
-typedef std::shared_ptr<class CUIResponder> CUIResponderRef;
-
-class CUIResponder {
+c_class(CUIResponder) {
     
 public:
     virtual ~CUIResponder();

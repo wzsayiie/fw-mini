@@ -2,9 +2,7 @@
 
 #include "cview.h"
 
-typedef std::shared_ptr<class CViewController> CViewControllerRef;
-
-class CViewController : public CUIResponder {
+c_class(CViewController) : public CUIResponder {
     
 public:
     ~CViewController();

@@ -3,9 +3,7 @@
 #include "cgraphics.h"
 #include "cuiresponder.h"
 
-typedef std::shared_ptr<class CView> CViewRef;
-
-class CView : public CUIResponder {
+c_class(CView) : public CUIResponder {
     
 public:
     CView(float x, float y, float width, float height);

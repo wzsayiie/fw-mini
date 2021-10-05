@@ -1,6 +1,6 @@
 #include "cuikit.h"
 
-class MainController : public CViewController {
+c_class(MainController) : public CViewController {
 
 protected:
     void onViewLoad() override {

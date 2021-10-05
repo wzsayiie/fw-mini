@@ -2,9 +2,7 @@
 
 #include "cview.h"
 
-typedef std::shared_ptr<class CLabel> CLabelRef;
-
-class CLabel : public CView {
+c_class(CLabel) : public CView {
 
 public:
     using CView::CView;
