@@ -2,11 +2,11 @@
 
 #include "mbasics.h"
 
-typedef void (*_MJsRegisterFunc )(MString *name);
-typedef void (*_MJsAsyncDoScript)(MString *name, MString *script, MLambda *complete);
+typedef void (*_MJsRegisterFunc)(MString *name);
+typedef void (*_MJsRunScript   )(MString *name, MString *script);
 
-M_FUNC_HOST void _MJsSetRegisterFunc (_MJsRegisterFunc  func);
-M_FUNC_HOST void _MJsSetAsyncDoScript(_MJsAsyncDoScript func);
+M_FUNC_HOST void _MJsSetRegisterFunc(_MJsRegisterFunc func);
+M_FUNC_HOST void _MJsSetRunScript   (_MJsRunScript    func);
 
 M_FUNC_HOST MObject *_MJsOnCallCopyRet(MString *name, MArray *params);
 M_FUNC_HOST void     _MJsOnHappenError(MString *info);
@@ -22,5 +22,5 @@ M_FUNC_EXPORT MArray     *MJsCallingParams  ()                                M_
 M_FUNC_EXPORT void        MJsCallingReturn  (MObject *value)                  M_META(MJsCallingReturn  );
 
 //execute javascript string.
-M_FUNC_EXPORT void MJsAsyncDoScript(MString *name, MString *script, MLambda *complete) M_META(MJsAsyncDoScript);
-M_FUNC_EXPORT void MJsAsyncDoFile  (MString *name, MLambda *complete)                  M_META(MJsAsyncDoFile  );
+M_FUNC_EXPORT void MJsRunScript(MString *name, MString *script) M_META(MJsRunScript);
+M_FUNC_EXPORT void MJsRunFile  (MString *name)                  M_META(MJsRunFile  );

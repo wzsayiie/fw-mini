@@ -2,11 +2,11 @@
 #include <cstring>
 #include "mresource.h"
 
-static _MJsRegisterFunc  sRegisterFunc  = nullptr;
-static _MJsAsyncDoScript sAsyncDoScript = nullptr;
+static _MJsRegisterFunc sRegisterFunc = nullptr;
+static _MJsRunScript    sRunScript    = nullptr;
 
-void _MJsSetRegisterFunc (_MJsRegisterFunc  func) { sRegisterFunc  = func; }
-void _MJsSetAsyncDoScript(_MJsAsyncDoScript func) { sAsyncDoScript = func; }
+void _MJsSetRegisterFunc(_MJsRegisterFunc func) { sRegisterFunc = func; }
+void _MJsSetRunScript   (_MJsRunScript    func) { sRunScript    = func; }
 
 static void RegisterFunc(MString *name) {
     if (sRegisterFunc) {
@@ -16,9 +16,9 @@ static void RegisterFunc(MString *name) {
     }
 }
 
-static void AsyncDoScript(MString *name, MString *script, MLambda *complete) {
-    if (sAsyncDoScript) {
-        sAsyncDoScript(name, script, complete);
+static void RunScript(MString *name, MString *script) {
+    if (sRunScript) {
+        sRunScript(name, script);
     } else {
         D("ERROR: no api 'MJsRunScript'");
     }
@@ -97,11 +97,11 @@ void MJsCallingReturn(MObject *value) {
     sCallingFrames().back().returned = m_make_shared value;
 }
 
-void MJsAsyncDoScript(MString *name, MString *script, MLambda *complete) {
-    AsyncDoScript(name, script, complete);
+void MJsRunScript(MString *name, MString *script) {
+    RunScript(name, script);
 }
 
-void MJsAsyncDoFile(MString *name, MLambda *complete) {
+void MJsRunFile(MString *name) {
     const char *chars = MStringU8Chars(name);
     if (!chars) {
         return;
@@ -135,5 +135,5 @@ void MJsAsyncDoFile(MString *name, MLambda *complete) {
         return;
     }
 
-    AsyncDoScript(name, script.get(), complete);
+    RunScript(name, script.get());
 }

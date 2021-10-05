@@ -210,52 +210,38 @@ let _amd = (function () {
         return data.module
     }
 
-    /** @type {Set<string>} */ let requestSet   = new Set()
-    /** @type {string[]}    */ let requestQueue = []
-    /** @type {number}      */ let requestIndex = 0
+    /** @type {Set<string>} */
+    let requestSet = new Set()
 
-    /** @para {string[]} paths */
-    function AppendRequestQueue(pathArray) {
-        for (let path of pathArray) {
-            if (generationMap.has(path)) {
-                continue
-            }
-            if (requestSet.has(path)) {
-                continue
-            }
+    /** @type {string[]} */
+    let requestPathStack = []
 
-            requestQueue.push(path)
-            requestSet.add(path)
-        }
+    //builtin modules don't need request.
+    for (let [path, _] of generationMap) {
+        requestSet.add(path)
     }
 
     function CurrentRequestPath() {
-        if (requestIndex < requestQueue.length) {
-            return requestQueue[requestIndex]
+        if (requestPathStack.length > 0) {
+            return requestPathStack[requestPathStack.length - 1]
         } else {
             return ''
         }
     }
 
-    /**
-     * @callback Callback
-     * @returns  {void}
-     */
-
-    /** @param {Callback} complete */
-    function RequestModules(complete) {
-        if (requestIndex == requestQueue.length) {
-            if (complete) {
-                complete.call(undefined)
+    /** @param {string[]} pathArray */
+    function RequestModules(pathArray) {
+        for (let path of pathArray) {
+            if (requestSet.has(path)) {
+                continue
             }
-            return
-        }
 
-        let current = requestQueue[requestIndex]
-        MJsAsyncDoFile(current, MJsLambda(() => {
-            requestIndex += 1
-            RequestModules(complete)
-        }))
+            requestPathStack.push(path)
+            MJsRunFile(path)
+            requestPathStack.pop()
+
+            requestSet.add(path)
+        }
     }
 
     /**
@@ -269,11 +255,8 @@ let _amd = (function () {
         let currentDir  = DirOf(currentPath)
         let dependences = AbsolutePathArray(currentDir, needs)
 
-        //NOTE: first put the current module generator into the map,
-        //it's convenient to check for circular dependences.
         AppendGenerationMap(currentPath, currentDir, dependences, generator)
-
-        AppendRequestQueue(dependences)
+        RequestModules(dependences)
     }
 
     /**
@@ -293,11 +276,9 @@ let _amd = (function () {
         let dependences = AbsolutePathArray(currentDir, needs)
 
         AppendGenerationMap(currentPath, currentDir, dependences, generator)
+        RequestModules(dependences)
 
-        AppendRequestQueue(dependences)
-        RequestModules(() => {
-            GenerateModule(currentPath)
-        })
+        GenerateModule(currentPath)
     }
 
     return Object.freeze(amd)

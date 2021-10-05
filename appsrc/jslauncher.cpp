@@ -8,6 +8,51 @@ static void SetErrorListener() {
     MJsSetErrorListener(listener.get());
 }
 
+static std::string EscapedString(MString *string) {
+    std::string escaped;
+    for (const char *ch = MStringU8Chars(string); *ch; ++ch) {
+        switch (*ch)  {
+        case '\\': escaped.append("\\\\"); break;
+        case '\'': escaped.append("\\\'"); break;
+        case '"' : escaped.append("\\\""); break;
+        default  : escaped.push_back(*ch);
+        }
+    }
+    return escaped;
+}
+
+static void RegisterNativeConsts() {
+    std::string script;
+
+    for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
+        const char *name = MConstSelectedName();
+        const char *desc = nullptr;
+
+        MTypeId typeId = MConstSelectedTypeId();
+        if (typeId == MTypeIdOf<MString *>::Value) {
+            MString *value = MConstSelectedString();
+            std::string escaped = EscapedString(value);
+            desc = MFormat("const %s = '%s'\n" , name, escaped.c_str());
+
+        } else if (typeId == MTypeIdOf<float>::Value) {
+            float value = MConstSelectedFloat();
+            desc = MFormat("const %s = %f\n", name, value);
+
+        } else if (typeId == MTypeIdOf<int>::Value) {
+            int value = MConstSelectedInt();
+            desc = MFormat("const %s = %d\n", name, value);
+        }
+
+        if (desc) {
+            script.append(desc);
+        }
+    }
+
+    MStringRef name = m_auto_release MStringCreateU8("builtin_consts");
+    MStringRef code = m_auto_release MStringCreateU8(script.c_str());
+    MJsRunScript(name.get(), code.get());
+}
+
 static void NativeFunc() {
     const char *funcName = MJsCallingFuncName();
     MArray     *params   = MJsCallingParams();
@@ -45,7 +90,7 @@ private:
         const char *string = MFormat(format, mIden);
         MStringRef  script = m_auto_release MStringCreateU8(string);
 
-        MJsAsyncDoScript(script.get(), script.get(), nullptr);
+        MJsRunScript(script.get(), script.get());
     }
 
     int mIden;
@@ -69,64 +114,18 @@ static void RegisterBuiltinFuncs() {
     MJsRegisterFunc("MJsLambdaWrap", (m_cast_lambda MJsLambdaWrap).get());
 }
 
-static std::string EscapedString(MString *string) {
-    std::string escaped;
-    for (const char *ch = MStringU8Chars(string); *ch; ++ch) {
-        switch (*ch)  {
-        case '\\': escaped.append("\\\\"); break;
-        case '\'': escaped.append("\\\'"); break;
-        case '"' : escaped.append("\\\""); break;
-        default  : escaped.push_back(*ch);
-        }
-    }
-    return escaped;
-}
-
-static void AsyncRegisterConsts() {
-    std::string script;
-
-    for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
-        const char *name = MConstSelectedName();
-        const char *desc = nullptr;
-
-        MTypeId typeId = MConstSelectedTypeId();
-        if (typeId == MTypeIdOf<MString *>::Value) {
-            MString *value = MConstSelectedString();
-            std::string escaped = EscapedString(value);
-            desc = MFormat("const %s = '%s'\n" , name, escaped.c_str());
-
-        } else if (typeId == MTypeIdOf<float>::Value) {
-            float value = MConstSelectedFloat();
-            desc = MFormat("const %s = %f\n", name, value);
-
-        } else if (typeId == MTypeIdOf<int>::Value) {
-            int value = MConstSelectedInt();
-            desc = MFormat("const %s = %d\n", name, value);
-        }
-
-        if (desc) {
-            script.append(desc);
-        }
-    }
-
-    MStringRef name = m_auto_release MStringCreateU8("builtin_consts");
-    MStringRef code = m_auto_release MStringCreateU8(script.c_str());
-    MJsAsyncDoScript(name.get(), code.get(), nullptr);
-}
-
-static void AsyncDoFile(const char *name) {
+static void ExecuteFile(const char *name) {
     MStringRef file = m_auto_release MStringCreateU8(name);
-    MJsAsyncDoFile(file.get(), nullptr);
+    MJsRunFile(file.get());
 }
 
 static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
     SetErrorListener();
 
-    RegisterNativeFuncs();
+    RegisterNativeConsts();
+    RegisterNativeFuncs ();
     RegisterBuiltinFuncs();
-
-    //there is no waiting for completion to avoid startup delay.
-    AsyncRegisterConsts();
-    AsyncDoFile("runtime/runtime.js");
-    AsyncDoFile("app.js");
+    
+    ExecuteFile("runtime/runtime.js");
+    ExecuteFile("app.js");
 }
