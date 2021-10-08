@@ -27,4 +27,4 @@ host_win32/.vs/
 .vscode/
 
 # the framework built files:
-BUILD/*
+BUILD/
