@@ -152,7 +152,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     OpenConsole();
     MPaintStart();
 
-    MInstallJSRuntime(wnd);
+    MInstallJSRuntime();
     MRegisterApi();
 
     int width  = 0;
@@ -348,12 +348,6 @@ static LRESULT OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-static LRESULT OnUserJSTask(HWND wnd, WPARAM wParam, LPARAM lParam)
-{
-    MConsumeJSTasks();
-    return 0;
-}
-
 static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -369,7 +363,6 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
         case WM_LBUTTONUP  : return OnLButtonUp  (wnd, wParam, lParam);
         case WM_COMMAND    : return OnCommand    (wnd, wParam, lParam);
         case WM_KEYDOWN    : return OnKeyDown    (wnd, wParam, lParam);
-        case WM_USER_JSTASK: return OnUserJSTask (wnd, wParam, lParam);
 
         default: return DefWindowProcW(wnd, msg, wParam, lParam);
     }
