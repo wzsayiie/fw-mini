@@ -7,7 +7,7 @@ const char16_t *const MPrivateDirectoryU16Name = u"mini"        M_META(MPrivateD
 const char     *const MAssetBundleU8Name       =  "mini.bundle" M_META(MAssetBundleU8Name      );
 const char16_t *const MAssetBundleU16Name      = u"mini.bundle" M_META(MAssetBundleU16Name     );
 
-m_class(MImage, "Img") {};
+m_class(MImage, "Img");
 
 typedef void     (*_MApiPrintMessage     )(MString *text);
 typedef MData   *(*_MApiCopyBundleAsset  )(MString *path);

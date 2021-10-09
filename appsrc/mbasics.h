@@ -48,10 +48,10 @@ M_FUNC_EXPORT MTypeId  MGetTypeId(MObject *object) M_META(MGetTypeId);
 //------------------------------------------------------------------------------
 //MBool & MInt & MFloat & MPointer:
 
-m_class(MBool   , "Bol") {};
-m_class(MInt    , "Int") {};
-m_class(MFloat  , "Flt") {};
-m_class(MPointer, "Ptr") {};
+m_class(MBool   , "Bol");
+m_class(MInt    , "Int");
+m_class(MFloat  , "Flt");
+m_class(MPointer, "Ptr");
 
 M_FUNC_EXPORT MBool    *MBoolCreate   (bool     value) M_META(MBoolCreate   );
 M_FUNC_EXPORT MInt     *MIntCreate    (int      value) M_META(MIntCreate    );
@@ -66,7 +66,7 @@ M_FUNC_EXPORT uint8_t *MPointerValue(MPointer *object) M_META(MPointerValue);
 //------------------------------------------------------------------------------
 //MString:
 
-m_class(MString, "Str") {};
+m_class(MString, "Str");
 
 M_FUNC_EXPORT MString *MStringCreateU8 (const char     *chars) M_META(MStringCreateU8 );
 M_FUNC_EXPORT MString *MStringCreateU16(const char16_t *chars) M_META(MStringCreateU16);
@@ -85,7 +85,7 @@ M_FUNC_EXPORT int MStringU16Size(MString *string) M_META(MStringU16Size);
 
 typedef void (*MLambdaFunc)(MObject *load);
 
-m_class(MLambda, "Lmd") {};
+m_class(MLambda, "Lmd");
 
 M_FUNC_EXPORT MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
 M_FUNC_EXPORT void MLambdaCall(MLambda *lambda) M_META(MLambdaCall);
@@ -93,7 +93,7 @@ M_FUNC_EXPORT void MLambdaCall(MLambda *lambda) M_META(MLambdaCall);
 //------------------------------------------------------------------------------
 //MData:
 
-m_class(MData, "Dat") {};
+m_class(MData, "Dat");
 
 M_FUNC_EXPORT MData *MDataCreate(const uint8_t *bytes, int size)              M_META(MDataCreate);
 M_FUNC_EXPORT void   MDataAppend(MData *data, const uint8_t *bytes, int size) M_META(MDataAppend);
@@ -104,7 +104,7 @@ M_FUNC_EXPORT const uint8_t *MDataBytes(MData *data) M_META(MDataBytes);
 //------------------------------------------------------------------------------
 //MArray:
 
-m_class(MArray, "Arr") {};
+m_class(MArray, "Arr");
 
 M_FUNC_EXPORT MArray  *MArrayCreate()                             M_META(MArrayCreate);
 M_FUNC_EXPORT void     MArrayAppend(MArray *array, MObject *item) M_META(MArrayAppend);
@@ -114,7 +114,7 @@ M_FUNC_EXPORT MObject *MArrayItem  (MArray *array, int index)     M_META(MArrayI
 //------------------------------------------------------------------------------
 //MUnknown:
 
-m_class(MUnknown, "Uno") {};
+m_class(MUnknown, "Uno");
 
 //------------------------------------------------------------------------------
 //smart pointer:

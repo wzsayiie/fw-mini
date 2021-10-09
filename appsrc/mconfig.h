@@ -31,13 +31,11 @@ template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MEn
 /**/                                                    \
 /**/    typedef std::shared_ptr<class name> name##Ref;  \
 /**/                                                    \
-/**/    struct _##name##_Middler : MObject {            \
+/**/    class name : public MObject {                   \
 /**/        MTypeId _typeId() override {                \
 /**/            return MEnumId(id);                     \
 /**/        }                                           \
-/**/    };                                              \
-/**/                                                    \
-/**/    class name : public _##name##_Middler
+/**/    }
 
 //to create a inner static object.
 #define m_static_object(name, ...)              \
