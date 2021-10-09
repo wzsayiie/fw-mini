@@ -2,51 +2,53 @@
 #include "mhostloop.h"
 #include <chrono>
 
+float MTickSeconds() {
+    static int64_t zero = 0;
+
+    auto now  = std::chrono::system_clock::now().time_since_epoch();
+    auto tick = std::chrono::duration_cast<std::chrono::milliseconds>(now);
+
+    if (zero == 0) {
+        zero = tick.count();
+    }
+
+    return (tick.count() - zero) / 1000.f;
+}
+
 struct TaskConfig {
     bool  runOnlyOnce = false;
     float nextRunTick = 0;
     float interval    = 0;
     bool  cancelled   = false;
 };
+typedef std::shared_ptr<TaskConfig> TaskConfigRef;
 
-m_static_object(sTasks(), std::map<MLambdaRef, TaskConfig>)
-
-float MRunningSeconds() {
-    static int64_t startTick = 0;
-    
-    auto now = std::chrono::system_clock::now().time_since_epoch();
-    auto nowTick = std::chrono::duration_cast<std::chrono::milliseconds>(now);
-    
-    if (startTick == 0) {
-        startTick = nowTick.count();
-    }
-    
-    return (nowTick.count() - startTick) / 1000.f;
-}
+m_static_object(sTasks(), std::map<MLambdaRef, TaskConfigRef>)
 
 static void Update() MAPP_UPDATE(Update) {
-    float tick = MRunningSeconds();
+    float tick = MTickSeconds();
 
     //remove cancelled tasks.
     for (auto it = sTasks().begin(); it != sTasks().end(); ) {
-        if (it->second.cancelled) {
+        if (it->second->cancelled) {
             sTasks().erase(it++);
         } else {
             it++;
         }
     }
     
-    //call tasks.
-    for (auto it = sTasks().begin(); it != sTasks().end(); ++it) {
-        if (tick < (it->second.nextRunTick)) {
+    //NOTE: create a copy of "sTasks" to iterate.
+    //because it to be modified possibly during the traversal.
+    std::map<MLambdaRef, TaskConfigRef> tasks = sTasks();
+    for (auto &pair : tasks) {
+        if (tick < (pair.second->nextRunTick)) {
             continue;
         }
-        
-        //call.
-        MLambdaCall(it->first.get());
+
+        MLambdaCall(pair.first.get());
         
         //reset the task configuration.
-        TaskConfig *config = &it->second;
+        TaskConfig *config = pair.second.get();
         if (config->runOnlyOnce) {
             config->cancelled = true;
         } else {
@@ -60,10 +62,9 @@ void MRunAfterSeconds(float delay, MLambda *task) {
         return;
     }
 
-    TaskConfig config;
-    config.runOnlyOnce = true;
-    config.nextRunTick = MRunningSeconds() + delay;
-    config.interval    = 0;
+    TaskConfigRef config(new TaskConfig);
+    config->runOnlyOnce = true;
+    config->nextRunTick = MTickSeconds() + delay;
     
     sTasks().insert({m_make_shared task, config});
 }
@@ -73,12 +74,23 @@ void MRunEverySeconds(float interval, MLambda *task) {
         return;
     }
 
-    TaskConfig config;
-    config.runOnlyOnce = false;
-    config.nextRunTick = MRunningSeconds() + interval;
-    config.interval    = interval;
+    TaskConfigRef config(new TaskConfig);
+    config->runOnlyOnce = false;
+    config->nextRunTick = MTickSeconds() + interval;
+    config->interval    = interval;
     
     sTasks().insert({m_make_shared task, config});
+}
+
+void MCancelTask(MLambda *task) {
+    if (!task) {
+        return;
+    }
+
+    auto it = sTasks().find(m_make_shared task);
+    if (it != sTasks().end()) {
+        it->second->cancelled = true;
+    }
 }
 
 MLambdaRef MRunAfterSeconds(float delay, std::function<void ()> task) {
@@ -91,15 +103,4 @@ MLambdaRef MRunEverySeconds(float interval, std::function<void ()> task) {
     MLambdaRef lambda = m_cast_lambda task;
     MRunEverySeconds(interval, lambda.get());
     return lambda;
-}
-
-void MCancelTask(MLambda *task) {
-    if (!task) {
-        return;
-    }
-
-    auto it = sTasks().find(m_make_shared task);
-    if (it != sTasks().end()) {
-        it->second.cancelled = true;
-    }
 }
