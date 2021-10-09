@@ -108,7 +108,7 @@ bool CViewController::canRespondWindowTouch(float x, float y) {
 
 CUIResponder *CViewController::findResponder(std::function<bool (CUIResponder *)> fit) {
     //is there a suitable child controller.
-    for (auto it = mChildControllers.crbegin(); it != mChildControllers.crend(); ++it) {
+    for (auto it = mChildControllers.rbegin(); it != mChildControllers.rend(); ++it) {
         CUIResponder *responder = it->get()->findResponder(fit);
         if (responder) {
             return responder;
