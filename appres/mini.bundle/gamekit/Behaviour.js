@@ -22,7 +22,9 @@ function (require, module) {
         let set = new Set(behaviourSet)
 
         for (let behaviour of set) {
-            behaviour.onUpdate()
+            if (behaviour.isListenUpdate) {
+                behaviour.onUpdate()
+            }
         }
     }
 
@@ -41,6 +43,8 @@ function (require, module) {
 
         let set = new Set(behaviourSet)
         for (let behaviour of set) {
+            //NOTE: even if the object does not listen touch events, perform a hit test.
+
             spriteX = viewX - behaviour.sprite.position.worldX
             spriteY = viewY - behaviour.sprite.position.worldY
 
@@ -100,7 +104,9 @@ function (require, module) {
     function OnTextBox(string, enter) {
         let set = new Set(behaviourSet)
         for (let behaviour of set) {
-            behaviour.onTextBox(string, enter)
+            if (behaviour.isListenTextBox) {
+                behaviour.onTextBox(string, enter)
+            }
         }
     }
 
@@ -108,7 +114,30 @@ function (require, module) {
     function OnKeyDown(key) {
         let set = new Set(behaviourSet)
         for (let behaviour of set) {
-            behaviour.onKeyDown(key)
+            if (behaviour.isListenKeyDown) {
+                behaviour.onKeyDown(key)
+            }
+        }
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
+    function OnMouseMove(x, y) {
+        let viewX =  x - viewport.width  / 2 + viewport.x
+        let viewY = -y + viewport.height / 2 + viewport.y
+
+        let set = new Set(behaviourSet)
+        for (let behaviour of set) {
+            if (!behaviour.isListenMouseMove) {
+                continue
+            }
+
+            let spriteX = viewX - behaviour.sprite.position.worldX
+            let spriteY = viewY - behaviour.sprite.position.worldY
+
+            behaviour.onMouseMove(spriteX, spriteY)
         }
     }
 
@@ -142,6 +171,11 @@ function (require, module) {
         } else if (event == MWindowEvent_KeyDown) {
             let key = MWindowActiveKey()
             OnKeyDown(key)
+
+        } else if (event == MWindowEvent_MouseMove) {
+            let x = MWindowMouseX()
+            let y = MWindowMouseY()
+            OnMouseMove(x, y)
         }
     }))
 
@@ -156,7 +190,7 @@ function (require, module) {
      */
 
     /**
-     * @callback TouchListener
+     * @callback PositionListener
      * @param    {number} x
      * @param    {number} y
      * @returns  {void}
@@ -185,13 +219,14 @@ function (require, module) {
             /** @private */ this._touchableWidth  = 0
             /** @private */ this._touchableHeight = 0
 
-            /** @private @type {AwakeListener  } */ this._awakeListener      = null
-            /** @private @type {UpdateListener } */ this._updateListener     = null
-            /** @private @type {TouchListener  } */ this._touchBeginListener = null
-            /** @private @type {TouchListener  } */ this._touchMoveListener  = null
-            /** @private @type {TouchListener  } */ this._touchEndListener   = null
-            /** @private @type {TextBoxListener} */ this._textBoxListener    = null
-            /** @private @type {KeyDownListener} */ this._keyDownListener    = null
+            /** @private @type {AwakeListener   } */ this._awakeListener      = null
+            /** @private @type {UpdateListener  } */ this._updateListener     = null
+            /** @private @type {PositionListener} */ this._touchBeginListener = null
+            /** @private @type {PositionListener} */ this._touchMoveListener  = null
+            /** @private @type {PositionListener} */ this._touchEndListener   = null
+            /** @private @type {TextBoxListener } */ this._textBoxListener    = null
+            /** @private @type {KeyDownListener } */ this._keyDownListener    = null
+            /** @private @type {PositionListener} */ this._mouseMoveListener  = null
         }
 
         /**
@@ -206,40 +241,19 @@ function (require, module) {
         /** @param {number} v */ set touchableWidth (v) { this._touchableWidth  = v }
         /** @param {number} v */ set touchableHeight(v) { this._touchableHeight = v }
 
-        /** @param {AwakeListener} value */
-        set awakeListenrt(value) {
-            this._awakeListener = value
-        }
+        /** @param {AwakeListener   } v */ set awakeListenrt     (v) { this._awakeListener      = v }
+        /** @param {UpdateListener  } v */ set updateListener    (v) { this._updateListener     = v }
+        /** @param {PositionListener} v */ set touchBeginListener(v) { this._touchBeginListener = v }
+        /** @param {PositionListener} v */ set touchMoveListener (v) { this._touchMoveListener  = v }
+        /** @param {PositionListener} v */ set touchEndListener  (v) { this._touchEndListener   = v }
+        /** @param {TextBoxListener } v */ set textBoxListener   (v) { this._textBoxListener    = v }
+        /** @param {KeyDownListener } v */ set keydownListener   (v) { this._keyDownListener    = v }
+        /** @param {PositionListener} v */ set mouseMoveListener (v) { this._mouseMoveListener  = v }
 
-        /** @param {UpdateListener} value */
-        set updateListener(value) {
-            this._updateListener = value
-        }
-        
-        /** @param {TouchListener} value */
-        set touchBeginListener(value) {
-            this._touchBeginListener = value
-        }
-        
-        /** @param {TouchListener} value */
-        set touchMoveListener(value) {
-            this._touchMoveListener = value
-        }
-        
-        /** @param {TouchListener} value */
-        set touchEndListener(value) {
-            this._touchEndListener = value
-        }
-        
-        /** @param {TextBoxListener} value */
-        set textBoxListener(value) {
-            this._textBoxListener = value
-        }
-        
-        /** @param {KeyDownListener} value */
-        set keydownListener(value) {
-            this._keyDownListener = value
-        }
+        get isListenUpdate   () { return !!this._updateListener    }
+        get isListenTextBox  () { return !!this._textBoxListener   }
+        get isListenKeyDown  () { return !!this._keydownListener   }
+        get isListenMouseMove() { return !!this._mouseMoveListener }
 
         /** @protected */
         onCreate() {
@@ -347,6 +361,19 @@ function (require, module) {
 
             if (this._keyDownListener) {
                 this._keyDownListener.call(this.sprite, key)
+            }
+        }
+
+        /**
+         * @protected
+         * @param {number} x
+         * @param {number} y
+         */
+        onMouseMove(x, y) {
+            this.awakeIfNeed()
+
+            if (this._mouseMoveListener) {
+                this._mouseMoveListener.call(this.sprite, x, y)
             }
         }
     }
