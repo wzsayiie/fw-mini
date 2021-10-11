@@ -184,6 +184,12 @@ void CView::onWindowTouchEnd(float x, float y) {
     onTouchEnd(viewX, viewY);
 }
 
+void CView::onWindowMouseMove(float x, float y) {
+    float viewX = x - windowX();
+    float viewY = y - windowY();
+    onMouseMove(viewX, viewY);
+}
+
 void CView::setSupersOffset(float x, float y) {
     if (mSupersX == x || mSupersY == y) {
         return;

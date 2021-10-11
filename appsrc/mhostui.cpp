@@ -97,11 +97,15 @@ struct HostWindow {
     
     float width  = 0;
     float height = 0;
+
     bool  loaded = false;
     bool  shown  = false;
+
     float touchX = 0;
     float touchY = 0;
     MKey  key    = 0;
+    float mouseX = 0;
+    float mouseY = 0;
 
     std::vector<AnyGraphRef> graphs;
     DrawSelectRef select;
@@ -233,6 +237,17 @@ void _MWindowOnKeyDown(MKey key) {
     SendEvent(window, MWindowEvent_KeyDown);
 }
 
+void _MWindowOnMouseMove(_MPixel x, _MPixel y) {
+    float xPoint = PointFromPixel(x);
+    float yPoint = PointFromPixel(y);
+
+    HostWindow *window = GetWindow();
+
+    window->mouseX = xPoint;
+    window->mouseY = yPoint;
+    SendEvent(window, MWindowEvent_MouseMove);
+}
+
 int _MWindowGraphCount() {
     return (int)GetWindow()->graphs.size();
 }
@@ -287,6 +302,8 @@ bool  MWindowShown    () { return GetWindow()->shown ; }
 float MWindowTouchX   () { return GetWindow()->touchX; }
 float MWindowTouchY   () { return GetWindow()->touchY; }
 MKey  MWindowActiveKey() { return GetWindow()->key   ; }
+float MWindowMouseX   () { return GetWindow()->mouseX; }
+float MWindowMouseY   () { return GetWindow()->mouseY; }
 
 void MWindowSelectString(MString *string) { GetSelect()->string = m_make_shared string; }
 void MWindowSelectImage (MImage  *image ) { GetSelect()->image  = m_make_shared image ; }

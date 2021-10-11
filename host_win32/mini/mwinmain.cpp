@@ -255,36 +255,70 @@ static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    sLButtonDowned = true;
-    
     LPARAM clientPoint = lParam;
-    auto x = (float)GET_X_LPARAM(clientPoint);
-    auto y = (float)GET_Y_LPARAM(clientPoint);
+    auto x = (_MPixel)GET_X_LPARAM(clientPoint);
+    auto y = (_MPixel)GET_Y_LPARAM(clientPoint);
+
+    //mouse event.
+    _MWindowOnMouseMove(x, y);
+
+    //touch event:
+    sLButtonDowned = true;
     _MWindowOnTouchBegin(x, y);
+
+    //NOTE: to capture events when the mouse moves outside the window.
+    SetCapture(wnd);
 
     return 0;
 }
 
 static LRESULT OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
+    LPARAM clientPoint = lParam;
+    int x = GET_X_LPARAM(clientPoint);
+    int y = GET_Y_LPARAM(clientPoint);
+
+    //mouse event:
+    int width  = 0;
+    int height = 0;
+    GetClientSize(wnd, &width, &height);
+
+    if (0 <= x && x <= width
+     && 0 <= y && y <= height)
+    {
+        _MWindowOnMouseMove((_MPixel)x, (_MPixel)y);
+    }
+
+    //touch event.
     if (sLButtonDowned)
     {
-        LPARAM clientPoint = lParam;
-        auto x = (float)GET_X_LPARAM(clientPoint);
-        auto y = (float)GET_Y_LPARAM(clientPoint);
-        _MWindowOnTouchMove(x, y);
+        _MWindowOnTouchMove((_MPixel)x, (_MPixel)y);
     }
+
     return 0;
 }
 
 static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     LPARAM clientPoint = lParam;
-    auto x = (float)GET_X_LPARAM(clientPoint);
-    auto y = (float)GET_Y_LPARAM(clientPoint);
-    _MWindowOnTouchEnd(x, y);
+    int x = GET_X_LPARAM(clientPoint);
+    int y = GET_Y_LPARAM(clientPoint);
 
+    //mouse event:
+    int width  = 0;
+    int height = 0;
+    GetClientSize(wnd, &width, &height);
+
+    if (0 <= x && x <= width
+     && 0 <= y && y <= height)
+    {
+        _MWindowOnMouseMove((_MPixel)x, (_MPixel)y);
+    }
+
+    //touch event.
+    _MWindowOnTouchEnd((_MPixel)x, (_MPixel)y);
     sLButtonDowned = false;
+    ReleaseCapture();
 
     return 0;
 }

@@ -18,6 +18,8 @@ public:
     virtual bool canRespondKey () { return false; }
     
     virtual CUIResponder *findResponder(std::function<bool (CUIResponder *)> fit) { return nullptr; }
+
+    void setAcceptMouseMove(bool accept);
     
 protected:
     virtual void onBecomeFirstResponder() {}
@@ -29,8 +31,9 @@ protected:
     virtual void onWindowTouchEnd  (float x, float y) {}
     
     virtual void onTextInput(const std::string &string, bool enter) {}
-    
     virtual void onKeyDown(MKey key) {}
+
+    virtual void onWindowMouseMove(float x, float y) {}
     
 private:
     static void handleWindowEvent(MObject *);
@@ -42,4 +45,5 @@ private:
     static void handleWindowTouchEnd();
     static void handleWindowText();
     static void handleWindowKeyDown();
+    static void handleWindowMouseMove();
 };

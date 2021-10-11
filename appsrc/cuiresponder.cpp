@@ -5,10 +5,14 @@ static CUIResponder *sRootResponder   = nullptr;
 static CUIResponder *sFirstResponder  = nullptr;
 static CUIResponder *sActiveResponder = nullptr;
 
+m_static_object(sMouseMoveResponders(), std::set<CUIResponder *>)
+
 CUIResponder::~CUIResponder() {
     if (sRootResponder   == this) { sRootResponder  = nullptr; }
     if (sFirstResponder  == this) { sFirstResponder = nullptr; }
     if (sActiveResponder == this) { sRootResponder  = nullptr; }
+
+    sMouseMoveResponders().erase(this);
 }
 
 void CUIResponder::asRootResponder() {
@@ -44,6 +48,14 @@ bool CUIResponder::isFirstResponder() {
     return this == sFirstResponder;
 }
 
+void CUIResponder::setAcceptMouseMove(bool accept) {
+    if (accept) {
+        sMouseMoveResponders().insert(this);
+    } else {
+        sMouseMoveResponders().erase(this);
+    }
+}
+
 void CUIResponder::handleWindowEvent(MObject *) {
     MWindowEvent event = MWindowCurrentEvent();
     switch (event) {
@@ -52,6 +64,7 @@ void CUIResponder::handleWindowEvent(MObject *) {
         case MWindowEvent_TouchEnd  : handleWindowTouchEnd  (); break;
         case MWindowEvent_TextBox   : handleWindowText      (); break;
         case MWindowEvent_KeyDown   : handleWindowKeyDown   (); break;
+        case MWindowEvent_MouseMove : handleWindowMouseMove (); break;
         default:;
     }
 }
@@ -128,5 +141,14 @@ void CUIResponder::handleWindowKeyDown() {
     if (responder) {
         MKey key = MWindowActiveKey();
         responder->onKeyDown(key);
+    }
+}
+
+void CUIResponder::handleWindowMouseMove() {
+    float x = MWindowMouseX();
+    float y = MWindowMouseY();
+
+    for (auto &it : sMouseMoveResponders()) {
+        it->onWindowMouseMove(x, y);
     }
 }

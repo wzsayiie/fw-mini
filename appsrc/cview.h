@@ -46,10 +46,12 @@ protected:
     virtual void onTouchBegin(float x, float y) {}
     virtual void onTouchMove (float x, float y) {}
     virtual void onTouchEnd  (float x, float y) {}
+    virtual void onMouseMove (float x, float y) {}
     
     void onWindowTouchBegin(float x, float y) override;
     void onWindowTouchMove (float x, float y) override;
     void onWindowTouchEnd  (float x, float y) override;
+    void onWindowMouseMove (float x, float y) override;
 
 private:
     void setSupersOffset(float x, float y);

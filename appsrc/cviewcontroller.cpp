@@ -151,6 +151,12 @@ void CViewController::onWindowTouchEnd(float x, float y) {
     onTouchEnd(viewX, viewY);
 }
 
+void CViewController::onWindowMouseMove(float x, float y) {
+    float viewX = x - mView->windowX();
+    float viewY = y - mView->windowY();
+    onMouseMove(viewX, viewY);
+}
+
 void CViewController::handleWindowEvent(MObject *) {
     if (!sRootController) {
         return;
