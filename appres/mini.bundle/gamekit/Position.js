@@ -106,7 +106,7 @@ function (require, module) {
          */
         moveTo(x, y) {
             let offsetX = x - (this._worldX - this.parentX)
-            let offsetY = y - (this._worldX - this.parentY)
+            let offsetY = y - (this._worldY - this.parentY)
             this.moveWith(offsetX, offsetY)
         }
 
