@@ -25,7 +25,7 @@ public class AndroidApi {
     private static native String assetBundleName();
 
     protected static void printMessage(String string) {
-        Log.i("zzz", string);
+        Log.i("mmm", string);
     }
 
     protected static byte[] copyBundleAsset(String path) {
