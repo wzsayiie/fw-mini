@@ -3,6 +3,7 @@
 #include <chrono>
 
 float MTickSeconds() {
+    //NOTE: the return value of "system_clock" may be very large, beyond the range of float.
     static int64_t zero = 0;
 
     auto now  = std::chrono::system_clock::now().time_since_epoch();
@@ -19,7 +20,6 @@ struct TaskConfig {
     bool  runOnlyOnce = false;
     float nextRunTick = 0;
     float interval    = 0;
-    bool  cancelled   = false;
 };
 typedef std::shared_ptr<TaskConfig> TaskConfigRef;
 
@@ -27,18 +27,7 @@ m_static_object(sTasks(), std::map<MLambdaRef, TaskConfigRef>)
 
 static void Update() MAPP_UPDATE(Update) {
     float tick = MTickSeconds();
-
-    //remove cancelled tasks.
-    for (auto it = sTasks().begin(); it != sTasks().end(); ) {
-        if (it->second->cancelled) {
-            sTasks().erase(it++);
-        } else {
-            it++;
-        }
-    }
     
-    //NOTE: create a copy of "sTasks" to iterate.
-    //because it to be modified possibly during the traversal.
     std::map<MLambdaRef, TaskConfigRef> tasks = sTasks();
     for (auto &pair : tasks) {
         if (tick < (pair.second->nextRunTick)) {
@@ -47,10 +36,9 @@ static void Update() MAPP_UPDATE(Update) {
 
         MLambdaCall(pair.first.get());
         
-        //reset the task configuration.
         TaskConfig *config = pair.second.get();
         if (config->runOnlyOnce) {
-            config->cancelled = true;
+            sTasks().erase(pair.first);
         } else {
             config->nextRunTick += config->interval;
         }
@@ -83,13 +71,8 @@ void MRunEverySeconds(float interval, MLambda *task) {
 }
 
 void MCancelTask(MLambda *task) {
-    if (!task) {
-        return;
-    }
-
-    auto it = sTasks().find(m_make_shared task);
-    if (it != sTasks().end()) {
-        it->second->cancelled = true;
+    if (task) {
+        sTasks().erase(m_make_shared task);
     }
 }
 
