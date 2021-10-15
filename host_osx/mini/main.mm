@@ -19,6 +19,11 @@
     
     MWindowController *controller = [[MWindowController alloc] initWithWindow:window];
     window.contentViewController = [[MViewController alloc] init];
+    
+    //to accept mouse move event.
+    [window makeFirstResponder:window.contentViewController];
+    window.acceptsMouseMovedEvents = YES;
+    
     return controller;
 }
 

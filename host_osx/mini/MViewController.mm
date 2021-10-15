@@ -63,14 +63,23 @@
     _MWindowOnResize(size.width, size.height);
 }
 
-- (void)mouseEvent:(NSEvent *)event func:(void (*)(float, float))func {
-    NSPoint point = [event locationInWindow];
-    func(point.x, self.view.frame.size.height - point.y);
+- (void)handleMouseMove:(NSEvent *)event func:(void (*)(float, float))func {
+    NSRect  bounds = self.view.bounds;
+    NSPoint fromBL = [event locationInWindow];
+    NSPoint fromUL = NSMakePoint(fromBL.x, bounds.size.height - fromBL.y);
+    
+    if (NSPointInRect(fromUL, bounds)) {
+        _MWindowOnMouseMove(fromUL.x, fromUL.y);
+    }
+    if (func) {
+        func(fromUL.x, fromUL.y);
+    }
 }
 
-- (void)mouseDown   :(NSEvent *)event { [self mouseEvent:event func:_MWindowOnTouchBegin]; }
-- (void)mouseDragged:(NSEvent *)event { [self mouseEvent:event func:_MWindowOnTouchMove ]; }
-- (void)mouseUp     :(NSEvent *)event { [self mouseEvent:event func:_MWindowOnTouchEnd  ]; }
+- (void)mouseDown   :(NSEvent *)event { [self handleMouseMove:event func:_MWindowOnTouchBegin]; }
+- (void)mouseDragged:(NSEvent *)event { [self handleMouseMove:event func:_MWindowOnTouchMove ]; }
+- (void)mouseUp     :(NSEvent *)event { [self handleMouseMove:event func:_MWindowOnTouchEnd  ]; }
+- (void)mouseMoved  :(NSEvent *)event { [self handleMouseMove:event func:NULL                ]; }
 
 - (NSTextField *)textField {
     if (!_textField) {
