@@ -107,21 +107,10 @@ void MJsRunFile(MString *name) {
         return;
     }
 
-    //do not run repeatedly.
-    static std::set<std::string> *ranSet = nullptr;
-    if (!ranSet) {
-        ranSet = new std::set<std::string>;
-    }
-    
-    if (ranSet->find(chars) != ranSet->end()) {
-        return;
-    }
-    ranSet->insert(chars);
-
     //if the target is a absolute path, load the corresponding file.
     MStringRef script;
-    if (/* "x:\x" */ (strlen(chars) >= 4 && chars[1] == ':') ||
-        /* "/x"   */ (strlen(chars) >= 2 && chars[0] == '/') )
+    if (/* "a:\b" */ (strlen(chars) >= 4 && chars[1] == ':') ||
+        /* "/a/b" */ (strlen(chars) >= 2 && chars[0] == '/') )
     {
         script = m_auto_release MCopyStringFromFile(name);
     }
