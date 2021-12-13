@@ -1,27 +1,16 @@
 #pragma once
 
-#include <cstdint>
 #include "menviron.h"
 
 //------------------------------------------------------------------------------
 //type definition:
 
-#define MEnumId(n) (((int)n[0]) | ((int)n[1] << 8) | ((int)n[2] << 16))
-
+//type id and enumeration value:
 typedef int MTypeId;
 
 template<typename T> struct MTypeIdOf;
 
-template<> struct MTypeIdOf<void            > { static const MTypeId Value = MEnumId("vid"); };
-template<> struct MTypeIdOf<bool            > { static const MTypeId Value = MEnumId("bol"); };
-template<> struct MTypeIdOf<int             > { static const MTypeId Value = MEnumId("int"); };
-template<> struct MTypeIdOf<float           > { static const MTypeId Value = MEnumId("flt"); };
-template<> struct MTypeIdOf<uint8_t        *> { static const MTypeId Value = MEnumId("ptr"); };
-template<> struct MTypeIdOf<const uint8_t  *> { static const MTypeId Value = MEnumId("ptr"); };
-template<> struct MTypeIdOf<char           *> { static const MTypeId Value = MEnumId("s08"); };
-template<> struct MTypeIdOf<const char     *> { static const MTypeId Value = MEnumId("s08"); };
-template<> struct MTypeIdOf<char16_t       *> { static const MTypeId Value = MEnumId("s16"); };
-template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MEnumId("s16"); };
+#define MEnumId(n) (((int)n[0]) | ((int)n[1] << 8) | ((int)n[2] << 16))
 
 //to define a class with type id.
 #define m_class(name, id)                               \
@@ -49,9 +38,9 @@ template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MEn
 
 //exported functions.
 #if M_CPL_CL
-#define M_FUNC_EXPORT extern "C" __declspec(dllexport)
+    #define M_FUNC_EXPORT extern "C" __declspec(dllexport)
 #else
-#define M_FUNC_EXPORT extern "C" __attribute((visibility("default")))
+    #define M_FUNC_EXPORT extern "C" __attribute((visibility("default")))
 #endif
 
 //------------------------------------------------------------------------------

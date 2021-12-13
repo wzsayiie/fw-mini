@@ -1,8 +1,8 @@
 #pragma once
 
 #include "mbasics.h"
-#include "mconfig.h"
 #include "mcontext.h"
+#include "mconvention.h"
 #include "mdebug.h"
 #include "mencode.h"
 #include "menviron.h"

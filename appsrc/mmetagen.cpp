@@ -3,7 +3,7 @@
 //collection macro:
 
 #define M_META(name) ; static int _unused_##name = (Collect(#name, name), 0)
-#include "mconfig.h"
+#include "mconvention.h"
 
 //collect constants;
 

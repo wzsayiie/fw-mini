@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <map>
 #include <memory>
@@ -7,8 +8,22 @@
 #include <string>
 #include <vector>
 
-#include "mconfig.h"
+#include "mconvention.h"
 #include "mdebug.h"
+
+//------------------------------------------------------------------------------
+//basic types:
+
+template<> struct MTypeIdOf<void            > { static const MTypeId Value = MEnumId("vid"); };
+template<> struct MTypeIdOf<bool            > { static const MTypeId Value = MEnumId("bol"); };
+template<> struct MTypeIdOf<int             > { static const MTypeId Value = MEnumId("int"); };
+template<> struct MTypeIdOf<float           > { static const MTypeId Value = MEnumId("flt"); };
+template<> struct MTypeIdOf<uint8_t        *> { static const MTypeId Value = MEnumId("ptr"); };
+template<> struct MTypeIdOf<const uint8_t  *> { static const MTypeId Value = MEnumId("ptr"); };
+template<> struct MTypeIdOf<char           *> { static const MTypeId Value = MEnumId("s08"); };
+template<> struct MTypeIdOf<const char     *> { static const MTypeId Value = MEnumId("s08"); };
+template<> struct MTypeIdOf<char16_t       *> { static const MTypeId Value = MEnumId("s16"); };
+template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MEnumId("s16"); };
 
 //------------------------------------------------------------------------------
 //MObject:
