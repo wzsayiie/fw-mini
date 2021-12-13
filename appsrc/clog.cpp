@@ -4,7 +4,7 @@ void CLog(_Printf_format_string_ const char *format, ...) {
     const char *chars = nullptr; {
         va_list list;
         va_start(list, format);
-        chars = MFormatList(format, list);
+        chars = MFormatVArgs(format, list);
         va_end(list);
     }
     

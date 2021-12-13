@@ -6,7 +6,6 @@
 #include "mdebug.h"
 #include "mencode.h"
 #include "menviron.h"
-#include "mformat.h"
 #include "mhostapi.h"
 #include "mhostjs.h"
 #include "mhostloop.h"

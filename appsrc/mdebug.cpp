@@ -1,6 +1,24 @@
 #include "mdebug.h"
 #include <cstdio>
 
+const size_t BufferSize = 4096;
+
+const char * MFormatVArgs(_Printf_format_string_ const char *format, va_list list) {
+    static char *buffer = new char[BufferSize];
+    vsnprintf(buffer, BufferSize, format, list);
+    return buffer;
+}
+
+const char *MFormat(_Printf_format_string_ const char *format, ...) {
+    const char *buffer = nullptr; {
+        va_list list;
+        va_start(list, format);
+        buffer = MFormatVArgs(format, list);
+        va_end(list);
+    }
+    return buffer;
+}
+
 #if M_OS_ANDROID
     #include <android/log.h>
     static void PrintError(const char *message) {
@@ -16,7 +34,7 @@ void MDebug(_Printf_format_string_ const char *format, ...) {
     const char *message = nullptr; {
         va_list list;
         va_start(list, format);
-        message = MFormatList(format, list);
+        message = MFormatVArgs(format, list);
         va_end(list);
     }
     PrintError(message);
