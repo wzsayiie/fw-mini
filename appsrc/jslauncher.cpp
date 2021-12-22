@@ -1,46 +1,46 @@
 #include "minikit.h"
 
-static void SetErrorListener() {
-    MLambdaRef listener = m_cast_lambda []() {
+static void InstallErrorListener(void (*listener)(MString *)) {
+    MLambdaRef wrapper = m_cast_lambda [=]() {
         MString *error = MJsLastError();
-        MPrintMessage(error);
+        listener(error);
     };
-    MJsSetErrorListener(listener.get());
+    MJsSetErrorListener(wrapper.get());
 }
 
-static std::string EscapedString(MString *string) {
+static std::string EscapeString(MString *string) {
     std::string escaped;
     for (const char *ch = MStringU8Chars(string); *ch; ++ch) {
         switch (*ch)  {
         case '\\': escaped.append("\\\\"); break;
         case '\'': escaped.append("\\\'"); break;
-        case '"' : escaped.append("\\\""); break;
+        case '\"': escaped.append("\\\""); break;
         default  : escaped.push_back(*ch);
         }
     }
     return escaped;
 }
 
-static void RegisterNativeConsts() {
+static void RegisterConsts() {
     std::string script;
 
     for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
+        MTypeId     type = MConstSelectedTypeId();
         const char *name = MConstSelectedName();
         const char *desc = nullptr;
 
-        MTypeId typeId = MConstSelectedTypeId();
-        if (typeId == MTypeIdOf<MString *>::Value) {
-            MString *value = MConstSelectedString();
-            std::string escaped = EscapedString(value);
-            desc = MFormat("const %s = '%s'\n" , name, escaped.c_str());
+        if (type == MTypeIdOf<MString *>::Value) {
+            auto raw = MConstSelectedString();
+            auto str = EscapeString(raw);
+            desc = MFormat("const %s ='%s'\n", name, str.c_str());
 
-        } else if (typeId == MTypeIdOf<float>::Value) {
-            float value = MConstSelectedFloat();
-            desc = MFormat("const %s = %f\n", name, value);
+        } else if (type == MTypeIdOf<float>::Value) {
+            auto flt = MConstSelectedFloat();
+            desc = MFormat("const %s = %f \n", name, flt);
 
-        } else if (typeId == MTypeIdOf<int>::Value) {
-            int value = MConstSelectedInt();
-            desc = MFormat("const %s = %d\n", name, value);
+        } else if (type == MTypeIdOf<int>::Value) {
+            auto num = MConstSelectedInt();
+            desc = MFormat("const %s = %d \n", name, num);
         }
 
         if (desc) {
@@ -48,20 +48,21 @@ static void RegisterNativeConsts() {
         }
     }
 
-    MStringRef name = m_auto_release MStringCreateU8("builtin_consts");
-    MStringRef code = m_auto_release MStringCreateU8(script.c_str());
-    MJsRunScript(name.get(), code.get());
+    MStringRef runName = m_auto_release MStringCreateU8("builtin_consts");
+    MStringRef runCode = m_auto_release MStringCreateU8(script.c_str());
+    MJsRunScript(runName.get(), runCode.get());
 }
 
 static void NativeFunc() {
-    const char *funcName = MJsCallingFuncName();
-    MArray     *params   = MJsCallingParams();
-    MObjectRef  returned = m_auto_release MFuncCallCopyRet(funcName, params);
+    const char *name = MJsCallingFuncName();
+    MArray *params = MJsCallingParams();
+
+    MObjectRef returned = m_auto_release MFuncCallCopyRet(name, params);
 
     MJsCallingReturn(returned.get());
 }
 
-static void RegisterNativeFuncs() {
+static void RegisterFuncs() {
     MLambdaRef body = m_cast_lambda NativeFunc;
     for (MFuncSelectFirst(); MFuncSelectedValid(); MFuncSelectNext()) {
         const char *name = MFuncSelectedName();
@@ -69,63 +70,24 @@ static void RegisterNativeFuncs() {
     }
 }
 
-class JsLambdaActual : public MUnknown {
-
-public:
-    JsLambdaActual(int iden) {
-        mIden = iden;
-    }
-
-    static void call(MObject *load) {
-        auto lambda = (JsLambdaActual *)load;
-        lambda->run("MJsLambdaInvoke(%d)");
-    }
-
-    ~JsLambdaActual() {
-        run("MJsLambdaRemove(%d)");
-    }
-
-private:
-    void run(const char *format) {
-        const char *string = MFormat(format, mIden);
-        MStringRef  script = m_auto_release MStringCreateU8(string);
-
-        MJsRunScript(script.get(), script.get());
-    }
-
-    int mIden;
-};
-
-static void MJsLambdaWrap() {
-    MArray  *params = MJsCallingParams();
-    MObject *object = MArrayItem(params, 0);
-
-    if (MGetTypeId(object) != MTypeIdOf<MInt *>::Value) {
-        return;
-    }
-
-    int iden = MIntValue((MInt *)object);
-    MObjectRef actual = m_auto_release new JsLambdaActual(iden);
-    MLambdaRef lambda = m_auto_release MLambdaCreate(JsLambdaActual::call, actual.get());
-    MJsCallingReturn(lambda.get());
-}
-
-static void RegisterBuiltinFuncs() {
-    MJsRegisterFunc("MJsLambdaWrap", (m_cast_lambda MJsLambdaWrap).get());
-}
-
 static void ExecuteFile(const char *name) {
     MStringRef file = m_auto_release MStringCreateU8(name);
-    MJsRunFile(file.get());
+    MStringRef code = m_auto_release MCopyStringFromBundle(file.get());
+
+    if (code) {
+        MJsRunScript(file.get(), code.get());
+    }
+}
+
+static void OnError(MString *error) {
+    MPrintMessage(error);
 }
 
 static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_Scene) {
-    SetErrorListener();
+    InstallErrorListener(OnError);
 
-    RegisterNativeConsts();
-    RegisterNativeFuncs ();
-    RegisterBuiltinFuncs();
+    RegisterConsts();
+    RegisterFuncs();
     
-    ExecuteFile("runtime/runtime.js");
-    ExecuteFile("app.js");
+    ExecuteFile("bundle.js");
 }
