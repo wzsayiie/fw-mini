@@ -6,6 +6,8 @@ protected:
     void onViewLoad() override {
         view()->setBackgroundColor(CColor::clearColor);
     }
+
+private:
 };
 
 static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_UI) {

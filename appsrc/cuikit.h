@@ -6,6 +6,7 @@
 #include "cgraphics.h"
 #include "cimageview.h"
 #include "clabel.h"
+#include "clambda.h"
 #include "clog.h"
 #include "ctextfield.h"
 #include "cuiresponder.h"
