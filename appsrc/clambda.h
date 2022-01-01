@@ -32,25 +32,16 @@ template<typename T> class CLambda;
 template<typename R, typename... A> class CLambda<R (A...)> : public CComparableLambda {
 
 public:
-    template<typename C> CLambda(C *object, R (C::*func)(A...)) {
-        assign(object, func);
-    }
-    CLambda(const std::function<R (A...)> &func) {
-        assign(func);
-    }
-    CLambda(R (*func)(A...)) {
-        assign(func);
-    }
-    CLambda() {
-        reset();
-    }
-
-    void operator=(const std::function<R (A...)> &func) {
-        assign(func);
-    }
-    void operator=(R (*func)(A...)) {
-        assign(func);
-    }
+    template<typename C> /**/ CLambda  (C *obj, R (C::*fn)(A...))            { assign(obj, fn); }
+    template<typename L> /**/ CLambda  (const L &func)                       { assign(func   ); }
+    /* std::function  */ /**/ CLambda  (const std::function<R (A...)> &func) { assign(func   ); }
+    /* global func    */ /**/ CLambda  (R (*func)(A...))                     { assign(func   ); }
+    /* null value     */ /**/ CLambda  (nullptr_t)                           { assign(nullptr); }
+    /* null value     */ /**/ CLambda  ()                                    { assign(nullptr); }
+    template<typename L> void operator=(const L &func)                       { assign(func   ); }
+    /* std::function  */ void operator=(const std::function<R (A...)> &func) { assign(func   ); }
+    /* global func    */ void operator=(R (*func)(A...))                     { assign(func   ); }
+    /* null value     */ void operator=(nullptr_t)                           { assign(nullptr); }
 
     template<typename C> void assign(C *object, R (C::*func)(A...)) {
         if (!object || !func) {
@@ -76,6 +67,11 @@ public:
         };
     }
 
+    template<typename L> void assign(const L &func) {
+        setRandomId();
+        _func = func;
+    }
+    
     void assign(const std::function<R (A...)> &func) {
         if (func) {
             setRandomId();
@@ -92,6 +88,10 @@ public:
         } else {
             reset();
         }
+    }
+    
+    void assign(nullptr_t) {
+        reset();
     }
 
     void reset() {
@@ -110,3 +110,12 @@ public:
 private:
     std::function<R (A...)> _func;
 };
+
+#define M(func) _CLambdaMake(this, &std::remove_reference<decltype(*this)>::type::func)
+
+template<typename T> void _CLambdaMake();
+
+template<typename C, typename R, typename... A>
+    CLambda<R (A...)> _CLambdaMake(C *object, R (C::*func)(A...)) {
+        return CLambda<R (A...)>(object, func);
+    }
