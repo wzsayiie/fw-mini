@@ -18,6 +18,10 @@ CColor::CColor(MColor color) {
     mColor = color;
 }
 
+CColor::CColor() {
+    mColor = 0;
+}
+
 float CColor::redComponent  () const { return pattern().red   / 255.f; }
 float CColor::greenComponent() const { return pattern().green / 255.f; }
 float CColor::blueComponent () const { return pattern().blue  / 255.f; }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cboot.h"
+#include "cbutton.h"
 #include "ccontrol.h"
 #include "cfilemanager.h"
 #include "cgraphics.h"

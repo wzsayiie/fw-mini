@@ -10,6 +10,7 @@ class CColor {
 public:
     CColor(float red, float green, float blue, float alpha = 1);
     CColor(MColor color);
+    CColor();
     
     float redComponent  () const;
     float greenComponent() const;
