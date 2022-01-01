@@ -142,7 +142,7 @@ bool CView::canRespondWindowTouch(float x, float y) {
     return false;
 }
 
-CUIResponder *CView::findResponder(std::function<bool (CUIResponder *)> fit) {
+CUIResponder *CView::findResponder(CLambda<bool (CUIResponder *)> fit) {
     //is there a suitable subview.
     for (auto it = mSubviews.rbegin(); it != mSubviews.rend(); ++it) {
         CUIResponder *responder = it->get()->findResponder(fit);

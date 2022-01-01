@@ -69,7 +69,7 @@ void CUIResponder::handleWindowEvent(MObject *) {
     }
 }
 
-CUIResponder *CUIResponder::findFirstResponder(bool refind, std::function<bool (CUIResponder *)> fit) {
+CUIResponder *CUIResponder::findFirstResponder(bool refind, CLambda<bool (CUIResponder *)> fit) {
     CUIResponder *responder = nullptr;
 
     if (!refind && sFirstResponder && fit(sFirstResponder)) {

@@ -35,7 +35,7 @@ public:
     CView *superview();
     
     bool canRespondWindowTouch(float x, float y) override;
-    CUIResponder *findResponder(std::function<bool (CUIResponder *)> fit) override;
+    CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) override;
 
 protected:
     virtual void onLayoutSubviews(float width, float height) {}

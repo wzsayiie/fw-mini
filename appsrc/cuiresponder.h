@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cboot.h"
+#include "clambda.h"
 
 c_class(CUIResponder) {
     
@@ -17,7 +18,7 @@ public:
     virtual bool canRespondText() { return false; }
     virtual bool canRespondKey () { return false; }
     
-    virtual CUIResponder *findResponder(std::function<bool (CUIResponder *)> fit) { return nullptr; }
+    virtual CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) { return nullptr; }
 
     void setAcceptMouseMove(bool accept);
     
@@ -38,7 +39,7 @@ protected:
 private:
     static void handleWindowEvent(MObject *);
     
-    static CUIResponder *findFirstResponder(bool refind, std::function<bool (CUIResponder *)> fit);
+    static CUIResponder *findFirstResponder(bool refind, CLambda<bool (CUIResponder *)> fit);
     
     static void handleWindowTouchBegin();
     static void handleWindowTouchMove();

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "clambda.h"
 #include "cview.h"
 
 enum class CControlState {
