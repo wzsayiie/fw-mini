@@ -69,7 +69,7 @@ CColor CButton::suitableTitleColor() {
         float b = color->second.blueComponent ();
         float a = color->second.alphaComponent();
         
-        return CColor(r, g, b, a * 0.5);
+        return CColor(r, g, b, a * 0.5f);
     }
     
     return CColor::clearColor;
