@@ -172,7 +172,7 @@ function CollectSelectedFunc(): string {
 }
 
 declare function MMakeDirectory(path: string): boolean
-declare function MWriteU8StringToFile(path: string, text: string): void
+declare function MWriteU8StringToFile(path: string, text: string): boolean
 
 function Main(): void {
     let script = new Array<string>()

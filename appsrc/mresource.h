@@ -8,6 +8,6 @@ M_FUNC_EXPORT MString *MCopyStringFromBundle (MString *path) M_META(MCopyStringF
 M_FUNC_EXPORT MImage  *MCreateImageFromFile  (MString *path) M_META(MCreateImageFromFile  );
 M_FUNC_EXPORT MImage  *MCreateImageFromBundle(MString *path) M_META(MCreateImageFromBundle);
 
-M_FUNC_EXPORT void MWriteDataToFile     (MString *path, MData   *data  ) M_META(MWriteDataToFile     );
-M_FUNC_EXPORT void MWriteU8StringToFile (MString *path, MString *string) M_META(MWriteU8StringToFile );
-M_FUNC_EXPORT void MWriteU16StringToFile(MString *path, MString *string) M_META(MWriteU16StringToFile);
+M_FUNC_EXPORT bool MWriteDataToFile     (MString *path, MData   *data  ) M_META(MWriteDataToFile     );
+M_FUNC_EXPORT bool MWriteU8StringToFile (MString *path, MString *string) M_META(MWriteU8StringToFile );
+M_FUNC_EXPORT bool MWriteU16StringToFile(MString *path, MString *string) M_META(MWriteU16StringToFile);

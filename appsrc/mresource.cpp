@@ -106,40 +106,47 @@ MImage *MCreateImageFromBundle(MString *path) {
     return MCreateImage(data.get());
 }
 
-static void WriteFile(MString *path, const uint8_t *bytes, int size) {
+static bool WriteFile(MString *path, const uint8_t *bytes, int size) {
     if (!path) {
-        return;
+        return false;
     }
 
     FILE *file = fopen(MStringU8Chars(path), "wb");
-    if (file) {
-        fwrite(bytes, 1, size, file);
-        fclose(file);
+    if (!file) {
+        return false;
     }
+
+    fwrite(bytes, 1, size, file);
+    fclose(file);
+    return true;
 }
 
-void MWriteDataToFile(MString *path, MData *data) {
+bool MWriteDataToFile(MString *path, MData *data) {
     if (data) {
-        WriteFile(path, MDataBytes(data), MDataSize(data));
+        return WriteFile(path, MDataBytes(data), MDataSize(data));
+    } else {
+        return false;
     }
 }
 
-void MWriteU8StringToFile(MString *path, MString *string) {
+bool MWriteU8StringToFile(MString *path, MString *string) {
     if (!string) {
-        return;
+        return false;
     }
 
     auto bytes = (const uint8_t *)MStringU8Chars(string);
-    int size = MStringU8Size(string);
-    WriteFile(path, bytes, size);
+    int  size  = MStringU8Size(string);
+
+    return WriteFile(path, bytes, size);
 }
 
-void MWriteU16StringToFile(MString *path, MString *string) {
+bool MWriteU16StringToFile(MString *path, MString *string) {
     if (!string) {
-        return;
+        return false;
     }
 
     auto bytes = (const uint8_t *)MStringU16Chars(string);
-    int size = MStringU16Size(string) * 2;
-    WriteFile(path, bytes, size);
+    int  size  = MStringU16Size(string) * 2;
+    
+    return WriteFile(path, bytes, size);
 }
