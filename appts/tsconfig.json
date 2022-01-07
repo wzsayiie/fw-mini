@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "typeRoots": [
+            "./node_modules/@types",
             "./app/@types"
         ],
         "moduleResolution": "node",
