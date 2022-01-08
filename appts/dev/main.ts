@@ -180,17 +180,9 @@ function Main(): void {
     CollectTypes (script)
     CollectFuncs (script)
 
-    let dirname = '' //IMPORTANT: set this file's directory path.
-    if (!dirname) {
-        MPrintMessage('ERROR: need to set current file path')
-        return
-    }
-
-    let decDir  = `${dirname}/../app/@types`
-    let decFile = `${dirname}/../app/@types/index.d.ts`
-
-    MMakeDirectory(decDir)
-    MWriteU8StringToFile(decFile, script.join(''))
+    //copy the print into "app/@types/index.d.ts".
+    //(under mac os, the application has not write access to paths outside the sandbox.)
+    MPrintMessage(script.join(''))
 }
 
 Main()
