@@ -1,4 +1,4 @@
-declare function MPrintMessage(message: string): void
+declare function MPrintMessage(text: string): void
 
 function MEnumId(n: string): number {
     let c0 = n.charCodeAt(0)
@@ -6,14 +6,6 @@ function MEnumId(n: string): number {
     let c2 = n.charCodeAt(2)
 
     return c0 | (c1 << 8) | (c2 << 16)
-}
-
-function MEnumName(id: number): string {
-    let c0 = String.fromCharCode((id      ) & 0xff)
-    let c1 = String.fromCharCode((id >>  8) & 0xff)
-    let c2 = String.fromCharCode((id >> 16) & 0xff)
-
-    return `${c0}${c1}${c2}`
 }
 
 const MTypeId = {
@@ -40,35 +32,26 @@ declare function MConstSelectFirst   (): void
 declare function MConstSelectedValid (): boolean
 declare function MConstSelectNext    (): void
 declare function MConstSelectedName  (): string
+declare function MConstSelectedNote  (): string
 declare function MConstSelectedTypeId(): number
 declare function MConstSelectedString(): string
 declare function MConstSelectedInt   (): number
 declare function MConstSelectedFloat (): number
 
-function CollectConsts(outArray: string[]): void {
+function ScanConsts(buffer: string[]): void {
     for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
-        let line = CollectSelectedConst()
-        if (line) {
-            outArray.push(line)
-        }
+        CollectConst(buffer)
     }
-
-    outArray.push('\n')
 }
 
-function CollectSelectedConst(): string {
-    let name = MConstSelectedName  ()
+function CollectConst(buffer: string[]): void {
     let type = MConstSelectedTypeId()
+    let name = MConstSelectedName()
 
     switch (type) {
-        case MTypeId.MString: return `declare const ${name} = '${MConstSelectedString()}'\n`
-        case MTypeId.Int    : return `declare const ${name} =  ${MConstSelectedInt   ()} \n`
-        case MTypeId.Float  : return `declare const ${name} =  ${MConstSelectedFloat ()} \n`
-
-        default: {
-            MPrintMessage(`ERROR: unkonwn constant type '${MEnumName(type)}'`)
-            return null
-        }
+        case MTypeId.MString: buffer.push(`declare const ${name} = '${MConstSelectedString()}'`); break
+        case MTypeId.Int    : buffer.push(`declare const ${name} =  ${MConstSelectedInt   ()} `); break
+        case MTypeId.Float  : buffer.push(`declare const ${name} =  ${MConstSelectedFloat ()} `); break
     }
 }
 
@@ -87,12 +70,12 @@ const MTypeMap: Map<number, string> = new Map([
     [ MTypeId.MPtr   , 'MPointer'   ],
     [ MTypeId.MString, 'string'     ],
     [ MTypeId.MLambda, '() => void' ],
-    [ MTypeId.MData  , 'ArrayBuffer'],
+    [ MTypeId.MData  , 'MData'      ],
     [ MTypeId.MArray , 'MArray'     ],
     [ MTypeId.MImage , 'MImage'     ],
 ])
 
-function CollectTypes(outArray: string[]): void {
+function ScanTypes(buffer: string[]): void {
     let set = new Set()
     for (let [_, name] of MTypeMap) {
 
@@ -107,82 +90,74 @@ function CollectTypes(outArray: string[]): void {
             continue
         }
 
-        outArray.push(`declare class ${name} {}\n`)
+        buffer.push(`declare class ${name} {}`)
         set.add(name)
     }
-
-    outArray.push('\n')
 }
 
 declare function MFuncSelectFirst      (): void
 declare function MFuncSelectedValid    (): boolean
 declare function MFuncSelectNext       (): void
 declare function MFuncSelectedName     (): string
+declare function MFuncSelectedNote     (): string
 declare function MFuncSelectedRetTypeId(): number
 declare function MFuncSelectedArgCount (): number
 declare function MFuncSelectedArgTypeId(index: number): number
 
-function CollectFuncs(outArray: string[]): void {
+function ScanFuncs(buffer: string[]): void {
     for (MFuncSelectFirst(); MFuncSelectedValid(); MFuncSelectNext()) {
-        let line = CollectSelectedFunc()
-        if (line) {
-            outArray.push(line)
-        }
+        CollectFunc(buffer)
     }
-
-    outArray.push('\n')
 }
 
-function CollectSelectedFunc(): string {
-    //check the argument types and return type.
+function CollectFunc(buffer: string[]): void {
+    //collect:
+    let funcName = MFuncSelectedName()
+
+    let funcNote = MFuncSelectedNote()
+    let argNames = new Array<string>()
+    if (funcNote && funcNote.startsWith('args:')) {
+        let list = funcNote.substring('args:'.length)
+        argNames = list.split(',')
+    }
+
     let argCount = MFuncSelectedArgCount()
     let argTypes = []
     for (let n = 0; n < argCount; n++) {
-        let type = MFuncSelectedArgTypeId(n)
-        if (!MTypeMap.has(type)) {
-            MPrintMessage(`ERROR: unkonwn argument type '${MEnumName(type)}'`)
-            return null
-        }
+        let iden = MFuncSelectedArgTypeId(n)
+        let type = MTypeMap.get(iden)
         argTypes.push(type)
     }
 
-    let retType = MFuncSelectedRetTypeId()
-    if (!MTypeMap.has(retType)) {
-        MPrintMessage(`ERROR: unkonwn return type '${MEnumName(retType)}'`)
-        return null
-    }
+    let retIden = MFuncSelectedRetTypeId()
+    let retType = MTypeMap.get(retIden)
 
-    //join the declaration.
-    let name = MFuncSelectedName()
+    //join:
     let line = []
 
-    line.push(`declare function ${name}(`)
-    for (let n = 0; n < argTypes.length; ++n) {
-        let argName = String.fromCharCode('a'.charCodeAt(0) + n)
+    line.push(`declare function ${funcName}(`)
+    for (let n = 0; n < argTypes.length; n++) {
+        let notLast = (n < argTypes.length - 1)
+        let argName = argNames[n]
         let argType = argTypes[n]
 
-        line.push(`${argName}: ${MTypeMap.get(argType)}`)
-        if (n < argTypes.length - 1) {
-            line.push(`, `)
-        }
+        if (notLast) { line.push(`${argName}: ${argType}, `) }
+        else  /****/ { line.push(`${argName}: ${argType}`  ) }
     }
-    line.push(`): ${MTypeMap.get(retType)}\n`)
+    line.push(`): ${retType}`)
 
-    return line.join('')
+    buffer.push(line.join(''))
 }
 
-declare function MMakeDirectory(path: string): boolean
-declare function MWriteU8StringToFile(path: string, text: string): boolean
-
 function Main(): void {
-    let script = new Array<string>()
-    CollectConsts(script)
-    CollectTypes (script)
-    CollectFuncs (script)
+    let buffer = new Array<string>()
+    ScanConsts(buffer)
+    ScanTypes (buffer)
+    ScanFuncs (buffer)
 
     //copy the print into "app/@types/index.d.ts".
     //(under mac os, the application has not write access to paths outside the sandbox.)
-    MPrintMessage(script.join(''))
+    MPrintMessage(buffer.join('\n'))
 }
 
 Main()
