@@ -9,7 +9,31 @@ static JSContext *sContext = nil;
 @end
 
 @implementation NativeObjectWrapper
+
+- (instancetype)initWithNativeObject:(MObject *)object {
+    if (self = [super init]) {
+        self.nativeObject = m_make_shared object;
+    }
+    return self;
+}
+
 @end
+
+class JSFunctionWrapper : public MUnknown {
+
+public:
+    JSFunctionWrapper(JSValue *value) {
+        mValue = value;
+    }
+
+    static void call(MObject *load) {
+        auto wrapper = (JSFunctionWrapper *)load;
+        [wrapper->mValue callWithArguments:nil];
+    }
+
+private:
+    JSValue *mValue;
+};
 
 static MObject *CopyObjectFromJSValue(JSValue *value) {
     if (value.isBoolean) {
@@ -29,12 +53,21 @@ static MObject *CopyObjectFromJSValue(JSValue *value) {
         return MStringCreateU8(value.toString.UTF8String);
         
     } else if (value.isObject) {
+        //if value is function.
+        JSValue *fnFunc = [sContext.globalObject valueForProperty:@"isFunc"];
+        JSValue *isFunc = [fnFunc callWithArguments:@[ value ]];
+        if (isFunc.toBool) {
+            auto wrapper = new JSFunctionWrapper(value);
+            return MLambdaCreate(JSFunctionWrapper::call, wrapper);
+        }
+        
+        //if value is native object.
         if ([value.toObject isKindOfClass:NativeObjectWrapper.class]) {
             NativeObjectWrapper *wrapper = (NativeObjectWrapper *)value.toObject;
             return MRetain(wrapper.nativeObject.get());
-        } else {
-            return nullptr;
         }
+        
+        return nullptr;
         
     } else {
         return nullptr;
@@ -64,8 +97,7 @@ static JSValue *JSValueFromObject(MObject *object) {
         return [JSValue valueWithObject:@(raw) inContext:sContext];
         
     } else {
-        NativeObjectWrapper *wrapper = [[NativeObjectWrapper alloc] init];
-        wrapper.nativeObject = m_make_shared object;
+        auto wrapper = [[NativeObjectWrapper alloc] initWithNativeObject:object];
         
         JSValue *value = [JSValue valueWithObject:wrapper inContext:sContext];
         [value setValue:@YES forProperty:@"isNativeObject"];
@@ -137,6 +169,9 @@ void MInstallJSVirtualMachine() {
     sContext.exceptionHandler = ^(JSContext *context, JSValue *exception) {
         OnException(exception);
     };
+    
+    //a JSValue does not provide the method to determine whether it is a function.
+    [sContext evaluateScript:@"function isFunc(a) { return typeof a == 'function' }"];
     
     _MJsSetRegisterFunc(RegisterFunc);
     _MJsSetRunScript(RunScript);
