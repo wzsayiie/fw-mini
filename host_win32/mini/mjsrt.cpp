@@ -57,6 +57,39 @@ static MObject *GetObjectFromJsObject(JsValueRef value)
     return nullptr;
 }
 
+static MLambda *CreateLambdaFromJsFunction(JsValueRef value)
+{
+    class JsFuncionWrapper : public MUnknown
+    {
+    public:
+        JsFuncionWrapper(JsValueRef value)
+        {
+            JsAddRef(value, nullptr);
+            mValue = value;
+        }
+
+        ~JsFuncionWrapper()
+        {
+            JsRelease(mValue, nullptr);
+        }
+
+        static void call(MObject *load)
+        {
+            JsValueRef thisArg = JS_INVALID_REFERENCE;
+            JsGetUndefinedValue(&thisArg);
+
+            auto wrapper = (JsFuncionWrapper *)load;
+            JsCallFunction(wrapper->mValue, &thisArg, 1, nullptr);
+        }
+
+    private:
+        JsValueRef mValue;
+    };
+
+    auto wrapper = new JsFuncionWrapper(value);
+    return MLambdaCreate(JsFuncionWrapper::call, wrapper);
+}
+
 static MObject *CopyObjectFromJsValue(JsValueRef value)
 {
     if (value == JS_INVALID_REFERENCE)
@@ -102,6 +135,10 @@ static MObject *CopyObjectFromJsValue(JsValueRef value)
         {
             MObject *object = GetObjectFromJsObject(value);
             return MRetain(object);
+        }
+        case JsFunction:
+        {
+            return CreateLambdaFromJsFunction(value);
         }
         default:
         {
