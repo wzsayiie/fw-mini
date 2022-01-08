@@ -48,22 +48,28 @@ template<typename T> struct MTypeIdOf;
 
 const int MFuncMaxArgCount = 4;
 
+class MString;
+
 struct _MFuncMeta {
-    void   *address   = nullptr;
-    MTypeId retTypeId = 0;
-    bool    retRetain = false;
-    int     argCount  = 0;
+    MString *funcName  = nullptr;
+    MString *funcNote  = nullptr;
+    void    *address   = nullptr;
+    MTypeId  retTypeId = 0;
+    bool     retRetain = false;
+    int      argCount  = 0;
 
     MTypeId argTypeIds[MFuncMaxArgCount] = {0};
 };
 
 struct _MConstMeta {
-    MTypeId        benchmarkId = 0;
-    class MString *stringValue = nullptr;
-    int            intValue    = 0;
-    float          floatValue  = 0;
+    MString *constName   = nullptr;
+    MString *constNote   = nullptr;
+    MTypeId  benchmarkId = 0;
+    MString *stringValue = nullptr;
+    int      intValue    = 0;
+    float    floatValue  = 0;
 };
 
 #ifndef M_META
-#define M_META(name)
+#define M_META(name, ...)
 #endif

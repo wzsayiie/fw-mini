@@ -26,12 +26,12 @@ static void RunScript(MString *name, MString *script) {
 
 struct CallingFrame {
 
-    std::string funcName;
-    MArrayRef   params  ;
-    MObjectRef  returned;
+    MStringRef funcName;
+    MArrayRef  params  ;
+    MObjectRef returned;
 
-    CallingFrame(const char *funcName, MArray *params) {
-        this->funcName = funcName;
+    CallingFrame(MString *funcName, MArray *params) {
+        this->funcName = m_make_shared funcName;
         this->params   = m_make_shared params;
     }
 };
@@ -53,7 +53,7 @@ MObject *_MJsOnCallCopyRet(MString *name, MArray *params) {
     }
 
     //NOTE: use calling stack. calling may be multi-level.
-    sCallingFrames().push_back(CallingFrame(chars, params));
+    sCallingFrames().push_back(CallingFrame(name, params));
     MLambdaCall(iterator->second.get());
 
     MObjectRef returnObject = sCallingFrames().back().returned;
@@ -75,18 +75,19 @@ MString *MJsLastError() {
     return sLastError().get();
 }
 
-void MJsRegisterFunc(const char *name, MLambda *func) {
+void MJsRegisterFunc(MString *name, MLambda *func) {
     if (!name || !func) {
         return;
     }
 
-    MStringRef funcName = m_auto_release MStringCreateU8(name);
-    RegisterFunc(funcName.get());
-    sFuncMap()[name] = m_make_shared func;
+    const char *chars = MStringU8Chars(name);
+    sFuncMap()[chars] = m_make_shared func;
+
+    RegisterFunc(name);
 }
 
-const char *MJsCallingFuncName() {
-    return sCallingFrames().back().funcName.c_str();
+MString *MJsCallingFuncName() {
+    return sCallingFrames().back().funcName.get();
 }
 
 MArray *MJsCallingParams() {

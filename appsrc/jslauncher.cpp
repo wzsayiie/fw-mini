@@ -25,20 +25,21 @@ static void RegisterConsts() {
     std::string script;
 
     for (MConstSelectFirst(); MConstSelectedValid(); MConstSelectNext()) {
-        MTypeId     type = MConstSelectedTypeId();
-        const char *name = MConstSelectedName();
-        const char *desc = nullptr;
+        MTypeId  constType = MConstSelectedTypeId();
+        MString *constName = MConstSelectedName();
 
-        if (type == MTypeIdOf<MString *>::Value) {
+        const char *name = MStringU8Chars(constName);
+        const char *desc = nullptr;
+        if (constType == MTypeIdOf<MString *>::Value) {
             auto raw = MConstSelectedString();
             auto str = EscapeString(raw);
             desc = MFormat("const %s ='%s'\n", name, str.c_str());
 
-        } else if (type == MTypeIdOf<float>::Value) {
+        } else if (constType == MTypeIdOf<float>::Value) {
             auto flt = MConstSelectedFloat();
             desc = MFormat("const %s = %f \n", name, flt);
 
-        } else if (type == MTypeIdOf<int>::Value) {
+        } else if (constType == MTypeIdOf<int>::Value) {
             auto num = MConstSelectedInt();
             desc = MFormat("const %s = %d \n", name, num);
         }
@@ -54,10 +55,10 @@ static void RegisterConsts() {
 }
 
 static void NativeFunc() {
-    const char *name = MJsCallingFuncName();
-    MArray *params = MJsCallingParams();
+    MString *name = MJsCallingFuncName();
+    MArray  *args = MJsCallingParams();
 
-    MObjectRef returned = m_auto_release MFuncCallCopyRet(name, params);
+    MObjectRef returned = m_auto_release MFuncCallCopyRet(name, args);
 
     MJsCallingReturn(returned.get());
 }
@@ -65,7 +66,7 @@ static void NativeFunc() {
 static void RegisterFuncs() {
     MLambdaRef body = m_cast_lambda NativeFunc;
     for (MFuncSelectFirst(); MFuncSelectedValid(); MFuncSelectNext()) {
-        const char *name = MFuncSelectedName();
+        MString *name = MFuncSelectedName();
         MJsRegisterFunc(name, body.get());
     }
 }

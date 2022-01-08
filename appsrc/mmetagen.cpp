@@ -2,24 +2,24 @@
 
 //collection macro:
 
-#define M_META(name) ; static int _unused_##name = (Collect(#name, name), 0)
+#define M_META(name, ...) ; static int _unused_##name = (Collect(#name, name, ##__VA_ARGS__), 0)
 #include "mconvention.h"
 
-//collect constants;
+//collect constants:
 
-void _MConstSetU8Chars (const char *name, const char     *value);
-void _MConstSetU16Chars(const char *name, const char16_t *value);
-void _MConstSetInt     (const char *name, int             value);
-void _MConstSetFloat   (const char *name, float           value);
+void _MConstSetU8Chars (const char *name, const char     *value, const char *note);
+void _MConstSetU16Chars(const char *name, const char16_t *value, const char *note);
+void _MConstSetInt     (const char *name, int             value, const char *note);
+void _MConstSetFloat   (const char *name, float           value, const char *note);
 
-/* static */ void Collect(const char *name, const char     *value) { _MConstSetU8Chars (name, value); }
-/* static */ void Collect(const char *name, const char16_t *value) { _MConstSetU16Chars(name, value); }
-/* static */ void Collect(const char *name, int             value) { _MConstSetInt     (name, value); }
-/* static */ void Collect(const char *name, float           value) { _MConstSetFloat   (name, value); }
+void Collect(const char *n, const char     *v, const char *a = nullptr) { _MConstSetU8Chars (n, v, a); }
+void Collect(const char *n, const char16_t *v, const char *a = nullptr) { _MConstSetU16Chars(n, v, a); }
+void Collect(const char *n, int             v, const char *a = nullptr) { _MConstSetInt     (n, v, a); }
+void Collect(const char *n, float           v, const char *a = nullptr) { _MConstSetFloat   (n, v, a); }
 
 //collect functions:
 
-void _MFuncSetMeta(const char *name, const _MFuncMeta &meta);
+void _MFuncSetMeta(const char *name, _MFuncMeta meta, const char *note);
 
 template<typename T> struct ArgCountOf;
 template<typename R> struct ArgCountOf<R ()> {
@@ -36,8 +36,9 @@ template<typename R, typename A, typename... B> void AppendArgs(_MFuncMeta *meta
     AppendArgs(meta, (R (*)(B...))nullptr);
 }
 
-template<typename R, typename... A> void Collect(const char *name, R (*func)(A...)) {
-
+template<typename R, typename... A> void Collect(
+    const char *name, R (*func)(A...), const char *note = nullptr)
+{
     _MFuncMeta meta;
 
     meta.address   = (void *)func;
@@ -47,7 +48,7 @@ template<typename R, typename... A> void Collect(const char *name, R (*func)(A..
     static_assert((ArgCountOf<R (A...)>::Value) <= MFuncMaxArgCount, "");
     AppendArgs(&meta, func);
 
-    _MFuncSetMeta(name, meta);
+    _MFuncSetMeta(name, meta, note);
 }
 
 #include "minikit.h"

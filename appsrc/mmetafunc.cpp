@@ -3,10 +3,16 @@
 m_static_object(sMetaMap (), std::map<std::string, _MFuncMeta>)
 m_static_object(sIterator(), std::map<std::string, _MFuncMeta>::iterator)
 
-void _MFuncSetMeta(const char *name, const _MFuncMeta& meta) {
-    if (name) {
-        sMetaMap()[name] = meta;
+void _MFuncSetMeta(const char *name, _MFuncMeta meta, const char *note) {
+    if (!name) {
+        return;
     }
+
+    //intentional memory leak.
+    meta.funcName = MStringCreateU8(name);
+    meta.funcNote = MStringCreateU8(note);
+
+    sMetaMap()[name] = meta;
 }
 
 void MFuncSelectFirst() {
@@ -31,13 +37,11 @@ bool MFuncSelect(const char *name) {
     return sIterator() != sMetaMap().end();
 }
 
-const char *MFuncSelectedName() {
-    return sIterator()->first.c_str();
-}
-
-MTypeId MFuncSelectedRetTypeId() { return sIterator()->second.retTypeId; }
-bool    MFuncSelectedRetRetain() { return sIterator()->second.retRetain; }
-int     MFuncSelectedArgCount () { return sIterator()->second.argCount ; }
+MString *MFuncSelectedName     () { return sIterator()->second.funcName ; }
+MString *MFuncSelectedNote     () { return sIterator()->second.funcNote ; }
+MTypeId  MFuncSelectedRetTypeId() { return sIterator()->second.retTypeId; }
+bool     MFuncSelectedRetRetain() { return sIterator()->second.retRetain; }
+int      MFuncSelectedArgCount () { return sIterator()->second.argCount ; }
 
 MTypeId MFuncSelectedArgTypeId(int index) {
     return sIterator()->second.argTypeIds[index];
@@ -138,12 +142,13 @@ template<typename R> struct Caller<R, MFuncMaxArgCount> {
     }
 };
 
-MObject *MFuncCallCopyRet(const char *name, MArray *args) {
+MObject *MFuncCallCopyRet(MString *name, MArray *args) {
     if (!name) {
         return nullptr;
     }
 
-    auto iterator = sMetaMap().find(name);
+    auto funcName = MStringU8Chars(name);
+    auto iterator = sMetaMap().find(funcName);
     if (iterator == sMetaMap().end()) {
         return nullptr;
     }
