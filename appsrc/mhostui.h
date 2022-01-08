@@ -183,7 +183,7 @@ M_FUNC_HOST MString *_MWindowTextBoxRawString();
 
 //user listening:
 
-M_FUNC_EXPORT void MWindowAddListener(MLambda *listener) M_META(MWindowAddListener);
+M_FUNC_EXPORT void MWindowAddListener(MLambda *listener) M_META(MWindowAddListener, "args:listener");
 
 M_FUNC_EXPORT MWindowEvent MWindowCurrentEvent() M_META(MWindowCurrentEvent);
 
@@ -201,16 +201,16 @@ M_FUNC_EXPORT float MWindowMouseY   () M_META(MWindowMouseY   );
 
 //user draw:
 
-M_FUNC_EXPORT void MWindowSelectString  (MString *string) M_META(MWindowSelectString  );
-M_FUNC_EXPORT void MWindowSelectImage   (MImage  *image ) M_META(MWindowSelectImage   );
-M_FUNC_EXPORT void MWindowSelectColor   (MColor   color ) M_META(MWindowSelectColor   );
-M_FUNC_EXPORT void MWindowSelectFontSize(float    size  ) M_META(MWindowSelectFontSize);
-M_FUNC_EXPORT void MWindowSelectHAlign  (MHAlign  align ) M_META(MWindowSelectHAlign  );
-M_FUNC_EXPORT void MWindowSelectVAlign  (MVAlign  align ) M_META(MWindowSelectVAlign  );
+M_FUNC_EXPORT void MWindowSelectString  (MString *string) M_META(MWindowSelectString  , "args:str"  );
+M_FUNC_EXPORT void MWindowSelectImage   (MImage  *image ) M_META(MWindowSelectImage   , "args:image");
+M_FUNC_EXPORT void MWindowSelectColor   (MColor   color ) M_META(MWindowSelectColor   , "args:color");
+M_FUNC_EXPORT void MWindowSelectFontSize(float    size  ) M_META(MWindowSelectFontSize, "args:size" );
+M_FUNC_EXPORT void MWindowSelectHAlign  (MHAlign  align ) M_META(MWindowSelectHAlign  , "args:align");
+M_FUNC_EXPORT void MWindowSelectVAlign  (MVAlign  align ) M_META(MWindowSelectVAlign  , "args:align");
 
-M_FUNC_EXPORT void MWindowSelectPoint0(float x, float y) M_META(MWindowSelectPoint0);
-M_FUNC_EXPORT void MWindowSelectPoint1(float x, float y) M_META(MWindowSelectPoint1);
-M_FUNC_EXPORT void MWindowSelectPoint2(float x, float y) M_META(MWindowSelectPoint2);
+M_FUNC_EXPORT void MWindowSelectPoint0(float x, float y) M_META(MWindowSelectPoint0, "args:x,y");
+M_FUNC_EXPORT void MWindowSelectPoint1(float x, float y) M_META(MWindowSelectPoint1, "args:x,y");
+M_FUNC_EXPORT void MWindowSelectPoint2(float x, float y) M_META(MWindowSelectPoint2, "args:x,y");
 
 M_FUNC_EXPORT void MWindowDrawTriangle() M_META(MWindowDrawTriangle);
 M_FUNC_EXPORT void MWindowDrawImage   () M_META(MWindowDrawImage   );
@@ -218,9 +218,9 @@ M_FUNC_EXPORT void MWindowDrawLabel   () M_META(MWindowDrawLabel   );
 
 //text box control:
 
-M_FUNC_EXPORT void MWindowSetTextBoxUpdated  (bool     updated ) M_META(MWindowSetTextBoxUpdated  );
-M_FUNC_EXPORT void MWindowSetTextBoxEnabled  (bool     enabled ) M_META(MWindowSetTextBoxEnabled  );
-M_FUNC_EXPORT void MWindowSetTextBoxRawString(MString *original) M_META(MWindowSetTextBoxRawString);
+M_FUNC_EXPORT void MWindowSetTextBoxUpdated  (bool     updated ) M_META(MWindowSetTextBoxUpdated  , "args:updated" );
+M_FUNC_EXPORT void MWindowSetTextBoxEnabled  (bool     enabled ) M_META(MWindowSetTextBoxEnabled  , "args:enabled" );
+M_FUNC_EXPORT void MWindowSetTextBoxRawString(MString *original) M_META(MWindowSetTextBoxRawString, "args:original");
 
 M_FUNC_EXPORT MString *MWindowTextBoxString() M_META(MWindowTextBoxString);
 M_FUNC_EXPORT bool     MWindowTextBoxEnter () M_META(MWindowTextBoxEnter );

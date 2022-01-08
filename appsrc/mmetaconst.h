@@ -13,7 +13,7 @@ M_FUNC_EXPORT bool MConstSelectedValid() M_META(MConstSelectedValid);
 M_FUNC_EXPORT void MConstSelectNext   () M_META(MConstSelectNext   );
 
 //select a constant.
-M_FUNC_EXPORT bool MConstSelect(const char *name) M_META(MConstSelect);
+M_FUNC_EXPORT bool MConstSelect(const char *name) M_META(MConstSelect, "args:name");
 
 //the meta information of selected constant.
 M_FUNC_EXPORT MString *MConstSelectedName  () M_META(MConstSelectedName  );

@@ -56,9 +56,9 @@ private:
     int mRefCount = 1;
 };
 
-M_FUNC_EXPORT MObject *MRetain   (MObject *object) M_META(MRetain   );
-M_FUNC_EXPORT void     MRelease  (MObject *object) M_META(MRelease  );
-M_FUNC_EXPORT MTypeId  MGetTypeId(MObject *object) M_META(MGetTypeId);
+M_FUNC_EXPORT MObject *MRetain   (MObject *object) M_META(MRetain   , "args:obj");
+M_FUNC_EXPORT void     MRelease  (MObject *object) M_META(MRelease  , "args:obj");
+M_FUNC_EXPORT MTypeId  MGetTypeId(MObject *object) M_META(MGetTypeId, "args:obj");
 
 //------------------------------------------------------------------------------
 //MBool & MInt & MFloat & MPointer:
@@ -68,32 +68,32 @@ m_class(MInt    , "Int");
 m_class(MFloat  , "Flt");
 m_class(MPointer, "Ptr");
 
-M_FUNC_EXPORT MBool    *MBoolCreate   (bool     value) M_META(MBoolCreate   );
-M_FUNC_EXPORT MInt     *MIntCreate    (int      value) M_META(MIntCreate    );
-M_FUNC_EXPORT MFloat   *MFloatCreate  (float    value) M_META(MFloatCreate  );
-M_FUNC_EXPORT MPointer *MPointerCreate(uint8_t *value) M_META(MPointerCreate);
+M_FUNC_EXPORT MBool    *MBoolCreate   (bool     value) M_META(MBoolCreate   , "args:value");
+M_FUNC_EXPORT MInt     *MIntCreate    (int      value) M_META(MIntCreate    , "args:value");
+M_FUNC_EXPORT MFloat   *MFloatCreate  (float    value) M_META(MFloatCreate  , "args:value");
+M_FUNC_EXPORT MPointer *MPointerCreate(uint8_t *value) M_META(MPointerCreate, "args:value");
 
-M_FUNC_EXPORT bool     MBoolValue   (MBool    *object) M_META(MBoolValue   );
-M_FUNC_EXPORT int      MIntValue    (MInt     *object) M_META(MIntValue    );
-M_FUNC_EXPORT float    MFloatValue  (MFloat   *object) M_META(MFloatValue  );
-M_FUNC_EXPORT uint8_t *MPointerValue(MPointer *object) M_META(MPointerValue);
+M_FUNC_EXPORT bool     MBoolValue   (MBool    *object) M_META(MBoolValue   , "args:obj");
+M_FUNC_EXPORT int      MIntValue    (MInt     *object) M_META(MIntValue    , "args:obj");
+M_FUNC_EXPORT float    MFloatValue  (MFloat   *object) M_META(MFloatValue  , "args:obj");
+M_FUNC_EXPORT uint8_t *MPointerValue(MPointer *object) M_META(MPointerValue, "args:obj");
 
 //------------------------------------------------------------------------------
 //MString:
 
 m_class(MString, "Str");
 
-M_FUNC_EXPORT MString *MStringCreateU8 (const char     *chars) M_META(MStringCreateU8 );
-M_FUNC_EXPORT MString *MStringCreateU16(const char16_t *chars) M_META(MStringCreateU16);
+M_FUNC_EXPORT MString *MStringCreateU8 (const char     *chars) M_META(MStringCreateU8 , "args:value");
+M_FUNC_EXPORT MString *MStringCreateU16(const char16_t *chars) M_META(MStringCreateU16, "args:value");
 
-M_FUNC_EXPORT MString *MStringCopyU8 (const char     *begin, int size) M_META(MStringCopyU8 );
-M_FUNC_EXPORT MString *MStringCopyU16(const char16_t *begin, int size) M_META(MStringCopyU16);
+M_FUNC_EXPORT MString *MStringCopyU8 (const char     *begin, int size) M_META(MStringCopyU8 , "args:begin,size");
+M_FUNC_EXPORT MString *MStringCopyU16(const char16_t *begin, int size) M_META(MStringCopyU16, "args:begin,size");
 
-M_FUNC_EXPORT const char     *MStringU8Chars (MString *string) M_META(MStringU8Chars );
-M_FUNC_EXPORT const char16_t *MStringU16Chars(MString *string) M_META(MStringU16Chars);
+M_FUNC_EXPORT const char     *MStringU8Chars (MString *string) M_META(MStringU8Chars , "args:str");
+M_FUNC_EXPORT const char16_t *MStringU16Chars(MString *string) M_META(MStringU16Chars, "args:str");
 
-M_FUNC_EXPORT int MStringU8Size (MString *string) M_META(MStringU8Size );
-M_FUNC_EXPORT int MStringU16Size(MString *string) M_META(MStringU16Size);
+M_FUNC_EXPORT int MStringU8Size (MString *string) M_META(MStringU8Size , "args:str");
+M_FUNC_EXPORT int MStringU16Size(MString *string) M_META(MStringU16Size, "args:str");
 
 //------------------------------------------------------------------------------
 //MLambda:
@@ -103,18 +103,18 @@ typedef void (*MLambdaFunc)(MObject *load);
 m_class(MLambda, "Lmd");
 
 M_FUNC_EXPORT MLambda *MLambdaCreate(MLambdaFunc func, MObject *load);
-M_FUNC_EXPORT void MLambdaCall(MLambda *lambda) M_META(MLambdaCall);
+M_FUNC_EXPORT void MLambdaCall(MLambda *lambda) M_META(MLambdaCall, "args:lambda");
 
 //------------------------------------------------------------------------------
 //MData:
 
 m_class(MData, "Dat");
 
-M_FUNC_EXPORT MData *MDataCreate(const uint8_t *bytes, int size)              M_META(MDataCreate);
-M_FUNC_EXPORT void   MDataAppend(MData *data, const uint8_t *bytes, int size) M_META(MDataAppend);
-M_FUNC_EXPORT int    MDataSize  (MData *data)                                 M_META(MDataSize  );
+M_FUNC_EXPORT MData *MDataCreate(const uint8_t *bytes, int size)              M_META(MDataCreate, "args:ptr,len");
+M_FUNC_EXPORT void   MDataAppend(MData *data, const uint8_t *bytes, int size) M_META(MDataAppend, "args:dat,ptr,len");
+M_FUNC_EXPORT int    MDataSize  (MData *data)                                 M_META(MDataSize  , "args:dat");
 
-M_FUNC_EXPORT const uint8_t *MDataBytes(MData *data) M_META(MDataBytes);
+M_FUNC_EXPORT const uint8_t *MDataBytes(MData *data) M_META(MDataBytes, "args:data");
 
 //------------------------------------------------------------------------------
 //MArray:
@@ -122,9 +122,9 @@ M_FUNC_EXPORT const uint8_t *MDataBytes(MData *data) M_META(MDataBytes);
 m_class(MArray, "Arr");
 
 M_FUNC_EXPORT MArray  *MArrayCreate()                             M_META(MArrayCreate);
-M_FUNC_EXPORT void     MArrayAppend(MArray *array, MObject *item) M_META(MArrayAppend);
-M_FUNC_EXPORT int      MArrayLength(MArray *array)                M_META(MArrayLength);
-M_FUNC_EXPORT MObject *MArrayItem  (MArray *array, int index)     M_META(MArrayItem  );
+M_FUNC_EXPORT void     MArrayAppend(MArray *array, MObject *item) M_META(MArrayAppend, "args:array,item");
+M_FUNC_EXPORT int      MArrayLength(MArray *array)                M_META(MArrayLength, "args:array");
+M_FUNC_EXPORT MObject *MArrayItem  (MArray *array, int index)     M_META(MArrayItem  , "args:array,index");
 
 //------------------------------------------------------------------------------
 //MUnknown:
