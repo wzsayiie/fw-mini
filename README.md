@@ -5,12 +5,17 @@ that has least dependencies on os api.
 
 ## directory structure
 
-cross-plaform resource and c++ source files.
+cross-plaform resources and c++ sources files.
 
 * appres/mini.bundle/
 * appsrc/
 
-os-related source files and ide projects.
+the typescript project based on **node.js** environment.
+it will compile the sources into *appres/mini.bundle/bundle.js*.
+
+* appts/
+
+os-related sources files and ide projects.
 
 * host_android/
 * host_ios/
@@ -18,7 +23,7 @@ os-related source files and ide projects.
 * host_win32/
 
 the build scripts that depend on the ide projects.
-files with extension `bat` for windows and without extension for mac os.
+files with extension *bat* for windows and without extension for mac os.
 
 * build_android
 * build_android.bat
