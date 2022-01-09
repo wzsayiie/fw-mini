@@ -195,7 +195,14 @@ export class Sprite {
     private _y  = 0
     private _z  = 0
 
-    public constructor() {
+    public constructor(w?: number, h?: number) {
+        if (w !== undefined && h !== undefined) {
+            this._drawableW = w
+            this._drawableH = h
+            this._hitableW  = w
+            this._hitableH  = h
+        }
+
         Sprite.AddSprite(this)
     }
 
