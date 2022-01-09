@@ -4,8 +4,24 @@ export class Log {
         for (let value of values) {
             let buffer = new Array<string>()
             this.Stringify(false, 0, value, buffer)
-            MPrintMessage(buffer.join(''))
+            this.Print(buffer.join(''))
         }
+    }
+
+    private static s_printer: (message: string) => void
+
+    private static Print(message: string): void {
+        if (!this.s_printer) {
+            if (typeof MPrintMessage == 'function') {
+                //minikit environment.
+                this.s_printer = MPrintMessage
+            } else {
+                //node.js environment.
+                this.s_printer = console.log
+            }
+        }
+
+        this.s_printer(message)
     }
 
     private static Stringify(headIndent: boolean, level: number, value: any, buffer: string[]): void {
