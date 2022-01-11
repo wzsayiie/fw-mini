@@ -11,8 +11,11 @@ module.exports = {
     module: {
         rules: [
             {
-                test  : /\.ts$/,
-                loader: 'ts-loader',
+                loader : 'ts-loader',
+                test   : /\.ts$/,
+                options: {
+                    configFile: '',
+                },
             },
         ],
     },

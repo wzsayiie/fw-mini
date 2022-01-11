@@ -1,12 +1,11 @@
 {
     "compilerOptions": {
         "typeRoots": [
-            "./node_modules/@types",
-            "./app/@types"
+            "./node_modules/@types"
         ],
         "moduleResolution": "node",
         "target": "ES2019"
     },
     "exclude": [ "node_modules" ],
-    "include": [ "app" ]
+    "include": [ "dev" ]
 }

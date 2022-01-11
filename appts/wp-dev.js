@@ -1,7 +1,6 @@
-const uni = require('./wp-uni')
+const config = require('./wp-uni')
 
-let dev = {
-    entry: './dev/main.ts'
-}
+config.entry = './dev/main.ts'
+config.module.rules[0].options.configFile = 'tsdev.json'
 
-module.exports = Object.assign(dev, uni)
+module.exports = config
