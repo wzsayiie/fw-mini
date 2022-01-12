@@ -1,18 +1,69 @@
 import { Camera } from './Camera'
 
-export class Sprite {
+class DataSprite {
 
-    private static s_initialized    = false
-    private static s_sprites        = new Map<number, Sprite>()
-    private static s_spriteCount    = 0
-    private static s_touchingSprite = <Sprite> null
+    private _drawableWidth  = 0
+    private _drawableHeight = 0
 
-    public static Initialize(): void {
-        if (this.s_initialized) {
-            return
+    public SetDrawableSize(width: number, height: number): void {
+        this._drawableWidth  = width
+        this._drawableHeight = height
+    }
+
+    public set drawableWidth (value: number) { this._drawableWidth  = value }
+    public set drawableHeight(value: number) { this._drawableHeight = value }
+
+    public get drawableWidth (): number { return this._drawableWidth  }
+    public get drawableHeight(): number { return this._drawableHeight }
+
+    private _hitableWidth  = 0
+    private _hitableHeight = 0
+
+    public SetHitableSize(width: number, height: number): void {
+        this._hitableWidth  = width
+        this._hitableHeight = height
+    }
+
+    public set hitableWidth (value: number) { this._hitableWidth  = value }
+    public set hitableHeight(value: number) { this._hitableHeight = value }
+
+    public get hitableWidth (): number { return this._hitableWidth  }
+    public get hitableHeight(): number { return this._hitableHeight }
+
+    private _x = 0
+    private _y = 0
+    private _z = 0
+
+    public MoveTo(x: number, y: number, z?: number): void {
+        this._x = x
+        this._y = y
+
+        if (z !== undefined) {
+            this._z = z
         }
-        this.s_initialized = true
+    }
 
+    public set x(value: number) { this._x = value }
+    public set y(value: number) { this._y = value }
+    public set z(value: number) { this._z = value }
+
+    public get x(): number { return this._x }
+    public get y(): number { return this._y }
+    public get z(): number { return this._z }
+
+    public Draw    (w: number, h: number): void {}
+    public HitBegin(x: number, y: number): void {}
+    public HitMove (x: number, y: number): void {}
+    public HitEnd  (x: number, y: number): void {}
+}
+
+class SpriteCollection {
+
+    private static s_sprites      = new Set<DataSprite>()
+    private static s_spriteCount  = 0
+    private static s_hitingSprite = <DataSprite> null
+
+    static {
         MWindowAddListener(() => {
             let event = MWindowCurrentEvent()
 
@@ -23,6 +74,16 @@ export class Sprite {
         })
     }
 
+    public static AddSprite(sprite: DataSprite): void {
+        //the last sprite is on the top.
+        sprite.z = ++this.s_spriteCount
+        this.s_sprites.add(sprite)
+    }
+
+    public static RemoveSprite(sprite: DataSprite): void {
+        this.s_sprites.delete(sprite)
+    }
+
     private static OnDraw(): void {
         let sprites = this.GetSortedSprites(-1)
         for (let sprite of sprites) {
@@ -30,17 +91,17 @@ export class Sprite {
         }
     }
 
-    private static DrawSprite(sprite: Sprite): void {
-        let w = sprite._drawableW
-        let h = sprite._drawableH
+    private static DrawSprite(sprite: DataSprite,): void {
+        let w = sprite.drawableWidth
+        let h = sprite.drawableHeight
 
         if (w <= 0 || h <= 0) {
             return
         }
 
         let origin = this.GetViewPos(
-            sprite._x - w / 2,
-            sprite._y + h / 2
+            sprite.x - w / 2,
+            sprite.y + h / 2
         )
         let minX = origin.x
         let minY = origin.y
@@ -54,10 +115,7 @@ export class Sprite {
         }
 
         MContextSetOffset(minX, minY)
-        MContextSelectColor(sprite._backgroundColor)
-        MContextDrawRect(0, 0, w, h)
-        sprite._drawHandler?.call(null, w, h)
-        sprite.OnDraw(w, h)
+        sprite.Draw(w, h)
     }
 
     private static OnTouchBegin(): void {
@@ -68,17 +126,17 @@ export class Sprite {
 
         let sprites = this.GetSortedSprites(1)
         for (let sprite of sprites) {
-            let w = sprite._hitableW
-            let h = sprite._hitableH
+            let w = sprite.hitableWidth
+            let h = sprite.hitableHeight
 
             if (w <= 0 || h <= 0) {
                 continue
             }
 
-            let minX = sprite._x - w / 2
-            let maxX = sprite._x + w / 2
-            let minY = sprite._y - h / 2
-            let maxY = sprite._y + h / 2
+            let minX = sprite.x - w / 2
+            let maxX = sprite.x + w / 2
+            let minY = sprite.y - h / 2
+            let maxY = sprite.y + h / 2
 
             if (pos.x < minX || maxX < pos.x ||
                 pos.y < minY || maxY < pos.y )
@@ -86,19 +144,18 @@ export class Sprite {
                 continue
             }
 
-            this.s_touchingSprite = sprite
+            this.s_hitingSprite = sprite
 
             let x = pos.x - minX
             let y = pos.y - minY
-            sprite._hitBeginHandler?.call(null, x, y)
-            sprite.OnHitBegin(x, y)
+            sprite.HitBegin(x, y)
 
             break
         }
     }
 
     private static OnTouchMove(): void {
-        if (!this.s_touchingSprite) {
+        if (!this.s_hitingSprite) {
             return
         }
 
@@ -107,15 +164,15 @@ export class Sprite {
             MWindowTouchY()
         )
 
-        let s = this.s_touchingSprite
-        let x = pos.x - s._x + s._hitableW / 2
-        let y = pos.y - s._y + s._hitableH / 2
-        s._hitMoveHandler?.call(null, x, y)
-        s.OnHitMove(x, y)
+        let s = this.s_hitingSprite
+        let x = pos.x - s.x + s.hitableWidth  / 2
+        let y = pos.y - s.y + s.hitableHeight / 2
+
+        s.HitMove(x, y)
     }
 
     private static OnTouchEnd(): void {
-        if (!this.s_touchingSprite) {
+        if (!this.s_hitingSprite) {
             return
         }
 
@@ -124,21 +181,21 @@ export class Sprite {
             MWindowTouchY()
         )
 
-        let s = this.s_touchingSprite
-        let x = pos.x - s._x + s._hitableW / 2
-        let y = pos.y - s._y + s._hitableH / 2
-        s._hitEndHandler?.call(null, x, y)
-        s.OnHitEnd(x, y)
+        let s = this.s_hitingSprite
+        let x = pos.x - s.x + s.hitableWidth  / 2
+        let y = pos.y - s.y + s.hitableHeight / 2
+        
+        s.HitEnd(x, y)
 
-        this.s_touchingSprite = null
+        this.s_hitingSprite = null
     }
 
-    private static GetSortedSprites(smaller: number): Sprite[] {
-        let sprites = Array.from(this.s_sprites.values())
+    private static GetSortedSprites(smaller: number): DataSprite[] {
+        let sprites = Array.from(this.s_sprites)
 
         return sprites.sort((a: Sprite, b: Sprite) => {
-            if (a._z != b._z) {
-                return a._z < b._z ? smaller : -smaller
+            if (a.z != b.z) {
+                return a.z < b.z ? smaller : -smaller
             }
             return 0
         })
@@ -163,20 +220,9 @@ export class Sprite {
 
         return { x: x, y: y }
     }
+}
 
-    private static AddSprite(sprite: Sprite): void {
-        let id = ++this.s_spriteCount
-
-        sprite._id = id
-        //the last sprite is on the top.
-        sprite._z = id
-
-        this.s_sprites.set(id, sprite)
-    }
-
-    private static RemoveSprite(sprite: Sprite): void {
-        this.s_sprites.delete(sprite._id)
-    }
+export class Sprite extends DataSprite {
 
     private _drawHandler    : (w: number, h: number) => void
     private _hitBeginHandler: (x: number, y: number) => void
@@ -184,72 +230,47 @@ export class Sprite {
     private _hitEndHandler  : (x: number, y: number) => void
 
     private _backgroundColor = MColor_WhiteColor
-    private _drawableW = 0
-    private _drawableH = 0
 
-    private _hitableW = 0
-    private _hitableH = 0
+    public constructor(width?: number, height?: number) {
+        super()
 
-    private _id = 0
-    private _x  = 0
-    private _y  = 0
-    private _z  = 0
-
-    public constructor(w?: number, h?: number) {
-        if (w !== undefined && h !== undefined) {
-            this._drawableW = w
-            this._drawableH = h
-            this._hitableW  = w
-            this._hitableH  = h
+        if (width !== undefined && height !== undefined) {
+            this.drawableWidth  = width
+            this.drawableHeight = height
+            this.hitableWidth   = width
+            this.hitableHeight  = height
         }
 
-        Sprite.AddSprite(this)
+        SpriteCollection.AddSprite(this)
     }
 
     public Destroy(): void {
-        Sprite.RemoveSprite(this)
+        SpriteCollection.RemoveSprite(this)
     }
+
+    public Draw(width: number, height: number): void {
+        MContextSelectColor(this._backgroundColor)
+        MContextDrawRect(0, 0, width, height)
+
+        this._drawHandler?.call(null, width, height)
+        this.OnDraw(width, height)
+    }
+
+    public HitBegin(x: number, y: number) { this._hitBeginHandler?.call(null, x, y); this.OnHitBegin(x, y) }
+    public HitMove (x: number, y: number) { this._hitMoveHandler ?.call(null, x, y); this.OnHitMove (x, y) }
+    public HitEnd  (x: number, y: number) { this._hitEndHandler  ?.call(null, x, y); this.OnHitEnd  (x, y) }
 
     public set drawHandler    (v: (w: number, h: number) => void) { this._drawHandler     = v }
     public set hitBeginHandler(v: (x: number, y: number) => void) { this._hitBeginHandler = v }
     public set hitMoveHandler (v: (x: number, y: number) => void) { this._hitMoveHandler  = v }
     public set hitEndHandler  (v: (x: number, y: number) => void) { this._hitEndHandler   = v }
 
-    protected OnDraw    (w: number, h: number): void {}
-    protected OnHitBegin(x: number, y: number): void {}
-    protected OnHitMove (x: number, y: number): void {}
-    protected OnHitEnd  (x: number, y: number): void {}
-
     public set backgroundColor(value: number) {
         this._backgroundColor = value
     }
 
-    public SetDrawableSize(w: number, h: number): void {
-        this._drawableW = w
-        this._drawableH = h
-    }
-
-    public SetHitableSize(w: number, h: number): void {
-        this._hitableW = w
-        this._hitableH = h
-    }
-
-    public MoveTo(x: number, y: number, z?: number): void {
-        this._x = x
-        this._y = y
-
-        if (z !== undefined) {
-            this._z = z
-        }
-    }
-
-    public set x(value: number) { this._x = value }
-    public set y(value: number) { this._y = value }
-    public set z(value: number) { this._z = value }
-
-    public get x(): number { return this._x }
-    public get y(): number { return this._y }
-    public get z(): number { return this._z }
+    protected OnDraw    (w: number, h: number): void {}
+    protected OnHitBegin(x: number, y: number): void {}
+    protected OnHitMove (x: number, y: number): void {}
+    protected OnHitEnd  (x: number, y: number): void {}
 }
-
-Sprite.Initialize()

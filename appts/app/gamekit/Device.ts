@@ -1,15 +1,9 @@
 export class Device {
 
-    private static s_initialized  : boolean
     private static s_mouseListener: (x: number, y: number) => void
     private static s_keyListener  : (key: number) => void
 
-    public static Initialize(): void {
-        if (this.s_initialized) {
-            return
-        }
-        this.s_initialized = true
-
+    static {
         MWindowAddListener(() => {
             let event = MWindowCurrentEvent()
 
@@ -42,5 +36,3 @@ export class Device {
         this.s_keyListener = value
     }
 }
-
-Device.Initialize()
