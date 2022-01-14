@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "boot.h"
 #include "mconvention.h"
 #include "mdebug.h"
 

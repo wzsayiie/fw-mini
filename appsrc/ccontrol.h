@@ -13,7 +13,7 @@ enum class CControlEvent {
     TouchUpOutside = 2,
 };
 
-c_class(CControl) : public CView {
+def_class(CControl) : public CView {
 
 public:
     CControl(float x, float y, float width, float height);

@@ -2,7 +2,7 @@
 
 #include "cview.h"
 
-c_class(CLabel) : public CView {
+def_class(CLabel) : public CView {
 
 public:
     using CView::CView;

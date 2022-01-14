@@ -26,13 +26,6 @@ template<typename T> struct MTypeIdOf;
 /**/        }                                           \
 /**/    }
 
-//to create a inner static object.
-#define m_static_object(name, ...)              \
-/**/    static __VA_ARGS__ &name {              \
-/**/        static auto a = new __VA_ARGS__;    \
-/**/        return *a;                          \
-/**/    }
-
 //functions that need to be called by the host.
 #define M_FUNC_HOST extern "C"
 

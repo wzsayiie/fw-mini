@@ -2,7 +2,7 @@
 
 #include "cview.h"
 
-c_class(CImageView) : public CView {
+def_class(CImageView) : public CView {
 
 public:
     CImageView(float x, float y, float width, float height);

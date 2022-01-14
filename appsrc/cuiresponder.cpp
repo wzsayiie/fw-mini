@@ -5,7 +5,7 @@ static CUIResponder *sRootResponder   = nullptr;
 static CUIResponder *sFirstResponder  = nullptr;
 static CUIResponder *sActiveResponder = nullptr;
 
-m_static_object(sMouseMoveResponders(), std::set<CUIResponder *>)
+static def_singleton(sMouseMoveResponders, std::set<CUIResponder *>)
 
 CUIResponder::~CUIResponder() {
     if (sRootResponder   == this) { sRootResponder  = nullptr; }

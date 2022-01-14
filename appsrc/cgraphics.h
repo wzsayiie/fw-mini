@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cboot.h"
+#include "minikit.h"
 
 //------------------------------------------------------------------------------
 //CColor:
@@ -45,7 +45,7 @@ private:
 //------------------------------------------------------------------------------
 //CImage:
 
-c_class(CImage) {
+def_class(CImage) {
 
 public:
     static CImageRef fromData  (const std::vector<uint8_t> &data);

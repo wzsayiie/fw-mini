@@ -1,9 +1,8 @@
 #pragma once
 
-#include "cboot.h"
 #include "clambda.h"
 
-c_class(CUIResponder) {
+def_class(CUIResponder) {
     
 public:
     virtual ~CUIResponder();

@@ -2,7 +2,7 @@
 
 #include "cview.h"
 
-c_class(CViewController) : public CUIResponder {
+def_class(CViewController) : public CUIResponder {
     
 public:
     ~CViewController();

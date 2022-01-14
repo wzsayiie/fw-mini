@@ -2,7 +2,7 @@
 
 #include "ccontrol.h"
 
-c_class(CButton) : public CControl {
+def_class(CButton) : public CControl {
     
 public:
     CButton(float x, float y, float width, float height);

@@ -9,8 +9,8 @@ struct UpdateItem {
     MLambdaRef listener;
 };
 
-m_static_object(sLaunchItems(), std::vector<LaunchItem>)
-m_static_object(sUpdateItems(), std::vector<UpdateItem>)
+static def_singleton(sLaunchItems, std::vector<LaunchItem>)
+static def_singleton(sUpdateItems, std::vector<UpdateItem>)
 
 void _MAppLaunch() {
     for (const LaunchItem &item : sLaunchItems()) {

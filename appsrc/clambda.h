@@ -1,7 +1,7 @@
 #pragma once
 
 #include <type_traits>
-#include "cboot.h"
+#include "minikit.h"
 
 class CComparableLambda {
 

@@ -3,7 +3,7 @@
 #include "cgraphics.h"
 #include "cuiresponder.h"
 
-c_class(CView) : public CUIResponder {
+def_class(CView) : public CUIResponder {
     
 public:
     CView(float x, float y, float width, float height);
