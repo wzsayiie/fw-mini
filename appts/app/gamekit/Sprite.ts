@@ -2,34 +2,6 @@ import { Camera } from './Camera'
 
 class DataSprite {
 
-    private _drawableWidth  = 0
-    private _drawableHeight = 0
-
-    public SetDrawableSize(width: number, height: number): void {
-        this._drawableWidth  = width
-        this._drawableHeight = height
-    }
-
-    public set drawableWidth (value: number) { this._drawableWidth  = value }
-    public set drawableHeight(value: number) { this._drawableHeight = value }
-
-    public get drawableWidth (): number { return this._drawableWidth  }
-    public get drawableHeight(): number { return this._drawableHeight }
-
-    private _hitableWidth  = 0
-    private _hitableHeight = 0
-
-    public SetHitableSize(width: number, height: number): void {
-        this._hitableWidth  = width
-        this._hitableHeight = height
-    }
-
-    public set hitableWidth (value: number) { this._hitableWidth  = value }
-    public set hitableHeight(value: number) { this._hitableHeight = value }
-
-    public get hitableWidth (): number { return this._hitableWidth  }
-    public get hitableHeight(): number { return this._hitableHeight }
-
     private _x = 0
     private _y = 0
     private _z = 0
@@ -50,6 +22,25 @@ class DataSprite {
     public get x(): number { return this._x }
     public get y(): number { return this._y }
     public get z(): number { return this._z }
+
+    private _width  = 0
+    private _height = 0
+
+    public SetSize(width: number, height: number): void {
+        this._width  = width
+        this._height = height
+    }
+
+    public set width (value: number) { this._width  = value }
+    public set height(value: number) { this._height = value }
+
+    public get width (): number { return this._width  }
+    public get height(): number { return this._height }
+
+    public get minX(): number { return this._x - this._width  / 2 }
+    public get maxX(): number { return this._x + this._width  / 2 }
+    public get minY(): number { return this._y - this._height / 2 }
+    public get maxY(): number { return this._y + this._height / 2 }
 
     public Draw    (w: number, h: number): void {}
     public HitBegin(x: number, y: number): void {}
@@ -92,63 +83,40 @@ class SpriteCollection {
     }
 
     private static DrawSprite(sprite: DataSprite,): void {
-        let w = sprite.drawableWidth
-        let h = sprite.drawableHeight
-
-        if (w <= 0 || h <= 0) {
+        if (sprite.width <= 0 || sprite.height <= 0) {
             return
         }
 
-        let origin = this.GetViewPos(
-            sprite.x - w / 2,
-            sprite.y + h / 2
-        )
-        let minX = origin.x
-        let minY = origin.y
-        let maxX = origin.x + w
-        let maxY = origin.y + h
+        //NOTE: the origin of the window coordinate is in the upper left corner.
+        let windowPos = this.GetWindowPos(sprite.minX, sprite.maxY)
 
-        if (minX < 0 || MWindowWidth () < maxX ||
-            minY < 0 || MWindowHeight() < maxY )
+        if (windowPos.x + sprite.width  < 0 || MWindowWidth () < windowPos.x ||
+            windowPos.y + sprite.height < 0 || MWindowHeight() < windowPos.y )
         {
             return
         }
 
-        MContextSetOffset(minX, minY)
-        sprite.Draw(w, h)
+        MContextSetOffset(windowPos.x, windowPos.y)
+        sprite.Draw(sprite.width, sprite.height)
     }
 
     private static OnTouchBegin(): void {
-        let pos = this.GetWorldPos(
-            MWindowTouchX(),
-            MWindowTouchY()
-        )
+        let worldPos = this.GetWorldPos(MWindowTouchX(), MWindowTouchY())
 
         let sprites = this.GetSortedSprites(1)
         for (let sprite of sprites) {
-            let w = sprite.hitableWidth
-            let h = sprite.hitableHeight
-
-            if (w <= 0 || h <= 0) {
+            if (sprite.width <= 0 || sprite.height <= 0) {
                 continue
             }
 
-            let minX = sprite.x - w / 2
-            let maxX = sprite.x + w / 2
-            let minY = sprite.y - h / 2
-            let maxY = sprite.y + h / 2
-
-            if (pos.x < minX || maxX < pos.x ||
-                pos.y < minY || maxY < pos.y )
+            if (worldPos.x < sprite.minX || sprite.maxX < worldPos.x ||
+                worldPos.y < sprite.minY || sprite.maxY < worldPos.y )
             {
                 continue
             }
 
             this.s_hitingSprite = sprite
-
-            let x = pos.x - minX
-            let y = pos.y - minY
-            sprite.HitBegin(x, y)
+            sprite.HitBegin(worldPos.x - sprite.x, worldPos.y - sprite.y)
 
             break
         }
@@ -159,16 +127,11 @@ class SpriteCollection {
             return
         }
 
-        let pos = this.GetWorldPos(
-            MWindowTouchX(),
-            MWindowTouchY()
+        let worldPos = this.GetWorldPos(MWindowTouchX(), MWindowTouchY())
+        this.s_hitingSprite.HitMove(
+            worldPos.x - this.s_hitingSprite.x,
+            worldPos.y - this.s_hitingSprite.y
         )
-
-        let s = this.s_hitingSprite
-        let x = pos.x - s.x + s.hitableWidth  / 2
-        let y = pos.y - s.y + s.hitableHeight / 2
-
-        s.HitMove(x, y)
     }
 
     private static OnTouchEnd(): void {
@@ -176,16 +139,11 @@ class SpriteCollection {
             return
         }
 
-        let pos = this.GetWorldPos(
-            MWindowTouchX(),
-            MWindowTouchY()
+        let worldPos = this.GetWorldPos(MWindowTouchX(), MWindowTouchY())
+        this.s_hitingSprite.HitEnd(
+            worldPos.x - this.s_hitingSprite.x,
+            worldPos.y - this.s_hitingSprite.y
         )
-
-        let s = this.s_hitingSprite
-        let x = pos.x - s.x + s.hitableWidth  / 2
-        let y = pos.y - s.y + s.hitableHeight / 2
-        
-        s.HitEnd(x, y)
 
         this.s_hitingSprite = null
     }
@@ -201,24 +159,18 @@ class SpriteCollection {
         })
     }
 
-    private static GetWorldPos(viewX: number, viewY: number): { x: number, y: number } {
-        let viewW = MWindowWidth ()
-        let viewH = MWindowHeight()
-
-        let x = Camera.focusX - viewW / 2 + viewX
-        let y = Camera.focusY + viewH / 2 - viewY
-
-        return { x: x, y: y}
-    }
-
-    private static GetViewPos(worldX: number, worldY: number): { x: number, y: number } {
-        let viewW = MWindowWidth ()
-        let viewH = MWindowHeight()
-
-        let x = viewW / 2 - Camera.focusX + worldX
-        let y = viewH / 2 + Camera.focusY - worldY
+    private static GetWindowPos(worldX: number, worldY: number): { x: number, y: number } {
+        let x = MWindowWidth () / 2 - Camera.focusX + worldX
+        let y = MWindowHeight() / 2 + Camera.focusY - worldY
 
         return { x: x, y: y }
+    }
+
+    private static GetWorldPos(windowX: number, windowY: number): { x: number, y: number } {
+        let x = Camera.focusX - MWindowWidth () / 2 + windowX
+        let y = Camera.focusY + MWindowHeight() / 2 - windowY
+
+        return { x: x, y: y}
     }
 }
 
@@ -235,10 +187,8 @@ export class Sprite extends DataSprite {
         super()
 
         if (width !== undefined && height !== undefined) {
-            this.drawableWidth  = width
-            this.drawableHeight = height
-            this.hitableWidth   = width
-            this.hitableHeight  = height
+            this.width  = width
+            this.height = height
         }
 
         SpriteCollection.AddSprite(this)
