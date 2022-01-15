@@ -116,7 +116,10 @@ class SpriteCollection {
             }
 
             this.s_hitingSprite = sprite
-            sprite.HitBegin(worldPos.x - sprite.x, worldPos.y - sprite.y)
+            sprite.HitBegin(
+                - sprite.minX + worldPos.x,
+                  sprite.maxY - worldPos.y,
+            )
 
             break
         }
@@ -129,8 +132,8 @@ class SpriteCollection {
 
         let worldPos = this.GetWorldPos(MWindowTouchX(), MWindowTouchY())
         this.s_hitingSprite.HitMove(
-            worldPos.x - this.s_hitingSprite.x,
-            worldPos.y - this.s_hitingSprite.y
+            - this.s_hitingSprite.minX + worldPos.x,
+              this.s_hitingSprite.maxY - worldPos.y,
         )
     }
 
@@ -141,8 +144,8 @@ class SpriteCollection {
 
         let worldPos = this.GetWorldPos(MWindowTouchX(), MWindowTouchY())
         this.s_hitingSprite.HitEnd(
-            worldPos.x - this.s_hitingSprite.x,
-            worldPos.y - this.s_hitingSprite.y
+            - this.s_hitingSprite.minX + worldPos.x,
+              this.s_hitingSprite.maxY - worldPos.y,
         )
 
         this.s_hitingSprite = null
