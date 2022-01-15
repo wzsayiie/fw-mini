@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #define def_singleton(name, ...)                \
 /**/    __VA_ARGS__ &name() {                   \
 /**/        static auto a = new __VA_ARGS__;    \
