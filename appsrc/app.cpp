@@ -1,4 +1,5 @@
 #include "cuikit.h"
+#include "gamekit.h"
 
 def_class(MainController) : public CViewController {
 
