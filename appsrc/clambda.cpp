@@ -2,18 +2,18 @@
 
 const CComparableLambda::Id NoneId = { nullptr };
 
-bool CComparableLambda::operator< (const CComparableLambda &a) const { return cmp(a._id) <  0; }
-bool CComparableLambda::operator==(const CComparableLambda &a) const { return cmp(a._id) == 0; }
-bool CComparableLambda::operator!=(const CComparableLambda &a) const { return cmp(a._id) != 0; }
+bool CComparableLambda::operator< (const CComparableLambda &a) const { return cmp(a.mId) <  0; }
+bool CComparableLambda::operator==(const CComparableLambda &a) const { return cmp(a.mId) == 0; }
+bool CComparableLambda::operator!=(const CComparableLambda &a) const { return cmp(a.mId) != 0; }
 
 bool CComparableLambda::operator==(nullptr_t) const { return cmp(NoneId) == 0; }
 bool CComparableLambda::operator!=(nullptr_t) const { return cmp(NoneId) != 0; }
 CComparableLambda::operator bool  ()          const { return cmp(NoneId) != 0; }
 
 void CComparableLambda::setId(void *a, void *b, void *c) {
-    _id[0] = a;
-    _id[1] = b;
-    _id[2] = c;
+    mId[0] = a;
+    mId[1] = b;
+    mId[2] = c;
 }
 
 void CComparableLambda::setRandomId() {
@@ -25,16 +25,16 @@ void CComparableLambda::setRandomId() {
 
     acc.num++;
 
-    memset(_id, 0, sizeof(Id));
-    _id[0] = acc.ptr;
+    memset(mId, 0, sizeof(Id));
+    mId[0] = acc.ptr;
 }
 
 int CComparableLambda::cmp(const Id &that) const {
     size_t count = sizeof(Id) / sizeof(void *);
 
     for (size_t n = 0; n < count; ++n) {
-        if (_id[n] != that[n]) {
-            return _id[n] < that[n] ? -1 : 1;
+        if (mId[n] != that[n]) {
+            return mId[n] < that[n] ? -1 : 1;
         }
     }
     return 0;

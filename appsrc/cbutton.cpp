@@ -1,19 +1,19 @@
 #include "cbutton.h"
 
 CButton::CButton(float x, float y, float w, float h): CControl(x, y, w, h) {
-    _titleColors[CControlState::Normal] = CColor::blackColor;
+    mTitleColors[CControlState::Normal] = CColor::blackColor;
 }
 
 void CButton::setTitle(CControlState state, const std::string &title) {
-    _titles[state] = title;
+    mTitles[state] = title;
 }
 
 void CButton::setTitleColor(CControlState state, const CColor &color) {
-    _titleColors[state] = color;
+    mTitleColors[state] = color;
 }
 
 void CButton::setFontSize(float size) {
-    _fontSize = size;
+    mFontSize = size;
 }
 
 void CButton::onTouchBegin(float x, float y) {
@@ -38,14 +38,14 @@ void CButton::onTouchEnd(float x, float y) {
 std::string CButton::suitableTitle() {
     CControlState currentState = state();
     
-    auto title = _titles.find(currentState);
-    if (title != _titles.end()) {
+    auto title = mTitles.find(currentState);
+    if (title != mTitles.end()) {
         return title->second;
     }
     
     //replaceable title.
-    title = _titles.find(CControlState::Normal);
-    if (title != _titles.end()) {
+    title = mTitles.find(CControlState::Normal);
+    if (title != mTitles.end()) {
         return title->second;
     }
     
@@ -55,14 +55,14 @@ std::string CButton::suitableTitle() {
 CColor CButton::suitableTitleColor() {
     CControlState currentState = state();
     
-    auto color = _titleColors.find(currentState);
-    if (color != _titleColors.end()) {
+    auto color = mTitleColors.find(currentState);
+    if (color != mTitleColors.end()) {
         return color->second;
     }
     
     //replaceable color.
-    color = _titleColors.find(CControlState::Normal);
-    if (color != _titleColors.end()) {
+    color = mTitleColors.find(CControlState::Normal);
+    if (color != mTitleColors.end()) {
         
         float r = color->second.redComponent  ();
         float g = color->second.greenComponent();
@@ -89,7 +89,7 @@ void CButton::onDraw(float width, float height) {
     CContextSelectHorizontalAlign(CHorizontalAlign::Center);
     CContextSelectVerticalAlign(CVerticalAlign::Center);
     
-    CContextSelectFontSize(_fontSize);
+    CContextSelectFontSize(mFontSize);
     CContextSelectString(title);
     CContextSelectColor(color);
     

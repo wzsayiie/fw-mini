@@ -21,7 +21,7 @@ protected:
     CColor suitableTitleColor();
     
 private:
-    std::map<CControlState, std::string> _titles;
-    std::map<CControlState, CColor> _titleColors;
-    float _fontSize = 16;
+    std::map<CControlState, std::string> mTitles;
+    std::map<CControlState, CColor> mTitleColors;
+    float mFontSize = 16;
 };

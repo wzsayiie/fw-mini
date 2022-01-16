@@ -14,8 +14,8 @@ public:
     float focusY();
     
 private:
-    float _focusX = 0;
-    float _focusY = 0;
+    float mFocusX = 0;
+    float mFocusY = 0;
 };
 
 GCameraObject &GCamera();

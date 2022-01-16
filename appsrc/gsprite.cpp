@@ -126,18 +126,18 @@ static void OnInitialize() MAPP_LAUNCH(OnInitialize, MAppLaunchPriority_Scene) {
 }
 
 GSprite::GSprite(float x, float y, float width, float height) {
-    _x = x;
-    _y = y;
+    mX = x;
+    mY = y;
     
     //the last sprite is on the top.
-    _z = ++sSpriteCount();
+    mZ = ++sSpriteCount();
     
-    _width  = width ;
-    _height = height;
+    mWidth  = width ;
+    mHeight = height;
 }
 
 GSprite::GSprite() {
-    _z = ++sSpriteCount();
+    mZ = ++sSpriteCount();
 }
 
 void GSprite::born() {
@@ -149,48 +149,48 @@ void GSprite::die() {
 }
 
 void GSprite::moveTo(float x, float y, float z) {
-    _x = x;
-    _y = y;
-    _z = z;
+    mX = x;
+    mY = y;
+    mZ = z;
 }
 
 void GSprite::moveTo(float x, float y) {
-    _x = x;
-    _y = y;
+    mX = x;
+    mY = y;
 }
 
-void GSprite::setX(float x) { _x = x; }
-void GSprite::setY(float y) { _y = y; }
-void GSprite::setZ(float z) { _z = z; }
+void GSprite::setX(float x) { mX = x; }
+void GSprite::setY(float y) { mY = y; }
+void GSprite::setZ(float z) { mZ = z; }
 
-float GSprite::x() { return _x; }
-float GSprite::y() { return _y; }
-float GSprite::z() { return _z; }
+float GSprite::x() { return mX; }
+float GSprite::y() { return mY; }
+float GSprite::z() { return mZ; }
 
 void GSprite::setSize(float width, float height) {
-    _width  = width ;
-    _height = height;
+    mWidth  = width ;
+    mHeight = height;
 }
 
-void GSprite::setWidth (float width ) { _width  = width ; }
-void GSprite::setHeight(float height) { _height = height; }
+void GSprite::setWidth (float width ) { mWidth  = width ; }
+void GSprite::setHeight(float height) { mHeight = height; }
 
-float GSprite::width () { return _width ; }
-float GSprite::height() { return _height; }
+float GSprite::width () { return mWidth ; }
+float GSprite::height() { return mHeight; }
 
-float GSprite::minX() { return _x - _width  / 2; }
-float GSprite::maxX() { return _x + _width  / 2; }
-float GSprite::minY() { return _y - _height / 2; }
-float GSprite::maxY() { return _y + _height / 2; }
+float GSprite::minX() { return mX - mWidth  / 2; }
+float GSprite::maxX() { return mX + mWidth  / 2; }
+float GSprite::minY() { return mY - mHeight / 2; }
+float GSprite::maxY() { return mY + mHeight / 2; }
 
 void GSprite::setBackgroundColor(MColor color) {
-    _backgroundColor = color;
+    mBackgroundColor = color;
 }
 
-void GSprite::setDrawHandler    (std::function<void (float w, float h)> h) { _drawHandler     = h; }
-void GSprite::setHitBeginHandler(std::function<void (float x, float y)> h) { _hitBeginHandler = h; }
-void GSprite::setHitMoveHandler (std::function<void (float x, float y)> h) { _hitMoveHandler  = h; }
-void GSprite::setHitEndHandler  (std::function<void (float x, float y)> h) { _hitEndHandler   = h; }
+void GSprite::setDrawHandler    (std::function<void (float w, float h)> h) { mDrawHandler     = h; }
+void GSprite::setHitBeginHandler(std::function<void (float x, float y)> h) { mHitBeginHandler = h; }
+void GSprite::setHitMoveHandler (std::function<void (float x, float y)> h) { mHitMoveHandler  = h; }
+void GSprite::setHitEndHandler  (std::function<void (float x, float y)> h) { mHitEndHandler   = h; }
 
 template<typename F> void Call(const F &fn, float a, float b) {
     if (fn) {
@@ -199,13 +199,13 @@ template<typename F> void Call(const F &fn, float a, float b) {
 }
 
 void GSprite::_Draw(float w, float h) {
-    MContextSelectColor(_backgroundColor);
+    MContextSelectColor(mBackgroundColor);
     MContextDrawRect(0, 0, w, h);
     
-    Call(_drawHandler, w, h);
+    Call(mDrawHandler, w, h);
     OnDraw(w, h);
 }
 
-void GSprite::_HitBegin(float x, float y) { Call(_hitBeginHandler, x, y); OnHitBegin(x, y); }
-void GSprite::_HitMove (float x, float y) { Call(_hitMoveHandler , x, y); OnHitMove (x, y); }
-void GSprite::_HitEnd  (float x, float y) { Call(_hitEndHandler  , x, y); OnHitEnd  (x, y); }
+void GSprite::_HitBegin(float x, float y) { Call(mHitBeginHandler, x, y); OnHitBegin(x, y); }
+void GSprite::_HitMove (float x, float y) { Call(mHitMoveHandler , x, y); OnHitMove (x, y); }
+void GSprite::_HitEnd  (float x, float y) { Call(mHitEndHandler  , x, y); OnHitEnd  (x, y); }

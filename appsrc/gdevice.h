@@ -17,8 +17,8 @@ private:
     void OnMouseMove();
     void OnKeyDown();
     
-    std::function<void (float x, float y)> _mouseListener;
-    std::function<void (MKey key)> _keyListener;
+    std::function<void (float x, float y)> mMouseListener;
+    std::function<void (MKey key)> mKeyListener;
 };
 
 GDeviceObject &GDevice();

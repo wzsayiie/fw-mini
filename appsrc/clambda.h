@@ -24,7 +24,7 @@ protected:
 private:
     int cmp(const Id &that) const;
 
-    Id _id = { nullptr };
+    Id mId = { nullptr };
 };
 
 template<typename T> class CLambda;
@@ -62,20 +62,20 @@ public:
 
         setId(a, b, c);
 
-        _func = [=](A... a) -> R {
+        mFunc = [=](A... a) -> R {
             return (object->*func)(a...);
         };
     }
 
     template<typename L> void assign(const L &func) {
         setRandomId();
-        _func = func;
+        mFunc = func;
     }
     
     void assign(const std::function<R (A...)> &func) {
         if (func) {
             setRandomId();
-            _func = func;
+            mFunc = func;
         } else {
             reset();
         }
@@ -84,7 +84,7 @@ public:
     void assgin(R (*func)(A...)) {
         if (func) {
             setId(func, nullptr, nullptr);
-            _func = func;
+            mFunc = func;
         } else {
             reset();
         }
@@ -96,19 +96,19 @@ public:
 
     void reset() {
         setId(nullptr, nullptr, nullptr);
-        _func = nullptr;
+        mFunc = nullptr;
     }
 
     R operator()(A... args) const {
-        if (_func) {
-            return _func(args...);
+        if (mFunc) {
+            return mFunc(args...);
         } else {
             return R();
         }
     }
 
 private:
-    std::function<R (A...)> _func;
+    std::function<R (A...)> mFunc;
 };
 
 #define M(func) _CLambdaMake(this, &std::remove_reference<decltype(*this)>::type::func)

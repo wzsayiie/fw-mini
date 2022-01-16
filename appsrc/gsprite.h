@@ -54,17 +54,17 @@ protected:
     virtual void OnHitEnd  (float x, float y) {}
     
 private:
-    float _x = 0;
-    float _y = 0;
-    float _z = 0;
+    float mX = 0;
+    float mY = 0;
+    float mZ = 0;
     
-    float _width  = 0;
-    float _height = 0;
+    float mWidth  = 0;
+    float mHeight = 0;
     
-    MColor _backgroundColor = MColor_WhiteColor;
+    MColor mBackgroundColor = MColor_WhiteColor;
     
-    std::function<void (float w, float h)> _drawHandler;
-    std::function<void (float x, float y)> _hitBeginHandler;
-    std::function<void (float x, float y)> _hitMoveHandler;
-    std::function<void (float x, float y)> _hitEndHandler;
+    std::function<void (float w, float h)> mDrawHandler;
+    std::function<void (float x, float y)> mHitBeginHandler;
+    std::function<void (float x, float y)> mHitMoveHandler;
+    std::function<void (float x, float y)> mHitEndHandler;
 };

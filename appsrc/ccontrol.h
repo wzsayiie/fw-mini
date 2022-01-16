@@ -27,6 +27,6 @@ protected:
     void setState(CControlState state);
     
 private:
-    std::map<CControlEvent, CLambda<void ()>> _listeners;
-    CControlState _state = CControlState::Normal;
+    std::map<CControlEvent, CLambda<void ()>> mListeners;
+    CControlState mState = CControlState::Normal;
 };

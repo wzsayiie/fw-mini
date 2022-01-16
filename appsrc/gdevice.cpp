@@ -16,22 +16,22 @@ float GDeviceObject::mouseX() { return MWindowMouseX(); }
 float GDeviceObject::mouseY() { return MWindowMouseY(); }
 
 void GDeviceObject::setMouseListener(std::function<void (float x, float y)> listener) {
-    _mouseListener = listener;
+    mMouseListener = listener;
 }
 
 void GDeviceObject::setKeyListener(std::function<void (MKey key)> listener) {
-    _keyListener = listener;
+    mKeyListener = listener;
 }
 
 void GDeviceObject::OnMouseMove() {
-    if (_mouseListener) {
-        _mouseListener(mouseX(), mouseY());
+    if (mMouseListener) {
+        mMouseListener(mouseX(), mouseY());
     }
 }
 
 void GDeviceObject::OnKeyDown() {
-    if (_keyListener) {
-        _keyListener(MWindowActiveKey());
+    if (mKeyListener) {
+        mKeyListener(MWindowActiveKey());
     }
 }
 
