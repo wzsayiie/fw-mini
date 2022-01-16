@@ -42,10 +42,10 @@ class DataSprite {
     public get minY(): number { return this._y - this._height / 2 }
     public get maxY(): number { return this._y + this._height / 2 }
 
-    public Draw    (w: number, h: number): void {}
-    public HitBegin(x: number, y: number): void {}
-    public HitMove (x: number, y: number): void {}
-    public HitEnd  (x: number, y: number): void {}
+    public _Draw    (w: number, h: number): void {}
+    public _HitBegin(x: number, y: number): void {}
+    public _HitMove (x: number, y: number): void {}
+    public _HitEnd  (x: number, y: number): void {}
 }
 
 class SpriteCollection {
@@ -65,9 +65,12 @@ class SpriteCollection {
         })
     }
 
-    public static AddSprite(sprite: DataSprite): void {
+    public static AccumulateSpriteZ(): number {
         //the last sprite is on the top.
-        sprite.z = ++this.s_spriteCount
+        return ++this.s_spriteCount
+    }
+
+    public static AddSprite(sprite: DataSprite): void {
         this.s_sprites.add(sprite)
     }
 
@@ -97,7 +100,7 @@ class SpriteCollection {
         }
 
         MContextSetOffset(windowPos.x, windowPos.y)
-        sprite.Draw(sprite.width, sprite.height)
+        sprite._Draw(sprite.width, sprite.height)
     }
 
     private static OnTouchBegin(): void {
@@ -116,7 +119,7 @@ class SpriteCollection {
             }
 
             this.s_hitingSprite = sprite
-            sprite.HitBegin(
+            sprite._HitBegin(
                 - sprite.minX + worldPos.x,
                   sprite.maxY - worldPos.y,
             )
@@ -131,7 +134,7 @@ class SpriteCollection {
         }
 
         let worldPos = this.GetWorldPos(MWindowTouchX(), MWindowTouchY())
-        this.s_hitingSprite.HitMove(
+        this.s_hitingSprite._HitMove(
             - this.s_hitingSprite.minX + worldPos.x,
               this.s_hitingSprite.maxY - worldPos.y,
         )
@@ -143,7 +146,7 @@ class SpriteCollection {
         }
 
         let worldPos = this.GetWorldPos(MWindowTouchX(), MWindowTouchY())
-        this.s_hitingSprite.HitEnd(
+        this.s_hitingSprite._HitEnd(
             - this.s_hitingSprite.minX + worldPos.x,
               this.s_hitingSprite.maxY - worldPos.y,
         )
@@ -186,22 +189,30 @@ export class Sprite extends DataSprite {
 
     private _backgroundColor = MColor_WhiteColor
 
-    public constructor(width?: number, height?: number) {
+    public constructor(x?: number, y?: number, width?: number, height?: number) {
         super()
 
+        if (x !== undefined && y != undefined) {
+            this.x = x
+            this.y = y
+        }
+        this.z = SpriteCollection.AccumulateSpriteZ()
+        
         if (width !== undefined && height !== undefined) {
             this.width  = width
             this.height = height
         }
+    }
 
+    public Born(): void {
         SpriteCollection.AddSprite(this)
     }
 
-    public Destroy(): void {
+    public Die(): void {
         SpriteCollection.RemoveSprite(this)
     }
 
-    public Draw(width: number, height: number): void {
+    public _Draw(width: number, height: number): void {
         MContextSelectColor(this._backgroundColor)
         MContextDrawRect(0, 0, width, height)
 
@@ -209,9 +220,9 @@ export class Sprite extends DataSprite {
         this.OnDraw(width, height)
     }
 
-    public HitBegin(x: number, y: number) { this._hitBeginHandler?.call(null, x, y); this.OnHitBegin(x, y) }
-    public HitMove (x: number, y: number) { this._hitMoveHandler ?.call(null, x, y); this.OnHitMove (x, y) }
-    public HitEnd  (x: number, y: number) { this._hitEndHandler  ?.call(null, x, y); this.OnHitEnd  (x, y) }
+    public _HitBegin(x: number, y: number) { this._hitBeginHandler?.call(null, x, y); this.OnHitBegin(x, y) }
+    public _HitMove (x: number, y: number) { this._hitMoveHandler ?.call(null, x, y); this.OnHitMove (x, y) }
+    public _HitEnd  (x: number, y: number) { this._hitEndHandler  ?.call(null, x, y); this.OnHitEnd  (x, y) }
 
     public set drawHandler    (v: (w: number, h: number) => void) { this._drawHandler     = v }
     public set hitBeginHandler(v: (x: number, y: number) => void) { this._hitBeginHandler = v }
