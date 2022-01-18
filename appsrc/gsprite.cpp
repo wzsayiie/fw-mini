@@ -130,14 +130,14 @@ GSprite::GSprite(float x, float y, float width, float height) {
     mY = y;
     
     //the last sprite is on the top.
-    mZ = ++sSpriteCount();
+    mZ = (float)(++sSpriteCount());
     
     mWidth  = width ;
     mHeight = height;
 }
 
 GSprite::GSprite() {
-    mZ = ++sSpriteCount();
+    mZ = (float)(++sSpriteCount());
 }
 
 void GSprite::born() {
