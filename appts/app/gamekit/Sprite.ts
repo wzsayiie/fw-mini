@@ -65,12 +65,9 @@ class SpriteCollection {
         })
     }
 
-    public static AccumulateSpriteZ(): number {
-        //the last sprite is on the top.
-        return ++this.s_spriteCount
-    }
-
     public static AddSprite(sprite: DataSprite): void {
+        //the last sprite is on the top.
+        sprite.z = ++this.s_spriteCount
         this.s_sprites.add(sprite)
     }
 
@@ -165,7 +162,7 @@ class SpriteCollection {
         })
     }
 
-    private static GetWindowPos(worldX: number, worldY: number): { x: number, y: number } {
+    private static GetWindowPos(worldX: number, worldY: number) : { x: number, y: number } {
         let x = MWindowWidth () / 2 - Camera.focusX + worldX
         let y = MWindowHeight() / 2 + Camera.focusY - worldY
 
@@ -196,19 +193,15 @@ export class Sprite extends DataSprite {
             this.x = x
             this.y = y
         }
-        this.z = SpriteCollection.AccumulateSpriteZ()
-        
         if (width !== undefined && height !== undefined) {
             this.width  = width
             this.height = height
         }
-    }
 
-    public Born(): void {
         SpriteCollection.AddSprite(this)
     }
 
-    public Die(): void {
+    public Destroy(): void {
         SpriteCollection.RemoveSprite(this)
     }
 
@@ -220,14 +213,19 @@ export class Sprite extends DataSprite {
         this.OnDraw(width, height)
     }
 
-    public _HitBegin(x: number, y: number) { this._hitBeginHandler?.call(null, x, y); this.OnHitBegin(x, y) }
-    public _HitMove (x: number, y: number) { this._hitMoveHandler ?.call(null, x, y); this.OnHitMove (x, y) }
-    public _HitEnd  (x: number, y: number) { this._hitEndHandler  ?.call(null, x, y); this.OnHitEnd  (x, y) }
+    _HitBegin(x: number, y: number) { this.Hit(this._hitBeginHandler, this.OnHitBegin, x, y) }
+    _HitMove (x: number, y: number) { this.Hit(this._hitMoveHandler , this.OnHitMove , x, y) }
+    _HitEnd  (x: number, y: number) { this.Hit(this._hitEndHandler  , this.OnHitEnd  , x, y) }
 
-    public set drawHandler    (v: (w: number, h: number) => void) { this._drawHandler     = v }
-    public set hitBeginHandler(v: (x: number, y: number) => void) { this._hitBeginHandler = v }
-    public set hitMoveHandler (v: (x: number, y: number) => void) { this._hitMoveHandler  = v }
-    public set hitEndHandler  (v: (x: number, y: number) => void) { this._hitEndHandler   = v }
+    private Hit(h: Function, f: Function, x: number, y: number): void {
+        h?.call(this, x, y)
+        f?.call(this, x, y)
+    }
+
+    set drawHandler    (v: (w: number, h: number) => void) { this._drawHandler     = v }
+    set hitBeginHandler(v: (x: number, y: number) => void) { this._hitBeginHandler = v }
+    set hitMoveHandler (v: (x: number, y: number) => void) { this._hitMoveHandler  = v }
+    set hitEndHandler  (v: (x: number, y: number) => void) { this._hitEndHandler   = v }
 
     public set backgroundColor(value: number) {
         this._backgroundColor = value

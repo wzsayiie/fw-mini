@@ -1,7 +1,10 @@
+import { Camera } from './Camera'
+
 export class Device {
 
+    private static s_updateListener: () => void
     private static s_mouseListener: (x: number, y: number) => void
-    private static s_keyListener  : (key: number) => void
+    private static s_keyListener: (key: number) => void
 
     static {
         MWindowAddListener(() => {
@@ -10,23 +13,35 @@ export class Device {
             if /**/ (event == MWindowEvent_MouseMove) { this.OnMouseMove() }
             else if (event == MWindowEvent_KeyDown  ) { this.OnKeyDown  () }
         })
+
+        MAppAddUpdateListener(() => {
+            this.OnUpdate()
+        })
     }
 
     private static OnMouseMove(): void {
-        let x = MWindowMouseX()
-        let y = MWindowMouseY()
-
-        this.s_mouseListener?.call(null, x, y)
+        if (this.s_mouseListener) {
+            this.s_mouseListener(this.mouseX, this.mouseY)
+        }
     }
 
     private static OnKeyDown(): void {
-        let key = MWindowActiveKey()
-
-        this.s_keyListener?.call(null, key)
+        if (this.s_keyListener) {
+            this.s_keyListener(MWindowActiveKey())
+        }
     }
 
-    public static get mouseX(): number { return MWindowMouseX() }
-    public static get mouseY(): number { return MWindowMouseY() }
+    private static OnUpdate(): void {
+        this.s_updateListener?.call(null)
+    }
+
+    public static get mouseX(): number {
+        return Camera.focusX - MWindowWidth () / 2 + MWindowMouseX()
+    }
+
+    public static get mouseY(): number {
+        return Camera.focusY + MWindowHeight() / 2 - MWindowMouseY()
+    }
 
     public static set mouseListener(value: (x: number, y: number) => void) {
         this.s_mouseListener = value
@@ -34,5 +49,9 @@ export class Device {
 
     public static set keyListener(value: (key: number) => void) {
         this.s_keyListener = value
+    }
+
+    public static set updateListener(value: () => void) {
+        this.s_updateListener = value
     }
 }
