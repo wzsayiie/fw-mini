@@ -220,7 +220,6 @@ void CView::handleWindowEvent(MObject *) {
             sRootView->handleDraw();
             break;
         }
-        default:;
     }
 }
 

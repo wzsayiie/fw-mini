@@ -17,7 +17,6 @@
             case _MGraph_Triangle: [self drawTriangle:index withViewHeight:height]; break;
             case _MGraph_Image   : [self drawImage   :index withViewHeight:height]; break;
             case _MGraph_Label   : [self drawLabel   :index withViewHeight:height]; break;
-            default:;
         }
     }
 }

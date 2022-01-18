@@ -65,7 +65,6 @@ void CUIResponder::handleWindowEvent(MObject *) {
         case MWindowEvent_TextBox   : handleWindowText      (); break;
         case MWindowEvent_KeyDown   : handleWindowKeyDown   (); break;
         case MWindowEvent_MouseMove : handleWindowMouseMove (); break;
-        default:;
     }
 }
 
