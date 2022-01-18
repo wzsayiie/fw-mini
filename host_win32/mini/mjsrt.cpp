@@ -4,7 +4,7 @@
 #include <jsrt.h>
 #include "mhostjs.h"
 
-m_static_object(sObjectMap(), std::map<JsValueRef, MObject *>)
+static def_singleton(sObjectMap, std::map<JsValueRef, MObject *>)
 
 static JsRuntimeHandle sRuntime = JS_INVALID_RUNTIME_HANDLE;
 static JsContextRef    sContext = JS_INVALID_REFERENCE;
