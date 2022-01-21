@@ -243,6 +243,12 @@ static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
         HBITMAP bmp = CreateCompatibleBitmap(paint.hdc, width, height);
         SelectBitmap(dc, bmp);
 
+        //set the background gray.
+        RECT rect = { 0, 0, width, height };
+        HBRUSH backgroundBrush = CreateSolidBrush(0xF0F0F0);
+        FillRect(dc, &rect, backgroundBrush);
+        DeleteBrush(backgroundBrush);
+
         MPaint(dc);
 
         BitBlt(paint.hdc, 0, 0, width, height, dc, 0, 0, SRCCOPY);
