@@ -5,25 +5,23 @@
 def_class(GSprite): public std::enable_shared_from_this<GSprite> {
     
 public:
-    GSprite(float x, float y, float width, float height);
-    GSprite();
+    static GSpriteRef createSprite(float x, float y, float width, float height);
+    static GSpriteRef createSprite();
     
-    void born();
-    void die();
+    void _create();
+    void destory();
     
     void moveTo(float x, float y, float z);
     void moveTo(float x, float y);
-    
-    void setX(float x);
-    void setY(float y);
-    void setZ(float z);
+    void setX  (float x);
+    void setY  (float y);
+    void setZ  (float z);
     
     float x();
     float y();
     float z();
     
-    void setSize(float width, float height);
-    
+    void setSize  (float width , float height);
     void setWidth (float width );
     void setHeight(float height);
     

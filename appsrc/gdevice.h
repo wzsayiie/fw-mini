@@ -2,10 +2,10 @@
 
 #include "minikit.h"
 
-def_class(GDeviceObject) {
+def_class(_GDevice) {
     
 public:
-    GDeviceObject();
+    _GDevice();
     
     float mouseX();
     float mouseY();
@@ -21,4 +21,4 @@ private:
     std::function<void (MKey key)> mKeyListener;
 };
 
-GDeviceObject &GDevice();
+_GDeviceRef &GDevice();

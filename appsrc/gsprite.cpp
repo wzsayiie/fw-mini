@@ -2,9 +2,9 @@
 #include <algorithm>
 #include "gcamera.h"
 
-static def_singleton(sSprites     , std::set<GSpriteRef>);
-static def_singleton(sSpriteCount , int);
-static def_singleton(sHitingSprite, GSpriteRef);
+static def_singleton(sSprites     , std::set<GSpriteRef>());
+static def_singleton(sSpriteCount , int());
+static def_singleton(sHitingSprite, GSpriteRef());
 
 static bool SmallerZForward(GSpriteRef a, GSpriteRef b) { return a->z() <  b->z(); }
 static bool BiggerZForward (GSpriteRef a, GSpriteRef b) { return a->z() >= b->z(); }
@@ -16,13 +16,13 @@ static std::vector<GSpriteRef> GetSprites(bool (*cmp)(GSpriteRef, GSpriteRef)) {
 }
 
 static void GetWindowPos(float worldX, float worldY, float *outWindowX, float *outWindowY) {
-    *outWindowX = MWindowWidth () / 2 - GCamera().focusX() + worldX;
-    *outWindowY = MWindowHeight() / 2 + GCamera().focusY() - worldY;
+    *outWindowX = MWindowWidth () / 2 - GCamera()->focusX() + worldX;
+    *outWindowY = MWindowHeight() / 2 + GCamera()->focusY() - worldY;
 }
 
 static void GetWorldPos(float windowX, float windowY, float *outWorldX, float *outWorldY) {
-    *outWorldX = GCamera().focusX() - MWindowWidth () / 2 + windowX;
-    *outWorldY = GCamera().focusY() + MWindowHeight() / 2 - windowY;
+    *outWorldX = GCamera()->focusX() - MWindowWidth () / 2 + windowX;
+    *outWorldY = GCamera()->focusY() + MWindowHeight() / 2 - windowY;
 }
 
 static void DrawSprite(GSpriteRef sprite) {
@@ -125,26 +125,28 @@ static void OnInitialize() MAPP_LAUNCH(OnInitialize, MAppLaunchPriority_Scene) {
     MWindowAddListener(lambda.get());
 }
 
-GSprite::GSprite(float x, float y, float width, float height) {
-    mX = x;
-    mY = y;
-    
+GSpriteRef GSprite::createSprite(float x, float y, float width, float height) {
     //the last sprite is on the top.
-    mZ = (float)(++sSpriteCount());
-    
-    mWidth  = width ;
-    mHeight = height;
+    float z = (float)(++sSpriteCount());
+
+    GSpriteRef sprite(new GSprite);
+
+    sprite->moveTo(x, y, z);
+    sprite->setSize(width, height);
+    sprite->_create();
+
+    return sprite;
 }
 
-GSprite::GSprite() {
-    mZ = (float)(++sSpriteCount());
+GSpriteRef GSprite::createSprite() {
+    return createSprite(0, 0, 0, 0);
 }
 
-void GSprite::born() {
+void GSprite::_create() {
     sSprites().insert(shared_from_this());
 }
 
-void GSprite::die() {
+void GSprite::destory() {
     sSprites().erase(shared_from_this());
 }
 
