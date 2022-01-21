@@ -118,9 +118,10 @@ const MWindowEvent MWindowEvent_Draw       = 'D' M_META(MWindowEvent_Draw      )
 const MWindowEvent MWindowEvent_TouchBegin = 'B' M_META(MWindowEvent_TouchBegin);
 const MWindowEvent MWindowEvent_TouchMove  = 'M' M_META(MWindowEvent_TouchMove );
 const MWindowEvent MWindowEvent_TouchEnd   = 'E' M_META(MWindowEvent_TouchEnd  );
+const MWindowEvent MWindowEvent_MouseMove  = 'C' M_META(MWindowEvent_MouseMove );
+const MWindowEvent MWindowEvent_MouseWheel = 'W' M_META(MWindowEvent_MouseWheel);
 const MWindowEvent MWindowEvent_TextBox    = 'T' M_META(MWindowEvent_TextBox   );
 const MWindowEvent MWindowEvent_KeyDown    = 'K' M_META(MWindowEvent_KeyDown   );
-const MWindowEvent MWindowEvent_MouseMove  = 'C' M_META(MWindowEvent_MouseMove );
 
 //------------------------------------------------------------------------------
 //window:
@@ -142,9 +143,10 @@ M_FUNC_HOST void _MWindowOnDraw();
 M_FUNC_HOST void _MWindowOnTouchBegin(_MPixel x, _MPixel y);
 M_FUNC_HOST void _MWindowOnTouchMove (_MPixel x, _MPixel y);
 M_FUNC_HOST void _MWindowOnTouchEnd  (_MPixel x, _MPixel y);
+M_FUNC_HOST void _MWindowOnMouseMove (_MPixel x, _MPixel y);
+M_FUNC_HOST void _MWindowOnMouseWheel(float delta);
 M_FUNC_HOST void _MWindowOnTextBox   (MString *string, bool enter);
 M_FUNC_HOST void _MWindowOnKeyDown   (MKey key);
-M_FUNC_HOST void _MWindowOnMouseMove (_MPixel x, _MPixel y);
 
 //host draw:
 
@@ -193,11 +195,12 @@ M_FUNC_EXPORT float MWindowHeight() M_META(MWindowHeight);
 M_FUNC_EXPORT bool MWindowLoaded() M_META(MWindowLoaded);
 M_FUNC_EXPORT bool MWindowShown () M_META(MWindowShown );
 
-M_FUNC_EXPORT float MWindowTouchX   () M_META(MWindowTouchX   );
-M_FUNC_EXPORT float MWindowTouchY   () M_META(MWindowTouchY   );
-M_FUNC_EXPORT MKey  MWindowActiveKey() M_META(MWindowActiveKey);
-M_FUNC_EXPORT float MWindowMouseX   () M_META(MWindowMouseX   );
-M_FUNC_EXPORT float MWindowMouseY   () M_META(MWindowMouseY   );
+M_FUNC_EXPORT float MWindowTouchX    () M_META(MWindowTouchX    );
+M_FUNC_EXPORT float MWindowTouchY    () M_META(MWindowTouchY    );
+M_FUNC_EXPORT float MWindowMouseX    () M_META(MWindowMouseX    );
+M_FUNC_EXPORT float MWindowMouseY    () M_META(MWindowMouseY    );
+M_FUNC_EXPORT float MWindowWheelDelta() M_META(MWindowWheelDelta);
+M_FUNC_EXPORT MKey  MWindowActiveKey () M_META(MWindowActiveKey );
 
 //user draw:
 

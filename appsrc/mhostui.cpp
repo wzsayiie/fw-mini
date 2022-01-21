@@ -101,11 +101,12 @@ struct HostWindow {
     bool  loaded = false;
     bool  shown  = false;
 
-    float touchX = 0;
-    float touchY = 0;
-    MKey  key    = 0;
-    float mouseX = 0;
-    float mouseY = 0;
+    float touchX     = 0;
+    float touchY     = 0;
+    float mouseX     = 0;
+    float mouseY     = 0;
+    MKey  activeKey  = 0;
+    float wheelDelta = 0;
 
     std::vector<AnyGraphRef> graphs;
     DrawSelectRef select;
@@ -222,6 +223,24 @@ void _MWindowOnTouchBegin(_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_Tou
 void _MWindowOnTouchMove (_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_TouchMove , x, y); }
 void _MWindowOnTouchEnd  (_MPixel x, _MPixel y) { WindowOnTouch(MWindowEvent_TouchEnd  , x, y); }
 
+void _MWindowOnMouseMove(_MPixel x, _MPixel y) {
+    float xPoint = PointFromPixel(x);
+    float yPoint = PointFromPixel(y);
+
+    HostWindow *window = GetWindow();
+
+    window->mouseX = xPoint;
+    window->mouseY = yPoint;
+    SendEvent(window, MWindowEvent_MouseMove);
+}
+
+void _MWindowOnMouseWheel(float delta) {
+    HostWindow *window = GetWindow();
+    
+    window->wheelDelta = delta;
+    SendEvent(window, MWindowEvent_MouseWheel);
+}
+
 void _MWindowOnTextBox(MString *string, bool enter) {
     HostWindow *window = GetWindow();
 
@@ -233,19 +252,8 @@ void _MWindowOnTextBox(MString *string, bool enter) {
 void _MWindowOnKeyDown(MKey key) {
     HostWindow *window = GetWindow();
 
-    window->key = key;
+    window->activeKey = key;
     SendEvent(window, MWindowEvent_KeyDown);
-}
-
-void _MWindowOnMouseMove(_MPixel x, _MPixel y) {
-    float xPoint = PointFromPixel(x);
-    float yPoint = PointFromPixel(y);
-
-    HostWindow *window = GetWindow();
-
-    window->mouseX = xPoint;
-    window->mouseY = yPoint;
-    SendEvent(window, MWindowEvent_MouseMove);
 }
 
 int _MWindowGraphCount() {
@@ -295,15 +303,16 @@ MWindowEvent MWindowCurrentEvent() {
     return GetWindow()->event;
 }
 
-float MWindowWidth    () { return GetWindow()->width ; }
-float MWindowHeight   () { return GetWindow()->height; }
-bool  MWindowLoaded   () { return GetWindow()->loaded; }
-bool  MWindowShown    () { return GetWindow()->shown ; }
-float MWindowTouchX   () { return GetWindow()->touchX; }
-float MWindowTouchY   () { return GetWindow()->touchY; }
-MKey  MWindowActiveKey() { return GetWindow()->key   ; }
-float MWindowMouseX   () { return GetWindow()->mouseX; }
-float MWindowMouseY   () { return GetWindow()->mouseY; }
+float MWindowWidth     () { return GetWindow()->width     ; }
+float MWindowHeight    () { return GetWindow()->height    ; }
+bool  MWindowLoaded    () { return GetWindow()->loaded    ; }
+bool  MWindowShown     () { return GetWindow()->shown     ; }
+float MWindowTouchX    () { return GetWindow()->touchX    ; }
+float MWindowTouchY    () { return GetWindow()->touchY    ; }
+float MWindowMouseX    () { return GetWindow()->mouseX    ; }
+float MWindowMouseY    () { return GetWindow()->mouseY    ; }
+float MWindowWheelDelta() { return GetWindow()->wheelDelta; }
+MKey  MWindowActiveKey () { return GetWindow()->activeKey ; }
 
 void MWindowSelectString(MString *string) { GetSelect()->string = m_make_shared string; }
 void MWindowSelectImage (MImage  *image ) { GetSelect()->image  = m_make_shared image ; }

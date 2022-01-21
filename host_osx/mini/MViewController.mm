@@ -81,6 +81,10 @@
 - (void)mouseUp     :(NSEvent *)event { [self handleMouseMove:event func:_MWindowOnTouchEnd  ]; }
 - (void)mouseMoved  :(NSEvent *)event { [self handleMouseMove:event func:NULL                ]; }
 
+- (void)scrollWheel:(NSEvent *)event {
+    _MWindowOnMouseWheel(event.deltaY);
+}
+
 - (NSTextField *)textField {
     if (!_textField) {
         _textField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 300, 20)];
