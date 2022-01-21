@@ -3,9 +3,9 @@
 #include <memory>
 
 #define def_singleton(name, ...)                \
-/**/    __VA_ARGS__ &name() {                   \
-/**/        static auto a = new __VA_ARGS__;    \
-/**/        return *a;                          \
+/**/    decltype(__VA_ARGS__) &name() {         \
+/**/        static auto object = __VA_ARGS__;   \
+/**/        return object;                      \
 /**/    }
 
 #define def_class(name) \

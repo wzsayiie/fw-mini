@@ -23,7 +23,7 @@ struct TaskConfig {
 };
 typedef std::shared_ptr<TaskConfig> TaskConfigRef;
 
-static def_singleton(sTasks, std::map<MLambdaRef, TaskConfigRef>)
+static def_singleton(sTasks, std::map<MLambdaRef, TaskConfigRef>());
 
 static void Update() MAPP_UPDATE(Update) {
     float tick = MTickSeconds();

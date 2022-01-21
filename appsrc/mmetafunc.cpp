@@ -1,7 +1,7 @@
 #include "mmetafunc.h"
 
-static def_singleton(sMetaMap , std::map<std::string, _MFuncMeta>)
-static def_singleton(sIterator, std::map<std::string, _MFuncMeta>::iterator)
+static def_singleton(sMetaMap , std::map<std::string, _MFuncMeta>());
+static def_singleton(sIterator, std::map<std::string, _MFuncMeta>::iterator());
 
 void _MFuncSetMeta(const char *name, _MFuncMeta meta, const char *note) {
     if (!name) {
