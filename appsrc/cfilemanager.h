@@ -2,17 +2,6 @@
 
 #include "minikit.h"
 
-//------------------------------------------------------------------------------
-//path:
-
-void CAppendPathItem(std::string *path, const std::string &item);
-
-std::string CGetPathFilename(const std::string &path);
-std::string CGetPathParent  (const std::string &path);
-
-//------------------------------------------------------------------------------
-//file operations:
-
 std::vector<uint8_t> CReadDataFromFile    (const std::string &path);
 std::string          CReadStringFromFile  (const std::string &path);
 std::vector<uint8_t> CReadDataFromBundle  (const std::string &path);
