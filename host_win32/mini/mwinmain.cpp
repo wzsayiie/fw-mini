@@ -329,6 +329,14 @@ static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+static LRESULT OnMouseWheel(HWND wnd, WPARAM wParam, LPARAM lParam)
+{
+    short delta = GET_WHEEL_DELTA_WPARAM(wParam);
+    _MWindowOnMouseWheel(delta);
+
+    return 0;
+}
+
 static LRESULT OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     HWND controlWnd = (HWND)(lParam);
@@ -399,6 +407,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
         case WM_LBUTTONDOWN: return OnLButtonDown(wnd, wParam, lParam);
         case WM_MOUSEMOVE  : return OnMouseMove  (wnd, wParam, lParam);
         case WM_LBUTTONUP  : return OnLButtonUp  (wnd, wParam, lParam);
+        case WM_MOUSEWHEEL : return OnMouseWheel (wnd, wParam, lParam);
         case WM_COMMAND    : return OnCommand    (wnd, wParam, lParam);
         case WM_KEYDOWN    : return OnKeyDown    (wnd, wParam, lParam);
 
