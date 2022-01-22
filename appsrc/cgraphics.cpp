@@ -60,34 +60,32 @@ MColorPattern CColor::pattern() const {
 //------------------------------------------------------------------------------
 //CImage:
 
-CImageRef CImage::fromData(const std::vector<uint8_t> &data) {
-    MDataRef  imageData   = m_auto_release MDataCreate(&data[0], (int)data.size());
-    MImageRef nativeImage = m_auto_release MCreateImage(imageData.get());
-
+CImageRef CImage::reference(MImageRef nativeImage) {
     if (nativeImage) {
         return CImageRef(new CImage(nativeImage));
     }
     return nullptr;
+}
+
+CImageRef CImage::fromData(const std::vector<uint8_t> &data) {
+    MDataRef  imageData   = m_auto_release MDataCreate(&data[0], (int)data.size());
+    MImageRef nativeImage = m_auto_release MCreateImage(imageData.get());
+
+    return reference(nativeImage);
 }
 
 CImageRef CImage::fromBundle(const std::string &path) {
     MStringRef imagePath   = m_auto_release MStringCreateU8(path.c_str());
     MImageRef  nativeImage = m_auto_release MCreateImageFromBundle(imagePath.get());
 
-    if (nativeImage) {
-        return CImageRef(new CImage(nativeImage));
-    }
-    return nullptr;
+    return reference(nativeImage);
 }
 
 CImageRef CImage::fromFile(const std::string &path) {
     MStringRef imagePath   = m_auto_release MStringCreateU8(path.c_str());
     MImageRef  nativeImage = m_auto_release MCreateImageFromFile(imagePath.get());
 
-    if (nativeImage) {
-        return CImageRef(new CImage(nativeImage));
-    }
-    return nullptr;
+    return reference(nativeImage);
 }
 
 MImage *CImage::nativeImage() {
