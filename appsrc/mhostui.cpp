@@ -3,17 +3,12 @@
 //------------------------------------------------------------------------------
 //graphs:
 
-typedef std::shared_ptr<struct AnyGraph     > AnyGraphRef     ;
-typedef std::shared_ptr<struct TriangleGraph> TriangleGraphRef;
-typedef std::shared_ptr<struct ImageGraph   > ImageGraphRef   ;
-typedef std::shared_ptr<struct LabelGraph   > LabelGraphRef   ;
-
-struct AnyGraph {
+def_struct(AnyGraph) {
     virtual ~AnyGraph() {}
     virtual _MGraph type() = 0;
 };
 
-struct TriangleGraph : AnyGraph {
+def_struct(TriangleGraph) : AnyGraph {
     
     _MGraph type() override { return _MGraph_Triangle; }
     
@@ -26,7 +21,7 @@ struct TriangleGraph : AnyGraph {
     float  y2    = 0;
 };
 
-struct ImageGraph : AnyGraph {
+def_struct(ImageGraph) : AnyGraph {
     
     _MGraph type() override { return _MGraph_Image; }
     
@@ -38,7 +33,7 @@ struct ImageGraph : AnyGraph {
     float height = 0;
 };
 
-struct LabelGraph : AnyGraph {
+def_struct(LabelGraph) : AnyGraph {
     
     _MGraph type() override { return _MGraph_Label; }
     
@@ -57,9 +52,7 @@ struct LabelGraph : AnyGraph {
 //------------------------------------------------------------------------------
 //draw select:
 
-typedef std::shared_ptr<struct DrawSelect> DrawSelectRef;
-
-struct DrawSelect {
+def_struct(DrawSelect) {
     MStringRef string;
     MImageRef  image ;
     
@@ -78,9 +71,7 @@ struct DrawSelect {
 //------------------------------------------------------------------------------
 //text box:
 
-typedef std::shared_ptr<struct TextBox> TextBoxRef;
-
-struct TextBox {
+def_struct(TextBox) {
     MStringRef rawString;
     MStringRef string   ;
 

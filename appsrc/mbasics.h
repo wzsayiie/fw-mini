@@ -34,9 +34,7 @@ template<> struct MTypeIdOf<class MObject *> {
     static const MTypeId Value =  MEnumId("Obj");
 };
 
-typedef std::shared_ptr<class MObject> MObjectRef;
-
-class MObject {
+def_class(MObject) {
 
 public:
     void _retain ();

@@ -16,12 +16,11 @@ float MTickSeconds() {
     return (tick.count() - zero) / 1000.f;
 }
 
-struct TaskConfig {
+def_struct(TaskConfig) {
     bool  runOnlyOnce = false;
     float nextRunTick = 0;
     float interval    = 0;
 };
-typedef std::shared_ptr<TaskConfig> TaskConfigRef;
 
 static def_singleton(sTasks, std::map<MLambdaRef, TaskConfigRef>());
 

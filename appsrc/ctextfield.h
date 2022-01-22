@@ -16,9 +16,7 @@ struct CTextFieldDelegate {
 
 //text field:
 
-typedef std::shared_ptr<CTextField> CTextFieldRef;
-
-class CTextField : public CControl {
+def_class(CTextField) : public CControl {
 
 public:
     CTextField(float x, float y, float width, float height);

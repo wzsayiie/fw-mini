@@ -8,9 +8,13 @@
 /**/        return object;                      \
 /**/    }
 
-#define def_class(name) \
-/**/    typedef std::shared_ptr<class name> name##Ref; \
-/**/    class name
+#define def_class( name) \
+/**/    typedef std::shared_ptr<class  name> name##Ref; \
+/**/    class  name
+
+#define def_struct(name) \
+/**/    typedef std::shared_ptr<struct name> name##Ref; \
+/**/    struct name
 
 class base_object {
 public:
