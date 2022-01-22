@@ -179,7 +179,36 @@ static MImage *CreateBitmapImage(MData *data, int width, int height)
 
 static MData *CopyImageBitmap(MImage *image)
 {
-    return nullptr;
+    Gdiplus::Image *gdiImage = ((MWin32Image *)image)->gdiImage();
+    int width  = gdiImage->GetWidth ();
+    int height = gdiImage->GetHeight();
+
+    std::shared_ptr<Gdiplus::Bitmap> bitmap(new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB));
+    if (!bitmap)
+    {
+        return nullptr;
+    }
+
+    std::shared_ptr<Gdiplus::Graphics> graphics(Gdiplus::Graphics::FromImage(bitmap.get()));
+    graphics->DrawImage(gdiImage, 0, 0, width, height);
+
+    MData *data = MDataCreate(width * height * 4);
+    auto colors = (MColorPattern *)MDataBytes(data);
+    for (int x = 0; x < width; ++x)
+    {
+        for (int y = 0; y < height; ++y)
+        {
+            Gdiplus::Color src;
+            bitmap->GetPixel(x, y, &src);
+
+            MColorPattern *dst = colors + y * width + x;
+            dst->red   = src.GetRed  ();
+            dst->green = src.GetGreen();
+            dst->blue  = src.GetBlue ();
+            dst->alpha = src.GetAlpha();
+        }
+    }
+    return data;
 }
 
 static int ImagePixelWidth (MImage *i) { return ((MWin32Image *)i)->gdiImage()->GetWidth (); }
