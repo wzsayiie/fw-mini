@@ -49,9 +49,15 @@ def_class(CImage) {
 
 public:
     static CImageRef reference (MImageRef nativeImage);
+    static CImageRef fromBitmap(const std::vector<uint8_t> &data, int width, int height);
     static CImageRef fromData  (const std::vector<uint8_t> &data);
     static CImageRef fromBundle(const std::string &path);
     static CImageRef fromFile  (const std::string &path);
+
+    std::vector<uint8_t> bitmap();
+
+    int width ();
+    int height();
 
     MImage *nativeImage();
 

@@ -67,6 +67,13 @@ CImageRef CImage::reference(MImageRef nativeImage) {
     return nullptr;
 }
 
+CImageRef CImage::fromBitmap(const std::vector<uint8_t> &data, int width, int height) {
+    MDataRef  imageData   = m_auto_release MDataCreate(&data[0], (int)data.size());
+    MImageRef nativeImage = m_auto_release MCreateBitmapImage(imageData.get(), width, height);
+
+    return reference(nativeImage);
+}
+
 CImageRef CImage::fromData(const std::vector<uint8_t> &data) {
     MDataRef  imageData   = m_auto_release MDataCreate(&data[0], (int)data.size());
     MImageRef nativeImage = m_auto_release MCreateImage(imageData.get());
@@ -87,6 +94,17 @@ CImageRef CImage::fromFile(const std::string &path) {
 
     return reference(nativeImage);
 }
+
+std::vector<uint8_t> CImage::bitmap() {
+    MDataRef data = m_auto_release MCopyImageBitmap(mNativeImage.get());
+
+    const uint8_t *bytes = MDataBytes(data.get());
+    int size = MDataSize(data.get());
+    return std::vector<uint8_t>(bytes, bytes + size);
+}
+
+int CImage::width () { return MImagePixelWidth (mNativeImage.get()); }
+int CImage::height() { return MImagePixelHeight(mNativeImage.get()); }
 
 MImage *CImage::nativeImage() {
     return mNativeImage.get();
