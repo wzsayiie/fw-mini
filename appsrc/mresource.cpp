@@ -15,7 +15,7 @@ MData *MCopyDataFromFile(MString *path) {
         return nullptr;
     }
 
-    MData *data = MDataCreate(nullptr, 0);
+    MData *data = MDataCreate(0);
 
     uint8_t buffer[ReadFileBufferSize];
     while (!feof(file)) {

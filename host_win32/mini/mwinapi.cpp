@@ -108,7 +108,7 @@ static MData *CopyBundleAsset(MString *path)
         return nullptr;
     }
 
-    MData *assetData = MDataCreate(nullptr, 0);
+    MData *assetData = MDataCreate(0);
     uint8_t buffer[ReadAssetBufferSize];
     while (!feof(assetFile))
     {

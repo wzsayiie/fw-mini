@@ -40,7 +40,7 @@ std::string CReadStringFromBundle(const std::string &path) {
 
 void CWriteDataToFile(const std::string &path, const std::vector<uint8_t> &data) {
     MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MDataRef   fileData = m_auto_release MDataCreate(&data[0], (int)data.size());
+    MDataRef   fileData = m_auto_release MDataCopy(&data[0], (int)data.size());
 
     MWriteDataToFile(filePath.get(), fileData.get());
 }

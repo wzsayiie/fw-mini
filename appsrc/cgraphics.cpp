@@ -68,14 +68,14 @@ CImageRef CImage::reference(MImageRef nativeImage) {
 }
 
 CImageRef CImage::fromBitmap(const std::vector<uint8_t> &data, int width, int height) {
-    MDataRef  imageData   = m_auto_release MDataCreate(&data[0], (int)data.size());
+    MDataRef  imageData   = m_auto_release MDataCopy(&data[0], (int)data.size());
     MImageRef nativeImage = m_auto_release MCreateBitmapImage(imageData.get(), width, height);
 
     return reference(nativeImage);
 }
 
 CImageRef CImage::fromData(const std::vector<uint8_t> &data) {
-    MDataRef  imageData   = m_auto_release MDataCreate(&data[0], (int)data.size());
+    MDataRef  imageData   = m_auto_release MDataCopy(&data[0], (int)data.size());
     MImageRef nativeImage = m_auto_release MCreateImage(imageData.get());
 
     return reference(nativeImage);

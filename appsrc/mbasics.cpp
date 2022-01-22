@@ -170,10 +170,18 @@ struct MDataImpl : MData {
     std::vector<uint8_t> bytes;
 };
 
-MData *MDataCreate(const uint8_t *bytes, int size) {
+MData *MDataCopy(const uint8_t *bytes, int size) {
     auto data = new MDataImpl();
     if (bytes && size > 0) {
         data->bytes.insert(data->bytes.end(), bytes, bytes + size);
+    }
+    return data;
+}
+
+MData *MDataCreate(int size) {
+    auto data = new MDataImpl();
+    if (size > 0) {
+        data->bytes.resize(size);
     }
     return data;
 }

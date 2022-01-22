@@ -108,7 +108,8 @@ M_FUNC_EXPORT void MLambdaCall(MLambda *lambda) M_META(MLambdaCall, "args:lambda
 
 m_class(MData, "Dat");
 
-M_FUNC_EXPORT MData *MDataCreate(const uint8_t *bytes, int size)              M_META(MDataCreate, "args:ptr,len");
+M_FUNC_EXPORT MData *MDataCopy  (const uint8_t *bytes, int size)              M_META(MDataCopy  , "args:ptr,len");
+M_FUNC_EXPORT MData *MDataCreate(int    size)                                 M_META(MDataCreate, "args:len");
 M_FUNC_EXPORT void   MDataAppend(MData *data, const uint8_t *bytes, int size) M_META(MDataAppend, "args:dat,ptr,len");
 M_FUNC_EXPORT int    MDataSize  (MData *data)                                 M_META(MDataSize  , "args:dat");
 
