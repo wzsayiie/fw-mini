@@ -41,7 +41,7 @@ static void PaintImage(Gdiplus::Graphics *graphics, int index)
 {
     //get the image.
     auto imageObject = (MWin32Image *)_MWindowImageGraphObject(index);
-    Gdiplus::Image *nativeImage  = imageObject->nativeImage();
+    Gdiplus::Image *gdiImage = imageObject->gdiImage();
 
     //get the position rectangle.
     float x      = _MWindowImageGraphX     (index);
@@ -50,7 +50,7 @@ static void PaintImage(Gdiplus::Graphics *graphics, int index)
     float height = _MWindowImageGraphHeight(index);
 
     //draw.
-    graphics->DrawImage(nativeImage, x, y, width, height);
+    graphics->DrawImage(gdiImage, x, y, width, height);
 }
 
 static void PaintLabel(Gdiplus::Graphics *graphics, int index)

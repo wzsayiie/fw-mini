@@ -5,19 +5,19 @@
 
 //native types:
 
-MWin32Image::MWin32Image(Gdiplus::Image *nativeImage)
+MWin32Image::MWin32Image(Gdiplus::Image *gdiImage)
 {
-    mNativeImage = nativeImage;
+    mGdiImage = gdiImage;
 }
 
 MWin32Image::~MWin32Image()
 {
-    delete mNativeImage;
+    delete mGdiImage;
 }
 
-Gdiplus::Image *MWin32Image::nativeImage()
+Gdiplus::Image *MWin32Image::gdiImage()
 {
-    return mNativeImage;
+    return mGdiImage;
 }
 
 //api assist:
@@ -153,6 +153,37 @@ static MImage *CreateImage(MData *data)
     }
     return nullptr;
 }
+
+static MImage *CreateBitmapImage(MData *data, int width, int height)
+{
+    auto bitmap = new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB);
+    if (!bitmap)
+    {
+        return nullptr;
+    }
+
+    auto colors = (MColorPattern *)MDataBytes(data);
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            MColorPattern *src = colors + y * width + x; 
+            Gdiplus::Color dst(src->alpha, src->red, src->green, src->blue);
+
+            bitmap->SetPixel(x, y, dst);
+        }
+    }
+
+    return new MWin32Image(bitmap);
+}
+
+static MData *CopyImageBitmap(MImage *image)
+{
+    return nullptr;
+}
+
+static int ImagePixelWidth (MImage *i) { return ((MWin32Image *)i)->gdiImage()->GetWidth (); }
+static int ImagePixelHeight(MImage *i) { return ((MWin32Image *)i)->gdiImage()->GetHeight(); }
 
 static MString *CopyDocumentPath()
 {
@@ -300,6 +331,10 @@ void MRegisterApi()
     _MSetApi_PrintMessage     (PrintMessage     );
     _MSetApi_CopyBundleAsset  (CopyBundleAsset  );
     _MSetApi_CreateImage      (CreateImage      );
+    _MSetApi_CreateBitmapImage(CreateBitmapImage);
+    _MSetApi_CopyImageBitmap  (CopyImageBitmap  );
+    _MSetApi_ImagePixelWidth  (ImagePixelWidth  );
+    _MSetApi_ImagePixelHeight (ImagePixelHeight );
     _MSetApi_CopyDocumentPath (CopyDocumentPath );
     _MSetApi_CopyCachePath    (CopyCachePath    );
     _MSetApi_CopyTemporaryPath(CopyTemporaryPath);

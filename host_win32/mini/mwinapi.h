@@ -6,16 +6,16 @@
 
 //native types:
 
-class MWin32Image : public MImage {
-
+class MWin32Image : public MImage
+{
 public:
-    MWin32Image(Gdiplus::Image *nativeImage);
+    MWin32Image(Gdiplus::Image *gdiImage);
     ~MWin32Image();
 
-    Gdiplus::Image *nativeImage();
+    Gdiplus::Image *gdiImage();
 
 private:
-    Gdiplus::Image *mNativeImage;
+    Gdiplus::Image *mGdiImage;
 };
 
 //host api:
