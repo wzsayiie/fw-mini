@@ -12,6 +12,10 @@ m_class(MImage, "Img");
 typedef void     (*_MApi_PrintMessage     )(MString *text);
 typedef MData   *(*_MApi_CopyBundleAsset  )(MString *path);
 typedef MImage  *(*_MApi_CreateImage      )(MData   *data);
+typedef MImage  *(*_MApi_CreateBitmapImage)(MData   *data, int w, int h);
+typedef MData   *(*_MApi_CopyImageBitmap  )(MImage  *img );
+typedef int      (*_MApi_ImagePixelWidth  )(MImage  *img );
+typedef int      (*_MApi_ImagePixelHeight )(MImage  *img );
 typedef MString *(*_MApi_CopyDocumentPath )();
 typedef MString *(*_MApi_CopyCachePath    )();
 typedef MString *(*_MApi_CopyTemporaryPath)();
@@ -25,6 +29,10 @@ typedef bool     (*_MApi_FileExists       )(MString *path);
 M_FUNC_HOST void _MSetApi_PrintMessage     (_MApi_PrintMessage      func);
 M_FUNC_HOST void _MSetApi_CopyBundleAsset  (_MApi_CopyBundleAsset   func);
 M_FUNC_HOST void _MSetApi_CreateImage      (_MApi_CreateImage       func);
+M_FUNC_HOST void _MSetApi_CreateBitmapImage(_MApi_CreateBitmapImage func);
+M_FUNC_HOST void _MSetApi_CopyImageBitmap  (_MApi_CopyImageBitmap   func);
+M_FUNC_HOST void _MSetApi_ImagePixelWidth  (_MApi_ImagePixelWidth   func);
+M_FUNC_HOST void _MSetApi_ImagePixelHeight (_MApi_ImagePixelHeight  func);
 M_FUNC_HOST void _MSetApi_CopyDocumentPath (_MApi_CopyDocumentPath  func);
 M_FUNC_HOST void _MSetApi_CopyCachePath    (_MApi_CopyCachePath     func);
 M_FUNC_HOST void _MSetApi_CopyTemporaryPath(_MApi_CopyTemporaryPath func);
@@ -35,9 +43,15 @@ M_FUNC_HOST void _MSetApi_PathExists       (_MApi_PathExists        func);
 M_FUNC_HOST void _MSetApi_DirectoryExists  (_MApi_DirectoryExists   func);
 M_FUNC_HOST void _MSetApi_FileExists       (_MApi_FileExists        func);
 
+M_FUNC_EXPORT MImage *MCreateBitmapImage(MData *data, int w, int h)
+    M_META(MCreateBitmapImage, "args:img,w,h");
+
 M_FUNC_EXPORT void     MPrintMessage     (MString *text) M_META(MPrintMessage     , "args:text");
 M_FUNC_EXPORT MData   *MCopyBundleAsset  (MString *path) M_META(MCopyBundleAsset  , "args:path");
 M_FUNC_EXPORT MImage  *MCreateImage      (MData   *data) M_META(MCreateImage      , "args:data");
+M_FUNC_EXPORT MData   *MCopyImageBitmap  (MImage  *img ) M_META(MCopyImageBitmap  , "args:img" );
+M_FUNC_EXPORT int      MImagePixelWidth  (MImage  *img ) M_META(MImagePixelWidth  , "args:img" );
+M_FUNC_EXPORT int      MImagePixelHeight (MImage  *img ) M_META(MImagePixelHeight , "args:img" );
 M_FUNC_EXPORT MString *MCopyDocumentPath ()              M_META(MCopyDocumentPath );
 M_FUNC_EXPORT MString *MCopyCachePath    ()              M_META(MCopyCachePath    );
 M_FUNC_EXPORT MString *MCopyTemporaryPath()              M_META(MCopyTemporaryPath);
