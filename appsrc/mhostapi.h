@@ -2,10 +2,47 @@
 
 #include "mbasics.h"
 
+//------------------------------------------------------------------------------
+//configuration:
+
 const char     *const MPrivateDirectoryU8Name  =  "mini"        M_META(MPrivateDirectoryU8Name );
 const char16_t *const MPrivateDirectoryU16Name = u"mini"        M_META(MPrivateDirectoryU16Name);
 const char     *const MAssetBundleU8Name       =  "mini.bundle" M_META(MAssetBundleU8Name      );
 const char16_t *const MAssetBundleU16Name      = u"mini.bundle" M_META(MAssetBundleU16Name     );
+
+//------------------------------------------------------------------------------
+//color:
+
+typedef int MColor;
+
+union MColorPattern {
+    struct {
+        uint8_t alpha;
+        uint8_t blue ;
+        uint8_t green;
+        uint8_t red  ;
+    };
+    MColor color = 0;
+};
+
+const MColor MColor_BlackColor     = 0x000000ff M_META(MColor_BlackColor    );
+const MColor MColor_DarkGrayColor  = 0x404040ff M_META(MColor_DarkGrayColor );
+const MColor MColor_GrayColor      = 0x808080ff M_META(MColor_GrayColor     );
+const MColor MColor_LightGrayColor = 0xC0C0C0ff M_META(MColor_LightGrayColor);
+const MColor MColor_WhiteColor     = 0xFFFFFFff M_META(MColor_WhiteColor    );
+const MColor MColor_RedColor       = 0xC3272Bff M_META(MColor_RedColor      );
+const MColor MColor_GreenColor     = 0x21A675ff M_META(MColor_GreenColor    );
+const MColor MColor_BlueColor      = 0x177CB0ff M_META(MColor_BlueColor     );
+const MColor MColor_CyanColor      = 0x4C8DAEff M_META(MColor_CyanColor     );
+const MColor MColor_YellowColor    = 0xF2BE45ff M_META(MColor_YellowColor   );
+const MColor MColor_MagentaColor   = 0xA01DAEff M_META(MColor_MagentaColor  );
+const MColor MColor_OrangeColor    = 0xFFA400ff M_META(MColor_OrangeColor   );
+const MColor MColor_PurpleColor    = 0x8D4BBBff M_META(MColor_PurpleColor   );
+const MColor MColor_BrownColor     = 0xE29C45ff M_META(MColor_BrownColor    );
+const MColor MColor_ClearColor     = 0x00000000 M_META(MColor_ClearColor    );
+
+//------------------------------------------------------------------------------
+//apis:
 
 m_class(MImage, "Img");
 
