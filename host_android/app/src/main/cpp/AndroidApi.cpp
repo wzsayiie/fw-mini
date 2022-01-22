@@ -154,18 +154,18 @@ Java_src_app_mini_AndroidApi_registerAndroidApi(JNIEnv *env, jclass)
     sDirectoryExists   = env->GetStaticMethodID(sJClass, "directoryExists"  , "(Ljava/lang/String;)Z");
     sFileExists        = env->GetStaticMethodID(sJClass, "fileExists"       , "(Ljava/lang/String;)Z");
 
-    _MSetApiPrintMessage     (PrintMessage     );
-    _MSetApiCopyBundleAsset  (CopyBundleAsset  );
-    _MSetApiCreateImage      (CreateImage      );
-    _MSetApiCopyDocumentPath (CopyDocumentPath );
-    _MSetApiCopyCachePath    (CopyCachePath    );
-    _MSetApiCopyTemporaryPath(CopyTemporaryPath);
-    _MSetApiMakeDirectory    (MakeDirectory    );
-    _MSetApiCopyPathSubItems (CopyPathSubItems );
-    _MSetApiRemovePath       (RemovePath       );
-    _MSetApiPathExists       (PathExists       );
-    _MSetApiDirectoryExists  (DirectoryExists  );
-    _MSetApiFileExists       (FileExists       );
+    _MSetApi_PrintMessage     (PrintMessage     );
+    _MSetApi_CopyBundleAsset  (CopyBundleAsset  );
+    _MSetApi_CreateImage      (CreateImage      );
+    _MSetApi_CopyDocumentPath (CopyDocumentPath );
+    _MSetApi_CopyCachePath    (CopyCachePath    );
+    _MSetApi_CopyTemporaryPath(CopyTemporaryPath);
+    _MSetApi_MakeDirectory    (MakeDirectory    );
+    _MSetApi_CopyPathSubItems (CopyPathSubItems );
+    _MSetApi_RemovePath       (RemovePath       );
+    _MSetApi_PathExists       (PathExists       );
+    _MSetApi_DirectoryExists  (DirectoryExists  );
+    _MSetApi_FileExists       (FileExists       );
 }
 
 extern "C" JNIEXPORT jstring JNICALL

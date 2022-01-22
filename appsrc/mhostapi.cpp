@@ -5,7 +5,7 @@ template<typename F> class ApiObject;
 template<typename R, typename... A> class ApiObject<R (A...)> {
     
 public:
-    void operator<<(R (*func)(A...)) {
+    void operator=(R (*func)(A...)) {
         mFunc = func;
     }
     
@@ -35,18 +35,18 @@ static ApiObject<bool     (MString *)> sPathExists       ;
 static ApiObject<bool     (MString *)> sDirectoryExists  ;
 static ApiObject<bool     (MString *)> sFileExists       ;
 
-void _MSetApiPrintMessage     (_MApiPrintMessage      func) { sPrintMessage     << func; }
-void _MSetApiCopyBundleAsset  (_MApiCopyBundleAsset   func) { sCopyBundleAsset  << func; }
-void _MSetApiCreateImage      (_MApiCreateImage       func) { sCreateImage      << func; }
-void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func) { sCopyDocumentPath << func; }
-void _MSetApiCopyCachePath    (_MApiCopyCachePath     func) { sCopyCachePath    << func; }
-void _MSetApiCopyTemporaryPath(_MApiCopyTemporaryPath func) { sCopyTemporaryPath<< func; }
-void _MSetApiMakeDirectory    (_MApiMakeDirectory     func) { sMakeDirectory    << func; }
-void _MSetApiCopyPathSubItems (_MApiCopyPathSubItems  func) { sCopyPathSubItems << func; }
-void _MSetApiRemovePath       (_MApiRemovePath        func) { sRemovePath       << func; }
-void _MSetApiPathExists       (_MApiPathExists        func) { sPathExists       << func; }
-void _MSetApiDirectoryExists  (_MApiDirectoryExists   func) { sDirectoryExists  << func; }
-void _MSetApiFileExists       (_MApiFileExists        func) { sFileExists       << func; }
+void _MSetApi_PrintMessage     (_MApi_PrintMessage      func) { sPrintMessage      = func; }
+void _MSetApi_CopyBundleAsset  (_MApi_CopyBundleAsset   func) { sCopyBundleAsset   = func; }
+void _MSetApi_CreateImage      (_MApi_CreateImage       func) { sCreateImage       = func; }
+void _MSetApi_CopyDocumentPath (_MApi_CopyDocumentPath  func) { sCopyDocumentPath  = func; }
+void _MSetApi_CopyCachePath    (_MApi_CopyCachePath     func) { sCopyCachePath     = func; }
+void _MSetApi_CopyTemporaryPath(_MApi_CopyTemporaryPath func) { sCopyTemporaryPath = func; }
+void _MSetApi_MakeDirectory    (_MApi_MakeDirectory     func) { sMakeDirectory     = func; }
+void _MSetApi_CopyPathSubItems (_MApi_CopyPathSubItems  func) { sCopyPathSubItems  = func; }
+void _MSetApi_RemovePath       (_MApi_RemovePath        func) { sRemovePath        = func; }
+void _MSetApi_PathExists       (_MApi_PathExists        func) { sPathExists        = func; }
+void _MSetApi_DirectoryExists  (_MApi_DirectoryExists   func) { sDirectoryExists   = func; }
+void _MSetApi_FileExists       (_MApi_FileExists        func) { sFileExists        = func; }
 
 void     MPrintMessage     (MString *text) { return sPrintMessage     (__func__, text); }
 MData   *MCopyBundleAsset  (MString *path) { return sCopyBundleAsset  (__func__, path); }

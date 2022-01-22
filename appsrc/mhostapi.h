@@ -9,31 +9,31 @@ const char16_t *const MAssetBundleU16Name      = u"mini.bundle" M_META(MAssetBun
 
 m_class(MImage, "Img");
 
-typedef void     (*_MApiPrintMessage     )(MString *text);
-typedef MData   *(*_MApiCopyBundleAsset  )(MString *path);
-typedef MImage  *(*_MApiCreateImage      )(MData   *data);
-typedef MString *(*_MApiCopyDocumentPath )();
-typedef MString *(*_MApiCopyCachePath    )();
-typedef MString *(*_MApiCopyTemporaryPath)();
-typedef bool     (*_MApiMakeDirectory    )(MString *path);
-typedef MArray  *(*_MApiCopyPathSubItems )(MString *path);
-typedef void     (*_MApiRemovePath       )(MString *path);
-typedef bool     (*_MApiPathExists       )(MString *path);
-typedef bool     (*_MApiDirectoryExists  )(MString *path);
-typedef bool     (*_MApiFileExists       )(MString *path);
+typedef void     (*_MApi_PrintMessage     )(MString *text);
+typedef MData   *(*_MApi_CopyBundleAsset  )(MString *path);
+typedef MImage  *(*_MApi_CreateImage      )(MData   *data);
+typedef MString *(*_MApi_CopyDocumentPath )();
+typedef MString *(*_MApi_CopyCachePath    )();
+typedef MString *(*_MApi_CopyTemporaryPath)();
+typedef bool     (*_MApi_MakeDirectory    )(MString *path);
+typedef MArray  *(*_MApi_CopyPathSubItems )(MString *path);
+typedef void     (*_MApi_RemovePath       )(MString *path);
+typedef bool     (*_MApi_PathExists       )(MString *path);
+typedef bool     (*_MApi_DirectoryExists  )(MString *path);
+typedef bool     (*_MApi_FileExists       )(MString *path);
 
-M_FUNC_HOST void _MSetApiPrintMessage     (_MApiPrintMessage      func);
-M_FUNC_HOST void _MSetApiCopyBundleAsset  (_MApiCopyBundleAsset   func);
-M_FUNC_HOST void _MSetApiCreateImage      (_MApiCreateImage       func);
-M_FUNC_HOST void _MSetApiCopyDocumentPath (_MApiCopyDocumentPath  func);
-M_FUNC_HOST void _MSetApiCopyCachePath    (_MApiCopyCachePath     func);
-M_FUNC_HOST void _MSetApiCopyTemporaryPath(_MApiCopyTemporaryPath func);
-M_FUNC_HOST void _MSetApiMakeDirectory    (_MApiMakeDirectory     func);
-M_FUNC_HOST void _MSetApiCopyPathSubItems (_MApiCopyPathSubItems  func);
-M_FUNC_HOST void _MSetApiRemovePath       (_MApiRemovePath        func);
-M_FUNC_HOST void _MSetApiPathExists       (_MApiPathExists        func);
-M_FUNC_HOST void _MSetApiDirectoryExists  (_MApiDirectoryExists   func);
-M_FUNC_HOST void _MSetApiFileExists       (_MApiFileExists        func);
+M_FUNC_HOST void _MSetApi_PrintMessage     (_MApi_PrintMessage      func);
+M_FUNC_HOST void _MSetApi_CopyBundleAsset  (_MApi_CopyBundleAsset   func);
+M_FUNC_HOST void _MSetApi_CreateImage      (_MApi_CreateImage       func);
+M_FUNC_HOST void _MSetApi_CopyDocumentPath (_MApi_CopyDocumentPath  func);
+M_FUNC_HOST void _MSetApi_CopyCachePath    (_MApi_CopyCachePath     func);
+M_FUNC_HOST void _MSetApi_CopyTemporaryPath(_MApi_CopyTemporaryPath func);
+M_FUNC_HOST void _MSetApi_MakeDirectory    (_MApi_MakeDirectory     func);
+M_FUNC_HOST void _MSetApi_CopyPathSubItems (_MApi_CopyPathSubItems  func);
+M_FUNC_HOST void _MSetApi_RemovePath       (_MApi_RemovePath        func);
+M_FUNC_HOST void _MSetApi_PathExists       (_MApi_PathExists        func);
+M_FUNC_HOST void _MSetApi_DirectoryExists  (_MApi_DirectoryExists   func);
+M_FUNC_HOST void _MSetApi_FileExists       (_MApi_FileExists        func);
 
 M_FUNC_EXPORT void     MPrintMessage     (MString *text) M_META(MPrintMessage     , "args:text");
 M_FUNC_EXPORT MData   *MCopyBundleAsset  (MString *path) M_META(MCopyBundleAsset  , "args:path");
