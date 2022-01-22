@@ -6,11 +6,11 @@
 class MIOSImage : public MImage {
     
 public:
-    MIOSImage(UIImage *nativeImage);
-    UIImage *nativeImage();
+    MIOSImage(UIImage *uiImage);
+    UIImage *uiImage();
     
 private:
-    UIImage *mNativeImage;
+    UIImage *mUIImage;
 };
 
 #pragma mark - apis.

@@ -55,7 +55,7 @@
 - (void)drawImage:(int)index withViewHeight:(float)viewHeight {
     //get the image.
     auto imageObject = (MOSXImage *)_MWindowImageGraphObject(index);
-    NSImage *nativeImage = imageObject->nativeImage();
+    NSImage *nsImage = imageObject->nsImage();
     
     //get the position rectangle.
     _MPixel W = _MWindowImageGraphWidth (index);
@@ -64,7 +64,7 @@
     _MPixel Y = viewHeight - H - _MWindowImageGraphY(index);
     
     //draw.
-    [nativeImage drawInRect:NSMakeRect(X, Y, W, H)];
+    [nsImage drawInRect:NSMakeRect(X, Y, W, H)];
 }
 
 - (void)drawLabel:(int)index withViewHeight:(float)viewHeight {

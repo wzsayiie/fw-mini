@@ -6,11 +6,11 @@
 class MOSXImage : public MImage {
     
 public:
-    MOSXImage(NSImage *nativeImage);
-    NSImage *nativeImage();
+    MOSXImage(NSImage *nsImage);
+    NSImage *nsImage();
     
 private:
-    NSImage *mNativeImage;
+    NSImage *mNSImage;
 };
 
 #pragma mark - apis.

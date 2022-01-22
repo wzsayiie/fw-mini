@@ -2,12 +2,54 @@
 
 #pragma mark - native types.
 
-MIOSImage::MIOSImage(UIImage *nativeImage) {
-    mNativeImage = nativeImage;
+MIOSImage::MIOSImage(UIImage *uiImage) {
+    mUIImage = uiImage;
 }
 
-UIImage *MIOSImage::nativeImage() {
-    return mNativeImage;
+UIImage *MIOSImage::uiImage() {
+    return mUIImage;
+}
+
+#pragma mark - color pattern.
+
+union IOSColorPattern {
+    struct {
+        uint8_t red  ;
+        uint8_t green;
+        uint8_t blue ;
+        uint8_t alpha;
+    };
+    int color;
+};
+
+template<typename SRC, typename DST> void ConvertColors(int count, SRC *src, DST *dst) {
+    for (int i = 0; i < count; ++i) {
+        //NOTE: src and dst maybe are same.
+        SRC color = src[i];
+        
+        dst[i].red   = color.red  ;
+        dst[i].green = color.green;
+        dst[i].blue  = color.blue ;
+        dst[i].alpha = color.alpha;
+    }
+}
+
+#pragma mark - bitmap context.
+
+static CGContextRef CreateBitmapContext(void *bytes, int width, int height) {
+    CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(
+        /* bytesData        */ bytes,
+        /* width            */ width,
+        /* height           */ height,
+        /* bitsPerComponent */ 8,
+        /* bytesPerRow      */ width * 4,
+        /* spaceColor       */ space,
+        /* bitmapInfo       */ kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedLast
+    );
+    CGColorSpaceRelease(space);
+    
+    return context;
 }
 
 #pragma mark - apis.
@@ -27,7 +69,7 @@ static MData *CopyBundleAsset(MString *path) {
     NSString *assetPath = [bundle pathForResource:@(MStringU8Chars(path)) ofType:nil];
     NSData   *assetData = [NSData dataWithContentsOfFile:assetPath];
     
-    return MDataCreate((const uint8_t *)assetData.bytes, (int)assetData.length);
+    return MDataCopy((const uint8_t *)assetData.bytes, (int)assetData.length);
 }
 
 static MImage *CreateImage(MData *data) {
@@ -39,6 +81,41 @@ static MImage *CreateImage(MData *data) {
     }
     return nullptr;
 }
+
+static MImage *CreateBitmapImage(MData *data, int width, int height) {
+    std::vector<uint8_t> bitmap(width * height * 4);
+    ConvertColors(width * height, (MColorPattern *)MDataBytes(data), (IOSColorPattern *)bitmap.data());
+    
+    CGContextRef context = CreateBitmapContext(bitmap.data(), width, height);
+    CGImageRef   cgImage = CGBitmapContextCreateImage(context);
+    
+    UIImage *nsImage = [UIImage imageWithCGImage:cgImage];
+    
+    CGContextRelease(context);
+    CGImageRelease(cgImage);
+    
+    return new MIOSImage(nsImage);
+}
+
+static MData *CopyImageBitmap(MImage *image) {
+    UIImage *uiImage = ((MIOSImage *)image)->uiImage();
+    auto     width   = (int)uiImage.size.width ;
+    auto     height  = (int)uiImage.size.height;
+    
+    MData *data  = MDataCreate(width * height * 4);
+    void  *bytes = (void *)MDataBytes(data);
+    
+    CGContextRef context = CreateBitmapContext(bytes, width, height);
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), uiImage.CGImage);
+    CGContextRelease(context);
+    
+    ConvertColors(width * height, (IOSColorPattern *)bytes, (MColorPattern *)bytes);
+    
+    return data;
+}
+
+static int ImagePixelWidth (MImage *image) { return ((MIOSImage *)image)->uiImage().size.width ; }
+static int ImagePixelHeight(MImage *image) { return ((MIOSImage *)image)->uiImage().size.height; }
 
 static MString *CopyDocumentPath() {
     NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -109,6 +186,10 @@ void MRegisterAPIs() {
     _MSetApi_PrintMessage     (PrintMessage     );
     _MSetApi_CopyBundleAsset  (CopyBundleAsset  );
     _MSetApi_CreateImage      (CreateImage      );
+    _MSetApi_CreateBitmapImage(CreateBitmapImage);
+    _MSetApi_CopyImageBitmap  (CopyImageBitmap  );
+    _MSetApi_ImagePixelWidth  (ImagePixelWidth  );
+    _MSetApi_ImagePixelHeight (ImagePixelHeight );
     _MSetApi_CopyDocumentPath (CopyDocumentPath );
     _MSetApi_CopyCachePath    (CopyCachePath    );
     _MSetApi_CopyTemporaryPath(CopyTemporaryPath);
