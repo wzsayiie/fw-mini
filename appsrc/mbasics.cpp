@@ -167,13 +167,18 @@ void MLambdaCall(MLambda *lambda) {
 //MData:
 
 struct MDataImpl : MData {
-    std::vector<uint8_t> bytes;
+    std::vector<uint8_t> store;
 };
+
+inline std::vector<uint8_t> *GetDataStore(MData *data) {
+    return data ? &((MDataImpl *)data)->store : nullptr;
+}
 
 MData *MDataCopy(const uint8_t *bytes, int size) {
     auto data = new MDataImpl();
     if (bytes && size > 0) {
-        data->bytes.insert(data->bytes.end(), bytes, bytes + size);
+        std::vector<uint8_t> *store = GetDataStore(data);
+        store->insert(store->end(), bytes, bytes + size);
     }
     return data;
 }
@@ -181,30 +186,38 @@ MData *MDataCopy(const uint8_t *bytes, int size) {
 MData *MDataCreate(int size) {
     auto data = new MDataImpl();
     if (size > 0) {
-        data->bytes.resize(size);
+        data->store.resize(size);
     }
     return data;
 }
 
 void MDataAppend(MData *data, const uint8_t *bytes, int size) {
-    if (data && bytes && size > 0) {
-        auto object = (MDataImpl *)data;
-        object->bytes.insert(object->bytes.end(), bytes, bytes + size);
+    std::vector<uint8_t> *store = GetDataStore(data);
+    if (store && bytes && size > 0) {
+        store->insert(store->end(), bytes, bytes + size);
     }
 }
 
-int MDataSize(MData *data) {
-    if (data) {
-        auto object = (MDataImpl *)data;
-        return (int)object->bytes.size();
+uint8_t *MDataBytes(MData *data) {
+    std::vector<uint8_t> *store = GetDataStore(data);
+    if (store) {
+        return store->data();
     }
     return 0;
 }
 
-uint8_t *MDataBytes(MData *data) {
-    if (data) {
-        auto object = (MDataImpl *)data;
-        return object->bytes.data();
+uint8_t *MDataEnd(MData *data) {
+    std::vector<uint8_t> *store = GetDataStore(data);
+    if (store) {
+        return store->data() + store->size();
+    }
+    return 0;
+}
+
+int MDataSize(MData *data) {
+    std::vector<uint8_t> *store = GetDataStore(data);
+    if (store) {
+        return (int)store->size();
     }
     return 0;
 }

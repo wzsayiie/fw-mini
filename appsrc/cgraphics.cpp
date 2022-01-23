@@ -97,10 +97,7 @@ CImageRef CImage::fromFile(const std::string &path) {
 
 std::vector<uint8_t> CImage::bitmap() {
     MDataRef data = m_auto_release MCopyImageBitmap(mNativeImage.get());
-
-    const uint8_t *bytes = MDataBytes(data.get());
-    int size = MDataSize(data.get());
-    return std::vector<uint8_t>(bytes, bytes + size);
+    return std::vector<uint8_t>(MDataBytes(data.get()), MDataEnd(data.get()));
 }
 
 int CImage::width () { return MImagePixelWidth (mNativeImage.get()); }

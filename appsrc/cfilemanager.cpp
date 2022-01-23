@@ -1,39 +1,35 @@
 #include "cfilemanager.h"
 
 std::vector<uint8_t> CReadDataFromFile(const std::string &path) {
-    MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MDataRef   fileData = m_auto_release MCopyDataFromFile(filePath.get());
+    MStringRef file = m_auto_release MStringCreateU8(path.c_str());
+    MDataRef   data = m_auto_release MCopyDataFromFile(file.get());
 
-    const uint8_t *bytes = MDataBytes(fileData.get());
-    int size = MDataSize(fileData.get());
-    return std::vector<uint8_t>(bytes, bytes + size);
+    return std::vector<uint8_t>(MDataBytes(data.get()), MDataEnd(data.get()));
 }
 
 std::string CReadStringFromFile(const std::string &path) {
-    MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MStringRef string   = m_auto_release MCopyStringFromFile(filePath.get());
+    MStringRef file = m_auto_release MStringCreateU8(path.c_str());
+    MStringRef text = m_auto_release MCopyStringFromFile(file.get());
 
-    if (string) {
-        return std::string(MStringU8Chars(string.get()));
+    if (text) {
+        return std::string(MStringU8Chars(text.get()));
     }
     return "";
 }
 
 std::vector<uint8_t> CReadDataFromBundle(const std::string &path) {
-    MStringRef assetPath = m_auto_release MStringCreateU8(path.c_str());
-    MDataRef   assetData = m_auto_release MCopyBundleAsset(assetPath.get());
+    MStringRef file = m_auto_release MStringCreateU8(path.c_str());
+    MDataRef   data = m_auto_release MCopyBundleAsset(file.get());
 
-    const uint8_t *bytes = MDataBytes(assetData.get());
-    int size = MDataSize(assetData.get());
-    return std::vector<uint8_t>(bytes, bytes + size);
+    return std::vector<uint8_t>(MDataBytes(data.get()), MDataEnd(data.get()));
 }
 
 std::string CReadStringFromBundle(const std::string &path) {
-    MStringRef filePath = m_auto_release MStringCreateU8(path.c_str());
-    MStringRef string   = m_auto_release MCopyStringFromBundle(filePath.get());
+    MStringRef file = m_auto_release MStringCreateU8(path.c_str());
+    MStringRef text = m_auto_release MCopyStringFromBundle(file.get());
 
-    if (string) {
-        return std::string(MStringU8Chars(string.get()));
+    if (text) {
+        return std::string(MStringU8Chars(text.get()));
     }
     return "";
 }
