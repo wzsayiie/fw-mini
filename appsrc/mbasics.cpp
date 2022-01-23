@@ -201,10 +201,10 @@ int MDataSize(MData *data) {
     return 0;
 }
 
-const uint8_t *MDataBytes(MData *data) {
+uint8_t *MDataBytes(MData *data) {
     if (data) {
         auto object = (MDataImpl *)data;
-        return &object->bytes[0];
+        return object->bytes.data();
     }
     return 0;
 }
