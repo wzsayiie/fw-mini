@@ -10,30 +10,6 @@ UIImage *MIOSImage::uiImage() {
     return mUIImage;
 }
 
-#pragma mark - color pattern.
-
-union IOSColorPattern {
-    struct {
-        uint8_t red  ;
-        uint8_t green;
-        uint8_t blue ;
-        uint8_t alpha;
-    };
-    int color;
-};
-
-template<typename SRC, typename DST> void ConvertColors(int count, SRC *src, DST *dst) {
-    for (int i = 0; i < count; ++i) {
-        //NOTE: src and dst maybe are same.
-        SRC color = src[i];
-        
-        dst[i].red   = color.red  ;
-        dst[i].green = color.green;
-        dst[i].blue  = color.blue ;
-        dst[i].alpha = color.alpha;
-    }
-}
-
 #pragma mark - bitmap context.
 
 static CGContextRef CreateBitmapContext(void *bytes, int width, int height) {
@@ -84,7 +60,7 @@ static MImage *CreateImage(MData *data) {
 
 static MImage *CreateBitmapImage(MData *data, int width, int height) {
     std::vector<uint8_t> bitmap(width * height * 4);
-    ConvertColors(width * height, (MColorPattern *)MDataBytes(data), (IOSColorPattern *)bitmap.data());
+    MConvertColors(width * height, (MColorPattern *)MDataBytes(data), (MIOSColorPattern *)bitmap.data());
     
     CGContextRef context = CreateBitmapContext(bitmap.data(), width, height);
     CGImageRef   cgImage = CGBitmapContextCreateImage(context);
@@ -109,7 +85,7 @@ static MData *CopyImageBitmap(MImage *image) {
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), uiImage.CGImage);
     CGContextRelease(context);
     
-    ConvertColors(width * height, (IOSColorPattern *)bytes, (MColorPattern *)bytes);
+    MConvertColors(width * height, (MIOSColorPattern *)bytes, (MColorPattern *)bytes);
     
     return data;
 }
