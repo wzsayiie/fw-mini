@@ -1,6 +1,6 @@
 #include "jnihelper.h"
 
-MString *MStringCopyJObject(JNIEnv *env, jstring src)
+MString *MStringCopyJString(JNIEnv *env, jstring src)
 {
     if (!src)
     {
@@ -17,7 +17,7 @@ MString *MStringCopyJObject(JNIEnv *env, jstring src)
     return dst;
 }
 
-MData *MDataCopyJObject(JNIEnv *env, jbyteArray src)
+MData *MDataCopyJByteArray(JNIEnv *env, jbyteArray src)
 {
     if (!src)
     {
@@ -27,8 +27,24 @@ MData *MDataCopyJObject(JNIEnv *env, jbyteArray src)
     jbyte *bytes = env->GetByteArrayElements(src, nullptr);
     jsize  size  = env->GetArrayLength(src);
 
-    MData *dst = MDataCreate((const uint8_t *)bytes, (int)size);
+    MData *dst = MDataCopy((const uint8_t *)bytes, (int)size);
     env->ReleaseByteArrayElements(src, bytes, 0);
+
+    return dst;
+}
+
+MData *MDataCopyJIntArray(JNIEnv *env, jintArray src)
+{
+    if (!src)
+    {
+        return nullptr;
+    }
+
+    jint *ints = env->GetIntArrayElements(src, nullptr);
+    jsize size = env->GetArrayLength(src);
+
+    MData *dst = MDataCopy((const uint8_t *)ints, (int)size * 4);
+    env->ReleaseIntArrayElements(src, ints, 0);
 
     return dst;
 }
@@ -58,6 +74,22 @@ jbyteArray JNewByteArray(JNIEnv *env, MData *src)
 
     jbyteArray dst = env->NewByteArray(size);
     env->SetByteArrayRegion(dst, 0, size, bytes);
+
+    return dst;
+}
+
+jintArray JNewIntArray(JNIEnv *env, MData *src)
+{
+    if (!src)
+    {
+        return nullptr;
+    }
+
+    auto ints = (const jint *)MDataBytes(src);
+    auto size = (jsize)MDataSize(src) / 4;
+
+    jintArray dst = env->NewIntArray(size);
+    env->SetIntArrayRegion(dst, 0, size, ints);
 
     return dst;
 }

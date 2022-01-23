@@ -1,18 +1,6 @@
 #include "AndroidApi.h"
 #include "mhostui.h"
 
-union AndroidColorPattern
-{
-    struct
-    {
-        uint8_t blue ;
-        uint8_t green;
-        uint8_t red  ;
-        uint8_t alpha;
-    };
-    int color = 0;
-};
-
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_DrawView_windowOnDraw(JNIEnv *, jobject)
 {
@@ -73,11 +61,8 @@ Java_src_app_mini_DrawView_windowTriangleGraphColor(JNIEnv *, jobject, jint inde
     MColorPattern src;
     src.color = _MWindowTriangleGraphColor(index);
 
-    AndroidColorPattern dst;
-    dst.red   = src.red;
-    dst.green = src.green;
-    dst.blue  = src.blue;
-    dst.alpha = src.alpha;
+    MAndroidColorPattern dst;
+    MConvertColors(1, &src, &dst);
 
     return dst.color;
 }
@@ -86,7 +71,7 @@ extern "C" JNIEXPORT jobject JNICALL
 Java_src_app_mini_DrawView_windowImageGraphObject(JNIEnv *, jobject, jint index)
 {
     auto image = (MAndroidImage *)_MWindowImageGraphObject(index);
-    return image->nativeImage();
+    return image->javaImage();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
@@ -126,11 +111,8 @@ Java_src_app_mini_DrawView_windowLabelGraphColor(JNIEnv *, jobject, jint index)
     MColorPattern src;
     src.color = _MWindowLabelGraphColor(index);
 
-    AndroidColorPattern dst;
-    dst.red   = src.red;
-    dst.green = src.green;
-    dst.blue  = src.blue;
-    dst.alpha = src.alpha;
+    MAndroidColorPattern dst;
+    MConvertColors(1, &src, &dst);
 
     return dst.color;
 }

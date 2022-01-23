@@ -6,11 +6,23 @@
 class MAndroidImage : public MImage
 {
 public:
-    MAndroidImage(jobject nativeImage);
+    MAndroidImage(jobject javaImage);
     ~MAndroidImage();
 
-    jobject nativeImage();
+    jobject javaImage();
 
 private:
-    jobject mNativeImage;
+    jobject mJavaImage;
+};
+
+union MAndroidColorPattern
+{
+    struct
+    {
+        uint8_t blue ;
+        uint8_t green;
+        uint8_t red  ;
+        uint8_t alpha;
+    };
+    int color = 0;
 };

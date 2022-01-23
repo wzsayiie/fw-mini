@@ -59,17 +59,27 @@ public class AndroidApi {
         return null;
     }
 
-    protected static String copyDocumentPath() {
-        return sContext.getFilesDir().getAbsolutePath();
+    protected static Bitmap createBitmapImage(int[] data, int width, int height) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(data, 0, width, 0, 0, width, height);
+        return bitmap;
     }
 
-    protected static String copyCachePath() {
-        return sContext.getFilesDir().getAbsolutePath();
+    protected static int[] copyImageBitmap(Bitmap image) {
+        int width  = image.getWidth ();
+        int height = image.getHeight();
+
+        int[] data = new int[width * height];
+        image.getPixels(data, 0, width, 0, 0, width, height);
+        return data;
     }
 
-    protected static String copyTemporaryPath() {
-        return sContext.getFilesDir().getAbsolutePath();
-    }
+    protected static int imagePixelWidth (Bitmap image) { return image.getWidth (); }
+    protected static int imagePixelHeight(Bitmap image) { return image.getHeight(); }
+
+    protected static String copyDocumentPath () { return sContext.getFilesDir().getAbsolutePath(); }
+    protected static String copyCachePath    () { return sContext.getCacheDir().getAbsolutePath(); }
+    protected static String copyTemporaryPath() { return sContext.getCacheDir().getAbsolutePath(); }
 
     protected static boolean makeDirectory(String path) {
         File file = new File(path);

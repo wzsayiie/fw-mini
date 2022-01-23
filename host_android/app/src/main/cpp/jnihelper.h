@@ -3,11 +3,13 @@
 #include <jni.h>
 #include "mbasics.h"
 
-MString *MStringCopyJObject(JNIEnv *env, jstring    src);
-MData   *MDataCopyJObject  (JNIEnv *env, jbyteArray src);
+MString *MStringCopyJString (JNIEnv *env, jstring    src);
+MData   *MDataCopyJByteArray(JNIEnv *env, jbyteArray src);
+MData   *MDataCopyJIntArray (JNIEnv *env, jintArray  src);
 
 jstring    JNewString   (JNIEnv *env, MString *src);
 jbyteArray JNewByteArray(JNIEnv *env, MData   *src);
+jintArray  JNewIntArray (JNIEnv *env, MData   *src);
 
 struct JLocalRefDeleteHelper
 {

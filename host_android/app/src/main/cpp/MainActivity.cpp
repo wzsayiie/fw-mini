@@ -77,7 +77,7 @@ Java_src_app_mini_MainActivity_windowOnTouchEnd(JNIEnv *, jobject, jfloat x, jfl
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MainActivity_windowOnTextBox(JNIEnv *env, jobject, jstring string, jboolean enter)
 {
-    MStringRef text = m_auto_release MStringCopyJObject(env, string);
+    MStringRef text = m_auto_release MStringCopyJString(env, string);
     _MWindowOnTextBox(text.get(), enter);
 }
 
