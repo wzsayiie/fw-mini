@@ -25,6 +25,18 @@ union MColorPattern {
     MColor color = 0;
 };
 
+template<typename SRC, typename DST> void MConvertColors(int count, const SRC *src, DST *dst) {
+    for (int i = 0; i < count; ++i) {
+        //NOTE: src and dst maybe are same.
+        SRC color = src[i];
+
+        dst[i].red   = color.red  ;
+        dst[i].green = color.green;
+        dst[i].blue  = color.blue ;
+        dst[i].alpha = color.alpha;
+    }
+}
+
 const MColor MColor_BlackColor     = 0x000000ff M_META(MColor_BlackColor    );
 const MColor MColor_DarkGrayColor  = 0x404040ff M_META(MColor_DarkGrayColor );
 const MColor MColor_GrayColor      = 0x808080ff M_META(MColor_GrayColor     );
