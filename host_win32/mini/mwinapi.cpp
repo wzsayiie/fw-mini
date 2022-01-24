@@ -157,17 +157,13 @@ static MImage *CreateImage(MData *data)
 static MImage *CreateBitmapImage(MData *data, int width, int height)
 {
     auto bitmap = new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB);
-    if (!bitmap)
-    {
-        return nullptr;
-    }
-
     auto colors = (MColorPattern *)MDataBytes(data);
+
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
-            MColorPattern *src = colors + y * width + x; 
+            MColorPattern *src = colors + width * y + x; 
             Gdiplus::Color dst(src->alpha, src->red, src->green, src->blue);
 
             bitmap->SetPixel(x, y, dst);
@@ -180,28 +176,23 @@ static MImage *CreateBitmapImage(MData *data, int width, int height)
 static MData *CopyImageBitmap(MImage *image)
 {
     Gdiplus::Image *gdiImage = ((MWin32Image *)image)->gdiImage();
-    int width  = gdiImage->GetWidth ();
-    int height = gdiImage->GetHeight();
+    int w = gdiImage->GetWidth ();
+    int h = gdiImage->GetHeight();
 
-    std::shared_ptr<Gdiplus::Bitmap> bitmap(new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB));
-    if (!bitmap)
-    {
-        return nullptr;
-    }
-
+    std::shared_ptr<Gdiplus::Bitmap  > bitmap  (new Gdiplus::Bitmap(w, h, PixelFormat32bppARGB));
     std::shared_ptr<Gdiplus::Graphics> graphics(Gdiplus::Graphics::FromImage(bitmap.get()));
-    graphics->DrawImage(gdiImage, 0, 0, width, height);
+    graphics->DrawImage(gdiImage, 0, 0, w, h);
 
-    MData *data = MDataCreate(width * height * 4);
+    MData *data = MDataCreate(w * h * 4);
     auto colors = (MColorPattern *)MDataBytes(data);
-    for (int x = 0; x < width; ++x)
+    for (int x = 0; x < w; ++x)
     {
-        for (int y = 0; y < height; ++y)
+        for (int y = 0; y < h; ++y)
         {
             Gdiplus::Color src;
             bitmap->GetPixel(x, y, &src);
 
-            MColorPattern *dst = colors + y * width + x;
+            MColorPattern *dst = colors + w * y + x;
             dst->red   = src.GetRed  ();
             dst->green = src.GetGreen();
             dst->blue  = src.GetBlue ();

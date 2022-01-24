@@ -18,6 +18,20 @@ private:
     Gdiplus::Image *mGdiImage;
 };
 
+//color pattern:
+
+union MWin32ColorPattern
+{
+    struct
+    {
+        uint8_t blue ;
+        uint8_t green;
+        uint8_t red  ;
+        uint8_t alpha;
+    };
+    int color;
+};
+
 //host api:
 
 void MRegisterApi();
