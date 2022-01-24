@@ -11,3 +11,10 @@ M_FUNC_EXPORT MImage  *MCreateImageFromBundle(MString *path) M_META(MCreateImage
 M_FUNC_EXPORT bool MWriteDataToFile     (MString *path, MData   *data  ) M_META(MWriteDataToFile     , "args:path,dat");
 M_FUNC_EXPORT bool MWriteU8StringToFile (MString *path, MString *string) M_META(MWriteU8StringToFile , "args:path,str");
 M_FUNC_EXPORT bool MWriteU16StringToFile(MString *path, MString *string) M_META(MWriteU16StringToFile, "args:path,str");
+
+M_FUNC_EXPORT void    MMakeDirectores (MString *path) M_META(MMakeDirectores , "args:path");
+M_FUNC_EXPORT MArray *MCopyDirSubitems(MString *path) M_META(MCopyDirSubitems, "args:path");
+M_FUNC_EXPORT void    MRemovePath     (MString *path) M_META(MRemovePath     , "args:path");
+M_FUNC_EXPORT bool    MPathExists     (MString *path) M_META(MPathExists     , "args:path");
+M_FUNC_EXPORT bool    MDirectoryExists(MString *path) M_META(MDirectoryExists, "args:path");
+M_FUNC_EXPORT bool    MFileExists     (MString *path) M_META(MFileExists     , "args:path");

@@ -1,9 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "mresource.h"
+#include <filesystem>
 #include "mencode.h"
-
-const int ReadFileBufferSize = 8 * 1024;
 
 MData *MCopyDataFromFile(MString *path) {
     if (!path) {
@@ -17,9 +16,9 @@ MData *MCopyDataFromFile(MString *path) {
 
     MData *data = MDataCreate(0);
 
-    uint8_t buffer[ReadFileBufferSize];
+    uint8_t buffer[1024 * 8];
     while (!feof(file)) {
-        int size = (int)fread(buffer, 1, ReadFileBufferSize, file);
+        int size = (int)fread(buffer, 1, sizeof(buffer), file);
         MDataAppend(data, buffer, size);
     }
     fclose(file);
@@ -149,4 +148,67 @@ bool MWriteU16StringToFile(MString *path, MString *string) {
     int  size  = MStringU16Size(string) * 2;
     
     return WriteFile(path, bytes, size);
+}
+
+void MMakeDirectores(MString *path) {
+    if (path) {
+        const char *file = MStringU8Chars(path);
+        std::filesystem::create_directories(file);
+    }
+}
+
+MArray *MCopyDirSubitems(MString *path) {
+    if (!MDirectoryExists(path)) {
+        return nullptr;
+    }
+
+    const char *dir = MStringU8Chars(path);
+    std::filesystem::directory_iterator iterator(dir);
+
+    MArray *items = MArrayCreate();
+    for (auto &entry : iterator) {
+        std::string name = entry.path().filename().string();
+        MStringRef item = m_auto_release MStringCreateU8(name.c_str());
+        MArrayAppend(items, item.get());
+    }
+    return items;
+}
+
+void MRemovePath(MString *path) {
+    if (path) {
+        const char *file = MStringU8Chars(path);
+        std::filesystem::remove_all(file);
+    }
+}
+
+static bool PathExists(MString *path, bool *isDirectory) {
+    if (!path) {
+        return false;
+    }
+
+    const char *file = MStringU8Chars(path);
+    if (!std::filesystem::exists(file)) {
+        return false;
+    }
+
+    if (isDirectory != nullptr) {
+        *isDirectory = std::filesystem::is_directory(file);
+    }
+    return true;
+}
+
+bool MPathExists(MString *path) {
+    return PathExists(path, nullptr);
+}
+
+bool MDirectoryExists(MString *path) {
+    bool isDirectory = false;
+    bool isExisting  = PathExists(path, &isDirectory);
+    return isExisting && isDirectory;
+}
+
+bool MFileExists(MString *path) {
+    bool isDirectory = false;
+    bool isExisting  = PathExists(path, &isDirectory);
+    return isExisting && !isDirectory;
 }
