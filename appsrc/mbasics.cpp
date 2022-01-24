@@ -118,8 +118,8 @@ struct MStringImpl : MString {
     }
 };
 
-MString *MStringCreateU8 (const char     *chs) { return chs ? new MStringImpl(chs, 0) : nullptr; }
-MString *MStringCreateU16(const char16_t *chs) { return chs ? new MStringImpl(chs, 0) : nullptr; }
+MString *MStringCreateU8 (const char     *chs) { return chs && *chs ? new MStringImpl(chs, 0) : nullptr; }
+MString *MStringCreateU16(const char16_t *chs) { return chs && *chs ? new MStringImpl(chs, 0) : nullptr; }
 
 MString *MStringCopyU8 (const char     *bgn, int len) { return bgn && len > 0 ? new MStringImpl(bgn, len) : nullptr; }
 MString *MStringCopyU16(const char16_t *bgn, int len) { return bgn && len > 0 ? new MStringImpl(bgn, len) : nullptr; }
