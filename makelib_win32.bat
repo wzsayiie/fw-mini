@@ -8,7 +8,7 @@ cd %~dp0
 set _IncDir=appsrc
 set _CxxSrc=appsrc\m*.cpp host_win32\mini\*.cpp
 set _SysLib=chakrart.lib gdi32.lib gdiplus.lib ole32.lib shell32.lib user32.lib
-set _CxxFlg=/nologo /std:c++14 /EHsc /Ox /MD /LD
+set _CxxFlg=/nologo /std:c++17 /EHsc /Ox /MD /LD
 
 set _OutDir=BUILD
 set _OutNam=mini

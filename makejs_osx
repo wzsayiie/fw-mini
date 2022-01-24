@@ -8,7 +8,7 @@ nam="minijs"
 src="appsrc/js*.cpp appsrc/m*.cpp host_osx/mini/*.mm"
 inc="-Iappsrc"
 ref="-framework Cocoa -framework JavaScriptCore"
-flg="--std=c++14 -fobjc-arc"
+flg="--std=c++17 -fobjc-arc"
 
 mkdir   -p BUILD
 rm      -f BUILD/$nam
