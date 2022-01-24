@@ -34,36 +34,29 @@ static jmethodID sImagePixelHeight  = nullptr;
 static jmethodID sCopyDocumentPath  = nullptr;
 static jmethodID sCopyCachePath     = nullptr;
 static jmethodID sCopyTemporaryPath = nullptr;
-static jmethodID sMakeDirectory     = nullptr;
-static jmethodID sCopyPathSubItems  = nullptr;
-static jmethodID sRemovePath        = nullptr;
-static jmethodID sPathExists        = nullptr;
-static jmethodID sDirectoryExists   = nullptr;
-static jmethodID sFileExists        = nullptr;
 
 static void PrintMessage(MString *text)
 {
-    auto string = j_auto_delete(sJniEnv) JNewString(sJniEnv, text);
+    std::shared_ptr<_jstring> string = j_auto_delete(sJniEnv) JNewString(sJniEnv, text);
     sJniEnv->CallStaticVoidMethod(sJClass, sPrintMessage, string.get());
 }
 
 static MData *CopyBundleAsset(MString *path)
 {
-    auto assetPath = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
-    auto assetData = j_auto_delete(sJniEnv) (jbyteArray)sJniEnv->CallStaticObjectMethod(sJClass, sCopyBundleAsset, assetPath.get());
+    std::shared_ptr<_jstring   > assetPath = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
+    std::shared_ptr<_jbyteArray> assetData = j_auto_delete(sJniEnv) (jbyteArray)sJniEnv->CallStaticObjectMethod(
+        sJClass, sCopyBundleAsset, assetPath.get());
+
     return MDataCopyJByteArray(sJniEnv, assetData.get());
 }
 
 static MImage *CreateImage(MData *data)
 {
-    auto imageData = j_auto_delete(sJniEnv) JNewByteArray(sJniEnv, data);
-    auto javaImage = j_auto_delete(sJniEnv) sJniEnv->CallStaticObjectMethod(sJClass, sCreateImage, imageData.get());
+    std::shared_ptr<_jbyteArray> imageData = j_auto_delete(sJniEnv) JNewByteArray(sJniEnv, data);
+    std::shared_ptr<_jobject   > javaImage = j_auto_delete(sJniEnv) sJniEnv->CallStaticObjectMethod(
+        sJClass, sCreateImage, imageData.get());
 
-    if (javaImage)
-    {
-        return new MAndroidImage(javaImage.get());
-    }
-    return nullptr;
+    return new MAndroidImage(javaImage.get());
 }
 
 static MImage *CreateBitmapImage(MData *data, int width, int height)
@@ -72,20 +65,18 @@ static MImage *CreateBitmapImage(MData *data, int width, int height)
     uint8_t *pixelBytes = MDataBytes(pixelData.get());
     MConvertColors(width * height, (MColorPattern *)pixelBytes, (MAndroidColorPattern *)pixelBytes);
 
-    auto imageData = j_auto_delete(sJniEnv) JNewIntArray(sJniEnv, pixelData.get());
-    auto javaImage = j_auto_delete(sJniEnv) sJniEnv->CallStaticObjectMethod(sJClass, sCreateBitmapImage, imageData.get(), width, height);
+    std::shared_ptr<_jintArray> imageData = j_auto_delete(sJniEnv) JNewIntArray(sJniEnv, pixelData.get());
+    std::shared_ptr<_jobject  > javaImage = j_auto_delete(sJniEnv) sJniEnv->CallStaticObjectMethod(
+        sJClass, sCreateBitmapImage, imageData.get(), width, height);
 
-    if (javaImage)
-    {
-        return new MAndroidImage(javaImage.get());
-    }
-    return nullptr;
+    return new MAndroidImage(javaImage.get());
 }
 
 static MData *CopyImageBitmap(MImage *image)
 {
-    auto javaImage = ((MAndroidImage *)image)->javaImage();
-    auto imageData = j_auto_delete(sJniEnv) (jintArray)sJniEnv->CallStaticObjectMethod(sJClass, sCopyImageBitmap, javaImage);
+    _jobject* javaImage = ((MAndroidImage *)image)->javaImage();
+    std::shared_ptr<_jintArray> imageData = j_auto_delete(sJniEnv) (jintArray)sJniEnv->CallStaticObjectMethod(
+        sJClass, sCopyImageBitmap, javaImage);
 
     MData *data = MDataCopyJIntArray(sJniEnv, imageData.get());
 
@@ -98,85 +89,38 @@ static MData *CopyImageBitmap(MImage *image)
 
 static int ImagePixelWidth(MImage *image)
 {
-    auto javaImage = ((MAndroidImage *)image)->javaImage();
+    jobject javaImage = ((MAndroidImage *)image)->javaImage();
     return sJniEnv->CallStaticIntMethod(sJClass, sImagePixelWidth, javaImage);
 }
 
 static int ImagePixelHeight(MImage *image)
 {
-    auto javaImage = ((MAndroidImage *)image)->javaImage();
+    jobject javaImage = ((MAndroidImage *)image)->javaImage();
     return sJniEnv->CallStaticIntMethod(sJClass, sImagePixelHeight, javaImage);
 }
 
 static MString *CopyDocumentPath()
 {
-    auto path = j_auto_delete(sJniEnv) (jstring)sJniEnv->CallStaticObjectMethod(sJClass, sCopyDocumentPath);
+    std::shared_ptr<_jstring> path = j_auto_delete(sJniEnv) (jstring)sJniEnv->CallStaticObjectMethod(
+        sJClass, sCopyDocumentPath);
+
     return MStringCopyJString(sJniEnv, path.get());
 }
 
 static MString *CopyCachePath()
 {
-    auto path = j_auto_delete(sJniEnv) (jstring)sJniEnv->CallStaticObjectMethod(sJClass, sCopyCachePath);
+    std::shared_ptr<_jstring> path = j_auto_delete(sJniEnv) (jstring)sJniEnv->CallStaticObjectMethod(
+        sJClass, sCopyCachePath);
+
     return MStringCopyJString(sJniEnv, path.get());
 }
 
 static MString *CopyTemporaryPath()
 {
-    auto path = j_auto_delete(sJniEnv) (jstring)sJniEnv->CallStaticObjectMethod(sJClass, sCopyTemporaryPath);
+    std::shared_ptr<_jstring> path = j_auto_delete(sJniEnv) (jstring)sJniEnv->CallStaticObjectMethod(
+        sJClass, sCopyTemporaryPath);
+
     return MStringCopyJString(sJniEnv, path.get());
-}
-
-static bool MakeDirectory(MString *path)
-{
-    auto dirPath = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
-    return sJniEnv->CallStaticBooleanMethod(sJClass, sMakeDirectory, dirPath.get());
-}
-
-MArray *CopyPathSubItems(MString *path)
-{
-    auto dirPath  = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
-    auto subFiles = j_auto_delete(sJniEnv) (jobjectArray)sJniEnv->CallStaticObjectMethod(sJClass, sCopyPathSubItems, dirPath.get());
-    if (subFiles == nullptr)
-    {
-        return nullptr;
-    }
-
-    MArray *array = MArrayCreate();
-
-    jsize count = sJniEnv->GetArrayLength(subFiles.get());
-    for (jsize index = 0; index < count; ++index)
-    {
-        auto sub = (jstring)sJniEnv->GetObjectArrayElement(subFiles.get(), index);
-
-        MStringRef item = m_auto_release MStringCopyJString(sJniEnv, sub);
-        MArrayAppend(array, item.get());
-    }
-
-    return array;
-}
-
-static void RemovePath(MString *path)
-{
-    auto targetPath = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
-    sJniEnv->CallStaticVoidMethod(sJClass, sRemovePath, targetPath.get());
-}
-
-static bool PathExists(MString *path)
-{
-    auto targetPath = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
-    return sJniEnv->CallStaticBooleanMethod(sJClass, sPathExists, targetPath.get());
-}
-
-static bool DirectoryExists(MString *path)
-{
-    auto targetPath = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
-    return sJniEnv->CallStaticBooleanMethod(sJClass, sDirectoryExists, targetPath.get());
-}
-
-static bool FileExists(MString *path)
-{
-    auto targetPath = j_auto_delete(sJniEnv) JNewString(sJniEnv, path);
-    return sJniEnv->CallStaticBooleanMethod(sJClass, sFileExists, targetPath.get());
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -197,12 +141,6 @@ Java_src_app_mini_AndroidApi_registerAndroidApi(JNIEnv *env, jclass)
     sCopyDocumentPath  = env->GetStaticMethodID(sJClass, "copyDocumentPath" , "()Ljava/lang/String;");
     sCopyCachePath     = env->GetStaticMethodID(sJClass, "copyCachePath"    , "()Ljava/lang/String;");
     sCopyTemporaryPath = env->GetStaticMethodID(sJClass, "copyTemporaryPath", "()Ljava/lang/String;");
-    sMakeDirectory     = env->GetStaticMethodID(sJClass, "makeDirectory"    , "(Ljava/lang/String;)Z");
-    sCopyPathSubItems  = env->GetStaticMethodID(sJClass, "copyPathSubItems" , "(Ljava/lang/String;)[Ljava/lang/String;");
-    sRemovePath        = env->GetStaticMethodID(sJClass, "removePath"       , "(Ljava/lang/String;)V");
-    sPathExists        = env->GetStaticMethodID(sJClass, "pathExists"       , "(Ljava/lang/String;)Z");
-    sDirectoryExists   = env->GetStaticMethodID(sJClass, "directoryExists"  , "(Ljava/lang/String;)Z");
-    sFileExists        = env->GetStaticMethodID(sJClass, "fileExists"       , "(Ljava/lang/String;)Z");
 
     _MSetApi_PrintMessage     (PrintMessage     );
     _MSetApi_CopyBundleAsset  (CopyBundleAsset  );
@@ -214,12 +152,6 @@ Java_src_app_mini_AndroidApi_registerAndroidApi(JNIEnv *env, jclass)
     _MSetApi_CopyDocumentPath (CopyDocumentPath );
     _MSetApi_CopyCachePath    (CopyCachePath    );
     _MSetApi_CopyTemporaryPath(CopyTemporaryPath);
-    _MSetApi_MakeDirectory    (MakeDirectory    );
-    _MSetApi_CopyPathSubItems (CopyPathSubItems );
-    _MSetApi_RemovePath       (RemovePath       );
-    _MSetApi_PathExists       (PathExists       );
-    _MSetApi_DirectoryExists  (DirectoryExists  );
-    _MSetApi_FileExists       (FileExists       );
 }
 
 extern "C" JNIEXPORT jstring JNICALL

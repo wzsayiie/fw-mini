@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -53,10 +52,7 @@ public class AndroidApi {
     }
 
     protected static Bitmap createImage(byte[] data) {
-        if (data != null) {
-            return BitmapFactory.decodeByteArray(data, 0, data.length);
-        }
-        return null;
+        return BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 
     protected static Bitmap createBitmapImage(int[] data, int width, int height) {
@@ -80,49 +76,4 @@ public class AndroidApi {
     protected static String copyDocumentPath () { return sContext.getFilesDir().getAbsolutePath(); }
     protected static String copyCachePath    () { return sContext.getCacheDir().getAbsolutePath(); }
     protected static String copyTemporaryPath() { return sContext.getCacheDir().getAbsolutePath(); }
-
-    protected static boolean makeDirectory(String path) {
-        File file = new File(path);
-        return file.mkdirs();
-    }
-
-    protected static String[] copyPathSubItems(String path) {
-        File file = new File(path);
-        return file.list();
-    }
-
-    protected static void removePath(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            removeRecursively(file);
-        }
-    }
-
-    private static void removeRecursively(File file) {
-        if (file.isDirectory()) {
-            File[] subFiles = file.listFiles();
-            if (subFiles != null) {
-                for (File it : subFiles) {
-                    removeRecursively(it);
-                }
-            }
-        } else if (file.isFile()) {
-            file.delete();
-        }
-    }
-
-    protected static boolean pathExists(String path) {
-        File file = new File(path);
-        return file.exists();
-    }
-
-    protected static boolean directoryExists(String path) {
-        File file = new File(path);
-        return file.exists() && file.isDirectory();
-    }
-
-    protected static boolean fileExists(String path) {
-        File file = new File(path);
-        return file.exists() && file.isFile();
-    }
 }
