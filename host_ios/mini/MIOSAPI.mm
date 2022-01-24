@@ -37,9 +37,9 @@ static void PrintMessage(MString *text) {
 static MData *CopyBundleAsset(MString *path) {
     static NSBundle *bundle = nil;
     if (!bundle) {
-        NSString *appMainPath = NSBundle.mainBundle.bundlePath;
-        NSString *bundlePath  = [NSString stringWithFormat:@"%@/%s", appMainPath, MAssetBundleU8Name];
-        bundle = [NSBundle bundleWithPath:bundlePath];
+        NSString *appBundlePath = NSBundle.mainBundle.bundlePath;
+        NSString *resBundlePath = [NSString stringWithFormat:@"%@/%s", appBundlePath, MAssetBundleU8Name];
+        bundle = [NSBundle bundleWithPath:resBundlePath];
     }
     
     NSString *assetPath = [bundle pathForResource:@(MStringU8Chars(path)) ofType:nil];
@@ -108,56 +108,6 @@ static MString *CopyTemporaryPath() {
     return MStringCreateU8(path.UTF8String);
 }
 
-static bool MakeDirectory(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    return [manager createDirectoryAtPath:@(MStringU8Chars(path)) withIntermediateDirectories:YES attributes:nil error:NULL];
-}
-
-MArray *CopyPathSubItems(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    NSArray<NSString *> *names = [manager contentsOfDirectoryAtPath:@(MStringU8Chars(path)) error:nil];
-
-    //NOTE: need to sort.
-    names = [names sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
-        return [a compare:b];
-    }];
-
-    MArray *items = MArrayCreate();
-    for (NSString *name in names) {
-        MStringRef item = m_auto_release MStringCreateU8(name.UTF8String);
-        MArrayAppend(items, item.get());
-    }
-    return items;
-}
-
-static void RemovePath(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    [manager removeItemAtPath:@(MStringU8Chars(path)) error:NULL];
-}
-
-static bool PathExists(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    return [manager fileExistsAtPath:@(MStringU8Chars(path)) isDirectory:NULL];
-}
-
-static bool DirectoryExists(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    
-    BOOL isDirectory = NO;
-    BOOL exist = [manager fileExistsAtPath:@(MStringU8Chars(path)) isDirectory:&isDirectory];
-    
-    return exist && isDirectory;
-}
-
-static bool FileExists(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    
-    BOOL isDirectory = NO;
-    BOOL exist = [manager fileExistsAtPath:@(MStringU8Chars(path)) isDirectory:&isDirectory];
-    
-    return exist && !isDirectory;
-}
-
 void MRegisterAPIs() {
     _MSetApi_PrintMessage     (PrintMessage     );
     _MSetApi_CopyBundleAsset  (CopyBundleAsset  );
@@ -169,10 +119,4 @@ void MRegisterAPIs() {
     _MSetApi_CopyDocumentPath (CopyDocumentPath );
     _MSetApi_CopyCachePath    (CopyCachePath    );
     _MSetApi_CopyTemporaryPath(CopyTemporaryPath);
-    _MSetApi_MakeDirectory    (MakeDirectory    );
-    _MSetApi_CopyPathSubItems (CopyPathSubItems );
-    _MSetApi_RemovePath       (RemovePath       );
-    _MSetApi_PathExists       (PathExists       );
-    _MSetApi_DirectoryExists  (DirectoryExists  );
-    _MSetApi_FileExists       (FileExists       );
 }

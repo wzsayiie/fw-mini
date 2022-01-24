@@ -34,26 +34,33 @@ static void PrintMessage(MString *text) {
     NSLog(@"%s", MStringU8Chars(text));
 }
 
-static MData *CopyBundleAsset(MString *path) {
-    static NSBundle *bundle = nil;
-    if (!bundle) {
-        NSString *mainPath = NSBundle.mainBundle.bundlePath;
-        
-        NSString *pathInBundle  = [NSString stringWithFormat:@"%@/Contents/Resources/%s", mainPath, MAssetBundleU8Name];
-        NSString *pathInFlat    = [NSString stringWithFormat:@"%@/%s", mainPath, MAssetBundleU8Name];
-        NSString *pathInProject = nil;
-        
-        NSRange projectName = [mainPath rangeOfString:@"fw-mini"];
-        if (projectName.location != NSNotFound) {
-            NSString *base = [mainPath substringToIndex:NSMaxRange(projectName)];
-            pathInProject = [NSString stringWithFormat:@"%@/appres/%s", base, MAssetBundleU8Name];
-        }
-        
-        NSFileManager *manager = NSFileManager.defaultManager;
-        if /**/ ([manager fileExistsAtPath:pathInBundle ]) { bundle = [NSBundle bundleWithPath:pathInBundle ]; }
-        else if ([manager fileExistsAtPath:pathInFlat   ]) { bundle = [NSBundle bundleWithPath:pathInFlat   ]; }
-        else if ([manager fileExistsAtPath:pathInProject]) { bundle = [NSBundle bundleWithPath:pathInProject]; }
+static NSBundle *GetResBundlePath() {
+    NSString *mainPath = NSBundle.mainBundle.bundlePath;
+    
+    NSString *pathInApp = [NSString stringWithFormat:@"%@/Contents/Resources/%s", mainPath, MAssetBundleU8Name];
+    if ([NSFileManager.defaultManager fileExistsAtPath:pathInApp]) {
+        return [NSBundle bundleWithPath:pathInApp];
     }
+    
+    //if the executable is in the project, use the resources from the project.
+    NSRange projectName = [mainPath rangeOfString:@"fw-mini"];
+    if (projectName.location != NSNotFound) {
+        NSString *projectPath   = [mainPath substringToIndex:NSMaxRange(projectName)];
+        NSString *pathInProject = [NSString stringWithFormat:@"%@/appres/%s", projectPath, MAssetBundleU8Name];
+        return [NSBundle bundleWithPath:pathInProject];
+    }
+    
+    //if the executable is not in an app bundle, "mainPath" is the directory where the executable is located.
+    NSString *pathWithExe = [NSString stringWithFormat:@"%@/%s", mainPath, MAssetBundleU8Name];
+    if ([NSFileManager.defaultManager fileExistsAtPath:pathWithExe]) {
+        return [NSBundle bundleWithPath:pathWithExe];
+    }
+    
+    return nil;
+}
+
+static MData *CopyBundleAsset(MString *path) {
+    static NSBundle *bundle = GetResBundlePath();
     
     NSString *assetPath = [bundle pathForResource:@(MStringU8Chars(path)) ofType:nil];
     NSData   *assetData = [NSData dataWithContentsOfFile:assetPath];
@@ -123,56 +130,6 @@ static MString *CopyTemporaryPath() {
     return MStringCreateU8(path.UTF8String);
 }
 
-static bool MakeDirectory(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    return [manager createDirectoryAtPath:@(MStringU8Chars(path)) withIntermediateDirectories:YES attributes:nil error:NULL];
-}
-
-MArray *CopyPathSubItems(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    NSArray<NSString *> *names = [manager contentsOfDirectoryAtPath:@(MStringU8Chars(path)) error:nil];
-
-    //NOTE: need to sort.
-    names = [names sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
-        return [a compare:b];
-    }];
-
-    MArray *items = MArrayCreate();
-    for (NSString *name in names) {
-        MStringRef item = m_auto_release MStringCreateU8(name.UTF8String);
-        MArrayAppend(items, item.get());
-    }
-    return items;
-}
-
-static void RemovePath(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    [manager removeItemAtPath:@(MStringU8Chars(path)) error:NULL];
-}
-
-static bool PathExists(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    return [manager fileExistsAtPath:@(MStringU8Chars(path)) isDirectory:NULL];
-}
-
-static bool DirectoryExists(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    
-    BOOL isDirectory = NO;
-    BOOL exist = [manager fileExistsAtPath:@(MStringU8Chars(path)) isDirectory:&isDirectory];
-    
-    return exist && isDirectory;
-}
-
-static bool FileExists(MString *path) {
-    NSFileManager *manager = NSFileManager.defaultManager;
-    
-    BOOL isDirectory = NO;
-    BOOL exist = [manager fileExistsAtPath:@(MStringU8Chars(path)) isDirectory:&isDirectory];
-    
-    return exist && !isDirectory;
-}
-
 void MRegisterAPIs() {
     _MSetApi_PrintMessage     (PrintMessage     );
     _MSetApi_CopyBundleAsset  (CopyBundleAsset  );
@@ -184,10 +141,4 @@ void MRegisterAPIs() {
     _MSetApi_CopyDocumentPath (CopyDocumentPath );
     _MSetApi_CopyCachePath    (CopyCachePath    );
     _MSetApi_CopyTemporaryPath(CopyTemporaryPath);
-    _MSetApi_MakeDirectory    (MakeDirectory    );
-    _MSetApi_CopyPathSubItems (CopyPathSubItems );
-    _MSetApi_RemovePath       (RemovePath       );
-    _MSetApi_PathExists       (PathExists       );
-    _MSetApi_DirectoryExists  (DirectoryExists  );
-    _MSetApi_FileExists       (FileExists       );
 }
