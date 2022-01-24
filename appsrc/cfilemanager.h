@@ -14,9 +14,3 @@ void CWriteU16StringToFile(const std::string &path, const std::string &data);
 std::string CDocumentPath ();
 std::string CCachePath    ();
 std::string CTemporaryPath();
-
-bool CMakeDirectory(const std::string &path);
-std::vector<std::string> CDirectorySubItems(const std::string &path);
-
-void CRemovePath(const std::string &path);
-bool CPathExists(const std::string &path, bool *isDirectory);
