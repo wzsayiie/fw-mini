@@ -4,35 +4,28 @@
 _GDevice::_GDevice() {
     MLambdaRef lambda = m_cast_lambda [=]() {
         MWindowEvent event = MWindowCurrentEvent();
-        
-        switch (event) {
-            case MWindowEvent_MouseMove: OnMouseMove(); break;
-            case MWindowEvent_KeyDown  : OnKeyDown  (); break;
+        if (event == MWindowEvent_MouseMove) {
+            OnMouseMove();
         }
     };
     MWindowAddListener(lambda.get());
 }
 
-float _GDevice::mouseX() { return GCamera()->focusX() + MWindowWidth () / 2 - MWindowMouseX(); }
-float _GDevice::mouseY() { return GCamera()->focusY() + MWindowHeight() / 2 - MWindowMouseY(); }
-
-void _GDevice::setMouseListener(std::function<void (float x, float y)> listener) {
-    mMouseListener = listener;
+float _GDevice::mouseX() {
+    return GCamera()->focusX() - MWindowWidth () / 2 + MWindowMouseX();
 }
 
-void _GDevice::setKeyListener(std::function<void (MKey key)> listener) {
-    mKeyListener = listener;
+float _GDevice::mouseY() {
+    return GCamera()->focusY() + MWindowHeight() / 2 - MWindowMouseY();
+}
+
+void _GDevice::setMouseListener(std::function<void ()> listener) {
+    mMouseListener = listener;
 }
 
 void _GDevice::OnMouseMove() {
     if (mMouseListener) {
-        mMouseListener(mouseX(), mouseY());
-    }
-}
-
-void _GDevice::OnKeyDown() {
-    if (mKeyListener) {
-        mKeyListener(MWindowActiveKey());
+        mMouseListener();
     }
 }
 

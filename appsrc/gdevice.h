@@ -10,15 +10,12 @@ public:
     float mouseX();
     float mouseY();
     
-    void setMouseListener(std::function<void (float x, float y)> listener);
-    void setKeyListener(std::function<void (MKey key)> listener);
+    void setMouseListener(std::function<void ()> listener);
     
 private:
     void OnMouseMove();
-    void OnKeyDown();
     
-    std::function<void (float x, float y)> mMouseListener;
-    std::function<void (MKey key)> mKeyListener;
+    std::function<void ()> mMouseListener;
 };
 
 _GDeviceRef &GDevice();
