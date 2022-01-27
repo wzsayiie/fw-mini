@@ -29,7 +29,7 @@ template<typename R, typename A, typename... B> struct ArgCountOf<R (A, B...)> {
     static const int Value = 1 + ArgCountOf<R (B...)>::Value;
 };
 
-template<typename R> void AppendArgs(_MFuncMeta *meta, R (*)()) {
+template<typename R> void AppendArgs(_MFuncMeta *, R (*)()) {
 }
 template<typename R, typename A, typename... B> void AppendArgs(_MFuncMeta *meta, R (*)(A, B...)) {
     meta->argTypeIds[(meta->argCount)++] = MTypeIdOf<A>::Value;
@@ -45,7 +45,7 @@ template<typename R, typename... A> void Collect(
     meta.retTypeId = MTypeIdOf<R>::Value;
     meta.retRetain = strstr(name, "Create") || strstr(name, "Retain") || strstr(name, "Copy");
 
-    static_assert((ArgCountOf<R (A...)>::Value) <= MFuncMaxArgCount, "");
+    static_assert((ArgCountOf<R (A...)>::Value) <= MFuncMaxArgCount);
     AppendArgs(&meta, func);
 
     _MFuncSetMeta(name, meta, note);
