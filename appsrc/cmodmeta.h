@@ -62,8 +62,9 @@ template<typename R, typename C, typename... A> _CModVPtr _CModGetVPtr(R (C::*sr
 const int _CModMethodMaxArgCount = 4;
 
 struct _CModMetaCommitment {
-    const cmod_char *intfName = nullptr;
-    void *(*createShellObj)() = nullptr;
+    const cmod_char *intfName     = nullptr;
+    const cmod_char *baseIntfName = nullptr;
+    void *(*createShellObj)()     = nullptr;
 
     const cmod_char *methodName = nullptr;
     void            *equalFunc  = nullptr;
@@ -75,6 +76,8 @@ struct _CModMetaCommitment {
 };
 
 void _CModCommitMeta(_CModMetaCommitment *commitment);
+
+template<typename T> struct _CModBaseIntfName;
 
 template<typename T> struct _CModArgCount;
 template<typename R, typename A, typename... B> struct _CModArgCount<R (A, B...)> {
@@ -104,6 +107,7 @@ template<typename R, typename C, typename... A> int _CModCollectMeta(
 
     _CModMetaCommitment commitment; {
         commitment.intfName       = intfName;
+        commitment.baseIntfName   = _CModBaseIntfName<C>::Value;
         commitment.createShellObj = []() -> void * { return new C(); };
 
         commitment.methodName = methodName;
@@ -153,6 +157,9 @@ CMOD_FUNC const cmod_char *CModMethodArgType  (CModMethod *method, int argIndex)
 //use "IModObj", "cmod_intf" and "CMOD_META" to define a interface:
 //
 
+template<> struct _CModBaseIntfName<struct IModObj> {
+    static constexpr const cmod_char *const Value = nullptr;
+};
 template<> struct _CModType<struct IModObj *> {
     static constexpr const cmod_char *const Value = CMOD_L "IModObj";
 };
@@ -173,6 +180,9 @@ private:
 };
 
 #define cmod_intf(name, base)                                               \
+/**/    template<> struct _CModBaseIntfName<struct name> {                  \
+/**/        static constexpr const cmod_char *const Value = CMOD_L #base;   \
+/**/    };                                                                  \
 /**/    template<> struct _CModType<struct name *> {                        \
 /**/        static constexpr const cmod_char *const Value = CMOD_L #name;   \
 /**/    };                                                                  \

@@ -9,8 +9,9 @@ struct CModMethod : _CModMetaCommitment {
 };
 
 struct CModIntf {
-    const cmod_char *intfName = nullptr;
-    void *(*createShellObj)() = nullptr;
+    const cmod_char *intfName     = nullptr;
+    const cmod_char *baseIntfName = nullptr;
+    void *(*createShellObj)()     = nullptr;
 
     std::map<cmod_string, CModMethod *> methodMap;
     std::vector<CModMethod *> methodList;
@@ -61,6 +62,7 @@ void _CModCommitMeta(_CModMetaCommitment *commitment) {
     auto method = new CModMethod();
     *(_CModMetaCommitment *)method = *commitment;
 
+    intf->baseIntfName   = commitment->baseIntfName;
     intf->createShellObj = commitment->createShellObj;
     intf->methodMap[commitment->intfName] = method;
     intf->methodList.push_back(method);
