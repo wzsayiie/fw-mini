@@ -28,6 +28,10 @@ static MetaStore *GetMetaStore() {
 }
 
 static CModIntf *GetIntf(const cmod_char *intfName, bool force) {
+    if (!intfName) {
+        return nullptr;
+    }
+
     MetaStore *store = GetMetaStore();
 
     auto target = store->intfMap.find(intfName);
@@ -84,15 +88,19 @@ CModIntf *CModIntfEntry(int intfIndex) {
 }
 
 CModIntf *CModIntfFind(const cmod_char *intfName) {
-    if (intfName) {
-        return GetIntf(intfName, false);
-    }
-    return nullptr;
+    return GetIntf(intfName, false);
 }
 
 const cmod_char *CModIntfName(CModIntf *intf) {
     if (intf) {
         return intf->intfName;
+    }
+    return nullptr;
+}
+
+CModIntf *CModIntfBase(CModIntf *intf) {
+    if (intf) {
+        return GetIntf(intf->baseIntfName, false);
     }
     return nullptr;
 }
@@ -243,10 +251,6 @@ struct CModCls {
 };
 
 CModCls *CModClsImplement(const cmod_char *intfName) {
-    if (!intfName) {
-        return nullptr;
-    }
-
     CModIntf *intf = GetIntf(intfName, false);
     if (!intf) {
         return nullptr;

@@ -141,6 +141,7 @@ CMOD_FUNC CModIntf *CModIntfEntry(int intfIndex);
 CMOD_FUNC CModIntf *CModIntfFind (const cmod_char *intfName);
 
 CMOD_FUNC const cmod_char *CModIntfName(CModIntf *intf);
+CMOD_FUNC CModIntf *CModIntfBase(CModIntf *intf);
 CMOD_FUNC void *CModIntfCreateShellObj(CModIntf *intf);
 
 CMOD_FUNC int         CModMethodCount(CModIntf *intf);
