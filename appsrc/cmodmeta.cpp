@@ -2,7 +2,7 @@
 #include <map>
 #include <vector>
 
-//interface meta store:
+//interface metadata store:
 //
 
 struct CModMethod : _CModMetaCommitment {
@@ -10,8 +10,7 @@ struct CModMethod : _CModMetaCommitment {
 
 struct CModIntf {
     const cmod_char *intfName = nullptr;
-    void *(*createNilObj)()   = nullptr;
-    int vtabSize = 0;
+    void *(*createShellObj)() = nullptr;
 
     std::map<cmod_string, CModMethod *> methodMap;
     std::vector<CModMethod *> methodList;
@@ -62,11 +61,7 @@ void _CModCommitMeta(_CModMetaCommitment *commitment) {
     auto method = new CModMethod();
     *(_CModMetaCommitment *)method = *commitment;
 
-    intf->createNilObj = commitment->createNilObj;
-    if (intf->vtabSize < method->vtabIndex + 1) {
-        intf->vtabSize = method->vtabIndex + 1;
-    }
-
+    intf->createShellObj = commitment->createShellObj;
     intf->methodMap[commitment->intfName] = method;
     intf->methodList.push_back(method);
 }
@@ -100,18 +95,11 @@ const cmod_char *CModIntfName(CModIntf *intf) {
     return nullptr;
 }
 
-void *CModIntfCreateNilObj(CModIntf *intf) {
+void *CModIntfCreateShellObj(CModIntf *intf) {
     if (intf) {
-        return intf->createNilObj();
+        return intf->createShellObj();
     }
     return nullptr;
-}
-
-int CModIntfVTabSize(CModIntf *intf) {
-    if (intf) {
-        return (int)intf->methodList.size();
-    }
-    return 0;
 }
 
 int CModMethodCount(CModIntf *intf) {
@@ -156,16 +144,16 @@ const cmod_char *CModMethodName(CModMethod *method) {
     return nullptr;
 }
 
-int CModMethodVTabIndex(CModMethod *method) {
-    if (method) {
-        return method->vtabIndex;
-    }
-    return 0;
-}
-
 void *CModMethodEqualFunc(CModMethod *method) {
     if (method) {
         return method->equalFunc;
+    }
+    return nullptr;
+}
+
+_CModVPtr *CModMethodVPtr(CModMethod *method) {
+    if (method) {
+        return &method->methodVPtr;
     }
     return nullptr;
 }
@@ -218,22 +206,38 @@ void IModObj::release() {
 }
 
 void IModObj::destroy() {
-    if (!mInjectedTab) {
-        return;
+    auto func = (void (*)(void *))_CModGetInjectedFunc(mInjectedTab, CMOD_L "destroy");
+    if (func) {
+        func(mInjectedObj);
     }
-
-    int index = _CModGetVTabIndex(&IModObj::destroy);
-    auto func = (void (*)(void *))mInjectedTab[index];
-    func(mPayloadObj);
 }
 
-_CMOD_COLLECT_META(IModObj, destroy);
+_CMOD_COLLECT_META(IModObj, intfName);
+_CMOD_COLLECT_META(IModObj, retain  );
+_CMOD_COLLECT_META(IModObj, release );
+_CMOD_COLLECT_META(IModObj, destroy );
+
+typedef std::map<cmod_string, void *> InjectedTab;
+
+void *_CModGetInjectedFunc(void *injectedTab, const cmod_char *methodName) {
+    if (!injectedTab || !methodName) {
+        return nullptr;
+    }
+    
+    auto tab = (InjectedTab *)injectedTab;
+    auto aim = tab->find(methodName);
+    if (aim == tab->end()) {
+        return nullptr;
+    }
+    
+    return aim->second;
+}
 
 //generate a class on runtime:
 
 struct CModCls {
     CModIntf *intf = nullptr;
-    void *injectedTab[1] = {0};
+    InjectedTab injectedTab;
 };
 
 CModCls *CModClsImplement(const cmod_char *intfName) {
@@ -246,10 +250,8 @@ CModCls *CModClsImplement(const cmod_char *intfName) {
         return nullptr;
     }
 
-    int tabSize = intf->vtabSize;
-    int clsSize = sizeof(CModCls) + sizeof(void *) * (tabSize - 1);
     //intentional leak.
-    auto cls = (CModCls *)calloc(clsSize, 1);
+    auto cls = new CModCls();
     if (cls) {
         cls->intf = intf;
     }
@@ -261,28 +263,24 @@ void CModDefineMethod(CModCls *cls, const cmod_char *methodName, void *func) {
         return;
     }
 
-    CModMethod *method = CModMethodFind(cls->intf, methodName);
-    if (!method) {
-        return;
-    }
-
-    int index = method->vtabIndex;
-    cls->injectedTab[index] = func;
+    //NOTE: even if the method is not declared in the interface, it also can be injected.
+    //this way can override the parent method.
+    cls->injectedTab[methodName] = func;
 }
 
-IModObj *CModCreateObj(CModCls *cls, void *loadObj) {
+IModObj *CModCreateObj(CModCls *cls, void *injectedObj) {
     if (!cls) {
         return nullptr;
     }
 
     struct Shell : IModObj {
-        void setCore(void **tab, void *obj) {
+        void setCore(void *tab, void *obj) {
             mInjectedTab = tab;
-            mPayloadObj  = obj;
+            mInjectedObj = obj;
         };
     };
 
-    auto shell = (Shell *)cls->intf->createNilObj();
-    shell->setCore(cls->injectedTab, loadObj);
+    auto shell = (Shell *)cls->intf->createShellObj();
+    shell->setCore(&cls->injectedTab, injectedObj);
     return shell;
 }

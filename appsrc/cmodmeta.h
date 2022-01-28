@@ -47,15 +47,27 @@ template<> struct _CModType<cmod_char       *> { _CModT Value = CMOD_L "chrptr";
 #define _CMOD_COLLECT_META(intf, method) static int _unused_##intf##_##method = \
 /**/    _CModCollectMeta(CMOD_L #intf, CMOD_L #method, &intf::method)
 
+struct _CModVPtr {
+    //for clang and gcc, the virtual function pointer occupies two words,
+    //and only one under ms cl.
+    void *value[2] = {0};
+};
+
+template<typename R, typename C, typename... A> _CModVPtr _CModGetVPtr(R (C::*src)(A...)) {
+    _CModVPtr dst;
+    memcpy(&dst, &src, sizeof(src));
+    return dst;
+}
+
 const int _CModMethodMaxArgCount = 4;
 
 struct _CModMetaCommitment {
     const cmod_char *intfName = nullptr;
-    void *(*createNilObj)()   = nullptr;
+    void *(*createShellObj)() = nullptr;
 
     const cmod_char *methodName = nullptr;
-    int              vtabIndex  = 0;
     void            *equalFunc  = nullptr;
+    _CModVPtr        methodVPtr = {0};
     const cmod_char *retType    = nullptr;
     int              argCount   = 0;
 
@@ -63,15 +75,6 @@ struct _CModMetaCommitment {
 };
 
 void _CModCommitMeta(_CModMetaCommitment *commitment);
-
-template<typename R, typename C, typename... A> int _CModGetVTabIndex(R (C::*ptr)(A...)) {
-    auto offset = *(intptr_t *)&ptr;
-#if _MSC_VER
-    return (int)((offset    ) / sizeof(void *));
-#else
-    return (int)((offset - 1) / sizeof(void *));
-#endif
-}
 
 template<typename T> struct _CModArgCount;
 template<typename R, typename A, typename... B> struct _CModArgCount<R (A, B...)> {
@@ -93,17 +96,19 @@ template<typename R, typename A, typename... B> void _CModScanArgs(
 template<typename R, typename C, typename... A> int _CModCollectMeta(
     const cmod_char *intfName, const cmod_char *methodName, R (C::*ptr)(A...))
 {
-    R (*equalFunc)(C *a, R (C::*m)(A...), A... s) = [](C *a, R (C::*m)(A...), A... s) {
-        return (a->*m)(s...);
+    R (*equalFunc)(C *, _CModVPtr *, A...) = [](C *obj, _CModVPtr *vptr, A... args) {
+        using vtype = R (C::*)(A...);
+        auto method = *(vtype *)vptr;
+        return (obj->*method)(args...);
     };
 
     _CModMetaCommitment commitment; {
-        commitment.intfName     = intfName;
-        commitment.createNilObj = []() -> void * { return new C(); };
+        commitment.intfName       = intfName;
+        commitment.createShellObj = []() -> void * { return new C(); };
 
         commitment.methodName = methodName;
-        commitment.vtabIndex  = _CModGetVTabIndex(ptr);
         commitment.equalFunc  = (void *)equalFunc;
+        commitment.methodVPtr = _CModGetVPtr(ptr);
         commitment.retType    = _CModType<R>::Value;
 
         static_assert(_CModArgCount<R (A...)>::Value <= _CModMethodMaxArgCount);
@@ -132,16 +137,15 @@ CMOD_FUNC CModIntf *CModIntfEntry(int intfIndex);
 CMOD_FUNC CModIntf *CModIntfFind (const cmod_char *intfName);
 
 CMOD_FUNC const cmod_char *CModIntfName(CModIntf *intf);
-CMOD_FUNC void *CModIntfCreateNilObj(CModIntf *intf);
-CMOD_FUNC int CModIntfVTabSize(CModIntf *intf);
+CMOD_FUNC void *CModIntfCreateShellObj(CModIntf *intf);
 
 CMOD_FUNC int         CModMethodCount(CModIntf *intf);
 CMOD_FUNC CModMethod *CModMethodEntry(CModIntf *intf, int methodIndex);
 CMOD_FUNC CModMethod *CModMethodFind (CModIntf *intf, const cmod_char *methodName);
 
 CMOD_FUNC const cmod_char *CModMethodName     (CModMethod *method);
-CMOD_FUNC int              CModMethodVTabIndex(CModMethod *method);
 CMOD_FUNC void            *CModMethodEqualFunc(CModMethod *method);
+CMOD_FUNC _CModVPtr       *CModMethodVPtr     (CModMethod *method);
 CMOD_FUNC const cmod_char *CModMethodRetType  (CModMethod *method);
 CMOD_FUNC int              CModMethodArgCount (CModMethod *method);
 CMOD_FUNC const cmod_char *CModMethodArgType  (CModMethod *method, int argIndex);
@@ -159,13 +163,13 @@ struct IModObj {
     virtual IModObj *retain();
     virtual void release();
     virtual void destroy();
+    
+protected:
+    void *mInjectedTab = nullptr;
+    void *mInjectedObj = nullptr;
 
 private:
     int mRefCount = 1;
-
-protected:
-    void **mInjectedTab = nullptr;
-    void  *mPayloadObj  = nullptr;
 };
 
 #define cmod_intf(name, base)                                               \
@@ -179,25 +183,23 @@ protected:
 /**/    };                                                                  \
 /**/    struct name : base
 
-#define CMOD_META(ret, intf, method, args, ...)                             \
-/**/    ret intf::method args {                                             \
-/**/        auto func = _CModGetInjectedFunc(&intf::method, mInjectedTab);  \
-/**/        if (func) {                                                     \
-/**/            return func(mPayloadObj, ##__VA_ARGS__);                    \
-/**/        } else {                                                        \
-/**/            return _CModDefaultReturn(&intf::method);                   \
-/**/        }                                                               \
-/**/    };                                                                  \
+#define CMOD_META(ret, intf, method, args, ...)                                         \
+/**/    ret intf::method args {                                                         \
+/**/        auto func = _CModCastInjectedFunc(&intf::method, mInjectedTab, #method);    \
+/**/        if (func) {                                                                 \
+/**/            return func(mInjectedObj, ##__VA_ARGS__);                               \
+/**/        } else {                                                                    \
+/**/            return _CModDefaultReturn(&intf::method);                               \
+/**/        }                                                                           \
+/**/    };                                                                              \
 /**/    _CMOD_COLLECT_META(intf, method)
 
-template<typename R, typename C, typename... A> auto _CModGetInjectedFunc(
-    R (C::*method)(A...), void **injectedTab) -> R (*)(void *, A...)
+void *_CModGetInjectedFunc(void *injectedTab, const cmod_char *methodName);
+
+template<typename R, typename C, typename... A> auto _CModCastInjectedFunc(
+    R (C::*)(A...), void *injectedTab, const cmod_char *methodName) -> R (*)(void *, A...)
 {
-    if (injectedTab) {
-        int index = _CModGetVTabIndex(method);
-        return (R (*)(void *, A...))injectedTab[index];
-    }
-    return nullptr;
+    return (R (*)(void *, A...))_CModGetInjectedFunc(injectedTab, methodName);
 }
 
 template<typename R, typename C, typename... A> R _CModDefaultReturn(R (C::*)(A...)) {
@@ -214,4 +216,4 @@ struct CModCls;
 
 CMOD_FUNC CModCls *CModClsImplement(const cmod_char *intfName);
 CMOD_FUNC void     CModDefineMethod(CModCls *cls, const cmod_char *methodName, void *func);
-CMOD_FUNC IModObj *CModCreateObj   (CModCls *cls, void *loadObj);
+CMOD_FUNC IModObj *CModCreateObj   (CModCls *cls, void *injectedObj);
