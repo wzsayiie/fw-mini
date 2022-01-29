@@ -70,6 +70,7 @@ struct _CModMetaCommitment {
     void            *equalFunc  = nullptr;
     _CModVPtr        methodVPtr = {0};
     const cmod_char *retType    = nullptr;
+    bool             retRetain  = false;
     int              argCount   = 0;
 
     const cmod_char *argTypes[_CModMethodMaxArgCount] = {0};
@@ -78,6 +79,8 @@ struct _CModMetaCommitment {
 void _CModCommitMeta(_CModMetaCommitment *commitment);
 
 template<typename T> struct _CModBaseIntfName;
+
+bool _CModIsRetRetain(const cmod_char *methodName);
 
 template<typename T> struct _CModArgCount;
 template<typename R, typename A, typename... B> struct _CModArgCount<R (A, B...)> {
@@ -114,6 +117,7 @@ template<typename R, typename C, typename... A> int _CModCollectMeta(
         commitment.equalFunc  = (void *)equalFunc;
         commitment.methodVPtr = _CModGetVPtr(ptr);
         commitment.retType    = _CModType<R>::Value;
+        commitment.retRetain  = _CModIsRetRetain(methodName);
 
         static_assert(_CModArgCount<R (A...)>::Value <= _CModMethodMaxArgCount);
         _CModScanArgs(&commitment, (R (*)(A...))nullptr);
@@ -152,6 +156,7 @@ CMOD_FUNC const cmod_char *CModMethodName     (CModMethod *method);
 CMOD_FUNC void            *CModMethodEqualFunc(CModMethod *method);
 CMOD_FUNC _CModVPtr       *CModMethodVPtr     (CModMethod *method);
 CMOD_FUNC const cmod_char *CModMethodRetType  (CModMethod *method);
+CMOD_FUNC bool             CModMethodRetRetain(CModMethod *method);
 CMOD_FUNC int              CModMethodArgCount (CModMethod *method);
 CMOD_FUNC const cmod_char *CModMethodArgType  (CModMethod *method, int argIndex);
 

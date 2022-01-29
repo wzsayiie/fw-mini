@@ -1,4 +1,5 @@
 #include "cmodmeta.h"
+#include <algorithm>
 #include <map>
 #include <vector>
 
@@ -70,6 +71,24 @@ void _CModCommitMeta(_CModMetaCommitment *commitment) {
     intf->createShellObj = commitment->createShellObj;
     intf->methodMap[commitment->intfName] = method;
     intf->methodList.push_back(method);
+}
+
+bool Contains(const cmod_char *str, const cmod_char *aim) {
+    cmod_string s = str;
+    cmod_string a = aim;
+    
+    std::transform(s.begin(), s.end(), s.begin(), std::tolower);
+    std::transform(a.begin(), a.end(), a.begin(), std::tolower);
+    
+    return s.find(a) != cmod_string::npos;
+}
+
+bool _CModIsRetRetain(const cmod_char *methodName) {
+    return (
+        !Contains(methodName, CMOD_L "create") &&
+        !Contains(methodName, CMOD_L "copy"  ) &&
+        !Contains(methodName, CMOD_L "retain")
+    );
 }
 
 //access interface meta:
@@ -173,6 +192,13 @@ const cmod_char *CModMethodRetType(CModMethod *method) {
         return method->retType;
     }
     return nullptr;
+}
+
+bool CModMethodRetRetain(CModMethod *method) {
+    if (method) {
+        return method->retRetain;
+    }
+    return false;
 }
 
 int CModMethodArgCount(CModMethod *method) {
