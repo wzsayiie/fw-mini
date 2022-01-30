@@ -3,6 +3,29 @@
 #include <map>
 #include <vector>
 
+//string assistant functions:
+//
+
+static const cmod_char *cmod_stristr(const cmod_char *str, const cmod_char *aim) {
+    cmod_string s = str;
+    cmod_string a = aim;
+    
+    std::transform(s.begin(), s.end(), s.begin(), std::tolower);
+    std::transform(a.begin(), a.end(), a.begin(), std::tolower);
+    
+    auto pos = s.find(a);
+    return pos != cmod_string::npos ? str + pos : nullptr;
+}
+
+static int cmod_strcmp(const cmod_char *a, const cmod_char *b) {
+    for (; *a == *b; ++a, ++b) {
+        if (*a == '\0') {
+            return 0;
+        }
+    }
+    return *a < *b ? -1 : 1;
+}
+
 //interface metadata store:
 //
 
@@ -73,21 +96,11 @@ void _CModCommitMeta(_CModMetaCommitment *commitment) {
     intf->methodList.push_back(method);
 }
 
-bool Contains(const cmod_char *str, const cmod_char *aim) {
-    cmod_string s = str;
-    cmod_string a = aim;
-    
-    std::transform(s.begin(), s.end(), s.begin(), std::tolower);
-    std::transform(a.begin(), a.end(), a.begin(), std::tolower);
-    
-    return s.find(a) != cmod_string::npos;
-}
-
 bool _CModIsRetRetain(const cmod_char *methodName) {
     return (
-        !Contains(methodName, CMOD_L "create") &&
-        !Contains(methodName, CMOD_L "copy"  ) &&
-        !Contains(methodName, CMOD_L "retain")
+        !cmod_stristr(methodName, CMOD_L "create") &&
+        !cmod_stristr(methodName, CMOD_L "copy"  ) &&
+        !cmod_stristr(methodName, CMOD_L "retain")
     );
 }
 
@@ -117,16 +130,29 @@ const cmod_char *CModIntfName(CModIntf *intf) {
     return nullptr;
 }
 
-CModIntf *CModIntfBase(CModIntf *intf) {
-    if (intf) {
-        return GetIntf(intf->baseIntfName, false);
+bool CModIntfAssignable(CModIntf *intf, CModIntf *target) {
+    if (!intf || !target) {
+        return false;
     }
-    return nullptr;
+    
+    for (; intf; intf = CModIntfBase(intf)) {
+        if (intf == target) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void *CModIntfCreateShellObj(CModIntf *intf) {
     if (intf) {
         return intf->createShellObj();
+    }
+    return nullptr;
+}
+
+CModIntf *CModIntfBase(CModIntf *intf) {
+    if (intf) {
+        return GetIntf(intf->baseIntfName, false);
     }
     return nullptr;
 }
@@ -166,47 +192,12 @@ CModMethod *CModMethodFind(CModIntf *intf, const cmod_char *methodName) {
     return target->second;
 }
 
-const cmod_char *CModMethodName(CModMethod *method) {
-    if (method) {
-        return method->methodName;
-    }
-    return nullptr;
-}
-
-void *CModMethodEqualFunc(CModMethod *method) {
-    if (method) {
-        return method->equalFunc;
-    }
-    return nullptr;
-}
-
-_CModVPtr *CModMethodVPtr(CModMethod *method) {
-    if (method) {
-        return &method->methodVPtr;
-    }
-    return nullptr;
-}
-
-const cmod_char *CModMethodRetType(CModMethod *method) {
-    if (method) {
-        return method->retType;
-    }
-    return nullptr;
-}
-
-bool CModMethodRetRetain(CModMethod *method) {
-    if (method) {
-        return method->retRetain;
-    }
-    return false;
-}
-
-int CModMethodArgCount(CModMethod *method) {
-    if (method) {
-        return method->argCount;
-    }
-    return 0;
-}
+const cmod_char *CModMethodName     (CModMethod *m) { return m ? m->methodName : nullptr; }
+void            *CModMethodEqualFunc(CModMethod *m) { return m ? m->equalFunc  : nullptr; }
+_CModVPtr       *CModMethodVPtr     (CModMethod *m) { return m ?&m->methodVPtr : nullptr; }
+const cmod_char *CModMethodRetType  (CModMethod *m) { return m ? m->retType    : nullptr; }
+bool            CModMethodRetRetain (CModMethod *m) { return m ? m->retRetain  : false  ; }
+int             CModMethodArgCount  (CModMethod *m) { return m ? m->argCount   : 0      ; }
 
 const cmod_char *CModMethodArgType(CModMethod *method, int argIndex) {
     if (!method) {
@@ -269,7 +260,320 @@ void *_CModGetInjectedFunc(void *injectedTab, const cmod_char *methodName) {
     return aim->second;
 }
 
+//call a interface on runtime:
+//
+
+enum class PassType {
+    Void  ,
+    Bool  , Int   , Int64 , Float, Double,
+    IntPtr, ChrPtr, ModObj,
+};
+
+struct PassWord {
+    PassType type = PassType::Void;
+    union {
+        bool     asBool  ;
+        int      asInt   ;
+        int64_t  asInt64 ;
+        float    asFloat ;
+        double   asDouble;
+        void    *asIntPtr;
+        IModObj *asModObj;
+    };
+};
+
+struct PassValue {
+    
+    PassValue() {}
+    
+    PassValue(bool    v) { mWord.type = PassType::Bool  ; mWord.asBool   = v; }
+    PassValue(int     v) { mWord.type = PassType::Int   ; mWord.asInt    = v; }
+    PassValue(int64_t v) { mWord.type = PassType::Int64 ; mWord.asInt64  = v; }
+    PassValue(float   v) { mWord.type = PassType::Float ; mWord.asFloat  = v; }
+    PassValue(double  v) { mWord.type = PassType::Double; mWord.asDouble = v; }
+    
+    PassValue(const void *value) {
+        mWord.type = PassType::IntPtr;
+        mWord.asIntPtr = (void *)value;
+    }
+    
+    PassValue(const cmod_char *value) {
+        mWord.type = PassType::ChrPtr;
+        mString = value ? value : CMOD_L "";
+    }
+    
+    PassValue(IModObj *value) {
+        mWord.type = PassType::ModObj;
+        mWord.asModObj = value ? value->retain() : nullptr;
+    }
+    
+    PassValue(const PassValue &that) {
+        mString = that.mString;
+        mWord = that.mWord;
+        
+        if (mWord.type == PassType::ModObj) {
+            mWord.asModObj->retain();
+        }
+    }
+    
+    PassValue(PassValue &&that) {
+        mString = that.mString;
+        mWord = that.mWord;
+        
+        that.mWord.type = PassType::Void;
+    }
+    
+    void operator=(const PassValue &that) {
+        dispose();
+        
+        mString = that.mString;
+        mWord = that.mWord;
+        
+        if (mWord.type == PassType::ModObj) {
+            mWord.asModObj->retain();
+        }
+    }
+    
+    void operator=(PassValue &&that) {
+        dispose();
+        
+        mString = that.mString;
+        mWord = that.mWord;
+        
+        that.mWord.type = PassType::Void;
+    }
+    
+    ~PassValue() {
+        dispose();
+    }
+    
+    PassType type() {
+        return mWord.type;
+    }
+    
+    //double does not need to be reinterpreted.
+    template<typename> int64_t asInt64() {
+        switch (mWord.type) {
+            case PassType::Bool  : return (int64_t)mWord.asBool  ;
+            case PassType::Int   : return (int64_t)mWord.asInt   ;
+            case PassType::Int64 : return /* ... */mWord.asInt64 ;
+            case PassType::Float : return (int64_t)mWord.asFloat ;
+            case PassType::Double: return (int64_t)mWord.asDouble;
+            default: return 0;
+        }
+    }
+
+    template<typename R> R asBool() { return (R)(bool)asInt64<int64_t>(); }
+    template<typename R> R asInt () { return (R)(int )asInt64<int64_t>(); }
+
+    //double does not need to be reinterpreted.
+    template<typename> double asDouble() {
+        switch (mWord.type) {
+            case PassType::Bool  : return (double)mWord.asBool  ;
+            case PassType::Int   : return (double)mWord.asInt   ;
+            case PassType::Int64 : return (double)mWord.asInt64 ;
+            case PassType::Float : return (double)mWord.asFloat ;
+            case PassType::Double: return /* .. */mWord.asDouble;
+            default: return 0.0;
+        }
+    }
+
+    //float does not need to be reinterpreted.
+    template<typename> float asFloat() {
+        return (float)asDouble<double>();
+    }
+
+    template<typename R> R asIntPtr() {
+        switch (mWord.type) {
+            case PassType::IntPtr: return (R)mWord.asIntPtr ;
+            case PassType::ChrPtr: return (R)mString.c_str();
+            default: return (R)0;
+        }
+    }
+
+    template<typename R> R asChrPtr() {
+        if (mWord.type == PassType::ChrPtr) {
+            return (R)mString.c_str();
+        }
+        return (R)0;
+    }
+
+    template<typename R> R asModObj() {
+        if (mWord.type == PassType::ModObj) {
+            return (R)mWord.asModObj;
+        }
+        return (R)0;
+    }
+
+private:
+    void dispose() {
+        if (mWord.type == PassType::ModObj) {
+            mWord.asModObj->release();
+        }
+        mWord.type = PassType::Void;
+    }
+    
+    cmod_string mString;
+    PassWord    mWord;
+};
+
+struct CModPass {
+    int       argCount  = 0;
+    PassValue argValues [_CModMethodMaxArgCount];
+    PassValue retValue  ;
+    bool      retRetain = false;
+    
+    CModMethod *method  = nullptr;
+    IModObj    *modObj  = nullptr;
+};
+
+CModPass *CModPassCreate() {
+    return new CModPass();
+}
+
+void CModPassRelease(CModPass *pass) {
+    delete pass;
+}
+
+template<typename T> void PushValue(CModPass *pass, T value) {
+    if (pass && pass->argCount < _CModMethodMaxArgCount) {
+        pass->argValues[pass->argCount++] = value;
+    }
+}
+
+void CModPassPushBool  (CModPass *pass, bool             value) { PushValue(pass, value); }
+void CModPassPushInt   (CModPass *pass, int              value) { PushValue(pass, value); }
+void CModPassPushInt64 (CModPass *pass, int64_t          value) { PushValue(pass, value); }
+void CModPassPushFloat (CModPass *pass, float            value) { PushValue(pass, value); }
+void CModPassPushDouble(CModPass *pass, double           value) { PushValue(pass, value); }
+void CModPassPushIntPtr(CModPass *pass, const void      *value) { PushValue(pass, value); }
+void CModPassPushChrPtr(CModPass *pass, const cmod_char *value) { PushValue(pass, value); }
+void CModPassPushObj   (CModPass *pass, IModObj         *value) { PushValue(pass, value); }
+
+static CModMethod *FindMethod(IModObj *obj, const cmod_char *methodName) {
+    CModIntf *intf = CModIntfFind(obj->intfName());
+    
+    for (; intf; intf = CModIntfBase(intf)) {
+        CModMethod *method = CModMethodFind(intf, methodName);
+        if (method) {
+            return method;
+        }
+    }
+    return nullptr;
+}
+
+template<typename R, int N> struct Caller {
+
+    template<typename... U> static R Run(CModPass *pass, U... unfold) {
+
+        if (N == pass->method->argCount) {
+            auto func = (R (*)(IModObj *, _CModVPtr *, U...))pass->method->equalFunc;
+            auto vptr = &pass->method->methodVPtr;
+            return func(pass->modObj, vptr, unfold...);
+        }
+
+        const cmod_char *t = pass->method->argTypes[N];
+        PassValue a = pass->argValues[N];
+
+        //NOTE:
+        //function arguments only use 4 types: intptr_t, int64_t, float and double,
+        //to prevent code bloat.
+        
+        if (!cmod_strcmp(t, _CModType<bool       >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asBool  <intptr_t>()); }
+        if (!cmod_strcmp(t, _CModType<int        >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asInt   <intptr_t>()); }
+        if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asInt64 <int64_t >()); }
+        if (!cmod_strcmp(t, _CModType<float      >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asFloat <float   >()); }
+        if (!cmod_strcmp(t, _CModType<double     >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asDouble<double  >()); }
+        if (!cmod_strcmp(t, _CModType<void      *>::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asIntPtr<intptr_t>()); }
+        if (!cmod_strcmp(t, _CModType<cmod_char *>::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asChrPtr<intptr_t>()); }
+
+        if (a.type() == PassType::ModObj && a.asModObj<IModObj *>()) {
+            CModIntf *src = CModIntfFind(a.asModObj<IModObj *>()->intfName());
+            CModIntf *dst = CModIntfFind(t);
+            if (CModIntfAssignable(src, dst)) {
+                return Caller<R, N + 1>::Run(pass, unfold..., a.asModObj<intptr_t>());
+            }
+        }
+        
+        return Caller<R, N + 1>::Run(pass, unfold..., (intptr_t)0);
+    }
+};
+
+template<typename R> struct Caller<R, _CModMethodMaxArgCount> {
+
+    template<typename... U> static R Run(CModPass *pass, U... unfold) {
+        auto func = (R (*)(IModObj *, _CModVPtr *, U...))pass->method->equalFunc;
+        auto vptr = &pass->method->methodVPtr;
+        return func(pass->modObj, vptr, unfold...);
+    }
+};
+
+bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName) {
+    if (!pass || !obj || !methodName) {
+        return false;
+    }
+    //a pass can only be used once.
+    if (pass->method) {
+        return false;
+    }
+    
+    CModMethod *method = FindMethod(obj, methodName);
+    if (!method) {
+        return false;
+    }
+    
+    pass->method = method;
+    pass->modObj = obj;
+    
+    const cmod_char *t = method->retType;
+    PassValue r;
+    
+    //NOTE:
+    //return value only use 5 types: void, intptr_t, int64_t, float and double,
+    //to prevent code bloat.
+    
+    if /**/ (!cmod_strcmp(t, _CModType<void       >::Value)) { /* ... ... ... */Caller<void    , 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<bool       >::Value)) { r = (bool       )Caller<intptr_t, 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<int        >::Value)) { r = (int        )Caller<intptr_t, 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { r = (int64_t    )Caller<int64_t , 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<float      >::Value)) { r = (float      )Caller<float   , 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<double     >::Value)) { r = (double     )Caller<double  , 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<void      *>::Value)) { r = (void      *)Caller<intptr_t, 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<cmod_char *>::Value)) { r = (cmod_char *)Caller<intptr_t, 0>::Run(pass); }
+    else {
+        //must be a MObject.
+        r = (IModObj *)Caller<intptr_t, 0>::Run(pass);
+        if (method->retRetain) {
+            r.asModObj<IModObj *>()->release();
+        }
+    }
+    
+    return true;
+}
+
+bool       CModPassRetBool  (CModPass *p) { return p ? p->retValue.asBool  <bool       >() : false  ; }
+int        CModPassRetInt   (CModPass *p) { return p ? p->retValue.asInt   <int        >() : 0      ; }
+int64_t    CModPassRetInt64 (CModPass *p) { return p ? p->retValue.asInt64 <int64_t    >() : 0      ; }
+float      CModPassRetFloat (CModPass *p) { return p ? p->retValue.asFloat <float      >() : 0.0f   ; }
+double     CModPassRetDouble(CModPass *p) { return p ? p->retValue.asDouble<double     >() : 0.0    ; }
+void      *CModPassRetIntPtr(CModPass *p) { return p ? p->retValue.asIntPtr<void      *>() : nullptr; }
+cmod_char *CModPassRetChrPtr(CModPass *p) { return p ? p->retValue.asChrPtr<cmod_char *>() : nullptr; }
+
+IModObj *CModPassRetainRet(CModPass *pass) {
+    if (!pass) {
+        return nullptr;
+    }
+    
+    auto obj = pass->retValue.asModObj<IModObj *>();
+    if (!obj) {
+        return nullptr;
+    }
+    
+    return obj->retain();
+}
+
 //generate a class on runtime:
+//
 
 struct CModCls {
     CModIntf *intf = nullptr;

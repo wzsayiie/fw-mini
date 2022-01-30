@@ -13,12 +13,3 @@ CMOD_META(double , IModNumber, doubleValue, ());
 
 CMOD_META(const cmod_char *, IModString, chars , ());
 CMOD_META(int              , IModString, length, ());
-
-CMOD_META(void     , IModArray, resize, (int cnt)              , cnt     );
-CMOD_META(int      , IModArray, count , ()                               );
-CMOD_META(void     , IModArray, insert, (int idx, IModObj *elm), idx, elm);
-CMOD_META(void     , IModArray, remove, (int idx)              , idx     );
-CMOD_META(void     , IModArray, set   , (int idx, IModObj *elm), idx, elm);
-CMOD_META(IModObj *, IModArray, get   , (int idx)              , idx     );
-CMOD_META(void     , IModArray, push  , (IModObj *elm)         , elm     );
-CMOD_META(void     , IModArray, pop   , ()                               );

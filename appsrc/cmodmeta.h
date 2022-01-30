@@ -144,9 +144,10 @@ CMOD_FUNC int       CModIntfCount();
 CMOD_FUNC CModIntf *CModIntfEntry(int intfIndex);
 CMOD_FUNC CModIntf *CModIntfFind (const cmod_char *intfName);
 
-CMOD_FUNC const cmod_char *CModIntfName(CModIntf *intf);
-CMOD_FUNC CModIntf *CModIntfBase(CModIntf *intf);
-CMOD_FUNC void *CModIntfCreateShellObj(CModIntf *intf);
+CMOD_FUNC const cmod_char *CModIntfName          (CModIntf *intf);
+CMOD_FUNC bool             CModIntfAssignable    (CModIntf *intf, CModIntf *target);
+CMOD_FUNC void            *CModIntfCreateShellObj(CModIntf *intf);
+CMOD_FUNC CModIntf        *CModIntfBase          (CModIntf *intf);
 
 CMOD_FUNC int         CModMethodCount(CModIntf *intf);
 CMOD_FUNC CModMethod *CModMethodEntry(CModIntf *intf, int methodIndex);
@@ -199,15 +200,15 @@ private:
 /**/    };                                                                  \
 /**/    struct name : base
 
-#define CMOD_META(ret, intf, method, args, ...)                                         \
-/**/    ret intf::method args {                                                         \
-/**/        auto func = _CModCastInjectedFunc(&intf::method, mInjectedTab, #method);    \
-/**/        if (func) {                                                                 \
-/**/            return func(mInjectedObj, ##__VA_ARGS__);                               \
-/**/        } else {                                                                    \
-/**/            return _CModDefaultReturn(&intf::method);                               \
-/**/        }                                                                           \
-/**/    };                                                                              \
+#define CMOD_META(ret, intf, method, args, ...)                                             \
+/**/    ret intf::method args {                                                             \
+/**/        auto func = _CModCastInjectedFunc(&intf::method, mInjectedTab, CMOD_L #method); \
+/**/        if (func) {                                                                     \
+/**/            return func(mInjectedObj, ##__VA_ARGS__);                                   \
+/**/        } else {                                                                        \
+/**/            return _CModDefaultReturn(&intf::method);                                   \
+/**/        }                                                                               \
+/**/    };                                                                                  \
 /**/    _CMOD_COLLECT_META(intf, method)
 
 void *_CModGetInjectedFunc(void *injectedTab, const cmod_char *methodName);
@@ -224,6 +225,31 @@ template<typename R, typename C, typename... A> R _CModDefaultReturn(R (C::*)(A.
 
 //call a object on runtime:
 //
+
+struct CModPass;
+
+CMOD_FUNC CModPass *CModPassCreate();
+CMOD_FUNC void CModPassRelease(CModPass *pass);
+
+CMOD_FUNC void CModPassPushBool  (CModPass *pass, bool             value);
+CMOD_FUNC void CModPassPushInt   (CModPass *pass, int              value);
+CMOD_FUNC void CModPassPushInt64 (CModPass *pass, int64_t          value);
+CMOD_FUNC void CModPassPushFloat (CModPass *pass, float            value);
+CMOD_FUNC void CModPassPushDouble(CModPass *pass, double           value);
+CMOD_FUNC void CModPassPushIntPtr(CModPass *pass, const void      *value);
+CMOD_FUNC void CModPassPushChrPtr(CModPass *pass, const cmod_char *value);
+CMOD_FUNC void CModPassPushObj   (CModPass *pass, IModObj         *value);
+
+CMOD_FUNC bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName);
+
+CMOD_FUNC bool       CModPassRetBool  (CModPass *pass);
+CMOD_FUNC int        CModPassRetInt   (CModPass *pass);
+CMOD_FUNC int64_t    CModPassRetInt64 (CModPass *pass);
+CMOD_FUNC float      CModPassRetFloat (CModPass *pass);
+CMOD_FUNC double     CModPassRetDouble(CModPass *pass);
+CMOD_FUNC void      *CModPassRetIntPtr(CModPass *pass);
+CMOD_FUNC cmod_char *CModPassRetChrPtr(CModPass *pass);
+CMOD_FUNC IModObj   *CModPassRetainRet(CModPass *pass);
 
 //use followed functions to implement a interface on runtime:
 //
