@@ -92,7 +92,7 @@ void _CModCommitMeta(_CModMetaCommitment *commitment) {
 
     intf->baseIntfName   = commitment->baseIntfName;
     intf->createShellObj = commitment->createShellObj;
-    intf->methodMap[commitment->intfName] = method;
+    intf->methodMap[commitment->methodName] = method;
     intf->methodList.push_back(method);
 }
 
@@ -421,7 +421,6 @@ struct CModPass {
     int       argCount  = 0;
     PassValue argValues [_CModMethodMaxArgCount];
     PassValue retValue  ;
-    bool      retRetain = false;
     
     CModMethod *method  = nullptr;
     IModObj    *modObj  = nullptr;
@@ -547,6 +546,7 @@ bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName) {
             r.asModObj<IModObj *>()->release();
         }
     }
+    pass->retValue = r;
     
     return true;
 }

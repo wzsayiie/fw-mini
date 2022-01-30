@@ -198,7 +198,7 @@ private:
 /**/            return CMOD_L #name;                                        \
 /**/        }                                                               \
 /**/    };                                                                  \
-/**/    struct name : base
+/**/    struct name : _middle_##name
 
 #define CMOD_META(ret, intf, method, args, ...)                                             \
 /**/    ret intf::method args {                                                             \
