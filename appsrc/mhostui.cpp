@@ -3,12 +3,22 @@
 //------------------------------------------------------------------------------
 //graphs:
 
-def_struct(AnyGraph) {
-    virtual ~AnyGraph() {}
+def_struct(Graph) {
+    virtual ~Graph() {}
     virtual _MGraph type() = 0;
 };
 
-def_struct(TriangleGraph) : AnyGraph {
+def_struct(ClipGraph) : Graph {
+    
+    _MGraph type() override { return _MGraph_Clip; }
+    
+    float x      = 0;
+    float y      = 0;
+    float width  = 0;
+    float height = 0;
+};
+
+def_struct(TriangleGraph) : Graph {
     
     _MGraph type() override { return _MGraph_Triangle; }
     
@@ -21,7 +31,7 @@ def_struct(TriangleGraph) : AnyGraph {
     float  y2    = 0;
 };
 
-def_struct(ImageGraph) : AnyGraph {
+def_struct(ImageGraph) : Graph {
     
     _MGraph type() override { return _MGraph_Image; }
     
@@ -33,7 +43,7 @@ def_struct(ImageGraph) : AnyGraph {
     float height = 0;
 };
 
-def_struct(LabelGraph) : AnyGraph {
+def_struct(LabelGraph) : Graph {
     
     _MGraph type() override { return _MGraph_Label; }
     
@@ -50,9 +60,9 @@ def_struct(LabelGraph) : AnyGraph {
 };
 
 //------------------------------------------------------------------------------
-//draw select:
+//draw pen:
 
-def_struct(DrawSelect) {
+def_struct(DrawPen) {
     MStringRef string;
     MImageRef  image ;
     
@@ -99,8 +109,8 @@ struct HostWindow {
     MKey  activeKey  = 0;
     float wheelDelta = 0;
 
-    std::vector<AnyGraphRef> graphs;
-    DrawSelectRef select;
+    std::vector<GraphRef> graphs;
+    DrawPenRef drawPen;
     TextBoxRef textBox;
     
     std::vector<MLambdaRef> listeners;
@@ -113,18 +123,19 @@ static HostWindow *GetWindow() {
     if (!window) {
         window = new HostWindow;
         
-        window->select  = DrawSelectRef(new DrawSelect);
+        window->drawPen = DrawPenRef(new DrawPen);
         window->textBox = TextBoxRef(new TextBox);
     }
     return window;
 }
 
+static ClipGraph     *ClipGraphAt    (int i) { return (ClipGraph     *)GetWindow()->graphs[i].get(); }
 static TriangleGraph *TriangleGraphAt(int i) { return (TriangleGraph *)GetWindow()->graphs[i].get(); }
 static ImageGraph    *ImageGraphAt   (int i) { return (ImageGraph    *)GetWindow()->graphs[i].get(); }
 static LabelGraph    *LabelGraphAt   (int i) { return (LabelGraph    *)GetWindow()->graphs[i].get(); }
 
-static DrawSelect *GetSelect () { return GetWindow()->select .get(); }
-static TextBox    *GetTextBox() { return GetWindow()->textBox.get(); }
+static DrawPen *GetDrawPen() { return GetWindow()->drawPen.get(); }
+static TextBox *GetTextBox() { return GetWindow()->textBox.get(); }
 
 static void SendEvent(HostWindow *window, MWindowEvent event) {
     window->event = event;
@@ -255,6 +266,11 @@ _MGraph _MWindowGraphType(int index) {
     return GetWindow()->graphs[index]->type();
 }
 
+_MPixel  _MWindowClipGraphX        (int i) { return PixelFromPoint(ClipGraphAt(i)->x     ); }
+_MPixel  _MWindowClipGraphY        (int i) { return PixelFromPoint(ClipGraphAt(i)->y     ); }
+_MPixel  _MWindowClipGraphWidth    (int i) { return PixelFromPoint(ClipGraphAt(i)->width ); }
+_MPixel  _MWindowClipGraphHeight   (int i) { return PixelFromPoint(ClipGraphAt(i)->height); }
+
 _MPixel  _MWindowTriangleGraphX0   (int i) { return PixelFromPoint(TriangleGraphAt(i)->x0); }
 _MPixel  _MWindowTriangleGraphY0   (int i) { return PixelFromPoint(TriangleGraphAt(i)->y0); }
 _MPixel  _MWindowTriangleGraphX1   (int i) { return PixelFromPoint(TriangleGraphAt(i)->x1); }
@@ -305,79 +321,88 @@ float MWindowMouseY    () { return GetWindow()->mouseY    ; }
 float MWindowWheelDelta() { return GetWindow()->wheelDelta; }
 MKey  MWindowActiveKey () { return GetWindow()->activeKey ; }
 
-void MWindowSelectString(MString *string) { GetSelect()->string = m_make_shared string; }
-void MWindowSelectImage (MImage  *image ) { GetSelect()->image  = m_make_shared image ; }
+void MWindowSelectString(MString *string) { GetDrawPen()->string = m_make_shared string; }
+void MWindowSelectImage (MImage  *image ) { GetDrawPen()->image  = m_make_shared image ; }
 
-void MWindowSelectColor   (MColor  color) { GetSelect()->color    = color; }
-void MWindowSelectFontSize(float   size ) { GetSelect()->fontSize = size ; }
-void MWindowSelectHAlign  (MHAlign align) { GetSelect()->hAlign   = align; }
-void MWindowSelectVAlign  (MVAlign align) { GetSelect()->vAlign   = align; }
+void MWindowSelectColor   (MColor  color) { GetDrawPen()->color    = color; }
+void MWindowSelectFontSize(float   size ) { GetDrawPen()->fontSize = size ; }
+void MWindowSelectHAlign  (MHAlign align) { GetDrawPen()->hAlign   = align; }
+void MWindowSelectVAlign  (MVAlign align) { GetDrawPen()->vAlign   = align; }
 
-void MWindowSelectPoint0(float x, float y) { DrawSelect *s = GetSelect(); s->x0 = x; s->y0 = y; }
-void MWindowSelectPoint1(float x, float y) { DrawSelect *s = GetSelect(); s->x1 = x; s->y1 = y; }
-void MWindowSelectPoint2(float x, float y) { DrawSelect *s = GetSelect(); s->x2 = x; s->y2 = y; }
+void MWindowSelectPoint0(float x, float y) { DrawPen *p = GetDrawPen(); p->x0 = x; p->y0 = y; }
+void MWindowSelectPoint1(float x, float y) { DrawPen *p = GetDrawPen(); p->x1 = x; p->y1 = y; }
+void MWindowSelectPoint2(float x, float y) { DrawPen *p = GetDrawPen(); p->x2 = x; p->y2 = y; }
+
+void MWindowDrawPushClip() {
+}
+
+void MWindowDrawPopClip() {
+}
+
+void MWindowDrawAbsClip() {
+}
 
 void MWindowDrawTriangle() {
     HostWindow *window = GetWindow();
-    DrawSelect *select = window->select.get();
+    DrawPen *pen = window->drawPen.get();
 
     TriangleGraphRef triangle(new TriangleGraph); {
         
-        triangle->color = select->color;
-        triangle->x0    = select->x0;
-        triangle->y0    = select->y0;
-        triangle->x1    = select->x1;
-        triangle->y1    = select->y1;
-        triangle->x2    = select->x2;
-        triangle->y2    = select->y2;
+        triangle->color = pen->color;
+        triangle->x0    = pen->x0;
+        triangle->y0    = pen->y0;
+        triangle->x1    = pen->x1;
+        triangle->y1    = pen->y1;
+        triangle->x2    = pen->x2;
+        triangle->y2    = pen->y2;
     }
     window->graphs.push_back(triangle);
 }
 
 void MWindowDrawImage() {
     HostWindow *window = GetWindow();
-    DrawSelect *select = window->select.get();
+    DrawPen *pen = window->drawPen.get();
 
-    if (!select->image) {
+    if (!pen->image) {
         return;
     }
     
     ImageGraphRef image(new ImageGraph); {
         
-        image->image  = select->image;
-        image->x      = select->x0;
-        image->y      = select->y0;
-        image->width  = select->x1 - select->x0;
-        image->height = select->y1 - select->y0;
+        image->image  = pen->image;
+        image->x      = pen->x0;
+        image->y      = pen->y0;
+        image->width  = pen->x1 - pen->x0;
+        image->height = pen->y1 - pen->y0;
     }
     window->graphs.push_back(image);
     
-    select->image.reset();
+    pen->image.reset();
 }
 
 void MWindowDrawLabel() {
     HostWindow *window = GetWindow();
-    DrawSelect *select = window->select.get();
+    DrawPen *pen = window->drawPen.get();
     
-    if (!select->string) {
+    if (!pen->string) {
         return;
     }
     
     LabelGraphRef label(new LabelGraph); {
         
-        label->string   = select->string;
-        label->color    = select->color;
-        label->fontSize = select->fontSize;
-        label->hAlign   = select->hAlign;
-        label->vAlign   = select->vAlign;
-        label->x        = select->x0;
-        label->y        = select->y0;
-        label->width    = select->x1 - select->x0;
-        label->height   = select->y1 - select->y0;
+        label->string   = pen->string;
+        label->color    = pen->color;
+        label->fontSize = pen->fontSize;
+        label->hAlign   = pen->hAlign;
+        label->vAlign   = pen->vAlign;
+        label->x        = pen->x0;
+        label->y        = pen->y0;
+        label->width    = pen->x1 - pen->x0;
+        label->height   = pen->y1 - pen->y0;
     }
     window->graphs.push_back(label);
     
-    select->string.reset();
+    pen->string.reset();
 }
 
 void MWindowSetTextBoxUpdated  (bool     updated ) { GetTextBox()->updated   = updated; }

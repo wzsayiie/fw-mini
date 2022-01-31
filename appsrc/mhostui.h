@@ -15,6 +15,7 @@ const float _MWindowDrawInterval = 0.1f;
 
 typedef int _MGraph;
 
+const _MGraph _MGraph_Clip     = 'C';
 const _MGraph _MGraph_Triangle = 'T';
 const _MGraph _MGraph_Label    = 'L';
 const _MGraph _MGraph_Image    = 'I';
@@ -122,6 +123,11 @@ M_FUNC_HOST void _MWindowOnKeyDown   (MKey key);
 M_FUNC_HOST int     _MWindowGraphCount();
 M_FUNC_HOST _MGraph _MWindowGraphType (int index);
 
+M_FUNC_HOST _MPixel  _MWindowClipGraphX        (int index);
+M_FUNC_HOST _MPixel  _MWindowClipGraphY        (int index);
+M_FUNC_HOST _MPixel  _MWindowClipGraphWidth    (int index);
+M_FUNC_HOST _MPixel  _MWindowClipGraphHeight   (int index);
+
 M_FUNC_HOST _MPixel  _MWindowTriangleGraphX0   (int index);
 M_FUNC_HOST _MPixel  _MWindowTriangleGraphY0   (int index);
 M_FUNC_HOST _MPixel  _MWindowTriangleGraphX1   (int index);
@@ -183,6 +189,10 @@ M_FUNC_EXPORT void MWindowSelectVAlign  (MVAlign  align ) M_META(MWindowSelectVA
 M_FUNC_EXPORT void MWindowSelectPoint0(float x, float y) M_META(MWindowSelectPoint0, "args:x,y");
 M_FUNC_EXPORT void MWindowSelectPoint1(float x, float y) M_META(MWindowSelectPoint1, "args:x,y");
 M_FUNC_EXPORT void MWindowSelectPoint2(float x, float y) M_META(MWindowSelectPoint2, "args:x,y");
+
+M_FUNC_EXPORT void MWindowDrawPushClip() M_META(MWindowDrawPushClip);
+M_FUNC_EXPORT void MWindowDrawPopClip () M_META(MWindowDrawPopClip );
+M_FUNC_EXPORT void MWindowDrawAbsClip () M_META(MWindowDrawAbsClip );
 
 M_FUNC_EXPORT void MWindowDrawTriangle() M_META(MWindowDrawTriangle);
 M_FUNC_EXPORT void MWindowDrawImage   () M_META(MWindowDrawImage   );
