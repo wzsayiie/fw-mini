@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <string>
 
 //the character set used by modules:
@@ -185,6 +186,29 @@ protected:
 private:
     int mRefCount = 1;
 };
+
+struct _CModMakeSharedHelper {
+    template<typename T> std::shared_ptr<T> operator<<(T *modObj) {
+        if (modObj) {
+            modObj->retain();
+            return std::shared_ptr<T>(modObj, [](T *obj) { obj->release(); });
+        } else {
+            return std::shared_ptr<T>();
+        }
+    }
+};
+#define cmod_make_shared _CModMakeSharedHelper()<<
+
+struct _CModAutoReleaseHelper {
+    template<typename T> std::shared_ptr<T> operator<<(T *modObj) {
+        if (modObj) {
+            return std::shared_ptr<T>(modObj, [](T *obj) { obj->release(); });
+        } else {
+            return std::shared_ptr<T>();
+        }
+    }
+};
+#define cmod_auto_release _CModAutoReleaseHelper()<<
 
 #define cmod_intf(name, base)                                               \
 /**/    template<> struct _CModBaseIntfName<struct name> {                  \

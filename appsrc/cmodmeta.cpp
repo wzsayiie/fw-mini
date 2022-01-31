@@ -269,91 +269,43 @@ enum class PassType {
     IntPtr, ChrPtr, ModObj,
 };
 
-struct PassWord {
-    PassType type = PassType::Void;
-    union {
-        bool     asBool  ;
-        int      asInt   ;
-        int64_t  asInt64 ;
-        float    asFloat ;
-        double   asDouble;
-        void    *asIntPtr;
-        IModObj *asModObj;
-    };
+union PassWord {
+    bool    asBool  ;
+    int     asInt   ;
+    int64_t asInt64 ;
+    float   asFloat ;
+    double  asDouble;
+    void   *asIntPtr;
 };
 
 struct PassValue {
     
     PassValue() {}
     
-    PassValue(bool    v) { mWord.type = PassType::Bool  ; mWord.asBool   = v; }
-    PassValue(int     v) { mWord.type = PassType::Int   ; mWord.asInt    = v; }
-    PassValue(int64_t v) { mWord.type = PassType::Int64 ; mWord.asInt64  = v; }
-    PassValue(float   v) { mWord.type = PassType::Float ; mWord.asFloat  = v; }
-    PassValue(double  v) { mWord.type = PassType::Double; mWord.asDouble = v; }
-    
-    PassValue(const void *value) {
-        mWord.type = PassType::IntPtr;
-        mWord.asIntPtr = (void *)value;
-    }
+    PassValue(bool        v) { mType = PassType::Bool  ; mWord.asBool   = v        ; }
+    PassValue(int         v) { mType = PassType::Int   ; mWord.asInt    = v        ; }
+    PassValue(int64_t     v) { mType = PassType::Int64 ; mWord.asInt64  = v        ; }
+    PassValue(float       v) { mType = PassType::Float ; mWord.asFloat  = v        ; }
+    PassValue(double      v) { mType = PassType::Double; mWord.asDouble = v        ; }
+    PassValue(const void *v) { mType = PassType::IntPtr; mWord.asIntPtr = (void *)v; }
     
     PassValue(const cmod_char *value) {
-        mWord.type = PassType::ChrPtr;
+        mType   = PassType::ChrPtr;
         mString = value ? value : CMOD_L "";
     }
     
     PassValue(IModObj *value) {
-        mWord.type = PassType::ModObj;
-        mWord.asModObj = value ? value->retain() : nullptr;
-    }
-    
-    PassValue(const PassValue &that) {
-        mString = that.mString;
-        mWord = that.mWord;
-        
-        if (mWord.type == PassType::ModObj) {
-            mWord.asModObj->retain();
-        }
-    }
-    
-    PassValue(PassValue &&that) {
-        mString = that.mString;
-        mWord = that.mWord;
-        
-        that.mWord.type = PassType::Void;
-    }
-    
-    void operator=(const PassValue &that) {
-        dispose();
-        
-        mString = that.mString;
-        mWord = that.mWord;
-        
-        if (mWord.type == PassType::ModObj) {
-            mWord.asModObj->retain();
-        }
-    }
-    
-    void operator=(PassValue &&that) {
-        dispose();
-        
-        mString = that.mString;
-        mWord = that.mWord;
-        
-        that.mWord.type = PassType::Void;
-    }
-    
-    ~PassValue() {
-        dispose();
+        mType   = PassType::ModObj;
+        mModObj = cmod_make_shared value;
     }
     
     PassType type() {
-        return mWord.type;
+        return mType;
     }
     
     //double does not need to be reinterpreted.
     template<typename> int64_t asInt64() {
-        switch (mWord.type) {
+        switch (mType) {
             case PassType::Bool  : return (int64_t)mWord.asBool  ;
             case PassType::Int   : return (int64_t)mWord.asInt   ;
             case PassType::Int64 : return /* ... */mWord.asInt64 ;
@@ -368,7 +320,7 @@ struct PassValue {
 
     //double does not need to be reinterpreted.
     template<typename> double asDouble() {
-        switch (mWord.type) {
+        switch (mType) {
             case PassType::Bool  : return (double)mWord.asBool  ;
             case PassType::Int   : return (double)mWord.asInt   ;
             case PassType::Int64 : return (double)mWord.asInt64 ;
@@ -384,7 +336,7 @@ struct PassValue {
     }
 
     template<typename R> R asIntPtr() {
-        switch (mWord.type) {
+        switch (mType) {
             case PassType::IntPtr: return (R)mWord.asIntPtr ;
             case PassType::ChrPtr: return (R)mString.c_str();
             default: return (R)0;
@@ -392,29 +344,25 @@ struct PassValue {
     }
 
     template<typename R> R asChrPtr() {
-        if (mWord.type == PassType::ChrPtr) {
+        if (mType == PassType::ChrPtr) {
             return (R)mString.c_str();
         }
         return (R)0;
     }
 
     template<typename R> R asModObj() {
-        if (mWord.type == PassType::ModObj) {
-            return (R)mWord.asModObj;
+        if (mType == PassType::ModObj) {
+            return (R)mModObj.get();
         }
         return (R)0;
     }
 
 private:
-    void dispose() {
-        if (mWord.type == PassType::ModObj) {
-            mWord.asModObj->release();
-        }
-        mWord.type = PassType::Void;
-    }
+    PassType mType = PassType::Void;
+    PassWord mWord = {0};
     
+    std::shared_ptr<IModObj> mModObj;
     cmod_string mString;
-    PassWord    mWord;
 };
 
 struct CModPass {
