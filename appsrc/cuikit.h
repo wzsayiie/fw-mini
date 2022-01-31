@@ -8,6 +8,8 @@
 #include "clabel.h"
 #include "clambda.h"
 #include "clog.h"
+#include "cmodplugin.h"
+#include "cmodule.h"
 #include "ctextfield.h"
 #include "cuiresponder.h"
 #include "cview.h"

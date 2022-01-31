@@ -1,14 +1,14 @@
 #pragma once
 
-#include "cmodmeta.h"
+#include "cmodule.h"
 
-cmod_intf(IPlugin, IModObj) {
+cmod_intf(IModPlugin, IModObj) {
     
     virtual void startup(const cmod_char *name);
     virtual void shutdown();
 };
 
-class CPlugin : public IPlugin {
+class CModPlugin : public IModPlugin {
     
 public:
     void startup(const cmod_char *name);
