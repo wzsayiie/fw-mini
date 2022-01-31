@@ -56,7 +56,7 @@ const MColor MColor_ClearColor     = 0x00000000 M_META(MColor_ClearColor    );
 //------------------------------------------------------------------------------
 //apis:
 
-m_class(MImage, "Img");
+m_class(MImage);
 
 typedef void     (*_MApi_PrintMessage     )(MString *text);
 typedef MData   *(*_MApi_CopyBundleAsset  )(MString *path);

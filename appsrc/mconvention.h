@@ -10,20 +10,36 @@ typedef int MTypeId;
 
 template<typename T> struct MTypeIdOf;
 
-#define MEnumId(n) (((int)n[0]) | ((int)n[1] << 8) | ((int)n[2] << 16))
+constexpr int _MHashFactor(char chr) {
+    if ('A' <= chr && chr <= 'Z') { return chr - 'A' + 1; }
+    if ('a' <= chr && chr <= 'z') { return chr - 'a' + 1; }
+    
+    return chr ? 27 : 0;
+}
+constexpr int _MHashId(const char *name) {
+    return (
+        (_MHashFactor(name[0])      ) |
+        (_MHashFactor(name[1]) <<  5) |
+        (_MHashFactor(name[2]) << 10) |
+        (_MHashFactor(name[3]) << 15) |
+        (_MHashFactor(name[4]) << 20) |
+        (_MHashFactor(name[5]) << 25)
+    );
+}
+#define MHashId(name) _MHashId(name "\0\0\0\0\0")
 
 //to define a class with type id.
-#define m_class(name, id)                               \
-/**/    template<> struct MTypeIdOf<class name *> {     \
-/**/        static const MTypeId Value = MEnumId(id);   \
-/**/    };                                              \
-/**/                                                    \
-/**/    typedef std::shared_ptr<class name> name##Ref;  \
-/**/                                                    \
-/**/    class name : public MObject {                   \
-/**/        MTypeId _typeId() override {                \
-/**/            return MEnumId(id);                     \
-/**/        }                                           \
+#define m_class(name)                                       \
+/**/    template<> struct MTypeIdOf<class name *> {         \
+/**/        static const MTypeId Value = MHashId(#name);    \
+/**/    };                                                  \
+/**/                                                        \
+/**/    typedef std::shared_ptr<class name> name##Ref;      \
+/**/                                                        \
+/**/    class name : public MObject {                       \
+/**/        MTypeId _typeId() override {                    \
+/**/            return MTypeIdOf<name *>::Value;            \
+/**/        }                                               \
 /**/    }
 
 //functions that need to be called by the host.
