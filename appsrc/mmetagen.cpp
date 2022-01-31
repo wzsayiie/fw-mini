@@ -21,19 +21,19 @@ void Collect(const char *n, float           v, const char *a = nullptr) { _MCons
 
 void _MFuncSetMeta(const char *name, _MFuncMeta meta, const char *note);
 
-template<typename T> struct ArgCountOf;
-template<typename R> struct ArgCountOf<R ()> {
+template<typename T> struct ArgCount;
+template<typename R> struct ArgCount<R ()> {
     static const int Value = 0;
 };
-template<typename R, typename A, typename... B> struct ArgCountOf<R (A, B...)> {
-    static const int Value = 1 + ArgCountOf<R (B...)>::Value;
+template<typename R, typename A, typename... B> struct ArgCount<R (A, B...)> {
+    static const int Value = 1 + ArgCount<R (B...)>::Value;
 };
 
-template<typename R> void AppendArgs(_MFuncMeta *, R (*)()) {
+template<typename R> void ScanArgs(_MFuncMeta *, R (*)()) {
 }
-template<typename R, typename A, typename... B> void AppendArgs(_MFuncMeta *meta, R (*)(A, B...)) {
+template<typename R, typename A, typename... B> void ScanArgs(_MFuncMeta *meta, R (*)(A, B...)) {
     meta->argTypeIds[(meta->argCount)++] = MTypeIdOf<A>::Value;
-    AppendArgs(meta, (R (*)(B...))nullptr);
+    ScanArgs(meta, (R (*)(B...))nullptr);
 }
 
 template<typename R, typename... A> void Collect(
@@ -45,8 +45,8 @@ template<typename R, typename... A> void Collect(
     meta.retTypeId = MTypeIdOf<R>::Value;
     meta.retRetain = strstr(name, "Create") || strstr(name, "Retain") || strstr(name, "Copy");
 
-    static_assert((ArgCountOf<R (A...)>::Value) <= MFuncMaxArgCount);
-    AppendArgs(&meta, func);
+    static_assert((ArgCount<R (A...)>::Value) <= MFuncMaxArgCount);
+    ScanArgs(&meta, func);
 
     _MFuncSetMeta(name, meta, note);
 }
