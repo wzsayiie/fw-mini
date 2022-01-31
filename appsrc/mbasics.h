@@ -135,15 +135,23 @@ m_class(MUnknown, "Uno");
 
 struct _MMakeSharedHelper {
     template<typename T> std::shared_ptr<T> operator<<(T *object) {
-        MRetain(object);
-        return std::shared_ptr<T>(object, MRelease);
+        if (object) {
+            MRetain(object);
+            return std::shared_ptr<T>(object, MRelease);
+        } else {
+            return std::shared_ptr<T>();
+        }
     }
 };
 #define m_make_shared _MMakeSharedHelper()<<
 
 struct _MAutoReleaseHelper {
     template<typename T> std::shared_ptr<T> operator<<(T *object) {
-        return std::shared_ptr<T>(object, MRelease);
+        if (object) {
+            return std::shared_ptr<T>(object, MRelease);
+        } else {
+            return std::shared_ptr<T>();
+        }
     }
 };
 #define m_auto_release _MAutoReleaseHelper()<<
