@@ -59,7 +59,7 @@ template<typename R, typename C, typename... A> _CModVPtr _CModGetVPtr(R (C::*sr
     return dst;
 }
 
-const int _CModMethodMaxArgCount = 4;
+const int _CModMethodMaxArgCount = 2;
 
 struct _CModMetaCommitment {
     const cmod_char *intfName     = nullptr;
