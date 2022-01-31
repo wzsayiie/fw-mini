@@ -82,10 +82,10 @@ static float AsFloat(MObject *object) {
     }
 }
 
-static intptr_t AsPointer(MObject *object) {
+static intptr_t AsPtr(MObject *object) {
     switch (MGetTypeId(object)) {
-        case MTypeIdOf<MPointer *>::Value: return (intptr_t)MPointerValue ((MPointer *)object);
-        case MTypeIdOf<MString  *>::Value: return (intptr_t)MStringU8Chars((MString  *)object);
+        case MTypeIdOf<MPtr    *>::Value: return (intptr_t)MPtrValue     ((MPtr    *)object);
+        case MTypeIdOf<MString *>::Value: return (intptr_t)MStringU8Chars((MString *)object);
 
         default: return 0;
     }
@@ -120,12 +120,12 @@ template<typename R, int N> struct Caller {
         MObject *item = MArrayItem(args, N);
         MTypeId id = meta.argTypeIds[N];
 
-        if (id == MTypeIdOf<bool      >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsBool   (item)); }
-        if (id == MTypeIdOf<int       >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsInt    (item)); }
-        if (id == MTypeIdOf<float     >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsFloat  (item)); }
-        if (id == MTypeIdOf<uint8_t  *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsPointer(item)); }
-        if (id == MTypeIdOf<char     *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsS8Ptr  (item)); }
-        if (id == MTypeIdOf<char16_t *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsS16Ptr (item)); }
+        if (id == MTypeIdOf<bool      >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsBool  (item)); }
+        if (id == MTypeIdOf<int       >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsInt   (item)); }
+        if (id == MTypeIdOf<float     >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsFloat (item)); }
+        if (id == MTypeIdOf<uint8_t  *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsPtr   (item)); }
+        if (id == MTypeIdOf<char     *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsS8Ptr (item)); }
+        if (id == MTypeIdOf<char16_t *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsS16Ptr(item)); }
 
         if (id == MTypeIdOf<MObject *>::Value || id == MGetTypeId(item)) {
             return Caller<R, N + 1>::Run(meta, args, unfold..., AsMObject(item));
@@ -159,7 +159,7 @@ MObject *MFuncCallCopyRet(MString *name, MArray *args) {
     if (id == MTypeIdOf<bool      >::Value) { return MBoolCreate     ((bool      )Caller<intptr_t, 0>::Run(meta, args)); }
     if (id == MTypeIdOf<int       >::Value) { return MIntCreate      ((int       )Caller<intptr_t, 0>::Run(meta, args)); }
     if (id == MTypeIdOf<float     >::Value) { return MFloatCreate    ((float     )Caller<float   , 0>::Run(meta, args)); }
-    if (id == MTypeIdOf<uint8_t  *>::Value) { return MPointerCreate  ((uint8_t  *)Caller<intptr_t, 0>::Run(meta, args)); }
+    if (id == MTypeIdOf<uint8_t  *>::Value) { return MPtrCreate      ((uint8_t  *)Caller<intptr_t, 0>::Run(meta, args)); }
     if (id == MTypeIdOf<char     *>::Value) { return MStringCreateU8 ((char     *)Caller<intptr_t, 0>::Run(meta, args)); }
     if (id == MTypeIdOf<char16_t *>::Value) { return MStringCreateU16((char16_t *)Caller<intptr_t, 0>::Run(meta, args)); }
 

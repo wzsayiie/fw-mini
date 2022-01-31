@@ -59,22 +59,22 @@ M_FUNC_EXPORT void     MRelease  (MObject *object) M_META(MRelease  , "args:obj"
 M_FUNC_EXPORT MTypeId  MGetTypeId(MObject *object) M_META(MGetTypeId, "args:obj");
 
 //------------------------------------------------------------------------------
-//MBool & MInt & MFloat & MPointer:
+//MBool & MInt & MFloat & MPtr:
 
-m_class(MBool   );
-m_class(MInt    );
-m_class(MFloat  );
-m_class(MPointer);
+m_class(MBool );
+m_class(MInt  );
+m_class(MFloat);
+m_class(MPtr  );
 
-M_FUNC_EXPORT MBool    *MBoolCreate   (bool     value) M_META(MBoolCreate   , "args:value");
-M_FUNC_EXPORT MInt     *MIntCreate    (int      value) M_META(MIntCreate    , "args:value");
-M_FUNC_EXPORT MFloat   *MFloatCreate  (float    value) M_META(MFloatCreate  , "args:value");
-M_FUNC_EXPORT MPointer *MPointerCreate(uint8_t *value) M_META(MPointerCreate, "args:value");
+M_FUNC_EXPORT MBool  *MBoolCreate (bool     value) M_META(MBoolCreate , "args:value");
+M_FUNC_EXPORT MInt   *MIntCreate  (int      value) M_META(MIntCreate  , "args:value");
+M_FUNC_EXPORT MFloat *MFloatCreate(float    value) M_META(MFloatCreate, "args:value");
+M_FUNC_EXPORT MPtr   *MPtrCreate  (uint8_t *value) M_META(MPtrCreate  , "args:value");
 
-M_FUNC_EXPORT bool     MBoolValue   (MBool    *object) M_META(MBoolValue   , "args:obj");
-M_FUNC_EXPORT int      MIntValue    (MInt     *object) M_META(MIntValue    , "args:obj");
-M_FUNC_EXPORT float    MFloatValue  (MFloat   *object) M_META(MFloatValue  , "args:obj");
-M_FUNC_EXPORT uint8_t *MPointerValue(MPointer *object) M_META(MPointerValue, "args:obj");
+M_FUNC_EXPORT bool     MBoolValue (MBool  *object) M_META(MBoolValue , "args:obj");
+M_FUNC_EXPORT int      MIntValue  (MInt   *object) M_META(MIntValue  , "args:obj");
+M_FUNC_EXPORT float    MFloatValue(MFloat *object) M_META(MFloatValue, "args:obj");
+M_FUNC_EXPORT uint8_t *MPtrValue  (MPtr   *object) M_META(MPtrValue  , "args:obj");
 
 //------------------------------------------------------------------------------
 //MString:

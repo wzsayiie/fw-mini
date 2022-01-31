@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------
 //type definition:
 
-//type id and enumeration value:
+//type id and hash function:
 typedef int MTypeId;
 
 template<typename T> struct MTypeIdOf;
