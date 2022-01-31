@@ -1,31 +1,49 @@
 declare function MPrintMessage(text: string): void
 
-function MEnumId(n: string): number {
-    let c0 = n.charCodeAt(0)
-    let c1 = n.charCodeAt(1)
-    let c2 = n.charCodeAt(2)
+function C(text: string, index: number = 0): number {
+    return text.charCodeAt(index)
+}
 
-    return c0 | (c1 << 8) | (c2 << 16)
+function MHashFactor(text: string, index: number): number {
+    let n = C(text, index)
+
+    if (C('A') <= n && n <= C('Z')) { return n - C('A') + 1 }
+    if (C('a') <= n && n <= C('z')) { return n - C('a') + 1 }
+
+    return n ? 27 : 0
+}
+
+function MHashId(name: string): number {
+    let iden = 0
+
+    let size = Math.min(name.length, 6)
+    let card = 1
+    for (let i = 0; i < size; ++i) {
+        iden += MHashFactor(name, i) * card
+        card *= 32
+    }
+
+    return iden
 }
 
 const MTypeId = {
-    Void   : MEnumId('vid'),
-    Bool   : MEnumId('bol'),
-    Int    : MEnumId('int'),
-    Float  : MEnumId('flt'),
-    Pointer: MEnumId('ptr'),
-    S8Ptr  : MEnumId('s08'),
-    S16Ptr : MEnumId('s16'),
-    MObject: MEnumId('Obj'),
-    MBool  : MEnumId('Bol'),
-    MInt   : MEnumId('Int'),
-    MFloat : MEnumId('Flt'),
-    MPtr   : MEnumId('Ptr'),
-    MString: MEnumId('Str'),
-    MLambda: MEnumId('Lmd'),
-    MData  : MEnumId('Dat'),
-    MArray : MEnumId('Arr'),
-    MImage : MEnumId('Img'),
+    Void   : MHashId('void'   ),
+    Bool   : MHashId('bool'   ),
+    Int    : MHashId('int'    ),
+    Float  : MHashId('float'  ),
+    Pointer: MHashId('intptr' ),
+    U8Ptr  : MHashId('u8ptr'  ),
+    U16Ptr : MHashId('u16ptr' ),
+    MObject: MHashId('MObject'),
+    MBool  : MHashId('MBool'  ),
+    MInt   : MHashId('MInt'   ),
+    MFloat : MHashId('MFloat' ),
+    MPtr   : MHashId('MPtr'   ),
+    MString: MHashId('MString'),
+    MLambda: MHashId('MLambda'),
+    MData  : MHashId('MData'  ),
+    MArray : MHashId('MArray' ),
+    MImage : MHashId('MImage' ),
 }
 
 declare function MConstSelectFirst   (): void
@@ -60,14 +78,14 @@ const MTypeMap: Map<number, string> = new Map([
     [ MTypeId.Bool   , 'boolean'    ],
     [ MTypeId.Int    , 'number'     ],
     [ MTypeId.Float  , 'number'     ],
-    [ MTypeId.Pointer, 'MPointer'   ],
-    [ MTypeId.S8Ptr  , 'string'     ],
-    [ MTypeId.S16Ptr , 'string'     ],
+    [ MTypeId.Pointer, 'MPtr'       ],
+    [ MTypeId.U8Ptr  , 'string'     ],
+    [ MTypeId.U16Ptr , 'string'     ],
     [ MTypeId.MObject, 'MObject'    ],
     [ MTypeId.MBool  , 'boolean'    ],
     [ MTypeId.MInt   , 'number'     ],
     [ MTypeId.MFloat , 'number'     ],
-    [ MTypeId.MPtr   , 'MPointer'   ],
+    [ MTypeId.MPtr   , 'MPtr'       ],
     [ MTypeId.MString, 'string'     ],
     [ MTypeId.MLambda, '() => void' ],
     [ MTypeId.MData  , 'MData'      ],
