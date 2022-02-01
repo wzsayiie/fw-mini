@@ -64,8 +64,8 @@ bool CScrollContentView::isInVisibleArea(CViewRef subview) {
 
 //scroll view:
 
-static const CColor IndicatorColor(0.5f, 0.5f, 0.5f, 0.5f);
-static const float  IndicatorDiameter = 2;
+static const CColor IndicatorColor = MColor_BlackColor;
+static const float  IndicatorDiameter = 4;
 
 CScrollView::CScrollView(float x, float y, float w, float h) : CView(x, y, w, h) {
     setAcceptMouseWheel(true);
