@@ -17,6 +17,7 @@ public class DrawView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.save();
 
         windowOnDraw();
 
@@ -34,12 +35,14 @@ public class DrawView extends View {
     }
 
     private void drawClip(int index, Canvas canvas) {
-        int x = (int)windowClipGraphX     (index);
-        int y = (int)windowClipGraphY     (index);
-        int w = (int)windowClipGraphWidth (index);
-        int h = (int)windowClipGraphHeight(index);
+        float x = windowClipGraphX     (index);
+        float y = windowClipGraphY     (index);
+        float w = windowClipGraphWidth (index);
+        float h = windowClipGraphHeight(index);
 
-        canvas.clipRect(new Rect(x, y, x + w, y + h));
+        canvas.restore();
+        canvas.save();
+        canvas.clipRect(x, y, x + w, y + h);
     }
 
     private void drawTriangle(int index, Canvas canvas) {

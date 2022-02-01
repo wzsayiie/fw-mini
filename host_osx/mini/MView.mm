@@ -30,6 +30,7 @@
     float w = _MWindowClipGraphWidth (index);
     float h = _MWindowClipGraphHeight(index);
     
+    CGContextResetClip(context);
     CGContextClipToRect(context, CGRectMake(x, viewHeight - y - h, w, h));
 }
 
