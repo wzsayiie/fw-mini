@@ -20,6 +20,30 @@ Java_src_app_mini_DrawView_windowGraphType(JNIEnv *, jobject, jint index)
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_DrawView_windowClipGraphX(JNIEnv *, jobject, jint index)
+{
+    return _MWindowClipGraphX(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_DrawView_windowClipGraphY(JNIEnv *, jobject, jint index)
+{
+    return _MWindowClipGraphY(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_DrawView_windowClipGraphWidth(JNIEnv *, jobject, jint index)
+{
+    return _MWindowClipGraphWidth(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
+Java_src_app_mini_DrawView_windowClipGraphHeight(JNIEnv *, jobject, jint index)
+{
+    return _MWindowClipGraphHeight(index);
+}
+
+extern "C" JNIEXPORT jfloat JNICALL
 Java_src_app_mini_DrawView_windowTriangleGraphX0(JNIEnv *, jobject, jint index)
 {
     return _MWindowTriangleGraphX0(index);

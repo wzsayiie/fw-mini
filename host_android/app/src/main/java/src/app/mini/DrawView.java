@@ -25,11 +25,21 @@ public class DrawView extends View {
             int graph = windowGraphType(index);
 
             switch (graph) {
+                case 'C': drawClip    (index, canvas); break;
                 case 'T': drawTriangle(index, canvas); break;
                 case 'I': drawImage   (index, canvas); break;
                 case 'L': drawLabel   (index, canvas); break;
             }
         }
+    }
+
+    private void drawClip(int index, Canvas canvas) {
+        int x = (int)windowClipGraphX     (index);
+        int y = (int)windowClipGraphY     (index);
+        int w = (int)windowClipGraphWidth (index);
+        int h = (int)windowClipGraphHeight(index);
+
+        canvas.clipRect(new Rect(x, y, x + w, y + h));
     }
 
     private void drawTriangle(int index, Canvas canvas) {
@@ -117,6 +127,11 @@ public class DrawView extends View {
 
     private native int windowGraphCount();
     private native int windowGraphType (int index);
+
+    private native float  windowClipGraphX        (int index);
+    private native float  windowClipGraphY        (int index);
+    private native float  windowClipGraphWidth    (int index);
+    private native float  windowClipGraphHeight   (int index);
 
     private native float  windowTriangleGraphX0   (int index);
     private native float  windowTriangleGraphY0   (int index);

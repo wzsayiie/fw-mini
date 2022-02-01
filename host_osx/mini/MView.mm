@@ -14,11 +14,23 @@
         _MGraph graph = _MWindowGraphType(index);
         
         switch (graph) {
+            case _MGraph_Clip    : [self drawClip    :index withViewHeight:height]; break;
             case _MGraph_Triangle: [self drawTriangle:index withViewHeight:height]; break;
             case _MGraph_Image   : [self drawImage   :index withViewHeight:height]; break;
             case _MGraph_Label   : [self drawLabel   :index withViewHeight:height]; break;
         }
     }
+}
+
+- (void)drawClip:(int)index withViewHeight:(float)viewHeight {
+    CGContextRef context = NSGraphicsContext.currentContext.CGContext;
+    
+    float x = _MWindowClipGraphX     (index);
+    float y = _MWindowClipGraphY     (index);
+    float w = _MWindowClipGraphWidth (index);
+    float h = _MWindowClipGraphHeight(index);
+    
+    CGContextClipToRect(context, CGRectMake(x, viewHeight - y - h, w, h));
 }
 
 - (void)drawTriangle:(int)index withViewHeight:(float)viewHeight {
