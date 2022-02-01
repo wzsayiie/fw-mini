@@ -43,12 +43,14 @@ public:
     
     CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) override;
 
+    virtual void drawViews();
+    
 protected:
     virtual void onLayoutSubviews(float width, float height) {}
     
-    virtual void onDrawViews();
     virtual void onDrawBackground(float width, float height);
-    virtual void onDraw(float width, float height) {}
+    virtual void onDraw          (float width, float height) {}
+    virtual void onDrawForeground(float width, float height) {}
     
     virtual void onTouchBegin(float x, float y) {}
     virtual void onTouchMove (float x, float y) {}

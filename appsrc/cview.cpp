@@ -191,7 +191,7 @@ CUIResponder *CView::findResponder(CLambda<bool (CUIResponder *)> fit) {
     return nullptr;
 }
 
-void CView::onDrawViews() {
+void CView::drawViews() {
     if (!mVisible) {
         return;
     }
@@ -201,13 +201,16 @@ void CView::onDrawViews() {
     CContextSetOffset(x, y);
     CContextPushClip(0, 0, mWidth, mHeight);
 
-    //draw self.
+    //1. background and self.
     onDrawBackground(mWidth, mHeight);
     onDraw(mWidth, mHeight);
-    //draw subviews.
+    //2. subviews.
     for (const CViewRef &subview : mSubviews) {
-        subview->onDrawViews();
+        subview->drawViews();
     }
+    //3. foreground.
+    CContextSetOffset(x, y);
+    onDrawForeground(mWidth, mHeight);
     
     CContextPopClip();
 }
@@ -276,7 +279,7 @@ void CView::handleWindowEvent(MObject *) {
             break;
         }
         case MWindowEvent_Draw: {
-            sRootView->onDrawViews();
+            sRootView->drawViews();
             break;
         }
     }
