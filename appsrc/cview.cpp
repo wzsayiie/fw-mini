@@ -198,10 +198,10 @@ void CView::drawViews() {
 
     float x = windowX();
     float y = windowY();
-    CContextSetOffset(x, y);
-    CContextPushClip(0, 0, mWidth, mHeight);
+    CContextPushClip(x, y, mWidth, mHeight);
 
     //1. background and self.
+    CContextSetDrawOffset(x, y);
     onDrawBackground(mWidth, mHeight);
     onDraw(mWidth, mHeight);
     //2. subviews.
@@ -209,7 +209,7 @@ void CView::drawViews() {
         subview->drawViews();
     }
     //3. foreground.
-    CContextSetOffset(x, y);
+    CContextSetDrawOffset(x, y);
     onDrawForeground(mWidth, mHeight);
     
     CContextPopClip();

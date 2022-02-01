@@ -4,10 +4,6 @@
 #include <algorithm>
 #include <cmath>
 
-static float sOffsetX   = 0;
-static float sOffsetY   = 0;
-static float sLineWidth = 0;
-
 struct Clip {
     float left   = 0;
     float top    = 0;
@@ -16,17 +12,16 @@ struct Clip {
 };
 static std::vector<Clip> sClips;
 
-void MContextSetOffset(float x, float y) {
-    sOffsetX = x;
-    sOffsetY = y;
-}
+static float sDrawOffsetX = 0;
+static float sDrawOffsetY = 0;
+static float sLineWidth   = 0;
 
 void MContextPushClip(float x, float y, float width, float height) {
     Clip clip;
-    clip.left   = sOffsetX + x;
-    clip.top    = sOffsetY + y;
-    clip.right  = sOffsetX + x + width ;
-    clip.bottom = sOffsetY + y + height;
+    clip.left   = x;
+    clip.top    = y;
+    clip.right  = x + width ;
+    clip.bottom = y + height;
     
     //intersection with the last clip.
     if (sClips.size() > 0) {
@@ -58,6 +53,11 @@ void MContextPopClip() {
     }
 }
 
+void MContextSetDrawOffset(float x, float y) {
+    sDrawOffsetX = x;
+    sDrawOffsetY = y;
+}
+
 void MContextSelectColor   (MColor   color ) { MWindowSelectColor   (color ); }
 void MContextSelectImage   (MImage  *image ) { MWindowSelectImage   (image ); }
 void MContextSelectString  (MString *string) { MWindowSelectString  (string); }
@@ -69,9 +69,9 @@ void MContextSelectLineWidth(float width) {
     sLineWidth = width;
 }
 
-void MContextDrawTriangle0(float x0, float y0) { MWindowSelectPoint0(sOffsetX + x0, sOffsetY + y0); }
-void MContextDrawTriangle1(float x1, float y1) { MWindowSelectPoint1(sOffsetX + x1, sOffsetY + y1); }
-void MContextDrawTriangle2(float x2, float y2) { MWindowSelectPoint2(sOffsetX + x2, sOffsetY + y2);
+void MContextDrawTriangle0(float x0, float y0) { MWindowSelectPoint0(sDrawOffsetX + x0, sDrawOffsetY + y0); }
+void MContextDrawTriangle1(float x1, float y1) { MWindowSelectPoint1(sDrawOffsetX + x1, sDrawOffsetY + y1); }
+void MContextDrawTriangle2(float x2, float y2) { MWindowSelectPoint2(sDrawOffsetX + x2, sDrawOffsetY + y2);
     MWindowDrawTriangle();
 }
 
@@ -85,10 +85,10 @@ void MContextDrawRoundLine(float x0, float y0, float x1, float y1) {
 }
 
 void MContextDrawRect(float x, float y, float width, float height) {
-    float left   = sOffsetX + x;
-    float top    = sOffsetY + y;
-    float right  = sOffsetX + x + width ;
-    float bottom = sOffsetY + y + height;
+    float left   = sDrawOffsetX + x;
+    float top    = sDrawOffsetY + y;
+    float right  = sDrawOffsetX + x + width ;
+    float bottom = sDrawOffsetY + y + height;
     
     MWindowSelectPoint0(left , top   );
     MWindowSelectPoint1(right, top   );
@@ -113,8 +113,8 @@ void MContextDrawEllipse(float x, float y, float width, float height) {
     float step    = circle / splits;
     float wHalf   = width  / 2;
     float hHalf   = height / 2;
-    float xCenter = sOffsetX + x + wHalf;
-    float yCenter = sOffsetY + y + hHalf;
+    float xCenter = sDrawOffsetX + x + wHalf;
+    float yCenter = sDrawOffsetY + y + hHalf;
     
     float w1 = wHalf;
     float h1 = 0;
@@ -139,10 +139,10 @@ void MContextDrawEllipse(float x, float y, float width, float height) {
 }
 
 void MContextDrawImage(float x, float y, float width, float height) {
-    float left   = sOffsetX + x;
-    float top    = sOffsetY + y;
-    float right  = sOffsetX + x + width ;
-    float bottom = sOffsetY + y + height;
+    float left   = sDrawOffsetX + x;
+    float top    = sDrawOffsetY + y;
+    float right  = sDrawOffsetX + x + width ;
+    float bottom = sDrawOffsetY + y + height;
 
     MWindowSelectPoint0(left , top   );
     MWindowSelectPoint1(right, bottom);
@@ -151,10 +151,10 @@ void MContextDrawImage(float x, float y, float width, float height) {
 }
 
 void MContextDrawString(float x, float y, float width, float height) {
-    float left   = sOffsetX + x;
-    float top    = sOffsetY + y;
-    float right  = sOffsetX + x + width ;
-    float bottom = sOffsetY + y + height;
+    float left   = sDrawOffsetX + x;
+    float top    = sDrawOffsetY + y;
+    float right  = sDrawOffsetX + x + width ;
+    float bottom = sDrawOffsetY + y + height;
 
     MWindowSelectPoint0(left , top   );
     MWindowSelectPoint1(right, bottom);

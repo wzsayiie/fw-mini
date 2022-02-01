@@ -41,7 +41,7 @@ static void DrawSprite(GSpriteRef sprite) {
         return;
     }
     
-    MContextSetOffset(windowX, windowY);
+    MContextSetDrawOffset(windowX, windowY);
     sprite->_Draw(sprite->width(), sprite->height());
 }
 

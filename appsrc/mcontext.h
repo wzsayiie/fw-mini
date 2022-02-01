@@ -5,10 +5,10 @@
 //"MContext" takes the upper left corner as the origin,
 //the X axis is right and the Y axis is down.
 
-M_FUNC_EXPORT void MContextSetOffset(float x, float y) M_META(MContextSetOffset, "args:x,y");
-
 M_FUNC_EXPORT void MContextPushClip(float x, float y, float width, float height) M_META(MContextPushClip, "args:x,y,w,h");
 M_FUNC_EXPORT void MContextPopClip() M_META(MContextPopClip);
+
+M_FUNC_EXPORT void MContextSetDrawOffset(float x, float y) M_META(MContextSetDrawOffset, "args:x,y");
 
 M_FUNC_EXPORT void MContextSelectColor    (MColor   color ) M_META(MContextSelectColor    , "args:color");
 M_FUNC_EXPORT void MContextSelectImage    (MImage  *image ) M_META(MContextSelectImage    , "args:image");
