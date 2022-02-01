@@ -82,7 +82,7 @@
 - (void)mouseMoved  :(NSEvent *)event { [self handleMouseMove:event func:NULL                ]; }
 
 - (void)scrollWheel:(NSEvent *)event {
-    _MWindowOnMouseWheel(event.deltaY);
+    _MWindowOnMouseWheel(event.deltaY * 20);
 }
 
 - (NSTextField *)textField {
