@@ -62,9 +62,10 @@ void CUIResponder::handleWindowEvent(MObject *) {
         case MWindowEvent_TouchBegin: handleWindowTouchBegin(); break;
         case MWindowEvent_TouchMove : handleWindowTouchMove (); break;
         case MWindowEvent_TouchEnd  : handleWindowTouchEnd  (); break;
+        case MWindowEvent_MouseWheel: handleWindowMouseWheel(); break;
+        case MWindowEvent_MouseMove : handleWindowMouseMove (); break;
         case MWindowEvent_TextBox   : handleWindowText      (); break;
         case MWindowEvent_KeyDown   : handleWindowKeyDown   (); break;
-        case MWindowEvent_MouseMove : handleWindowMouseMove (); break;
     }
 }
 
@@ -120,6 +121,29 @@ void CUIResponder::handleWindowTouchEnd() {
     sActiveResponder = nullptr;
 }
 
+void CUIResponder::handleWindowMouseWheel() {
+    float x = MWindowMouseX();
+    float y = MWindowMouseY();
+    
+    CUIResponder *responder = findFirstResponder(false, [x, y](CUIResponder *candidate) {
+        return candidate->canRespondWindowWheel(x, y);
+    });
+    
+    if (responder) {
+        float delta = MWindowWheelDelta();
+        responder->onWindowMouseWheel(x, y, delta);
+    }
+}
+
+void CUIResponder::handleWindowMouseMove() {
+    float x = MWindowMouseX();
+    float y = MWindowMouseY();
+
+    for (auto &it : sMouseMoveResponders()) {
+        it->onWindowMouseMove(x, y);
+    }
+}
+
 void CUIResponder::handleWindowText() {
     CUIResponder *responder = findFirstResponder(false, [](CUIResponder *candidate) {
         return candidate->canRespondText();
@@ -140,14 +164,5 @@ void CUIResponder::handleWindowKeyDown() {
     if (responder) {
         MKey key = MWindowActiveKey();
         responder->onKeyDown(key);
-    }
-}
-
-void CUIResponder::handleWindowMouseMove() {
-    float x = MWindowMouseX();
-    float y = MWindowMouseY();
-
-    for (auto &it : sMouseMoveResponders()) {
-        it->onWindowMouseMove(x, y);
     }
 }

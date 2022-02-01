@@ -22,12 +22,16 @@ public:
     float height();
     
     void setBackgroundColor(const CColor &color);
+    CColor backgroundColor();
     
     void setVisible(bool visible);
     bool visible();
     
     void setTouchable(bool touchable);
     bool touchable();
+    
+    void setAcceptMouseWheel(bool accept);
+    bool acceptMouseWheel();
 
     void addSubview(CViewRef subview);
     void removeFromSuperview();
@@ -35,6 +39,8 @@ public:
     CView *superview();
     
     bool canRespondWindowTouch(float x, float y) override;
+    bool canRespondWindowWheel(float x, float y) override;
+    
     CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) override;
 
 protected:
@@ -47,11 +53,13 @@ protected:
     virtual void onTouchBegin(float x, float y) {}
     virtual void onTouchMove (float x, float y) {}
     virtual void onTouchEnd  (float x, float y) {}
+    virtual void onMouseWheel(float x, float y, float delta) {}
     virtual void onMouseMove (float x, float y) {}
     
     void onWindowTouchBegin(float x, float y) override;
     void onWindowTouchMove (float x, float y) override;
     void onWindowTouchEnd  (float x, float y) override;
+    void onWindowMouseWheel(float x, float y, float delta) override;
     void onWindowMouseMove (float x, float y) override;
 
 private:
@@ -71,6 +79,8 @@ private:
     
     //views are not touchable by default.
     bool mTouchable = false;
+    //views do not accept mouse wheel by default.
+    bool mAcceptMouseWheel = false;
     
     std::vector<CViewRef> mSubviews;
     CView *mSuperview = nullptr;

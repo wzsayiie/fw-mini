@@ -65,6 +65,10 @@ void CView::setBackgroundColor(const CColor &color) {
     mBackgroundColor = color;
 }
 
+CColor CView::backgroundColor() {
+    return mBackgroundColor;
+}
+
 void CView::setVisible(bool visible) {
     mVisible = visible;
 }
@@ -79,6 +83,14 @@ void CView::setTouchable(bool touchable) {
 
 bool CView::touchable() {
     return mTouchable;
+}
+
+void CView::setAcceptMouseWheel(bool accept) {
+    mAcceptMouseWheel = true;
+}
+
+bool CView::acceptMouseWheel() {
+    return mAcceptMouseWheel;
 }
 
 static void RemoveSubview(std::vector<CViewRef> *subviews, CView *view) {
@@ -133,12 +145,32 @@ bool CView::canRespondWindowTouch(float x, float y) {
     
     float left   = windowX();
     float top    = windowY();
-    float right  = left + mWidth ;
-    float bottom = top  + mHeight;
-    if (left <= x && x <= right && top <= y && y <= bottom) {
+    float right  = windowX() + mWidth ;
+    float bottom = windowY() + mHeight;
+    
+    if (left <= x && x <= right &&
+        top  <= y && y <= bottom)
+    {
         return true;
     }
+    return false;
+}
+
+bool CView::canRespondWindowWheel(float x, float y) {
+    if (!mAcceptMouseWheel) {
+        return false;
+    }
     
+    float left   = windowX();
+    float top    = windowY();
+    float right  = windowX() + mWidth ;
+    float bottom = windowY() + mHeight;
+    
+    if (left <= x && x <= right &&
+        top  <= y && y <= bottom)
+    {
+        return true;
+    }
     return false;
 }
 
@@ -203,6 +235,12 @@ void CView::onWindowTouchEnd(float x, float y) {
     float viewX = x - windowX();
     float viewY = y - windowY();
     onTouchEnd(viewX, viewY);
+}
+
+void CView::onWindowMouseWheel(float x, float y, float delta) {
+    float viewX = x - windowX();
+    float viewY = y - windowY();
+    onMouseWheel(viewX, viewY, delta);
 }
 
 void CView::onWindowMouseMove(float x, float y) {

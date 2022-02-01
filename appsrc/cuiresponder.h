@@ -14,6 +14,7 @@ public:
     bool isFirstResponder();
     
     virtual bool canRespondWindowTouch(float x, float y) { return false; }
+    virtual bool canRespondWindowWheel(float x, float y) { return false; }
     virtual bool canRespondText() { return false; }
     virtual bool canRespondKey () { return false; }
     
@@ -29,11 +30,11 @@ protected:
     virtual void onWindowTouchBegin(float x, float y) {}
     virtual void onWindowTouchMove (float x, float y) {}
     virtual void onWindowTouchEnd  (float x, float y) {}
+    virtual void onWindowMouseWheel(float x, float y, float delta) {}
+    virtual void onWindowMouseMove (float x, float y) {}
     
     virtual void onTextInput(const std::string &string, bool enter) {}
     virtual void onKeyDown(MKey key) {}
-
-    virtual void onWindowMouseMove(float x, float y) {}
     
 private:
     static void handleWindowEvent(MObject *);
@@ -43,7 +44,8 @@ private:
     static void handleWindowTouchBegin();
     static void handleWindowTouchMove();
     static void handleWindowTouchEnd();
+    static void handleWindowMouseWheel();
+    static void handleWindowMouseMove();
     static void handleWindowText();
     static void handleWindowKeyDown();
-    static void handleWindowMouseMove();
 };
