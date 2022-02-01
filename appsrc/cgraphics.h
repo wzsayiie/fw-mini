@@ -99,6 +99,9 @@ void CContextSelectVerticalAlign  (CVerticalAlign   align);
 
 inline void CContextSetOffset(float x, float y) { MContextSetOffset(x, y); }
 
+inline void CContextPushClip(float x, float y, float w, float h) { MContextPushClip(x, y, w, h); }
+inline void CContextPopClip() { MContextPopClip(); }
+
 inline void CContextSelectFontSize (float s) { MContextSelectFontSize (s); }
 inline void CContextSelectLineWidth(float w) { MContextSelectLineWidth(w); }
 

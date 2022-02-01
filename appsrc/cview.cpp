@@ -159,6 +159,27 @@ CUIResponder *CView::findResponder(CLambda<bool (CUIResponder *)> fit) {
     return nullptr;
 }
 
+void CView::onDrawViews() {
+    if (!mVisible) {
+        return;
+    }
+
+    float x = windowX();
+    float y = windowY();
+    CContextSetOffset(x, y);
+    CContextPushClip(0, 0, mWidth, mHeight);
+
+    //draw self.
+    onDrawBackground(mWidth, mHeight);
+    onDraw(mWidth, mHeight);
+    //draw subviews.
+    for (const CViewRef &subview : mSubviews) {
+        subview->onDrawViews();
+    }
+    
+    CContextPopClip();
+}
+
 void CView::onDrawBackground(float width, float height) {
     if (!mBackgroundColor.isClear()) {
         CContextSelectColor(mBackgroundColor);
@@ -213,32 +234,12 @@ void CView::handleWindowEvent(MObject *) {
         case MWindowEvent_Resize: {
             float width  = MWindowWidth ();
             float height = MWindowHeight();
-            sRootView->handleResize(width, height);
+            sRootView->setSize(width, height);
             break;
         }
         case MWindowEvent_Draw: {
-            sRootView->handleDraw();
+            sRootView->onDrawViews();
             break;
         }
-    }
-}
-
-void CView::handleResize(float width, float height) {
-    setSize(width, height);
-}
-
-void CView::handleDraw() {
-    if (!mVisible) {
-        return;
-    }
-
-    float x = windowX();
-    float y = windowY();
-    CContextSetOffset(x, y);
-
-    onDrawBackground(mWidth, mHeight);
-    onDraw(mWidth, mHeight);
-    for (const CViewRef &subview : mSubviews) {
-        subview->handleDraw();
     }
 }

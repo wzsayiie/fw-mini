@@ -190,10 +190,7 @@ M_FUNC_EXPORT void MWindowSelectPoint0(float x, float y) M_META(MWindowSelectPoi
 M_FUNC_EXPORT void MWindowSelectPoint1(float x, float y) M_META(MWindowSelectPoint1, "args:x,y");
 M_FUNC_EXPORT void MWindowSelectPoint2(float x, float y) M_META(MWindowSelectPoint2, "args:x,y");
 
-M_FUNC_EXPORT void MWindowDrawPushClip() M_META(MWindowDrawPushClip);
-M_FUNC_EXPORT void MWindowDrawPopClip () M_META(MWindowDrawPopClip );
-M_FUNC_EXPORT void MWindowDrawAbsClip () M_META(MWindowDrawAbsClip );
-
+M_FUNC_EXPORT void MWindowDrawClip    () M_META(MWindowDrawClip    );
 M_FUNC_EXPORT void MWindowDrawTriangle() M_META(MWindowDrawTriangle);
 M_FUNC_EXPORT void MWindowDrawImage   () M_META(MWindowDrawImage   );
 M_FUNC_EXPORT void MWindowDrawLabel   () M_META(MWindowDrawLabel   );

@@ -333,13 +333,18 @@ void MWindowSelectPoint0(float x, float y) { DrawPen *p = GetDrawPen(); p->x0 = 
 void MWindowSelectPoint1(float x, float y) { DrawPen *p = GetDrawPen(); p->x1 = x; p->y1 = y; }
 void MWindowSelectPoint2(float x, float y) { DrawPen *p = GetDrawPen(); p->x2 = x; p->y2 = y; }
 
-void MWindowDrawPushClip() {
-}
-
-void MWindowDrawPopClip() {
-}
-
-void MWindowDrawAbsClip() {
+void MWindowDrawClip() {
+    HostWindow *window = GetWindow();
+    DrawPen *pen = window->drawPen.get();
+    
+    ClipGraphRef clip(new ClipGraph); {
+        
+        clip->x      = pen->x0;
+        clip->y      = pen->y0;
+        clip->width  = pen->x1 - pen->x0;
+        clip->height = pen->y1 - pen->y0;
+    }
+    window->graphs.push_back(clip);
 }
 
 void MWindowDrawTriangle() {

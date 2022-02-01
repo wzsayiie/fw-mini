@@ -40,6 +40,7 @@ public:
 protected:
     virtual void onLayoutSubviews(float width, float height) {}
     
+    virtual void onDrawViews();
     virtual void onDrawBackground(float width, float height);
     virtual void onDraw(float width, float height) {}
     
@@ -57,9 +58,6 @@ private:
     void setSupersOffset(float x, float y);
 
     static void handleWindowEvent(MObject *);
-
-    void handleResize(float width, float height);
-    void handleDraw();
 
     float mSupersX = 0;
     float mSupersY = 0;
