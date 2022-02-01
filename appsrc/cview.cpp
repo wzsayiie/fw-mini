@@ -35,7 +35,7 @@ void CView::setOrigin(float x, float y) {
     mY = y;
 
     for (const CViewRef &subview : mSubviews) {
-        subview->setSupersOffset(mSupersX + mX, mSupersY + y);
+        subview->setSupersOffset(mSupersX + mX, mSupersY + mY);
     }
 }
 
@@ -176,8 +176,8 @@ bool CView::canRespondWindowWheel(float x, float y) {
 
 CUIResponder *CView::findResponder(CLambda<bool (CUIResponder *)> fit) {
     //is there a suitable subview.
-    for (auto it = mSubviews.rbegin(); it != mSubviews.rend(); ++it) {
-        CUIResponder *responder = it->get()->findResponder(fit);
+    for (const CViewRef &subview : mSubviews) {
+        CUIResponder *responder = subview->findResponder(fit);
         if (responder) {
             return responder;
         }
@@ -250,7 +250,7 @@ void CView::onWindowMouseMove(float x, float y) {
 }
 
 void CView::setSupersOffset(float x, float y) {
-    if (mSupersX == x || mSupersY == y) {
+    if (mSupersX == x && mSupersY == y) {
         return;
     }
 
