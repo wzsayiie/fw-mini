@@ -10,6 +10,7 @@
 #include "clog.h"
 #include "cmodplugin.h"
 #include "cmodule.h"
+#include "cscrollview.h"
 #include "ctextfield.h"
 #include "cuiresponder.h"
 #include "cview.h"
