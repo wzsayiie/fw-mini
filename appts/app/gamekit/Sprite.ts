@@ -96,7 +96,7 @@ class SpriteCollection {
             return
         }
 
-        MContextSetOffset(windowPos.x, windowPos.y)
+        MContextSetDrawOffset(windowPos.x, windowPos.y)
         sprite._Draw(sprite.width, sprite.height)
     }
 
