@@ -8,12 +8,26 @@ def_class(CScrollContentView) : public CView {
 public:
     using CView::CView;
     
+    void drawViews() override;
+    
 protected:
     CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) override;
-    void onDrawViews() override;
     
+private:
     bool isInVisibleArea(CViewRef subview);
 };
+
+void CScrollContentView::drawViews() {
+    const std::vector<CViewRef> &views = subviews();
+    for (const CViewRef &subview : views) {
+        //NOTE: ignore invisible views.
+        if (!isInVisibleArea(subview)) {
+            continue;
+        }
+
+        subview->drawViews();
+    }
+}
 
 CUIResponder *CScrollContentView::findResponder(CLambda<bool (CUIResponder *)> fit) {
     const std::vector<CViewRef> &views = subviews();
@@ -30,23 +44,6 @@ CUIResponder *CScrollContentView::findResponder(CLambda<bool (CUIResponder *)> f
     }
     
     return nullptr;
-}
-
-void CScrollContentView::onDrawViews() {
-    //expose the protected "onDrawViews" method.
-    struct V : CView {
-        void DrawViews() { onDrawViews(); }
-    };
-
-    const std::vector<CViewRef> &views = subviews();
-    for (const CViewRef &subview : views) {
-        //NOTE: ignore invisible views.
-        if (!isInVisibleArea(subview)) {
-            continue;
-        }
-
-        ((V *)subview.get())->DrawViews();
-    }
 }
 
 bool CScrollContentView::isInVisibleArea(CViewRef subview) {
@@ -66,6 +63,9 @@ bool CScrollContentView::isInVisibleArea(CViewRef subview) {
 }
 
 //scroll view:
+
+static const CColor IndicatorColor(0.5f, 0.5f, 0.5f, 0.5f);
+static const float  IndicatorDiameter = 2;
 
 CScrollView::CScrollView(float x, float y, float w, float h) : CView(x, y, w, h) {
     setAcceptMouseWheel(true);
@@ -126,6 +126,30 @@ void CScrollView::setContentOffset(float x, float y) {
 
 float CScrollView::contentX() { return -contentView()->x(); }
 float CScrollView::contentY() { return -contentView()->y(); }
+
+void CScrollView::onDrawForeground(float width, float height) {
+    if (contentView()->height() > height) {
+        float conY = contentView()->y();
+        float conH = contentView()->height();
+        
+        float head = (-conY  / conH) * height;
+        float size = (height / conH) * height;
+        
+        CContextSelectColor(IndicatorColor);
+        CContextDrawRect(width - IndicatorDiameter, head, IndicatorDiameter, size);
+    }
+    
+    if (contentView()->width() > width) {
+        float conX = contentView()->x();
+        float conW = contentView()->width();
+        
+        float head = (-conX / conW) * width;
+        float size = (width / conW) * width;
+        
+        CContextSelectColor(IndicatorColor);
+        CContextDrawRect(head, height - IndicatorDiameter, size, IndicatorDiameter);
+    }
+}
 
 void CScrollView::onTouchBegin(float x, float y) {
     mBeginOriginX = contentView()->x();
