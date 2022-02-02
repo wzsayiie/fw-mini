@@ -88,11 +88,11 @@ MDouble *MDoubleCreate(double  value) { return new MDoubleImpl(value); }
 static int64_t GetInt64(MObject *object, bool *got) {
     *got = true;
     switch (MGetTypeId(object)) {
-        case MTypeIdOf<bool   >::Value: return (int64_t)((MBoolImpl   *)object)->value;
-        case MTypeIdOf<int    >::Value: return (int64_t)((MIntImpl    *)object)->value;
-        case MTypeIdOf<int64_t>::Value: return /* ... */((MInt64Impl  *)object)->value;
-        case MTypeIdOf<float  >::Value: return (int64_t)((MFloatImpl  *)object)->value;
-        case MTypeIdOf<double >::Value: return (int64_t)((MDoubleImpl *)object)->value;
+        case MTypeIdOf<MBool   *>::Value: return (int64_t)((MBoolImpl   *)object)->value;
+        case MTypeIdOf<MInt    *>::Value: return (int64_t)((MIntImpl    *)object)->value;
+        case MTypeIdOf<MInt64  *>::Value: return /* ... */((MInt64Impl  *)object)->value;
+        case MTypeIdOf<MFloat  *>::Value: return (int64_t)((MFloatImpl  *)object)->value;
+        case MTypeIdOf<MDouble *>::Value: return (int64_t)((MDoubleImpl *)object)->value;
     }
     
     *got = false;
@@ -102,11 +102,11 @@ static int64_t GetInt64(MObject *object, bool *got) {
 static double GetDouble(MObject *object, bool *got) {
     *got = true;
     switch (MGetTypeId(object)) {
-        case MTypeIdOf<bool   >::Value: return (double)((MBoolImpl   *)object)->value;
-        case MTypeIdOf<int    >::Value: return (double)((MIntImpl    *)object)->value;
-        case MTypeIdOf<int64_t>::Value: return (double)((MInt64Impl  *)object)->value;
-        case MTypeIdOf<float  >::Value: return (double)((MFloatImpl  *)object)->value;
-        case MTypeIdOf<double >::Value: return /* .. */((MDoubleImpl *)object)->value;
+        case MTypeIdOf<MBool   *>::Value: return (double)((MBoolImpl   *)object)->value;
+        case MTypeIdOf<MInt    *>::Value: return (double)((MIntImpl    *)object)->value;
+        case MTypeIdOf<MInt64  *>::Value: return (double)((MInt64Impl  *)object)->value;
+        case MTypeIdOf<MFloat  *>::Value: return (double)((MFloatImpl  *)object)->value;
+        case MTypeIdOf<MDouble *>::Value: return /* .. */((MDoubleImpl *)object)->value;
     }
     
     *got = false;
