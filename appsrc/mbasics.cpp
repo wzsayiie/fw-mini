@@ -53,43 +53,112 @@ MTypeId MGetTypeId(MObject *object) {
 }
 
 //------------------------------------------------------------------------------
-//MBool & MInt & MInt64 & MFloat & MDouble & MPtr:
+//number types:
 
-template<typename T, typename SUPER> struct _Number : SUPER {
+bool MIsNumber(MTypeId type) {
+    if (type == MTypeIdOf<bool   >::Value) { return true; }
+    if (type == MTypeIdOf<int    >::Value) { return true; }
+    if (type == MTypeIdOf<int64_t>::Value) { return true; }
+    if (type == MTypeIdOf<float  >::Value) { return true; }
+    if (type == MTypeIdOf<double >::Value) { return true; }
+    
+    return false;
+}
 
+template<typename T, typename SUPER> struct Number : SUPER {
     T value;
     
-    _Number(T value) {
+    Number(T value) {
         this->value = value;
     }
 };
 
-typedef _Number<bool     , MBool  > MBoolImpl  ;
-typedef _Number<int      , MInt   > MIntImpl   ;
-typedef _Number<int64_t  , MInt64 > MInt64Impl ;
-typedef _Number<float    , MFloat > MFloatImpl ;
-typedef _Number<double   , MDouble> MDoubleImpl;
-typedef _Number<uint8_t *, MPtr   > MPtrImpl   ;
+typedef Number<bool   , MBool  > MBoolImpl  ;
+typedef Number<int    , MInt   > MIntImpl   ;
+typedef Number<int64_t, MInt64 > MInt64Impl ;
+typedef Number<float  , MFloat > MFloatImpl ;
+typedef Number<double , MDouble> MDoubleImpl;
 
-MBool   *MBoolCreate  (bool     value) { return new MBoolImpl  (value); }
-MInt    *MIntCreate   (int      value) { return new MIntImpl   (value); }
-MInt64  *MInt64Create (int64_t  value) { return new MInt64Impl (value); }
-MFloat  *MFloatCreate (float    value) { return new MFloatImpl (value); }
-MDouble *MDoubleCreate(double   value) { return new MDoubleImpl(value); }
-MPtr    *MPtrCreate   (uint8_t *value) { return new MPtrImpl   (value); }
+MBool   *MBoolCreate  (bool    value) { return new MBoolImpl  (value); }
+MInt    *MIntCreate   (int     value) { return new MIntImpl   (value); }
+MInt64  *MInt64Create (int64_t value) { return new MInt64Impl (value); }
+MFloat  *MFloatCreate (float   value) { return new MFloatImpl (value); }
+MDouble *MDoubleCreate(double  value) { return new MDoubleImpl(value); }
 
-bool     MBoolValue  (MBool   *obj) { return obj ? ((MBoolImpl   *)obj)->value : 0; }
-int      MIntValue   (MInt    *obj) { return obj ? ((MIntImpl    *)obj)->value : 0; }
-int64_t  MInt64Value (MInt64  *obj) { return obj ? ((MInt64Impl  *)obj)->value : 0; }
-float    MFloatValue (MFloat  *obj) { return obj ? ((MFloatImpl  *)obj)->value : 0; }
-double   MDoubleValue(MDouble *obj) { return obj ? ((MDoubleImpl *)obj)->value : 0; }
-uint8_t *MPtrValue   (MPtr    *obj) { return obj ? ((MPtrImpl    *)obj)->value : 0; }
+static int64_t GetInt64(MObject *object, bool *got) {
+    *got = true;
+    switch (MGetTypeId(object)) {
+        case MTypeIdOf<bool   >::Value: return (int64_t)((MBoolImpl   *)object)->value;
+        case MTypeIdOf<int    >::Value: return (int64_t)((MIntImpl    *)object)->value;
+        case MTypeIdOf<int64_t>::Value: return /* ... */((MInt64Impl  *)object)->value;
+        case MTypeIdOf<float  >::Value: return (int64_t)((MFloatImpl  *)object)->value;
+        case MTypeIdOf<double >::Value: return (int64_t)((MDoubleImpl *)object)->value;
+    }
+    
+    *got = false;
+    return 0;
+}
+
+static double GetDouble(MObject *object, bool *got) {
+    *got = true;
+    switch (MGetTypeId(object)) {
+        case MTypeIdOf<bool   >::Value: return (double)((MBoolImpl   *)object)->value;
+        case MTypeIdOf<int    >::Value: return (double)((MIntImpl    *)object)->value;
+        case MTypeIdOf<int64_t>::Value: return (double)((MInt64Impl  *)object)->value;
+        case MTypeIdOf<float  >::Value: return (double)((MFloatImpl  *)object)->value;
+        case MTypeIdOf<double >::Value: return /* .. */((MDoubleImpl *)object)->value;
+    }
+    
+    *got = false;
+    return 0;
+}
+
+static bool GetBool(MObject *object, bool *got) {
+    int64_t value = GetInt64(object, got);
+    return *got ? (bool)value : object != nullptr;
+}
+
+static int   GetInt  (MObject *object, bool *got) { return (int  )GetInt64 (object, got); }
+static float GetFloat(MObject *object, bool *got) { return (float)GetDouble(object, got); }
+
+MBool   *MBoolCopy  (MObject *a) { bool g; bool    v = GetBool  (a, &g); return g ? new MBoolImpl  (v) : nullptr; }
+MInt    *MIntCopy   (MObject *a) { bool g; int     v = GetInt   (a, &g); return g ? new MIntImpl   (v) : nullptr; }
+MInt64  *MInt64Copy (MObject *a) { bool g; int64_t v = GetInt64 (a, &g); return g ? new MInt64Impl (v) : nullptr; }
+MFloat  *MFloatCopy (MObject *a) { bool g; float   v = GetFloat (a, &g); return g ? new MFloatImpl (v) : nullptr; }
+MDouble *MDoubleCopy(MObject *a) { bool g; double  v = GetDouble(a, &g); return g ? new MDoubleImpl(v) : nullptr; }
+
+bool    MBoolValue  (MObject *object) { bool got; return GetBool  (object, &got); }
+int     MIntValue   (MObject *object) { bool got; return GetInt   (object, &got); }
+int64_t MInt64Value (MObject *object) { bool got; return GetInt64 (object, &got); }
+float   MFloatValue (MObject *object) { bool got; return GetFloat (object, &got); }
+double  MDoubleValue(MObject *object) { bool got; return GetDouble(object, &got); }
+
+//------------------------------------------------------------------------------
+//MPtr:
+
+struct MPtrImpl : MPtr {
+    uint8_t *value;
+    
+    MPtrImpl(uint8_t *value) {
+        this->value = value;
+    }
+};
+
+MPtr *MPtrCreate(uint8_t *value) {
+    return new MPtrImpl(value);
+}
+
+uint8_t *MPtrValue(MPtr *object) {
+    if (object) {
+        return ((MPtrImpl *)object)->value;
+    }
+    return nullptr;
+}
 
 //------------------------------------------------------------------------------
 //MString:
 
 struct MStringImpl : MString {
-
     std::string    u8string ;
     std::u16string u16string;
     
@@ -140,7 +209,6 @@ int MStringU16Size(MString *str) { return str ? (int)((MStringImpl *)str)->u16s(
 //MLambda:
 
 struct MLambdaImpl : MLambda {
-    
     MLambdaFunc func;
     MObject    *load;
     
@@ -232,7 +300,6 @@ int MDataSize(MData *data) {
 //MArray:
 
 struct MArrayImpl : MArray {
-    
     std::vector<MObject *> items;
     
     ~MArrayImpl() {
