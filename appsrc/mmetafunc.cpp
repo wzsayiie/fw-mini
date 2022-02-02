@@ -115,7 +115,7 @@ template<typename R, int N> struct Caller {
             //is suitable type.
             return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)ag);
             
-        } else if (MIsNumber(id) && MIsNumber(MGetTypeId(ag))) {
+        } else if (MIsNumberObject(id) && MIsNumberObject(MGetTypeId(ag))) {
             //the numeric type need to convert.
             MObjectRef n = m_auto_release CopyNumber(id, ag);
             return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)n.get());

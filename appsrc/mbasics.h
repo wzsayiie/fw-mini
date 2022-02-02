@@ -63,7 +63,7 @@ M_FUNC_EXPORT MTypeId  MGetTypeId(MObject *object) M_META(MGetTypeId, "args:obj"
 //------------------------------------------------------------------------------
 //number types:
 
-M_FUNC_EXPORT bool MIsNumber(MTypeId type) M_META(MIsNumber, "args:type");
+M_FUNC_EXPORT bool MIsNumberObject(MTypeId type) M_META(MIsNumberObject, "args:type");
 
 m_class(MBool  );
 m_class(MInt   );

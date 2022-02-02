@@ -55,12 +55,12 @@ MTypeId MGetTypeId(MObject *object) {
 //------------------------------------------------------------------------------
 //number types:
 
-bool MIsNumber(MTypeId type) {
-    if (type == MTypeIdOf<bool   >::Value) { return true; }
-    if (type == MTypeIdOf<int    >::Value) { return true; }
-    if (type == MTypeIdOf<int64_t>::Value) { return true; }
-    if (type == MTypeIdOf<float  >::Value) { return true; }
-    if (type == MTypeIdOf<double >::Value) { return true; }
+bool MIsNumberObject(MTypeId type) {
+    if (type == MTypeIdOf<MBool   *>::Value) { return true; }
+    if (type == MTypeIdOf<MInt    *>::Value) { return true; }
+    if (type == MTypeIdOf<MInt64  *>::Value) { return true; }
+    if (type == MTypeIdOf<MFloat  *>::Value) { return true; }
+    if (type == MTypeIdOf<MDouble *>::Value) { return true; }
     
     return false;
 }
