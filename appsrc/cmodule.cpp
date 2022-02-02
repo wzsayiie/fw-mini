@@ -301,8 +301,15 @@ struct PassValue {
         return mType;
     }
     
-    //double does not need to be reinterpreted.
-    template<typename> int64_t asInt64() {
+    bool asBool() {
+        return (bool)mWord.asInt64 || (bool)mString.size() || (bool)mModObj;
+    }
+    
+    int asInt() {
+        return (int)asInt64();
+    }
+    
+    int64_t asInt64() {
         switch (mType) {
             case PassType::Bool  : return (int64_t)mWord.asBool  ;
             case PassType::Int   : return (int64_t)mWord.asInt   ;
@@ -312,12 +319,12 @@ struct PassValue {
             default: return 0;
         }
     }
-
-    template<typename R> R asBool() { return (R)(bool)asInt64<int64_t>(); }
-    template<typename R> R asInt () { return (R)(int )asInt64<int64_t>(); }
-
-    //double does not need to be reinterpreted.
-    template<typename> double asDouble() {
+    
+    float asFloat() {
+        return (float)asDouble();
+    }
+    
+    double asDouble() {
         switch (mType) {
             case PassType::Bool  : return (double)mWord.asBool  ;
             case PassType::Int   : return (double)mWord.asInt   ;
@@ -328,31 +335,28 @@ struct PassValue {
         }
     }
 
-    //float does not need to be reinterpreted.
-    template<typename> float asFloat() {
-        return (float)asDouble<double>();
-    }
-
-    template<typename R> R asIntPtr() {
-        switch (mType) {
-            case PassType::IntPtr: return (R)mWord.asIntPtr ;
-            case PassType::ChrPtr: return (R)mString.c_str();
-            default: return (R)0;
-        }
-    }
-
-    template<typename R> R asChrPtr() {
+    void *asIntPtr() {
         if (mType == PassType::ChrPtr) {
-            return (R)mString.c_str();
+            return (void *)mString.c_str();
         }
-        return (R)0;
+        if (mType == PassType::IntPtr) {
+            return mWord.asIntPtr;
+        }
+        return nullptr;
     }
 
-    template<typename R> R asModObj() {
-        if (mType == PassType::ModObj) {
-            return (R)mModObj.get();
+    cmod_char *asChrPtr() {
+        if (mType == PassType::ChrPtr) {
+            return (cmod_char *)mString.c_str();
         }
-        return (R)0;
+        return nullptr;
+    }
+
+    IModObj *asModObj() {
+        if (mType == PassType::ModObj) {
+            return mModObj.get();
+        }
+        return nullptr;
     }
 
 private:
@@ -430,19 +434,19 @@ template<typename R, int N> struct Caller {
         //function arguments only use 4 types: intptr_t, INT64_T, float and double,
         //to prevent code bloat.
         
-        if (!cmod_strcmp(t, _CModType<bool       >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asBool  <intptr_t>()); }
-        if (!cmod_strcmp(t, _CModType<int        >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asInt   <intptr_t>()); }
-        if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asInt64 <INT64_T >()); }
-        if (!cmod_strcmp(t, _CModType<float      >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asFloat <float   >()); }
-        if (!cmod_strcmp(t, _CModType<double     >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asDouble<double  >()); }
-        if (!cmod_strcmp(t, _CModType<void      *>::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asIntPtr<intptr_t>()); }
-        if (!cmod_strcmp(t, _CModType<cmod_char *>::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asChrPtr<intptr_t>()); }
+        if (!cmod_strcmp(t, _CModType<bool       >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., (intptr_t)a.asBool  ()); }
+        if (!cmod_strcmp(t, _CModType<int        >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., (intptr_t)a.asInt   ()); }
+        if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., (INT64_T )a.asInt64 ()); }
+        if (!cmod_strcmp(t, _CModType<float      >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., /*float */a.asFloat ()); }
+        if (!cmod_strcmp(t, _CModType<double     >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., /*double*/a.asDouble()); }
+        if (!cmod_strcmp(t, _CModType<void      *>::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., (intptr_t)a.asIntPtr()); }
+        if (!cmod_strcmp(t, _CModType<cmod_char *>::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., (intptr_t)a.asChrPtr()); }
 
-        if (a.type() == PassType::ModObj && a.asModObj<IModObj *>()) {
-            CModIntf *src = CModIntfFind(a.asModObj<IModObj *>()->intfName());
+        if (a.type() == PassType::ModObj && a.asModObj()) {
+            CModIntf *src = CModIntfFind(a.asModObj()->intfName());
             CModIntf *dst = CModIntfFind(t);
             if (CModIntfAssignable(src, dst)) {
-                return Caller<R, N + 1>::Run(pass, unfold..., a.asModObj<intptr_t>());
+                return Caller<R, N + 1>::Run(pass, unfold..., (intptr_t)a.asModObj());
             }
         }
         
@@ -493,8 +497,8 @@ bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName) {
     else if (!cmod_strcmp(t, _CModType<cmod_char *>::Value)) { r = (cmod_char *)Caller<intptr_t, 0>::Run(pass); }
     else /* is a object */ {
         r = (IModObj *)Caller<intptr_t, 0>::Run(pass);
-        if (method->retRetain) {
-            r.asModObj<IModObj *>()->release();
+        if (method->retRetain && r.asModObj()) {
+            r.asModObj()->release();
         }
     }
     pass->retValue = r;
@@ -502,20 +506,20 @@ bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName) {
     return true;
 }
 
-bool       CModPassRetBool  (CModPass *p) { return p ? p->retValue.asBool  <bool       >() : false  ; }
-int        CModPassRetInt   (CModPass *p) { return p ? p->retValue.asInt   <int        >() : 0      ; }
-int64_t    CModPassRetInt64 (CModPass *p) { return p ? p->retValue.asInt64 <int64_t    >() : 0      ; }
-float      CModPassRetFloat (CModPass *p) { return p ? p->retValue.asFloat <float      >() : 0.0f   ; }
-double     CModPassRetDouble(CModPass *p) { return p ? p->retValue.asDouble<double     >() : 0.0    ; }
-void      *CModPassRetIntPtr(CModPass *p) { return p ? p->retValue.asIntPtr<void      *>() : nullptr; }
-cmod_char *CModPassRetChrPtr(CModPass *p) { return p ? p->retValue.asChrPtr<cmod_char *>() : nullptr; }
+bool       CModPassRetBool  (CModPass *p) { return p ? p->retValue.asBool  () : false  ; }
+int        CModPassRetInt   (CModPass *p) { return p ? p->retValue.asInt   () : 0      ; }
+int64_t    CModPassRetInt64 (CModPass *p) { return p ? p->retValue.asInt64 () : 0      ; }
+float      CModPassRetFloat (CModPass *p) { return p ? p->retValue.asFloat () : 0.f    ; }
+double     CModPassRetDouble(CModPass *p) { return p ? p->retValue.asDouble() : 0.0    ; }
+void      *CModPassRetIntPtr(CModPass *p) { return p ? p->retValue.asIntPtr() : nullptr; }
+cmod_char *CModPassRetChrPtr(CModPass *p) { return p ? p->retValue.asChrPtr() : nullptr; }
 
 IModObj *CModPassRetainRet(CModPass *pass) {
     if (!pass) {
         return nullptr;
     }
     
-    auto obj = pass->retValue.asModObj<IModObj *>();
+    auto obj = pass->retValue.asModObj();
     if (!obj) {
         return nullptr;
     }
