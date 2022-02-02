@@ -40,14 +40,7 @@ static MObject *CopyObjectFromJSValue(JSValue *value) {
         return MBoolCreate(value.toBool);
         
     } else if (value.isNumber) {
-        double raw = value.toDouble;
-        if ((int64_t)raw < raw) {
-            return MFloatCreate((float)raw);
-        } else {
-            //the double value may exceed the range of int.
-            //convert to int64_t first, so that the low bits can be got.
-            return MIntCreate((int)(int64_t)raw);
-        }
+        return MDoubleCreate(value.toDouble);
         
     } else if (value.isString) {
         return MStringCreateU8(value.toString.UTF8String);
@@ -81,16 +74,12 @@ static JSValue *JSValueFromObject(MObject *object) {
         return nil;
         
     } else if (type == MTypeIdOf<MBool *>::Value) {
-        bool raw = MBoolValue((MBool *)object);
+        bool raw = MBoolValue(object);
         return [JSValue valueWithBool:raw inContext:sContext];
         
-    } else if (type == MTypeIdOf<MFloat *>::Value) {
-        float raw = MFloatValue((MFloat *)object);
+    } else if (MIsNumberObject(type)) {
+        double raw = MDoubleValue(object);
         return [JSValue valueWithDouble:raw inContext:sContext];
-        
-    } else if (type == MTypeIdOf<MInt *>::Value) {
-        int raw = MIntValue((MInt *)object);
-        return [JSValue valueWithInt32:raw inContext:sContext];
         
     } else if (type == MTypeIdOf<MString *>::Value) {
         const char *raw = MStringU8Chars((MString *)object);
