@@ -53,7 +53,7 @@ MTypeId MGetTypeId(MObject *object) {
 }
 
 //------------------------------------------------------------------------------
-//MBool & MInt & MFloat & MPtr:
+//MBool & MInt & MInt64 & MFloat & MDouble & MPtr:
 
 template<typename T, typename SUPER> struct _Number : SUPER {
 
@@ -64,20 +64,26 @@ template<typename T, typename SUPER> struct _Number : SUPER {
     }
 };
 
-typedef _Number<bool     , MBool > MBoolImpl ;
-typedef _Number<int      , MInt  > MIntImpl  ;
-typedef _Number<float    , MFloat> MFloatImpl;
-typedef _Number<uint8_t *, MPtr  > MPtrImpl  ;
+typedef _Number<bool     , MBool  > MBoolImpl  ;
+typedef _Number<int      , MInt   > MIntImpl   ;
+typedef _Number<int64_t  , MInt64 > MInt64Impl ;
+typedef _Number<float    , MFloat > MFloatImpl ;
+typedef _Number<double   , MDouble> MDoubleImpl;
+typedef _Number<uint8_t *, MPtr   > MPtrImpl   ;
 
-MBool  *MBoolCreate (bool     value) { return new MBoolImpl (value); }
-MInt   *MIntCreate  (int      value) { return new MIntImpl  (value); }
-MFloat *MFloatCreate(float    value) { return new MFloatImpl(value); }
-MPtr   *MPtrCreate  (uint8_t *value) { return new MPtrImpl  (value); }
+MBool   *MBoolCreate  (bool     value) { return new MBoolImpl  (value); }
+MInt    *MIntCreate   (int      value) { return new MIntImpl   (value); }
+MInt64  *MInt64Create (int64_t  value) { return new MInt64Impl (value); }
+MFloat  *MFloatCreate (float    value) { return new MFloatImpl (value); }
+MDouble *MDoubleCreate(double   value) { return new MDoubleImpl(value); }
+MPtr    *MPtrCreate   (uint8_t *value) { return new MPtrImpl   (value); }
 
-bool     MBoolValue (MBool  *obj) { return obj ? ((MBoolImpl  *)obj)->value : 0; }
-int      MIntValue  (MInt   *obj) { return obj ? ((MIntImpl   *)obj)->value : 0; }
-float    MFloatValue(MFloat *obj) { return obj ? ((MFloatImpl *)obj)->value : 0; }
-uint8_t *MPtrValue  (MPtr   *obj) { return obj ? ((MPtrImpl   *)obj)->value : 0; }
+bool     MBoolValue  (MBool   *obj) { return obj ? ((MBoolImpl   *)obj)->value : 0; }
+int      MIntValue   (MInt    *obj) { return obj ? ((MIntImpl    *)obj)->value : 0; }
+int64_t  MInt64Value (MInt64  *obj) { return obj ? ((MInt64Impl  *)obj)->value : 0; }
+float    MFloatValue (MFloat  *obj) { return obj ? ((MFloatImpl  *)obj)->value : 0; }
+double   MDoubleValue(MDouble *obj) { return obj ? ((MDoubleImpl *)obj)->value : 0; }
+uint8_t *MPtrValue   (MPtr    *obj) { return obj ? ((MPtrImpl    *)obj)->value : 0; }
 
 //------------------------------------------------------------------------------
 //MString:

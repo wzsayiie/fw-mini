@@ -47,67 +47,79 @@ MTypeId MFuncSelectedArgTypeId(int index) {
     return sIterator()->second.argTypeIds[index];
 }
 
-//NOTE:
-//template instantiation parameters only use 3 types: void, float, and intptr_t,
-//to prevent code bloat.
-//
-
-static intptr_t AsBool(MObject *object) {
+static int64_t AsInt64(MObject *object) {
     switch (MGetTypeId(object)) {
-        case MTypeIdOf<MBool  *>::Value: return (intptr_t)MBoolValue ((MBool  *)object);
-        case MTypeIdOf<MInt   *>::Value: return (intptr_t)MIntValue  ((MInt   *)object);
-        case MTypeIdOf<MFloat *>::Value: return (intptr_t)MFloatValue((MFloat *)object);
+        case MTypeIdOf<MBool   *>::Value: return (int64_t)MBoolValue  ((MBool   *)object);
+        case MTypeIdOf<MInt    *>::Value: return (int64_t)MIntValue   ((MInt    *)object);
+        case MTypeIdOf<MInt64  *>::Value: return (int64_t)MInt64Value ((MInt64  *)object);
+        case MTypeIdOf<MFloat  *>::Value: return (int64_t)MFloatValue ((MFloat  *)object);
+        case MTypeIdOf<MDouble *>::Value: return (int64_t)MDoubleValue((MDouble *)object);
 
-        default: return object != nullptr;
+        default: return 0;
     }
 }
 
-static intptr_t AsInt(MObject *object) {
+static int AsInt(MObject *object) {
+    return (int)AsInt64(object);
+}
+
+static double AsDouble(MObject *object) {
     switch (MGetTypeId(object)) {
-        case MTypeIdOf<MBool  *>::Value: return (intptr_t)MBoolValue ((MBool  *)object);
-        case MTypeIdOf<MInt   *>::Value: return (intptr_t)MIntValue  ((MInt   *)object);
-        case MTypeIdOf<MFloat *>::Value: return (intptr_t)MFloatValue((MFloat *)object);
+        case MTypeIdOf<MBool   *>::Value: return (double)MBoolValue  ((MBool   *)object);
+        case MTypeIdOf<MInt    *>::Value: return (double)MIntValue   ((MInt    *)object);
+        case MTypeIdOf<MInt64  *>::Value: return (double)MInt64Value ((MInt64  *)object);
+        case MTypeIdOf<MFloat  *>::Value: return (double)MFloatValue ((MFloat  *)object);
+        case MTypeIdOf<MDouble *>::Value: return /* .. */MDoubleValue((MDouble *)object);
 
         default: return 0;
     }
 }
 
 static float AsFloat(MObject *object) {
+    return (float)AsDouble(object);
+}
+
+static bool AsBool(MObject *object) {
+    auto value = (bool)AsInt64(object);
+    return value ? true : object != nullptr;
+}
+
+static const void *AsPtr(MObject *object) {
     switch (MGetTypeId(object)) {
-        case MTypeIdOf<MBool  *>::Value: return (float)MBoolValue ((MBool  *)object);
-        case MTypeIdOf<MInt   *>::Value: return (float)MIntValue  ((MInt   *)object);
-        case MTypeIdOf<MFloat *>::Value: return (float)MFloatValue((MFloat *)object);
+        case MTypeIdOf<MString *>::Value: return MStringU8Chars((MString *)object);
+        case MTypeIdOf<MPtr    *>::Value: return MPtrValue     ((MPtr    *)object);
 
         default: return 0;
     }
 }
 
-static intptr_t AsPtr(MObject *object) {
-    switch (MGetTypeId(object)) {
-        case MTypeIdOf<MPtr    *>::Value: return (intptr_t)MPtrValue     ((MPtr    *)object);
-        case MTypeIdOf<MString *>::Value: return (intptr_t)MStringU8Chars((MString *)object);
-
-        default: return 0;
-    }
-}
-
-static intptr_t AsS8Ptr(MObject *object) {
+static const char *AsU8Ptr(MObject *object) {
     if (MGetTypeId(object) == MTypeIdOf<MString *>::Value) {
-        return (intptr_t)MStringU8Chars((MString *)object);
+        return MStringU8Chars((MString *)object);
     }
     return 0;
 }
 
-static intptr_t AsS16Ptr(MObject *object) {
+static const char16_t *AsU16Ptr(MObject *object) {
     if (MGetTypeId(object) == MTypeIdOf<MString *>::Value) {
-        return (intptr_t)MStringU16Chars((MString *)object);
+        return MStringU16Chars((MString *)object);
     }
     return 0;
 }
 
-static intptr_t AsMObject(MObject *object) {
-    return (intptr_t)object;
+static MObject *AsMObject(MObject *object) {
+    return object;
 }
+
+//NOTE:
+//template instantiation parameters only use 5 types: void, intptr_t, INT64_T, float and double,
+//to prevent code bloat.
+
+#if M_PTR_64
+    typedef intptr_t INT64_T;
+#else
+    typedef int64_t  INT64_T;
+#endif
 
 template<typename R, int N> struct Caller {
 
@@ -117,18 +129,20 @@ template<typename R, int N> struct Caller {
             return ((R (*)(U...))meta.address)(unfold...);
         }
 
-        MObject *item = MArrayItem(args, N);
-        MTypeId id = meta.argTypeIds[N];
+        MObject *ag = MArrayItem(args, N);
+        MTypeId  id = meta.argTypeIds[N];
 
-        if (id == MTypeIdOf<bool      >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsBool  (item)); }
-        if (id == MTypeIdOf<int       >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsInt   (item)); }
-        if (id == MTypeIdOf<float     >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsFloat (item)); }
-        if (id == MTypeIdOf<uint8_t  *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsPtr   (item)); }
-        if (id == MTypeIdOf<char     *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsS8Ptr (item)); }
-        if (id == MTypeIdOf<char16_t *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., AsS16Ptr(item)); }
+        if (id == MTypeIdOf<bool      >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)AsBool  (ag)); }
+        if (id == MTypeIdOf<int       >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)AsInt   (ag)); }
+        if (id == MTypeIdOf<int64_t   >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., (INT64_T )AsInt64 (ag)); }
+        if (id == MTypeIdOf<float     >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., /* ...  */AsFloat (ag)); }
+        if (id == MTypeIdOf<double    >::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., /* ...  */AsDouble(ag)); }
+        if (id == MTypeIdOf<uint8_t  *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)AsPtr   (ag)); }
+        if (id == MTypeIdOf<char     *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)AsU8Ptr (ag)); }
+        if (id == MTypeIdOf<char16_t *>::Value) { return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)AsU16Ptr(ag)); }
 
-        if (id == MTypeIdOf<MObject *>::Value || id == MGetTypeId(item)) {
-            return Caller<R, N + 1>::Run(meta, args, unfold..., AsMObject(item));
+        if (id == MTypeIdOf<MObject *>::Value || id == MGetTypeId(ag)) {
+            return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)AsMObject(ag));
         } else {
             return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)0);
         }
@@ -158,7 +172,9 @@ MObject *MFuncCallCopyRet(MString *name, MArray *args) {
     
     if (id == MTypeIdOf<bool      >::Value) { return MBoolCreate     ((bool      )Caller<intptr_t, 0>::Run(meta, args)); }
     if (id == MTypeIdOf<int       >::Value) { return MIntCreate      ((int       )Caller<intptr_t, 0>::Run(meta, args)); }
-    if (id == MTypeIdOf<float     >::Value) { return MFloatCreate    ((float     )Caller<float   , 0>::Run(meta, args)); }
+    if (id == MTypeIdOf<int64_t   >::Value) { return MInt64Create    ((int64_t   )Caller<INT64_T , 0>::Run(meta, args)); }
+    if (id == MTypeIdOf<float     >::Value) { return MFloatCreate    (/* ... .. */Caller<float   , 0>::Run(meta, args)); }
+    if (id == MTypeIdOf<double    >::Value) { return MDoubleCreate   (/* ... .. */Caller<double  , 0>::Run(meta, args)); }
     if (id == MTypeIdOf<uint8_t  *>::Value) { return MPtrCreate      ((uint8_t  *)Caller<intptr_t, 0>::Run(meta, args)); }
     if (id == MTypeIdOf<char     *>::Value) { return MStringCreateU8 ((char     *)Caller<intptr_t, 0>::Run(meta, args)); }
     if (id == MTypeIdOf<char16_t *>::Value) { return MStringCreateU16((char16_t *)Caller<intptr_t, 0>::Run(meta, args)); }
@@ -166,8 +182,7 @@ MObject *MFuncCallCopyRet(MString *name, MArray *args) {
     if (id == MTypeIdOf<void>::Value) {
         Caller<void, 0>::Run(meta, args);
         return nullptr;
-    } else {
-        //must be a MObject.
+    } else /* is a MObject */ {
         auto object = (MObject *)Caller<intptr_t, 0>::Run(meta, args);
         return meta.retRetain ? object : MRetain(object);
     }

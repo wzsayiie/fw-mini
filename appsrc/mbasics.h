@@ -17,7 +17,9 @@
 template<> struct MTypeIdOf<void            > { static const MTypeId Value = MHashId("void"  ); };
 template<> struct MTypeIdOf<bool            > { static const MTypeId Value = MHashId("bool"  ); };
 template<> struct MTypeIdOf<int             > { static const MTypeId Value = MHashId("int"   ); };
+template<> struct MTypeIdOf<int64_t         > { static const MTypeId Value = MHashId("int64" ); };
 template<> struct MTypeIdOf<float           > { static const MTypeId Value = MHashId("float" ); };
+template<> struct MTypeIdOf<double          > { static const MTypeId Value = MHashId("double"); };
 template<> struct MTypeIdOf<uint8_t        *> { static const MTypeId Value = MHashId("intptr"); };
 template<> struct MTypeIdOf<const uint8_t  *> { static const MTypeId Value = MHashId("intptr"); };
 template<> struct MTypeIdOf<char           *> { static const MTypeId Value = MHashId("u8ptr" ); };
@@ -61,20 +63,26 @@ M_FUNC_EXPORT MTypeId  MGetTypeId(MObject *object) M_META(MGetTypeId, "args:obj"
 //------------------------------------------------------------------------------
 //MBool & MInt & MFloat & MPtr:
 
-m_class(MBool );
-m_class(MInt  );
-m_class(MFloat);
-m_class(MPtr  );
+m_class(MBool  );
+m_class(MInt   );
+m_class(MInt64 );
+m_class(MFloat );
+m_class(MDouble);
+m_class(MPtr   );
 
-M_FUNC_EXPORT MBool  *MBoolCreate (bool     value) M_META(MBoolCreate , "args:value");
-M_FUNC_EXPORT MInt   *MIntCreate  (int      value) M_META(MIntCreate  , "args:value");
-M_FUNC_EXPORT MFloat *MFloatCreate(float    value) M_META(MFloatCreate, "args:value");
-M_FUNC_EXPORT MPtr   *MPtrCreate  (uint8_t *value) M_META(MPtrCreate  , "args:value");
+M_FUNC_EXPORT MBool   *MBoolCreate  (bool     value) M_META(MBoolCreate  , "args:value");
+M_FUNC_EXPORT MInt    *MIntCreate   (int      value) M_META(MIntCreate   , "args:value");
+M_FUNC_EXPORT MInt64  *MInt64Create (int64_t  value) M_META(MInt64Create , "args:value");
+M_FUNC_EXPORT MFloat  *MFloatCreate (float    value) M_META(MFloatCreate , "args:value");
+M_FUNC_EXPORT MDouble *MDoubleCreate(double   value) M_META(MDoubleCreate, "args:value");
+M_FUNC_EXPORT MPtr    *MPtrCreate   (uint8_t *value) M_META(MPtrCreate   , "args:value");
 
-M_FUNC_EXPORT bool     MBoolValue (MBool  *object) M_META(MBoolValue , "args:obj");
-M_FUNC_EXPORT int      MIntValue  (MInt   *object) M_META(MIntValue  , "args:obj");
-M_FUNC_EXPORT float    MFloatValue(MFloat *object) M_META(MFloatValue, "args:obj");
-M_FUNC_EXPORT uint8_t *MPtrValue  (MPtr   *object) M_META(MPtrValue  , "args:obj");
+M_FUNC_EXPORT bool     MBoolValue  (MBool   *object) M_META(MBoolValue  , "args:obj");
+M_FUNC_EXPORT int      MIntValue   (MInt    *object) M_META(MIntValue   , "args:obj");
+M_FUNC_EXPORT int64_t  MInt64Value (MInt64  *object) M_META(MInt64Value , "args:obj");
+M_FUNC_EXPORT float    MFloatValue (MFloat  *object) M_META(MFloatValue , "args:obj");
+M_FUNC_EXPORT double   MDoubleValue(MDouble *object) M_META(MDoubleValue, "args:obj");
+M_FUNC_EXPORT uint8_t *MPtrValue   (MPtr    *object) M_META(MPtrValue   , "args:obj");
 
 //------------------------------------------------------------------------------
 //MString:
