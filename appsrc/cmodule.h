@@ -1,8 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <memory>
-#include <string>
+#include "minikit.h"
 
 //the character set used by modules:
 //
@@ -132,35 +130,29 @@ template<typename R, typename C, typename... A> int _CModCollectMeta(
 //use followed functions to access interface metadata:
 //
 
-#if _MSC_VER
-    #define CMOD_FUNC extern "C" __declspec(dllexport)
-#else
-    #define CMOD_FUNC extern "C" __attribute((visibility("default")))
-#endif
-
 struct CModIntf;
 struct CModMethod;
 
-CMOD_FUNC int       CModIntfCount();
-CMOD_FUNC CModIntf *CModIntfEntry(int intfIndex);
-CMOD_FUNC CModIntf *CModIntfFind (const cmod_char *intfName);
+M_FUNC_EXPORT int       CModIntfCount();
+M_FUNC_EXPORT CModIntf *CModIntfEntry(int intfIndex);
+M_FUNC_EXPORT CModIntf *CModIntfFind (const cmod_char *intfName);
 
-CMOD_FUNC const cmod_char *CModIntfName          (CModIntf *intf);
-CMOD_FUNC bool             CModIntfAssignable    (CModIntf *intf, CModIntf *target);
-CMOD_FUNC void            *CModIntfCreateShellObj(CModIntf *intf);
-CMOD_FUNC CModIntf        *CModIntfBase          (CModIntf *intf);
+M_FUNC_EXPORT const cmod_char *CModIntfName          (CModIntf *intf);
+M_FUNC_EXPORT bool             CModIntfAssignable    (CModIntf *intf, CModIntf *target);
+M_FUNC_EXPORT void            *CModIntfCreateShellObj(CModIntf *intf);
+M_FUNC_EXPORT CModIntf        *CModIntfBase          (CModIntf *intf);
 
-CMOD_FUNC int         CModMethodCount(CModIntf *intf);
-CMOD_FUNC CModMethod *CModMethodEntry(CModIntf *intf, int methodIndex);
-CMOD_FUNC CModMethod *CModMethodFind (CModIntf *intf, const cmod_char *methodName);
+M_FUNC_EXPORT int         CModMethodCount(CModIntf *intf);
+M_FUNC_EXPORT CModMethod *CModMethodEntry(CModIntf *intf, int methodIndex);
+M_FUNC_EXPORT CModMethod *CModMethodFind (CModIntf *intf, const cmod_char *methodName);
 
-CMOD_FUNC const cmod_char *CModMethodName     (CModMethod *method);
-CMOD_FUNC void            *CModMethodEqualFunc(CModMethod *method);
-CMOD_FUNC _CModVPtr       *CModMethodVPtr     (CModMethod *method);
-CMOD_FUNC const cmod_char *CModMethodRetType  (CModMethod *method);
-CMOD_FUNC bool             CModMethodRetRetain(CModMethod *method);
-CMOD_FUNC int              CModMethodArgCount (CModMethod *method);
-CMOD_FUNC const cmod_char *CModMethodArgType  (CModMethod *method, int argIndex);
+M_FUNC_EXPORT const cmod_char *CModMethodName     (CModMethod *method);
+M_FUNC_EXPORT void            *CModMethodEqualFunc(CModMethod *method);
+M_FUNC_EXPORT _CModVPtr       *CModMethodVPtr     (CModMethod *method);
+M_FUNC_EXPORT const cmod_char *CModMethodRetType  (CModMethod *method);
+M_FUNC_EXPORT bool             CModMethodRetRetain(CModMethod *method);
+M_FUNC_EXPORT int              CModMethodArgCount (CModMethod *method);
+M_FUNC_EXPORT const cmod_char *CModMethodArgType  (CModMethod *method, int argIndex);
 
 //use "IModObj", "cmod_intf" and "CMOD_META" to define a interface:
 //
@@ -252,34 +244,34 @@ template<typename R, typename C, typename... A> R _CModDefaultReturn(R (C::*)(A.
 
 struct CModPass;
 
-CMOD_FUNC CModPass *CModPassCreate();
-CMOD_FUNC void CModPassRelease(CModPass *pass);
+M_FUNC_EXPORT CModPass *CModPassCreate();
+M_FUNC_EXPORT void CModPassRelease(CModPass *pass);
 
-CMOD_FUNC void CModPassPushBool  (CModPass *pass, bool             value);
-CMOD_FUNC void CModPassPushInt   (CModPass *pass, int              value);
-CMOD_FUNC void CModPassPushInt64 (CModPass *pass, int64_t          value);
-CMOD_FUNC void CModPassPushFloat (CModPass *pass, float            value);
-CMOD_FUNC void CModPassPushDouble(CModPass *pass, double           value);
-CMOD_FUNC void CModPassPushIntPtr(CModPass *pass, const void      *value);
-CMOD_FUNC void CModPassPushChrPtr(CModPass *pass, const cmod_char *value);
-CMOD_FUNC void CModPassPushObj   (CModPass *pass, IModObj         *value);
+M_FUNC_EXPORT void CModPassPushBool  (CModPass *pass, bool             value);
+M_FUNC_EXPORT void CModPassPushInt   (CModPass *pass, int              value);
+M_FUNC_EXPORT void CModPassPushInt64 (CModPass *pass, int64_t          value);
+M_FUNC_EXPORT void CModPassPushFloat (CModPass *pass, float            value);
+M_FUNC_EXPORT void CModPassPushDouble(CModPass *pass, double           value);
+M_FUNC_EXPORT void CModPassPushIntPtr(CModPass *pass, const void      *value);
+M_FUNC_EXPORT void CModPassPushChrPtr(CModPass *pass, const cmod_char *value);
+M_FUNC_EXPORT void CModPassPushObj   (CModPass *pass, IModObj         *value);
 
-CMOD_FUNC bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName);
+M_FUNC_EXPORT bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName);
 
-CMOD_FUNC bool       CModPassRetBool  (CModPass *pass);
-CMOD_FUNC int        CModPassRetInt   (CModPass *pass);
-CMOD_FUNC int64_t    CModPassRetInt64 (CModPass *pass);
-CMOD_FUNC float      CModPassRetFloat (CModPass *pass);
-CMOD_FUNC double     CModPassRetDouble(CModPass *pass);
-CMOD_FUNC void      *CModPassRetIntPtr(CModPass *pass);
-CMOD_FUNC cmod_char *CModPassRetChrPtr(CModPass *pass);
-CMOD_FUNC IModObj   *CModPassRetainRet(CModPass *pass);
+M_FUNC_EXPORT bool       CModPassRetBool  (CModPass *pass);
+M_FUNC_EXPORT int        CModPassRetInt   (CModPass *pass);
+M_FUNC_EXPORT int64_t    CModPassRetInt64 (CModPass *pass);
+M_FUNC_EXPORT float      CModPassRetFloat (CModPass *pass);
+M_FUNC_EXPORT double     CModPassRetDouble(CModPass *pass);
+M_FUNC_EXPORT void      *CModPassRetIntPtr(CModPass *pass);
+M_FUNC_EXPORT cmod_char *CModPassRetChrPtr(CModPass *pass);
+M_FUNC_EXPORT IModObj   *CModPassRetainRet(CModPass *pass);
 
 //use followed functions to implement a interface on runtime:
 //
 
 struct CModCls;
 
-CMOD_FUNC CModCls *CModClsImplement(const cmod_char *intfName);
-CMOD_FUNC void     CModDefineMethod(CModCls *cls, const cmod_char *methodName, void *func);
-CMOD_FUNC IModObj *CModCreateObj   (CModCls *cls, void *injectedObj);
+M_FUNC_EXPORT CModCls *CModClsImplement(const cmod_char *intfName);
+M_FUNC_EXPORT void     CModDefineMethod(CModCls *cls, const cmod_char *methodName, void *func);
+M_FUNC_EXPORT IModObj *CModCreateObj   (CModCls *cls, void *injectedObj);

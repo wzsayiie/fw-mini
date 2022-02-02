@@ -1,7 +1,5 @@
 #include "cmodule.h"
 #include <algorithm>
-#include <map>
-#include <vector>
 
 //string assistant functions:
 //
@@ -409,6 +407,12 @@ static CModMethod *FindMethod(IModObj *obj, const cmod_char *methodName) {
     return nullptr;
 }
 
+#if M_PTR_64
+    typedef intptr_t INT64_T;
+#else
+    typedef int64_t  INT64_T;
+#endif
+
 template<typename R, int N> struct Caller {
 
     template<typename... U> static R Run(CModPass *pass, U... unfold) {
@@ -423,12 +427,12 @@ template<typename R, int N> struct Caller {
         PassValue a = pass->argValues[N];
 
         //NOTE:
-        //function arguments only use 4 types: intptr_t, int64_t, float and double,
+        //function arguments only use 4 types: intptr_t, INT64_T, float and double,
         //to prevent code bloat.
         
         if (!cmod_strcmp(t, _CModType<bool       >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asBool  <intptr_t>()); }
         if (!cmod_strcmp(t, _CModType<int        >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asInt   <intptr_t>()); }
-        if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asInt64 <int64_t >()); }
+        if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asInt64 <INT64_T >()); }
         if (!cmod_strcmp(t, _CModType<float      >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asFloat <float   >()); }
         if (!cmod_strcmp(t, _CModType<double     >::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asDouble<double  >()); }
         if (!cmod_strcmp(t, _CModType<void      *>::Value)) { return Caller<R, N + 1>::Run(pass, unfold..., a.asIntPtr<intptr_t>()); }
@@ -476,19 +480,18 @@ bool CModPassCall(CModPass *pass, IModObj *obj, const cmod_char *methodName) {
     PassValue r;
     
     //NOTE:
-    //return value only use 5 types: void, intptr_t, int64_t, float and double,
+    //return value only use 5 types: void, intptr_t, INT64_T, float and double,
     //to prevent code bloat.
     
     if /**/ (!cmod_strcmp(t, _CModType<void       >::Value)) { /* ... ... ... */Caller<void    , 0>::Run(pass); }
     else if (!cmod_strcmp(t, _CModType<bool       >::Value)) { r = (bool       )Caller<intptr_t, 0>::Run(pass); }
     else if (!cmod_strcmp(t, _CModType<int        >::Value)) { r = (int        )Caller<intptr_t, 0>::Run(pass); }
-    else if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { r = (int64_t    )Caller<int64_t , 0>::Run(pass); }
+    else if (!cmod_strcmp(t, _CModType<int64_t    >::Value)) { r = (int64_t    )Caller<INT64_T , 0>::Run(pass); }
     else if (!cmod_strcmp(t, _CModType<float      >::Value)) { r = (float      )Caller<float   , 0>::Run(pass); }
     else if (!cmod_strcmp(t, _CModType<double     >::Value)) { r = (double     )Caller<double  , 0>::Run(pass); }
     else if (!cmod_strcmp(t, _CModType<void      *>::Value)) { r = (void      *)Caller<intptr_t, 0>::Run(pass); }
     else if (!cmod_strcmp(t, _CModType<cmod_char *>::Value)) { r = (cmod_char *)Caller<intptr_t, 0>::Run(pass); }
-    else {
-        //must be a MObject.
+    else /* is a object */ {
         r = (IModObj *)Caller<intptr_t, 0>::Run(pass);
         if (method->retRetain) {
             r.asModObj<IModObj *>()->release();
