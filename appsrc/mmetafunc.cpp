@@ -52,7 +52,7 @@ static const void *_PtrValue(MObject *object) {
         case MTypeIdOf<MString *>::Value: return MStringU8Chars((MString *)object);
         case MTypeIdOf<MPtr    *>::Value: return MPtrValue     ((MPtr    *)object);
 
-        default: return 0;
+        default: return nullptr;
     }
 }
 
@@ -60,25 +60,26 @@ static const char *_U8PtrValue(MObject *object) {
     if (MGetTypeId(object) == MTypeIdOf<MString *>::Value) {
         return MStringU8Chars((MString *)object);
     }
-    return 0;
+    return nullptr;
 }
 
 static const char16_t *_U16PtrValue(MObject *object) {
     if (MGetTypeId(object) == MTypeIdOf<MString *>::Value) {
         return MStringU16Chars((MString *)object);
     }
-    return 0;
+    return nullptr;
 }
 
-static MObject *CopyNumber(MTypeId dst, MObject *src) {
+static MObject *CopyNumberObject(MTypeId dst, MObject *src) {
     switch (dst) {
-        case MTypeIdOf<bool   >::Value: return MBoolCopy  (src);
-        case MTypeIdOf<int    >::Value: return MIntCopy   (src);
-        case MTypeIdOf<int64_t>::Value: return MInt64Copy (src);
-        case MTypeIdOf<float  >::Value: return MFloatCopy (src);
-        case MTypeIdOf<double >::Value: return MDoubleCopy(src);
+        case MTypeIdOf<MBool   *>::Value: return MBoolCopy  (src);
+        case MTypeIdOf<MInt    *>::Value: return MIntCopy   (src);
+        case MTypeIdOf<MInt64  *>::Value: return MInt64Copy (src);
+        case MTypeIdOf<MFloat  *>::Value: return MFloatCopy (src);
+        case MTypeIdOf<MDouble *>::Value: return MDoubleCopy(src);
+
+        default: return nullptr;
     }
-    return nullptr;
 }
 
 //NOTE:
@@ -117,7 +118,7 @@ template<typename R, int N> struct Caller {
             
         } else if (MIsNumberObject(id) && MIsNumberObject(MGetTypeId(ag))) {
             //the numeric type need to convert.
-            MObjectRef n = m_auto_release CopyNumber(id, ag);
+            MObjectRef n = m_auto_release CopyNumberObject(id, ag);
             return Caller<R, N + 1>::Run(meta, args, unfold..., (intptr_t)n.get());
             
         } else {
@@ -129,7 +130,7 @@ template<typename R, int N> struct Caller {
 
 template<typename R> struct Caller<R, MFuncMaxArgCount> {
 
-    template<typename... U> static R Run(const _MFuncMeta &meta, MArray *args, U... unfold) {
+    template<typename... U> static R Run(const _MFuncMeta &meta, MArray *, U... unfold) {
         return ((R (*)(U...))meta.address)(unfold...);
     }
 };
