@@ -120,6 +120,8 @@ static void OnInitialize() MAPP_LAUNCH(OnInitialize, MAppLaunchPriority_Scene) {
             case MWindowEvent_TouchBegin: OnHitBegin(); break;
             case MWindowEvent_TouchMove : OnHitMove (); break;
             case MWindowEvent_TouchEnd  : OnHitEnd  (); break;
+
+            default:;
         }
     };
     MWindowAddListener(lambda.get());
@@ -127,7 +129,7 @@ static void OnInitialize() MAPP_LAUNCH(OnInitialize, MAppLaunchPriority_Scene) {
 
 GSpriteRef GSprite::createSprite(float x, float y, float width, float height) {
     //the last sprite is on the top.
-    float z = (float)(++sSpriteCount());
+    auto z = (float)(++sSpriteCount());
 
     GSpriteRef sprite(new GSprite);
 
