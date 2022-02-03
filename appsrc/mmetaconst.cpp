@@ -15,8 +15,8 @@ void _MConstSetU8Chars(const char *name, const char *value, const char *note) {
         meta.constNote   = stringNote;
         meta.benchmarkId = MTypeIdOf<MString *>::Value;
         meta.stringValue = stringValue;
-        meta.intValue    = atoi(value);
-        meta.floatValue  = (float)atof(value);
+        meta.intValue    = (int)strtol(value, nullptr, 10);
+        meta.floatValue  = strtof(value, nullptr);
     }
     sMetaMap()[name] = meta;
 }
@@ -34,8 +34,8 @@ void _MConstSetU16Chars(const char *name, const char16_t *value, const char *not
         meta.constNote   = stringNote;
         meta.benchmarkId = MTypeIdOf<MString *>::Value;
         meta.stringValue = stringValue;
-        meta.intValue    = atoi(chars);
-        meta.floatValue  = (float)atof(chars);
+        meta.intValue    = (int)strtol(chars, nullptr, 10);
+        meta.floatValue  = strtof(chars, nullptr);
     }
     sMetaMap()[name] = meta;
 }
