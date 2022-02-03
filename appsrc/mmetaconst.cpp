@@ -1,8 +1,8 @@
 #include "mmetaconst.h"
 #include <cstdlib>
 
-static def_singleton(sMetaMap , std::map<std::string, _MConstMeta>());
-static def_singleton(sIterator, std::map<std::string, _MConstMeta>::iterator());
+static def_singleton(sMetaMap , std::map<std::string, _MConstMeta>())
+static def_singleton(sIterator, std::map<std::string, _MConstMeta>::iterator())
 
 void _MConstSetU8Chars(const char *name, const char *value, const char *note) {
     //intentional memory leak.

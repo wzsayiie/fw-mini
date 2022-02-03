@@ -11,4 +11,4 @@ void _GCamera::setFocusY(float y) { mFocusY = y; }
 float _GCamera::focusX() { return mFocusX; }
 float _GCamera::focusY() { return mFocusY; }
 
-def_singleton(GCamera, _GCameraRef(new _GCamera));
+def_singleton(GCamera, _GCameraRef(new _GCamera))

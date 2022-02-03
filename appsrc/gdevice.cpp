@@ -29,4 +29,4 @@ void _GDevice::OnMouseMove() {
     }
 }
 
-def_singleton(GDevice, _GDeviceRef(new _GDevice));
+def_singleton(GDevice, _GDeviceRef(new _GDevice))

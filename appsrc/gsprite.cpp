@@ -2,9 +2,9 @@
 #include <algorithm>
 #include "gcamera.h"
 
-static def_singleton(sSprites     , std::set<GSpriteRef>());
-static def_singleton(sSpriteCount , int());
-static def_singleton(sHitingSprite, GSpriteRef());
+static def_singleton(sSprites     , std::set<GSpriteRef>())
+static def_singleton(sSpriteCount , int())
+static def_singleton(sHitingSprite, GSpriteRef())
 
 static bool SmallerZForward(const GSpriteRef &a, const GSpriteRef &b) { return a->z() <  b->z(); }
 static bool BiggerZForward (const GSpriteRef &a, const GSpriteRef &b) { return a->z() >= b->z(); }

@@ -36,10 +36,10 @@ struct CallingFrame {
     }
 };
 
-static def_singleton(sFuncMap      , std::map<std::string, MLambdaRef>());
-static def_singleton(sCallingFrames, std::vector<CallingFrame>());
-static def_singleton(sErrorListener, MLambdaRef());
-static def_singleton(sLastError    , MStringRef());
+static def_singleton(sFuncMap      , std::map<std::string, MLambdaRef>())
+static def_singleton(sCallingFrames, std::vector<CallingFrame>())
+static def_singleton(sErrorListener, MLambdaRef())
+static def_singleton(sLastError    , MStringRef())
 
 MObject *_MJsOnCallCopyRet(MString *name, MArray *params) {
     const char *chars = MStringU8Chars(name);
