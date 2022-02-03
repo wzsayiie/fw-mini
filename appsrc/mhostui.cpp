@@ -4,7 +4,7 @@
 //graphs:
 
 def_struct(Graph) {
-    virtual ~Graph() {}
+    virtual ~Graph() = default;
     virtual _MGraph type() = 0;
 };
 
