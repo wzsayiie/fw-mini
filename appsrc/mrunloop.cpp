@@ -13,7 +13,7 @@ float MTickSeconds() {
         zero = tick.count();
     }
 
-    return (tick.count() - zero) / 1000.f;
+    return (float)(tick.count() - zero) / 1000.f;
 }
 
 def_struct(TaskConfig) {
