@@ -10,7 +10,7 @@ const char * MFormatVArgs(_Printf_format_string_ const char *format, va_list lis
 }
 
 const char *MFormat(_Printf_format_string_ const char *format, ...) {
-    const char *buffer = nullptr; {
+    const char *buffer; {
         va_list list;
         va_start(list, format);
         buffer = MFormatVArgs(format, list);
@@ -31,7 +31,7 @@ const char *MFormat(_Printf_format_string_ const char *format, ...) {
 #endif
 
 void MDebug(_Printf_format_string_ const char *format, ...) {
-    const char *message = nullptr; {
+    const char *message; {
         va_list list;
         va_start(list, format);
         message = MFormatVArgs(format, list);

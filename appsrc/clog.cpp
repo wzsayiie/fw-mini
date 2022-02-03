@@ -1,7 +1,7 @@
 #include "clog.h"
 
 void CLog(_Printf_format_string_ const char *format, ...) {
-    const char *chars = nullptr; {
+    const char *chars; {
         va_list list;
         va_start(list, format);
         chars = MFormatVArgs(format, list);
