@@ -164,7 +164,7 @@ template<> struct _CModType<struct IModObj *> {
     static constexpr const cmod_char *const Value = CMOD_L "IModObj";
 };
 struct IModObj {
-    virtual ~IModObj();
+    virtual ~IModObj() = default;
 
     virtual const cmod_char *intfName();
     virtual IModObj *retain();

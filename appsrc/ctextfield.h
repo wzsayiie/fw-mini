@@ -7,7 +7,7 @@ class CTextField;
 //text field delegate:
 
 struct CTextFieldDelegate {
-    virtual ~CTextFieldDelegate() {}
+    virtual ~CTextFieldDelegate() = default;
 
     virtual void onTextEditBeginEditing(CTextField *textField) {}
     virtual void onTextEditTextChange  (CTextField *textField) {}

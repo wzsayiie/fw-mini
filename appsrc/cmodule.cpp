@@ -211,9 +211,6 @@ const cmod_char *CModMethodArgType(CModMethod *method, int argIndex) {
 //IModObj, the base of all interfaces:
 //
 
-IModObj::~IModObj() {
-}
-
 const cmod_char *IModObj::intfName() {
     return _CModType<IModObj *>::Value;
 }

@@ -49,7 +49,7 @@ public:
     int  _refCount();
 
 protected:
-    virtual ~MObject() {}
+    virtual ~MObject() = default;
 
 private:
     _MRefObserver mRefObserver;

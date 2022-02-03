@@ -7,7 +7,7 @@ class CScrollView;
 //scroll view delegate:
 
 struct CScrollViewDelegate {
-    virtual ~CScrollViewDelegate() {}
+    virtual ~CScrollViewDelegate() = default;
     virtual void onScrollViewScrolling(CScrollView *scrollView, bool dragged) {}
 };
 
