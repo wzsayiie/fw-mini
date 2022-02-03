@@ -41,11 +41,11 @@ static MString *CopyString(MData *data) {
 
     while (u8begin < u8end) {
         char32_t chr = 0;
-        int size = MReadU8(u8begin, u8end, &chr);
+        int count = MReadU8(u8begin, u8end, &chr);
 
-        if (size > 0) {
-            u8string.append(u8begin, u8begin + size);
-            u8begin += size;
+        if (count > 0) {
+            u8string.append(u8begin, u8begin + count);
+            u8begin += count;
         } else {
             break;
         }
@@ -63,11 +63,11 @@ static MString *CopyString(MData *data) {
 
     while (u16begin < u16end) {
         char32_t chr = 0;
-        int size = MReadU16(u16begin, u16end, &chr);
+        int count = MReadU16(u16begin, u16end, &chr);
 
-        if (size > 0) {
-            u16string.append(u16begin, u16begin + size);
-            u16begin += size;
+        if (count > 0) {
+            u16string.append(u16begin, u16begin + count);
+            u16begin += count;
         } else {
             break;
         }
