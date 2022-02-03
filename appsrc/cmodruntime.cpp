@@ -1,4 +1,4 @@
-#include "cmodule.h"
+#include "cmodruntime.h"
 #include <algorithm>
 
 //string assistant functions:

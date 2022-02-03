@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cmodule.h"
+#include "cmodruntime.h"
 
 cmod_intf(IModPlugin, IModObj) {
     
