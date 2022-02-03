@@ -81,7 +81,7 @@ public:
         }
     }
 
-    void assgin(R (*func)(A...)) {
+    void assign(R (*func)(A...)) {
         if (func) {
             setId(func, nullptr, nullptr);
             mFunc = func;
