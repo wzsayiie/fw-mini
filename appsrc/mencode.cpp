@@ -74,25 +74,25 @@ int MWriteU8(char *dst, char32_t code) {
     }
     if (code <= 0x07ff) {
         //up to 11 bits, occupy 2 bytes. 110x'xxxx 10xx xxxx.
-        dst[0] = ((code >> 6) & 0x1F) | 0xC0;
-        dst[1] = ((code     ) & 0x3F) | 0x80;
+        dst[0] = (char)(((code >> 6) & 0x1F) | 0xC0);
+        dst[1] = (char)(((code     ) & 0x3F) | 0x80);
 
         return 2;
     }
     if (code <= 0xFFff) {
         //up to 16 bits, occupy 3 bytes. 1110'xxxx 10xx xxxx ... .
-        dst[0] = ((code >> 12) & 0x0F) | 0xE0;
-        dst[1] = ((code >>  6) & 0x3F) | 0x80;
-        dst[2] = ((code      ) & 0x3F) | 0x80;
+        dst[0] = (char)(((code >> 12) & 0x0F) | 0xE0);
+        dst[1] = (char)(((code >>  6) & 0x3F) | 0x80);
+        dst[2] = (char)(((code      ) & 0x3F) | 0x80);
 
         return 3;
     }
     if (code <= 0x10ffFF) {
         //up to 21 bits, occupy 4 bytes. 1111'0xxx 10xx xxxx ... .
-        dst[0] = ((code >> 18) & 0x07) | 0xF0;
-        dst[1] = ((code >> 12) & 0x3F) | 0x80;
-        dst[2] = ((code >>  6) & 0x3F) | 0x80;
-        dst[3] = ((code      ) & 0x3F) | 0x80;
+        dst[0] = (char)(((code >> 18) & 0x07) | 0xF0);
+        dst[1] = (char)(((code >> 12) & 0x3F) | 0x80);
+        dst[2] = (char)(((code >>  6) & 0x3F) | 0x80);
+        dst[3] = (char)(((code      ) & 0x3F) | 0x80);
 
         return 4;
     }
