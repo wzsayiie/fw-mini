@@ -10,7 +10,7 @@ public:
     float mouseX();
     float mouseY();
     
-    void setMouseListener(std::function<void ()> listener);
+    void setMouseListener(const std::function<void ()> &listener);
     
 private:
     void OnMouseMove();

@@ -102,7 +102,7 @@ static void RemoveSubview(std::vector<CViewRef> *subviews, CView *view) {
     }
 }
 
-void CView::addSubview(CViewRef subview) {
+void CView::addSubview(const CViewRef &subview) {
     if (!subview) {
         return;
     }
@@ -174,7 +174,7 @@ bool CView::canRespondWindowWheel(float x, float y) {
     return false;
 }
 
-CUIResponder *CView::findResponder(CLambda<bool (CUIResponder *)> fit) {
+CUIResponder *CView::findResponder(const CLambda<bool (CUIResponder *)> &fit) {
     //is there a suitable subview.
     for (const CViewRef &subview : mSubviews) {
         CUIResponder *responder = subview->findResponder(fit);

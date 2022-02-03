@@ -19,7 +19,7 @@ float _GDevice::mouseY() {
     return GCamera()->focusY() + MWindowHeight() / 2 - MWindowMouseY();
 }
 
-void _GDevice::setMouseListener(std::function<void ()> listener) {
+void _GDevice::setMouseListener(const std::function<void ()> &listener) {
     mMouseListener = listener;
 }
 

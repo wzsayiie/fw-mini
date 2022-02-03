@@ -24,7 +24,7 @@ void MObject::_release() {
     }
 }
 
-void MObject::_setRefObserver(_MRefObserver observer) {
+void MObject::_setRefObserver(const _MRefObserver &observer) {
     mRefObserver = observer;
 }
 
@@ -351,7 +351,7 @@ MObject *MArrayItem(MArray *array, int index) {
 class LambdaCastWrapper : public MUnknown {
 
 public:
-    LambdaCastWrapper(std::function<void ()> func) {
+    LambdaCastWrapper(const std::function<void ()> &func) {
         mFunc = func;
     }
 
@@ -364,6 +364,6 @@ private:
     std::function<void ()> mFunc;
 };
 
-MLambdaRef _MLambdaCastHelper::operator<<(std::function<void ()> func) {
+MLambdaRef _MLambdaCastHelper::operator<<(const std::function<void ()> &func) {
     return m_auto_release MLambdaCreate(LambdaCastWrapper::call, new LambdaCastWrapper(func));
 }

@@ -11,10 +11,10 @@ public:
     void drawViews() override;
     
 protected:
-    CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) override;
+    CUIResponder *findResponder(const CLambda<bool (CUIResponder *)> &fit) override;
     
 private:
-    bool isInVisibleArea(CViewRef subview);
+    bool isInVisibleArea(const CViewRef &subview);
 };
 
 void CScrollContentView::drawViews() {
@@ -29,7 +29,7 @@ void CScrollContentView::drawViews() {
     }
 }
 
-CUIResponder *CScrollContentView::findResponder(CLambda<bool (CUIResponder *)> fit) {
+CUIResponder *CScrollContentView::findResponder(const CLambda<bool (CUIResponder *)> &fit) {
     const std::vector<CViewRef> &views = subviews();
     for (const CViewRef &subview : views) {
         //NOTE: invisible view can not be a first responder.
@@ -46,7 +46,7 @@ CUIResponder *CScrollContentView::findResponder(CLambda<bool (CUIResponder *)> f
     return nullptr;
 }
 
-bool CScrollContentView::isInVisibleArea(CViewRef subview) {
+bool CScrollContentView::isInVisibleArea(const CViewRef &subview) {
     float left = -x();
     float top  = -y();
     
@@ -64,7 +64,7 @@ bool CScrollContentView::isInVisibleArea(CViewRef subview) {
 
 //scroll view:
 
-static const CColor IndicatorColor = MColor_BlackColor;
+static const CColor IndicatorColor    = MColor_BlackColor;
 static const float  IndicatorDiameter = 4;
 
 CScrollView::CScrollView(float x, float y, float w, float h) : CView(x, y, w, h) {
@@ -76,7 +76,7 @@ void CScrollView::setDelegate(CScrollViewDelegate *delegate) {
     mDelegate = delegate;
 }
 
-void CScrollView::addContentSubview(CViewRef subview) {
+void CScrollView::addContentSubview(const CViewRef &subview) {
     if (subview) {
         contentView()->addSubview(subview);
     }

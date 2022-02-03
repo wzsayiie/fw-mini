@@ -34,7 +34,7 @@ static void RemoveChildController(std::vector<CViewControllerRef> *children, CVi
     }
 }
 
-void CViewController::addChildController(CViewControllerRef childController) {
+void CViewController::addChildController(const CViewControllerRef &childController) {
     if (!childController) {
         return;
     }
@@ -106,7 +106,7 @@ bool CViewController::canRespondWindowTouch(float x, float y) {
     return false;
 }
 
-CUIResponder *CViewController::findResponder(CLambda<bool (CUIResponder *)> fit) {
+CUIResponder *CViewController::findResponder(const CLambda<bool (CUIResponder *)> &fit) {
     //is there a suitable child controller.
     for (auto it = mChildControllers.rbegin(); it != mChildControllers.rend(); ++it) {
         CUIResponder *responder = it->get()->findResponder(fit);

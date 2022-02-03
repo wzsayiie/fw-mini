@@ -75,13 +75,13 @@ void MCancelTask(MLambda *task) {
     }
 }
 
-MLambdaRef MRunAfterSeconds(float delay, std::function<void ()> task) {
+MLambdaRef MRunAfterSeconds(float delay, const std::function<void ()> &task) {
     MLambdaRef lambda = m_cast_lambda task;
     MRunAfterSeconds(delay, lambda.get());
     return lambda;
 }
 
-MLambdaRef MRunEverySeconds(float interval, std::function<void ()> task) {
+MLambdaRef MRunEverySeconds(float interval, const std::function<void ()> &task) {
     MLambdaRef lambda = m_cast_lambda task;
     MRunEverySeconds(interval, lambda.get());
     return lambda;

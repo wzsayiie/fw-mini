@@ -5,7 +5,7 @@ CControl::CControl(float x, float y, float w, float h): CView(x, y, w, h) {
     setTouchable(true);
 }
 
-void CControl::setEventListener(CControlEvent event, CLambda<void ()> listener) {
+void CControl::setEventListener(CControlEvent event, const CLambda<void ()> &listener) {
     if (listener) {
         mListeners[event] = listener;
     } else {

@@ -18,7 +18,7 @@ def_class(CControl) : public CView {
 public:
     CControl(float x, float y, float width, float height);
     
-    void setEventListener(CControlEvent event, CLambda<void ()> listener);
+    void setEventListener(CControlEvent event, const CLambda<void ()> &listener);
     void sendEvent(CControlEvent event);
     
     CControlState state();

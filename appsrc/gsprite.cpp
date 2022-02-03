@@ -6,10 +6,10 @@ static def_singleton(sSprites     , std::set<GSpriteRef>());
 static def_singleton(sSpriteCount , int());
 static def_singleton(sHitingSprite, GSpriteRef());
 
-static bool SmallerZForward(GSpriteRef a, GSpriteRef b) { return a->z() <  b->z(); }
-static bool BiggerZForward (GSpriteRef a, GSpriteRef b) { return a->z() >= b->z(); }
+static bool SmallerZForward(const GSpriteRef &a, const GSpriteRef &b) { return a->z() <  b->z(); }
+static bool BiggerZForward (const GSpriteRef &a, const GSpriteRef &b) { return a->z() >= b->z(); }
 
-static std::vector<GSpriteRef> GetSprites(bool (*cmp)(GSpriteRef, GSpriteRef)) {
+static std::vector<GSpriteRef> GetSprites(bool (*cmp)(const GSpriteRef &, const GSpriteRef &)) {
     std::vector<GSpriteRef> copy(sSprites().begin(), sSprites().end());
     std::sort(copy.begin(), copy.end(), cmp);
     return copy;
@@ -25,7 +25,7 @@ static void GetWorldPos(float windowX, float windowY, float *outWorldX, float *o
     *outWorldY = GCamera()->focusY() + MWindowHeight() / 2 - windowY;
 }
 
-static void DrawSprite(GSpriteRef sprite) {
+static void DrawSprite(const GSpriteRef &sprite) {
     if (sprite->width() <= 0 || sprite->height() <= 0) {
         return;
     }
@@ -191,10 +191,10 @@ void GSprite::setBackgroundColor(MColor color) {
     mBackgroundColor = color;
 }
 
-void GSprite::setDrawHandler    (std::function<void (float w, float h)> h) { mDrawHandler     = h; }
-void GSprite::setHitBeginHandler(std::function<void (float x, float y)> h) { mHitBeginHandler = h; }
-void GSprite::setHitMoveHandler (std::function<void (float x, float y)> h) { mHitMoveHandler  = h; }
-void GSprite::setHitEndHandler  (std::function<void (float x, float y)> h) { mHitEndHandler   = h; }
+void GSprite::setDrawHandler    (const std::function<void (float w, float h)> &h) { mDrawHandler     = h; }
+void GSprite::setHitBeginHandler(const std::function<void (float x, float y)> &h) { mHitBeginHandler = h; }
+void GSprite::setHitMoveHandler (const std::function<void (float x, float y)> &h) { mHitMoveHandler  = h; }
+void GSprite::setHitEndHandler  (const std::function<void (float x, float y)> &h) { mHitEndHandler   = h; }
 
 template<typename F> void Call(const F &fn, float a, float b) {
     if (fn) {

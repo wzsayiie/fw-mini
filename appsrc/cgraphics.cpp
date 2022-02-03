@@ -60,7 +60,7 @@ MColorPattern CColor::pattern() const {
 //------------------------------------------------------------------------------
 //CImage:
 
-CImageRef CImage::reference(MImageRef nativeImage) {
+CImageRef CImage::reference(const MImageRef &nativeImage) {
     if (nativeImage) {
         return CImageRef(new CImage(nativeImage));
     }
@@ -107,7 +107,7 @@ MImage *CImage::nativeImage() {
     return mNativeImage.get();
 }
 
-CImage::CImage(MImageRef nativeImage) {
+CImage::CImage(const MImageRef &nativeImage) {
     mNativeImage = nativeImage;
 }
 
@@ -118,7 +118,7 @@ void CContextSelectColor(const CColor &color) {
     MContextSelectColor(color.color());
 }
 
-void CContextSelectImage(CImageRef image) {
+void CContextSelectImage(const CImageRef &image) {
     MContextSelectImage(image->nativeImage());
 }
 

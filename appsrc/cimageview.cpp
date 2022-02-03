@@ -10,7 +10,7 @@ CImageView::~CImageView() {
     MCancelTask(mAnimationTask.get());
 }
 
-void CImageView::setImage(CImageRef image) {
+void CImageView::setImage(const CImageRef &image) {
     stopAnimating();
     mImage = image;
 }

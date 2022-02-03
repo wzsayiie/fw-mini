@@ -45,7 +45,7 @@ public:
     virtual MTypeId _typeId() = 0;
 
     //for debugging.
-    void _setRefObserver(_MRefObserver observer);
+    void _setRefObserver(const _MRefObserver &observer);
     int  _refCount();
 
 protected:
@@ -186,6 +186,6 @@ struct _MAutoReleaseHelper {
 //lambda cast:
 
 struct _MLambdaCastHelper {
-    MLambdaRef operator<<(std::function<void ()> func);
+    MLambdaRef operator<<(const std::function<void ()> &func);
 };
 #define m_cast_lambda _MLambdaCastHelper()<<

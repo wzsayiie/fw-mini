@@ -9,7 +9,7 @@ public:
     
     void asRootController();
     
-    void addChildController(CViewControllerRef childController);
+    void addChildController(const CViewControllerRef &childController);
     void removeFromParentController();
     const std::vector<CViewControllerRef> &childControllers();
     CViewController *parentController();
@@ -17,7 +17,7 @@ public:
     CViewRef view();
     
     bool canRespondWindowTouch(float x, float y) override;
-    CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) override;
+    CUIResponder *findResponder(const CLambda<bool (CUIResponder *)> &fit) override;
 
 protected:
     virtual CViewRef loadView();

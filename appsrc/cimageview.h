@@ -8,7 +8,7 @@ public:
     CImageView(float x, float y, float width, float height);
     ~CImageView();
 
-    void setImage(CImageRef image);
+    void setImage(const CImageRef &image);
     
     void setAnimationImages(const std::vector<CImageRef> &images);
     void setAnimationDuration(float seconds);

@@ -35,10 +35,10 @@ public:
     
     void setBackgroundColor(MColor color);
     
-    void setDrawHandler    (std::function<void (float w, float h)> handler);
-    void setHitBeginHandler(std::function<void (float x, float y)> handler);
-    void setHitMoveHandler (std::function<void (float x, float y)> handler);
-    void setHitEndHandler  (std::function<void (float x, float y)> handler);
+    void setDrawHandler    (const std::function<void (float w, float h)> &handler);
+    void setHitBeginHandler(const std::function<void (float x, float y)> &handler);
+    void setHitMoveHandler (const std::function<void (float x, float y)> &handler);
+    void setHitEndHandler  (const std::function<void (float x, float y)> &handler);
     
     void _Draw    (float w, float h);
     void _HitBegin(float x, float y);

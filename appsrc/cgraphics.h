@@ -48,7 +48,7 @@ private:
 def_class(CImage) {
 
 public:
-    static CImageRef reference (MImageRef nativeImage);
+    static CImageRef reference (const MImageRef &nativeImage);
     static CImageRef fromBitmap(const std::vector<uint8_t> &data, int width, int height);
     static CImageRef fromData  (const std::vector<uint8_t> &data);
     static CImageRef fromBundle(const std::string &path);
@@ -62,7 +62,7 @@ public:
     MImage *nativeImage();
 
 private:
-    CImage(MImageRef nativeImage);
+    CImage(const MImageRef &nativeImage);
     
     MImageRef mNativeImage;
 };
@@ -91,7 +91,7 @@ enum class CVerticalAlign {
 //the X axis is right and the Y axis is down.
 
 void CContextSelectColor (const CColor      &color );
-void CContextSelectImage (CImageRef          image );
+void CContextSelectImage (const CImageRef   &image );
 void CContextSelectString(const std::string &string);
 
 void CContextSelectHorizontalAlign(CHorizontalAlign align);

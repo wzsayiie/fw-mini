@@ -20,7 +20,7 @@ public:
     
     void setDelegate(CScrollViewDelegate *delegate);
     
-    void addContentSubview(CViewRef subview);
+    void addContentSubview(const CViewRef &subview);
     CViewRef contentView();
     
     void setContentSize(float width, float height);

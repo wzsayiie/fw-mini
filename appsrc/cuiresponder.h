@@ -18,7 +18,7 @@ public:
     virtual bool canRespondText() { return false; }
     virtual bool canRespondKey () { return false; }
     
-    virtual CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) { return nullptr; }
+    virtual CUIResponder *findResponder(const CLambda<bool (CUIResponder *)> &fit) { return nullptr; }
 
     void setAcceptMouseMove(bool accept);
     
@@ -39,7 +39,7 @@ protected:
 private:
     static void handleWindowEvent(MObject *);
     
-    static CUIResponder *findFirstResponder(bool refind, CLambda<bool (CUIResponder *)> fit);
+    static CUIResponder *findFirstResponder(bool refind, const CLambda<bool (CUIResponder *)> &fit);
     
     static void handleWindowTouchBegin();
     static void handleWindowTouchMove();

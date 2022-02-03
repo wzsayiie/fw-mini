@@ -8,5 +8,5 @@ M_FUNC_EXPORT void MRunAfterSeconds(float delay   , MLambda *task) M_META(MRunAf
 M_FUNC_EXPORT void MRunEverySeconds(float interval, MLambda *task) M_META(MRunEverySeconds, "args:space,task");
 M_FUNC_EXPORT void MCancelTask     (MLambda *task)                 M_META(MCancelTask     , "args:task");
 
-MLambdaRef MRunAfterSeconds(float delay   , std::function<void ()> task);
-MLambdaRef MRunEverySeconds(float interval, std::function<void ()> task);
+MLambdaRef MRunAfterSeconds(float delay   , const std::function<void ()> &task);
+MLambdaRef MRunEverySeconds(float interval, const std::function<void ()> &task);

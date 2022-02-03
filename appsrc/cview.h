@@ -33,7 +33,7 @@ public:
     void setAcceptMouseWheel(bool accept);
     bool acceptMouseWheel();
 
-    void addSubview(CViewRef subview);
+    void addSubview(const CViewRef &subview);
     void removeFromSuperview();
     const std::vector<CViewRef> &subviews();
     CView *superview();
@@ -41,7 +41,7 @@ public:
     bool canRespondWindowTouch(float x, float y) override;
     bool canRespondWindowWheel(float x, float y) override;
     
-    CUIResponder *findResponder(CLambda<bool (CUIResponder *)> fit) override;
+    CUIResponder *findResponder(const CLambda<bool (CUIResponder *)> &fit) override;
 
     virtual void drawViews();
     
