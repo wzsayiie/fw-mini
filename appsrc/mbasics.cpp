@@ -199,8 +199,8 @@ MString *MStringCreateU16(const char16_t *chs) { return chs && *chs ? new MStrin
 MString *MStringCopyU8 (const char     *bgn, int len) { return bgn && len > 0 ? new MStringImpl(bgn, len) : nullptr; }
 MString *MStringCopyU16(const char16_t *bgn, int len) { return bgn && len > 0 ? new MStringImpl(bgn, len) : nullptr; }
 
-const char     *MStringU8Chars (MString *str) { return str ? ((MStringImpl *)str)->u8s ().c_str() : nullptr; }
-const char16_t *MStringU16Chars(MString *str) { return str ? ((MStringImpl *)str)->u16s().c_str() : nullptr; }
+const char     *MStringU8Chars (MString *str) { return str ? ((MStringImpl *)str)->u8s ().c_str() :  ""; }
+const char16_t *MStringU16Chars(MString *str) { return str ? ((MStringImpl *)str)->u16s().c_str() : u""; }
 
 int MStringU8Size (MString *str) { return str ? (int)((MStringImpl *)str)->u8s ().size() : 0; }
 int MStringU16Size(MString *str) { return str ? (int)((MStringImpl *)str)->u16s().size() : 0; }

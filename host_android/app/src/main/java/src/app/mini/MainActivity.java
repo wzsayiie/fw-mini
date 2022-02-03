@@ -149,7 +149,9 @@ public class MainActivity extends Activity implements TextWatcher, TextView.OnEd
         if (windowTextBoxEnabled()) {
             String text = windowTextBoxRawString();
             mEditText.setText(text);
-            mEditText.setSelection(0, text.length());
+            if (text != null) {
+                mEditText.setSelection(0, text.length());
+            }
 
             mEditText.setVisibility(View.VISIBLE);
             mEditText.requestFocus();

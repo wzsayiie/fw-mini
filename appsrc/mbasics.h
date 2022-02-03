@@ -100,6 +100,11 @@ M_FUNC_EXPORT uint8_t *MPtrValue (MPtr    *obj) M_META(MPtrValue , "args:obj");
 //------------------------------------------------------------------------------
 //MString:
 
+//IMPORTANT:
+//MString does not contain 0-length strings, so users do not need to distinguish between nullptr and "".
+//also, MStringU8Chars and MStringU16Chars do not return nullptr, if a nullptr MString is passed in,
+//static "" will be returned, this allows the return value to be assigned directly to std::string.
+
 m_class(MString);
 
 M_FUNC_EXPORT MString *MStringCreateU8 (const char     *chars) M_META(MStringCreateU8 , "args:value");
