@@ -20,21 +20,21 @@ public:
     MColor color() const;
     bool isClear() const;
 
-    static const CColor blackColor    ;
-    static const CColor darkGrayColor ;
-    static const CColor grayColor     ;
-    static const CColor lightGrayColor;
-    static const CColor whiteColor    ;
-    static const CColor redColor      ;
-    static const CColor greenColor    ;
-    static const CColor blueColor     ;
-    static const CColor cyanColor     ;
-    static const CColor yellowColor   ;
-    static const CColor magentaColor  ;
-    static const CColor orangeColor   ;
-    static const CColor purpleColor   ;
-    static const CColor brownColor    ;
-    static const CColor clearColor    ;
+    static const CColor BlackColor    ;
+    static const CColor DarkGrayColor ;
+    static const CColor GrayColor     ;
+    static const CColor LightGrayColor;
+    static const CColor WhiteColor    ;
+    static const CColor RedColor      ;
+    static const CColor GreenColor    ;
+    static const CColor BlueColor     ;
+    static const CColor CyanColor     ;
+    static const CColor YellowColor   ;
+    static const CColor MagentaColor  ;
+    static const CColor OrangeColor   ;
+    static const CColor PurpleColor   ;
+    static const CColor BrownColor    ;
+    static const CColor ClearColor    ;
     
 private:
     MColorPattern pattern() const;

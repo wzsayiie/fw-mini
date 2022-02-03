@@ -90,8 +90,8 @@ void CTextField::onTextInput(const std::string &string, bool enter) {
 
 void CTextField::onDraw(float width, float height) {
 
-    const CColor &FrameColor  = CColor::grayColor ;
-    const CColor &CursorColor = CColor::blackColor;
+    const CColor &FrameColor  = CColor::GrayColor ;
+    const CColor &CursorColor = CColor::BlackColor;
     
     const float FW = 2; //frame width.
     const float TI = 4; //text indent.

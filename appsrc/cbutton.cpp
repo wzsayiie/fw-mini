@@ -1,7 +1,7 @@
 #include "cbutton.h"
 
 CButton::CButton(float x, float y, float w, float h): CControl(x, y, w, h) {
-    mTitleColors[CControlState::Normal] = CColor::blackColor;
+    mTitleColors[CControlState::Normal] = CColor::BlackColor;
 }
 
 void CButton::setTitle(CControlState state, const std::string &title) {
@@ -72,7 +72,7 @@ CColor CButton::suitableTitleColor() {
         return CColor(r, g, b, a * 0.5f);
     }
     
-    return CColor::clearColor;
+    return CColor::ClearColor;
 }
 
 void CButton::onDraw(float width, float height) {

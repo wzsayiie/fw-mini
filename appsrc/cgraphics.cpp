@@ -35,21 +35,21 @@ bool CColor::isClear() const {
     return pattern().alpha == 0;
 }
 
-const CColor CColor::blackColor     = MColor_BlackColor    ;
-const CColor CColor::darkGrayColor  = MColor_DarkGrayColor ;
-const CColor CColor::grayColor      = MColor_GrayColor     ;
-const CColor CColor::lightGrayColor = MColor_LightGrayColor;
-const CColor CColor::whiteColor     = MColor_WhiteColor    ;
-const CColor CColor::redColor       = MColor_RedColor      ;
-const CColor CColor::greenColor     = MColor_GreenColor    ;
-const CColor CColor::blueColor      = MColor_BlueColor     ;
-const CColor CColor::cyanColor      = MColor_CyanColor     ;
-const CColor CColor::yellowColor    = MColor_YellowColor   ;
-const CColor CColor::magentaColor   = MColor_MagentaColor  ;
-const CColor CColor::orangeColor    = MColor_OrangeColor   ;
-const CColor CColor::purpleColor    = MColor_PurpleColor   ;
-const CColor CColor::brownColor     = MColor_BrownColor    ;
-const CColor CColor::clearColor     = MColor_ClearColor    ;
+const CColor CColor::BlackColor     = MColor_BlackColor    ;
+const CColor CColor::DarkGrayColor  = MColor_DarkGrayColor ;
+const CColor CColor::GrayColor      = MColor_GrayColor     ;
+const CColor CColor::LightGrayColor = MColor_LightGrayColor;
+const CColor CColor::WhiteColor     = MColor_WhiteColor    ;
+const CColor CColor::RedColor       = MColor_RedColor      ;
+const CColor CColor::GreenColor     = MColor_GreenColor    ;
+const CColor CColor::BlueColor      = MColor_BlueColor     ;
+const CColor CColor::CyanColor      = MColor_CyanColor     ;
+const CColor CColor::YellowColor    = MColor_YellowColor   ;
+const CColor CColor::MagentaColor   = MColor_MagentaColor  ;
+const CColor CColor::OrangeColor    = MColor_OrangeColor   ;
+const CColor CColor::PurpleColor    = MColor_PurpleColor   ;
+const CColor CColor::BrownColor     = MColor_BrownColor    ;
+const CColor CColor::ClearColor     = MColor_ClearColor    ;
 
 MColorPattern CColor::pattern() const {
     MColorPattern pattern;

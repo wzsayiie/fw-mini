@@ -89,7 +89,7 @@ CViewRef CViewController::view() {
         mView = loadView();
 
         //set the view white by default.
-        mView->setBackgroundColor(CColor::whiteColor);
+        mView->setBackgroundColor(CColor::WhiteColor);
     }
     return mView;
 }

@@ -5,7 +5,7 @@ def_class(MainController) : public CViewController {
 
 protected:
     void onViewLoad() override {
-        view()->setBackgroundColor(CColor::clearColor);
+        view()->setBackgroundColor(CColor::ClearColor);
     }
 
 private:
