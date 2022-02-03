@@ -194,8 +194,8 @@ const cmod_char *CModMethodName     (CModMethod *m) { return m ? m->methodName :
 void            *CModMethodEqualFunc(CModMethod *m) { return m ? m->equalFunc  : nullptr; }
 _CModVPtr       *CModMethodVPtr     (CModMethod *m) { return m ?&m->methodVPtr : nullptr; }
 const cmod_char *CModMethodRetType  (CModMethod *m) { return m ? m->retType    : nullptr; }
-bool            CModMethodRetRetain (CModMethod *m) { return m ? m->retRetain  : false  ; }
-int             CModMethodArgCount  (CModMethod *m) { return m ? m->argCount   : 0      ; }
+bool             CModMethodRetRetain(CModMethod *m) { return m ? m->retRetain  : false  ; }
+int              CModMethodArgCount (CModMethod *m) { return m ? m->argCount   : 0      ; }
 
 const cmod_char *CModMethodArgType(CModMethod *method, int argIndex) {
     if (!method) {
@@ -265,9 +265,9 @@ enum class PassType {
 };
 
 union PassWord {
+    int64_t asInt64 ;
     bool    asBool  ;
     int     asInt   ;
-    int64_t asInt64 ;
     float   asFloat ;
     double  asDouble;
     void   *asIntPtr;
@@ -299,7 +299,7 @@ struct PassValue {
     }
     
     bool asBool() {
-        return (bool)mWord.asInt64 || (bool)mString.size() || (bool)mModObj;
+        return (bool)mWord.asInt64 || !mString.empty() || (bool)mModObj;
     }
     
     int asInt() {
@@ -540,9 +540,8 @@ CModCls *CModClsImplement(const cmod_char *intfName) {
 
     //intentional leak.
     auto cls = new CModCls();
-    if (cls) {
-        cls->intf = intf;
-    }
+    cls->intf = intf;
+
     return cls;
 }
 
