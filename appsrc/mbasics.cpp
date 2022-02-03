@@ -277,7 +277,7 @@ uint8_t *MDataBytes(MData *data) {
     if (store) {
         return store->data();
     }
-    return 0;
+    return nullptr;
 }
 
 uint8_t *MDataEnd(MData *data) {
@@ -285,7 +285,7 @@ uint8_t *MDataEnd(MData *data) {
     if (store) {
         return store->data() + store->size();
     }
-    return 0;
+    return nullptr;
 }
 
 int MDataSize(MData *data) {

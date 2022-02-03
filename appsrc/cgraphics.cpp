@@ -22,10 +22,10 @@ CColor::CColor() {
     mColor = 0;
 }
 
-float CColor::redComponent  () const { return pattern().red   / 255.f; }
-float CColor::greenComponent() const { return pattern().green / 255.f; }
-float CColor::blueComponent () const { return pattern().blue  / 255.f; }
-float CColor::alphaComponent() const { return pattern().alpha / 255.f; }
+float CColor::redComponent  () const { return (float)pattern().red   / 255.f; }
+float CColor::greenComponent() const { return (float)pattern().green / 255.f; }
+float CColor::blueComponent () const { return (float)pattern().blue  / 255.f; }
+float CColor::alphaComponent() const { return (float)pattern().alpha / 255.f; }
 
 MColor CColor::color() const {
     return mColor;
@@ -35,21 +35,21 @@ bool CColor::isClear() const {
     return pattern().alpha == 0;
 }
 
-const CColor CColor::blackColor    (MColor_BlackColor    );
-const CColor CColor::darkGrayColor (MColor_DarkGrayColor );
-const CColor CColor::grayColor     (MColor_GrayColor     );
-const CColor CColor::lightGrayColor(MColor_LightGrayColor);
-const CColor CColor::whiteColor    (MColor_WhiteColor    );
-const CColor CColor::redColor      (MColor_RedColor      );
-const CColor CColor::greenColor    (MColor_GreenColor    );
-const CColor CColor::blueColor     (MColor_BlueColor     );
-const CColor CColor::cyanColor     (MColor_CyanColor     );
-const CColor CColor::yellowColor   (MColor_YellowColor   );
-const CColor CColor::magentaColor  (MColor_MagentaColor  );
-const CColor CColor::orangeColor   (MColor_OrangeColor   );
-const CColor CColor::purpleColor   (MColor_PurpleColor   );
-const CColor CColor::brownColor    (MColor_BrownColor    );
-const CColor CColor::clearColor    (MColor_ClearColor    );
+const CColor CColor::blackColor     = MColor_BlackColor    ;
+const CColor CColor::darkGrayColor  = MColor_DarkGrayColor ;
+const CColor CColor::grayColor      = MColor_GrayColor     ;
+const CColor CColor::lightGrayColor = MColor_LightGrayColor;
+const CColor CColor::whiteColor     = MColor_WhiteColor    ;
+const CColor CColor::redColor       = MColor_RedColor      ;
+const CColor CColor::greenColor     = MColor_GreenColor    ;
+const CColor CColor::blueColor      = MColor_BlueColor     ;
+const CColor CColor::cyanColor      = MColor_CyanColor     ;
+const CColor CColor::yellowColor    = MColor_YellowColor   ;
+const CColor CColor::magentaColor   = MColor_MagentaColor  ;
+const CColor CColor::orangeColor    = MColor_OrangeColor   ;
+const CColor CColor::purpleColor    = MColor_PurpleColor   ;
+const CColor CColor::brownColor     = MColor_BrownColor    ;
+const CColor CColor::clearColor     = MColor_ClearColor    ;
 
 MColorPattern CColor::pattern() const {
     MColorPattern pattern;
