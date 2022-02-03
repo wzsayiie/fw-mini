@@ -24,7 +24,7 @@ void MContextPushClip(float x, float y, float width, float height) {
     clip.bottom = y + height;
     
     //intersection with the last clip.
-    if (sClips.size() > 0) {
+    if (!sClips.empty()) {
         Clip last = *sClips.rbegin();
         
         clip.left   = std::max(clip.left  , last.left  );
@@ -40,11 +40,11 @@ void MContextPushClip(float x, float y, float width, float height) {
 }
 
 void MContextPopClip() {
-    if (sClips.size() > 0) {
+    if (!sClips.empty() > 0) {
         sClips.pop_back();
     }
     
-    if (sClips.size() > 0) {
+    if (!sClips.empty() > 0) {
         Clip clip = *sClips.rbegin();
         
         MWindowSelectPoint0(clip.left , clip.top   );
@@ -109,8 +109,8 @@ void MContextDrawEllipse(float x, float y, float width, float height) {
         return;
     }
     
-    float circle  = (float)(M_PI * 2);
-    float step    = circle / splits;
+    float circle  = (M_PI * 2);
+    float step    = circle / (float)splits;
     float wHalf   = width  / 2;
     float hHalf   = height / 2;
     float xCenter = sDrawOffsetX + x + wHalf;

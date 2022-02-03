@@ -47,7 +47,7 @@ void CView::setSize(float width, float height) {
     mWidth  = width ;
     mHeight = height;
     
-    if (mSubviews.size() > 0) {
+    if (!mSubviews.empty()) {
         onLayoutSubviews(width, height);
     }
 }
@@ -282,5 +282,7 @@ void CView::handleWindowEvent(MObject *) {
             sRootView->drawViews();
             break;
         }
+
+        default:;
     }
 }

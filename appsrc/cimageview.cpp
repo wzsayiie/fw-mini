@@ -19,7 +19,7 @@ void CImageView::setAnimationImages(const std::vector<CImageRef> &images) {
     stopAnimating();
     
     mAnimationImages = images;
-    mImage = images.size() > 0 ? images[0] : nullptr;
+    mImage = !images.empty() ? images[0] : nullptr;
 }
 
 void CImageView::setAnimationDuration(float seconds) {
@@ -51,7 +51,7 @@ void CImageView::startAnimating() {
     
     //the followed images.
     mAnimatingCount = 0;
-    MRunEverySeconds(mAnimationDuration / imageNumber, mAnimationTask.get());
+    MRunEverySeconds(mAnimationDuration / (float)imageNumber, mAnimationTask.get());
 }
 
 void CImageView::stopAnimating() {
