@@ -163,21 +163,15 @@ struct _MMakeSharedHelper {
     template<typename T> std::shared_ptr<T> operator<<(T *object) {
         if (object) {
             MRetain(object);
-            return std::shared_ptr<T>(object, MRelease);
-        } else {
-            return std::shared_ptr<T>();
         }
+        return std::shared_ptr<T>(object, MRelease);
     }
 };
 #define m_make_shared _MMakeSharedHelper()<<
 
 struct _MAutoReleaseHelper {
     template<typename T> std::shared_ptr<T> operator<<(T *object) {
-        if (object) {
-            return std::shared_ptr<T>(object, MRelease);
-        } else {
-            return std::shared_ptr<T>();
-        }
+        return std::shared_ptr<T>(object, MRelease);
     }
 };
 #define m_auto_release _MAutoReleaseHelper()<<
