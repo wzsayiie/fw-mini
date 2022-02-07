@@ -1,5 +1,9 @@
 #include "boot.h"
 
+int base_object::ref_count() const {
+    return _ref_count;
+}
+
 base_object *base_object::retain() {
     _ref_count++;
     return this;

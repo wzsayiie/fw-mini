@@ -30,30 +30,14 @@ template<> struct MTypeIdOf<const char16_t *> { static const MTypeId Value = MHa
 //------------------------------------------------------------------------------
 //MObject:
 
-typedef std::function<void (class MObject *object, int refCount)> _MRefObserver;
-
 template<> struct MTypeIdOf<class MObject *> {
     static const MTypeId Value =  MHashId("MObject");
 };
 
-def_class(MObject) {
+def_class(MObject) : public base_object {
 
 public:
-    void _retain ();
-    void _release();
-    
-    virtual MTypeId _typeId() = 0;
-
-    //for debugging.
-    void _setRefObserver(const _MRefObserver &observer);
-    int  _refCount();
-
-protected:
-    virtual ~MObject() = default;
-
-private:
-    _MRefObserver mRefObserver;
-    int mRefCount = 1;
+    virtual MTypeId typeId() = 0;
 };
 
 M_FUNC_EXPORT MObject *MRetain   (MObject *object) M_META(MRetain   , "args:obj");

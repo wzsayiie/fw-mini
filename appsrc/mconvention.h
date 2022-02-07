@@ -37,7 +37,7 @@ constexpr int _MHashId(const char *name) {
 /**/    typedef std::shared_ptr<class name> name##Ref;      \
 /**/                                                        \
 /**/    class name : public MObject {                       \
-/**/        MTypeId _typeId() override {                    \
+/**/        MTypeId typeId() override {                     \
 /**/            return MTypeIdOf<name *>::Value;            \
 /**/        }                                               \
 /**/    }

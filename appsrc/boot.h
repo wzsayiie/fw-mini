@@ -25,6 +25,7 @@ def_class(base_object, base_object_ref) {
 public:
     virtual ~base_object() = default;
     
+    virtual int ref_count() const;
     virtual base_object *retain();
     virtual void release();
     

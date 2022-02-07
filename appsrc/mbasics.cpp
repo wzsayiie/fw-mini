@@ -4,50 +4,17 @@
 //------------------------------------------------------------------------------
 //MObject:
 
-void MObject::_retain() {
-    mRefCount += 1;
-
-    if (mRefObserver) {
-        mRefObserver(this, mRefCount);
-    }
-}
-
-void MObject::_release() {
-    mRefCount -= 1;
-
-    if (mRefObserver) {
-        mRefObserver(this, mRefCount);
-    }
-
-    if (mRefCount == 0) {
-        delete this;
-    }
-}
-
-void MObject::_setRefObserver(const _MRefObserver &observer) {
-    mRefObserver = observer;
-}
-
-int MObject::_refCount() {
-    return mRefCount;
-}
-
 MObject *MRetain(MObject *object) {
-    if (object) {
-        object->_retain();
-    }
-    return object;
+    return (MObject *)retain(object);
 }
 
 void MRelease(MObject *object) {
-    if (object) {
-        object->_release();
-    }
+    release(object);
 }
 
 MTypeId MGetTypeId(MObject *object) {
     if (object) {
-        return object->_typeId();
+        return object->typeId();
     }
     return 0;
 }
