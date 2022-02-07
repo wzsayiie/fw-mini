@@ -12,7 +12,7 @@ static JSContext *sContext = nil;
 
 - (instancetype)initWithNativeObject:(MObject *)object {
     if (self = [super init]) {
-        self.nativeObject = m_make_shared object;
+        self.nativeObject = m_cast_shared object;
     }
     return self;
 }

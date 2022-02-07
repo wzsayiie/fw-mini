@@ -53,7 +53,7 @@ void MRunAfterSeconds(float delay, MLambda *task) {
     config->runOnlyOnce = true;
     config->nextRunTick = MTickSeconds() + delay;
     
-    sTasks().insert({m_make_shared task, config});
+    sTasks().insert({m_cast_shared task, config});
 }
 
 void MRunEverySeconds(float interval, MLambda *task) {
@@ -66,12 +66,12 @@ void MRunEverySeconds(float interval, MLambda *task) {
     config->nextRunTick = MTickSeconds() + interval;
     config->interval    = interval;
     
-    sTasks().insert({m_make_shared task, config});
+    sTasks().insert({m_cast_shared task, config});
 }
 
 void MCancelTask(MLambda *task) {
     if (task) {
-        sTasks().erase(m_make_shared task);
+        sTasks().erase(m_cast_shared task);
     }
 }
 

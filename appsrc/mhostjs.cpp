@@ -31,8 +31,8 @@ struct CallingFrame {
     MObjectRef returned;
 
     CallingFrame(MString *funcName, MArray *params) {
-        this->funcName = m_make_shared funcName;
-        this->params   = m_make_shared params;
+        this->funcName = m_cast_shared funcName;
+        this->params   = m_cast_shared params;
     }
 };
 
@@ -63,12 +63,12 @@ MObject *_MJsOnCallCopyRet(MString *name, MArray *params) {
 }
 
 void _MJsOnHappenError(MString *info) {
-    sLastError() = m_make_shared info;
+    sLastError() = m_cast_shared info;
     MLambdaCall(sErrorListener().get());
 }
 
 void MJsSetErrorListener(MLambda *listener) {
-    sErrorListener() = m_make_shared listener;
+    sErrorListener() = m_cast_shared listener;
 }
 
 MString *MJsLastError() {
@@ -81,7 +81,7 @@ void MJsRegisterFunc(MString *name, MLambda *func) {
     }
 
     const char *chars = MStringU8Chars(name);
-    sFuncMap()[chars] = m_make_shared func;
+    sFuncMap()[chars] = m_cast_shared func;
 
     RegisterFunc(name);
 }
@@ -95,7 +95,7 @@ MArray *MJsCallingParams() {
 }
 
 void MJsCallingReturn(MObject *value) {
-    sCallingFrames().back().returned = m_make_shared value;
+    sCallingFrames().back().returned = m_cast_shared value;
 }
 
 void MJsRunScript(MString *name, MString *script) {

@@ -246,7 +246,7 @@ void _MWindowOnMouseWheel(float delta) {
 void _MWindowOnTextBox(MString *string, bool enter) {
     HostWindow *window = GetWindow();
 
-    window->textBox->string = m_make_shared string;
+    window->textBox->string = m_cast_shared string;
     window->textBox->enter = enter;
     SendEvent(window, MWindowEvent_TextBox);
 }
@@ -302,7 +302,7 @@ MString *_MWindowTextBoxRawString() { return GetTextBox()->rawString.get(); }
 void MWindowAddListener(MLambda *listener) {
     if (listener) {
         HostWindow *window = GetWindow();
-        window->listeners.push_back(m_make_shared listener);
+        window->listeners.push_back(m_cast_shared listener);
     }
 }
 
@@ -321,8 +321,8 @@ float MWindowMouseY    () { return GetWindow()->mouseY    ; }
 float MWindowWheelDelta() { return GetWindow()->wheelDelta; }
 MKey  MWindowActiveKey () { return GetWindow()->activeKey ; }
 
-void MWindowSelectString(MString *string) { GetDrawPen()->string = m_make_shared string; }
-void MWindowSelectImage (MImage  *image ) { GetDrawPen()->image  = m_make_shared image ; }
+void MWindowSelectString(MString *string) { GetDrawPen()->string = m_cast_shared string; }
+void MWindowSelectImage (MImage  *image ) { GetDrawPen()->image  = m_cast_shared image ; }
 
 void MWindowSelectColor   (MColor  color) { GetDrawPen()->color    = color; }
 void MWindowSelectFontSize(float   size ) { GetDrawPen()->fontSize = size ; }
@@ -412,7 +412,7 @@ void MWindowDrawLabel() {
 
 void MWindowSetTextBoxUpdated  (bool     updated ) { GetTextBox()->updated   = updated; }
 void MWindowSetTextBoxEnabled  (bool     enabled ) { GetTextBox()->enabled   = enabled; }
-void MWindowSetTextBoxRawString(MString *original) { GetTextBox()->rawString = m_make_shared original; }
+void MWindowSetTextBoxRawString(MString *original) { GetTextBox()->rawString = m_cast_shared original; }
 
 MString *MWindowTextBoxString() { return GetTextBox()->string.get(); }
 bool     MWindowTextBoxEnter () { return GetTextBox()->enter; }

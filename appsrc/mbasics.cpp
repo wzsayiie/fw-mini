@@ -313,7 +313,7 @@ MObject *MArrayItem(MArray *array, int index) {
 }
 
 //------------------------------------------------------------------------------
-//lambda cast:
+//type cast:
 
 class LambdaCastWrapper : public MUnknown {
 

@@ -30,7 +30,7 @@ void MAppAddLaunchListener(MLambda *listener, int priority) {
     }
     
     LaunchItem fresh;
-    fresh.listener = m_make_shared listener;
+    fresh.listener = m_cast_shared listener;
     fresh.priority = priority;
     for (auto it = sLaunchItems().begin(); it != sLaunchItems().end(); ++it) {
         if (priority > (it->priority)) {
@@ -47,7 +47,7 @@ void MAppAddUpdateListener(MLambda *listener) {
     }
     
     UpdateItem fresh;
-    fresh.listener = m_make_shared listener;
+    fresh.listener = m_cast_shared listener;
     sUpdateItems().push_back(fresh);
 }
 

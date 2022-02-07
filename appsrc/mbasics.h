@@ -141,27 +141,10 @@ M_FUNC_EXPORT MObject *MArrayItem  (MArray *array, int index)     M_META(MArrayI
 m_class(MUnknown);
 
 //------------------------------------------------------------------------------
-//smart pointer:
+//type cast:
 
-struct _MMakeSharedHelper {
-    template<typename T> std::shared_ptr<T> operator<<(T *object) {
-        if (object) {
-            MRetain(object);
-        }
-        return std::shared_ptr<T>(object, MRelease);
-    }
-};
-#define m_make_shared _MMakeSharedHelper()<<
-
-struct _MAutoReleaseHelper {
-    template<typename T> std::shared_ptr<T> operator<<(T *object) {
-        return std::shared_ptr<T>(object, MRelease);
-    }
-};
-#define m_auto_release _MAutoReleaseHelper()<<
-
-//------------------------------------------------------------------------------
-//lambda cast:
+#define m_cast_shared  cast_shared
+#define m_auto_release auto_release
 
 struct _MLambdaCastHelper {
     MLambdaRef operator<<(const std::function<void ()> &func);
