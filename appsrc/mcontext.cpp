@@ -40,11 +40,11 @@ void MContextPushClip(float x, float y, float width, float height) {
 }
 
 void MContextPopClip() {
-    if (!sClips.empty() > 0) {
+    if (!sClips.empty()) {
         sClips.pop_back();
     }
     
-    if (!sClips.empty() > 0) {
+    if (!sClips.empty()) {
         Clip clip = *sClips.rbegin();
         
         MWindowSelectPoint0(clip.left , clip.top   );
@@ -109,7 +109,7 @@ void MContextDrawEllipse(float x, float y, float width, float height) {
         return;
     }
     
-    float circle  = (M_PI * 2);
+    float circle  = (float)(M_PI * 2);
     float step    = circle / (float)splits;
     float wHalf   = width  / 2;
     float hHalf   = height / 2;

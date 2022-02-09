@@ -8,19 +8,13 @@
 /**/        return object;                      \
 /**/    }
 
-#define _default_name(_, name, ...) name
+#define def_struct_and_ptr(name, ptr) typedef std::shared_ptr<struct name> ptr; struct name
+#define def_class_and_ptr( name, ptr) typedef std::shared_ptr<class  name> ptr; class  name
 
-#define def_struct(name, ...)                                                       \
-/**/    struct name;                                                                \
-/**/    typedef std::shared_ptr<name> _default_name(_, ##__VA_ARGS__, name##Ref);   \
-/**/    struct name
+#define def_struct(name) def_struct_and_ptr(name, name##Ref)
+#define def_class( name) def_class_and_ptr (name, name##Ref)
 
-#define def_class(name, ...)                                                        \
-/**/    class name;                                                                 \
-/**/    typedef std::shared_ptr<name> _default_name(_, ##__VA_ARGS__, name##Ref);   \
-/**/    class name
-
-def_class(base_object, base_object_ref) {
+def_class_and_ptr(base_object, base_object_ref) {
     
 public:
     virtual ~base_object() = default;
