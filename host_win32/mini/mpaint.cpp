@@ -15,6 +15,17 @@ void MPaintStop()
     Gdiplus::GdiplusShutdown(sGdiplusToken);
 }
 
+static void PaintClip(Gdiplus::Graphics *graphics, int index)
+{
+    float x = _MWindowClipGraphX(index);
+    float y = _MWindowClipGraphY(index);
+    float w = _MWindowClipGraphWidth (index);
+    float h = _MWindowClipGraphHeight(index);
+
+    Gdiplus::RectF rect(x, y, w, h);
+    graphics->SetClip(rect, Gdiplus::CombineMode::CombineModeReplace);
+}
+
 static void PaintTriangle(Gdiplus::Graphics *graphics, int index)
 {
     //set the color:
@@ -113,6 +124,7 @@ void MPaint(HDC dc)
 
         switch (graph)
         {
+            case _MGraph_Clip    : PaintClip    (graphics.get(), index); break;
             case _MGraph_Triangle: PaintTriangle(graphics.get(), index); break;
             case _MGraph_Image   : PaintImage   (graphics.get(), index); break;
             case _MGraph_Label   : PaintLabel   (graphics.get(), index); break;
