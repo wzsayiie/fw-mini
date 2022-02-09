@@ -24,6 +24,8 @@
             case _MGraph_Triangle: [self drawTriangle:index]; break;
             case _MGraph_Image   : [self drawImage   :index]; break;
             case _MGraph_Label   : [self drawLabel   :index]; break;
+
+            default:;
         }
     }
 }

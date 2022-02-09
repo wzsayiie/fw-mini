@@ -194,6 +194,8 @@
         case kVK_ANSI_X: _MWindowOnKeyDown(MKey_X); break;
         case kVK_ANSI_Y: _MWindowOnKeyDown(MKey_Y); break;
         case kVK_ANSI_Z: _MWindowOnKeyDown(MKey_Z); break;
+
+        default:;
     }
     return nil;
 }

@@ -91,6 +91,8 @@ static void PaintLabel(Gdiplus::Graphics *graphics, int index)
         case MHAlign_Left  : format->SetAlignment(Gdiplus::StringAlignmentNear  ); break;
         case MHAlign_Center: format->SetAlignment(Gdiplus::StringAlignmentCenter); break;
         case MHAlign_Right : format->SetAlignment(Gdiplus::StringAlignmentFar   ); break;
+
+        default:;
     }
 
     switch (_MWindowLabelGraphVAlign(index))
@@ -98,6 +100,8 @@ static void PaintLabel(Gdiplus::Graphics *graphics, int index)
         case MVAlign_Top   : format->SetLineAlignment(Gdiplus::StringAlignmentNear  ); break;
         case MVAlign_Center: format->SetLineAlignment(Gdiplus::StringAlignmentCenter); break;
         case MVAlign_Bottom: format->SetLineAlignment(Gdiplus::StringAlignmentFar   ); break;
+
+        default:;
     }
 
     //set the color:
@@ -128,6 +132,8 @@ void MPaint(HDC dc)
             case _MGraph_Triangle: PaintTriangle(graphics.get(), index); break;
             case _MGraph_Image   : PaintImage   (graphics.get(), index); break;
             case _MGraph_Label   : PaintLabel   (graphics.get(), index); break;
+
+            default:;
         }
     }
 }

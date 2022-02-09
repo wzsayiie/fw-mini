@@ -390,6 +390,8 @@ static LRESULT OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
         case 'X': _MWindowOnKeyDown(MKey_X); break;
         case 'Y': _MWindowOnKeyDown(MKey_Y); break;
         case 'Z': _MWindowOnKeyDown(MKey_Z); break;
+
+        default:;
     }
     return 0;
 }
