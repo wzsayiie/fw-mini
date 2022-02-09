@@ -100,50 +100,37 @@ static MObject *CopyObjectFromJsValue(JsValueRef value)
     JsValueType type = JsUndefined;
     JsGetValueType(value, &type);
 
-    switch (type)
+    if (type == JsBoolean)
     {
-        case JsBoolean:
-        {
-            bool raw = false;
-            JsBooleanToBool(value, &raw);
-            return MBoolCreate(raw);
-        }
-        case JsNumber:
-        {
-            double raw = 0;
-            JsNumberToDouble(value, &raw);
-
-            if ((int64_t)raw < raw)
-            {
-                return MFloatCreate((float)raw);
-            }
-            else
-            {
-                //the double value may exceed the range of int.
-                //convert to int64_t first, so that the low bits can be got.
-                return MIntCreate((int)(int64_t)raw);
-            }
-        }
-        case JsString:
-        {
-            const wchar_t *raw = nullptr;
-            size_t rawSize = 0;
-            JsStringToPointer(value, &raw, &rawSize);
-            return MStringCreateU16((const char16_t *)raw);
-        }
-        case JsObject:
-        {
-            MObject *object = GetObjectFromJsObject(value);
-            return MRetain(object);
-        }
-        case JsFunction:
-        {
-            return CreateLambdaFromJsFunction(value);
-        }
-        default:
-        {
-            return nullptr;
-        }
+        bool raw = false;
+        JsBooleanToBool(value, &raw);
+        return MBoolCreate(raw);
+    }
+    else if (type == JsNumber)
+    {
+        double raw = 0;
+        JsNumberToDouble(value, &raw);
+        return MDoubleCreate(raw);
+    }
+    else if (type == JsString)
+    {
+        const wchar_t *raw = nullptr;
+        size_t rawSize = 0;
+        JsStringToPointer(value, &raw, &rawSize);
+        return MStringCreateU16((const char16_t *)raw);
+    }
+    else if (type == JsObject)
+    {
+        MObject *object = GetObjectFromJsObject(value);
+        return MRetain(object);
+    }
+    else if (type == JsFunction)
+    {
+        return CreateLambdaFromJsFunction(value);
+    }
+    else
+    {
+        return nullptr;
     }
 }
 
@@ -154,45 +141,35 @@ static JsValueRef JsValueFromObject(MObject *object)
         return JS_INVALID_REFERENCE;
     }
 
-    switch (MGetTypeId(object))
+    MTypeId type = MGetTypeId(object);
+    if (type == MTypeIdOf<MBool *>::Value)
     {
-        case MTypeIdOf<MBool *>::Value:
-        {
-            bool raw = MBoolValue((MBool *)object);
+        bool raw = MBoolValue(object);
 
-            JsValueRef value = JS_INVALID_REFERENCE;
-            JsBoolToBoolean(raw, &value);
-            return value;
-        }
-        case MTypeIdOf<MInt *>::Value:
-        {
-            int raw = MIntValue((MInt *)object);
+        JsValueRef value = JS_INVALID_REFERENCE;
+        JsBoolToBoolean(raw, &value);
+        return value;
+    }
+    else if (MIsNumberObject(type))
+    {
+        double raw = MDoubleValue(object);
 
-            JsValueRef value = JS_INVALID_REFERENCE;
-            JsIntToNumber(raw, &value);
-            return value;
-        }
-        case MTypeIdOf<MFloat *>::Value:
-        {
-            float raw = MFloatValue((MFloat *)object);
+        JsValueRef value = JS_INVALID_REFERENCE;
+        JsDoubleToNumber(raw, &value);
+        return value;
+    }
+    else if (type == MTypeIdOf<MString *>::Value)
+    {
+        auto raw     = (const wchar_t *)MStringU16Chars((MString *)object);
+        auto rawSize = (size_t)MStringU16Size((MString *)object);
 
-            JsValueRef value = JS_INVALID_REFERENCE;
-            JsDoubleToNumber(raw, &value);
-            return value;
-        }
-        case MTypeIdOf<MString *>::Value:
-        {
-            auto raw     = (const wchar_t *)MStringU16Chars((MString *)object);
-            auto rawSize = (size_t)MStringU16Size((MString *)object);
-
-            JsValueRef value = JS_INVALID_REFERENCE;
-            JsPointerToString(raw, rawSize, &value);
-            return value;
-        }
-        default:
-        {
-            return AddJsObjectFromObject(object);
-        }
+        JsValueRef value = JS_INVALID_REFERENCE;
+        JsPointerToString(raw, rawSize, &value);
+        return value;
+    }
+    else
+    {
+        return AddJsObjectFromObject(object);
     }
 }
 
