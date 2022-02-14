@@ -18,7 +18,7 @@ template<class Class, class Super> struct extends : dash::extends<Class, Super> 
 };
 
 template<> struct class_name_of<class object> {
-    static symbol *value() { return symbol::make("object"); }
+    static symbol *value() { static symbol *s = symbol::make("object"); return s; }
 };
 
 class object : public dash::extends<object, dash::object> {

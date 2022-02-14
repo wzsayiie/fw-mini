@@ -20,6 +20,7 @@ private:
 class any {
 public:
     any();
+    any(nullptr_t);
     
     any(bool    value);
     any(int     value);
