@@ -4,31 +4,34 @@
 
 namespace reflect {
 
-template<> struct class_name_of<class function> {
+any  get_argument(int index);
+void return_value(const any &value);
+
+inline any get_this_arg() {
+    return get_argument(0);
+}
+
+template<> struct class_name_of<class base_function> {
     static symbol *value() {
         static symbol *sym = symbol::make("function");
         return sym;
     }
 };
 
-class function : public extends<function, object> {
+class base_function : public extends<base_function, object> {
 public:
-    static any  get_this_arg() { return get_argument(0); }
-    static any  get_argument(int index);
-    static void return_value(const any &value);
-
     any call_with_args(const std::vector<any> &args) const;
 
 protected:
     virtual void on_call() const = 0;
 };
 
-template<class> class func;
-template<class Ret, class... Args> class func<Ret (Args...)> : public function {
+template<class> class function;
+template<class Ret, class... Args> class function<Ret (Args...)> : public base_function {
 public:
-    typedef std::shared_ptr<func> ptr;
+    typedef std::shared_ptr<function> ptr;
 
-    template<class Fn> func(const Fn &fn) {
+    template<class Fn> function(const Fn &fn) {
         _fn = fn;
     }
 
@@ -44,8 +47,7 @@ public:
 
 protected:
     void on_call() const override {
-        Ret returned = caller<0>::call(_fn);
-        return_value(returned);
+        caller<0>::call(_fn);
     }
 
 private:
@@ -64,16 +66,28 @@ private:
     template<class FirstArg, class... OtherArgs> struct type_at<0, void (FirstArg, OtherArgs...)> {
         typedef FirstArg type;
     };
+    
+    template<class Result> struct returner {
+        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
+            Result result = fn(unfold...);
+            return_value(result);
+        }
+    };
+    template<> struct returner<void> {
+        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
+            fn(unfold...);
+        }
+    };
 
     template<int Index> struct caller {
-        template<class... Unfold> static Ret call(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
+        template<class... Unfold> static void call(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
             auto value = (typename type_at<Index, void (Args...)>::type)get_argument(Index + 1);
-            return caller<Index + 1>::call(fn, unfold..., value);
+            caller<Index + 1>::call(fn, unfold..., value);
         }
     };
     template<> struct caller<arg_count<void (Args...)>::value> {
-        template<class... Unfold> static Ret call(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
-            return fn(unfold...);
+        template<class... Unfold> static void call(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
+            returner<Ret>::retv(fn, unfold...);
         }
     };
 

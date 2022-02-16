@@ -8,7 +8,7 @@ struct stack_frame {
 };
 static dash::lazy_var<std::vector<stack_frame>> s_frames;
 
-any function::get_argument(int index) {
+any get_argument(int index) {
     if (s_frames->empty()) {
         return any();
     }
@@ -21,13 +21,13 @@ any function::get_argument(int index) {
     return args.at(index);
 }
 
-void function::return_value(const any &value) {
+void return_value(const any &value) {
     if (!s_frames->empty()) {
         s_frames->rbegin()->returned = value;
     }
 }
 
-any function::call_with_args(const std::vector<any> &args) const {
+any base_function::call_with_args(const std::vector<any> &args) const {
     stack_frame frame = { args };
     s_frames->push_back(frame);
 
