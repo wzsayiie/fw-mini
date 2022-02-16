@@ -37,8 +37,17 @@ public:
     float   as_float () const;
     double  as_double() const;
     
-    const std::string &as_string() const;
-    dash::object::ptr  as_object() const;
+    const std::string       &as_string() const;
+    const dash::object::ptr &as_object() const;
+
+    operator bool   () const;
+    operator int    () const;
+    operator int64_t() const;
+    operator float  () const;
+    operator double () const;
+
+    operator const std::string       &() const;
+    operator const dash::object::ptr &() const;
     
 private:
     enum class data_type {

@@ -93,8 +93,17 @@ const std::string &any::as_string() const {
     return _string;
 }
 
-dash::object::ptr any::as_object() const {
+const dash::object::ptr &any::as_object() const {
     return _object;
 }
+
+any::operator bool   () const { return as_bool  (); }
+any::operator int    () const { return as_int   (); }
+any::operator int64_t() const { return as_int64 (); }
+any::operator float  () const { return as_float (); }
+any::operator double () const { return as_double(); }
+
+any::operator const std::string       &() const { return as_string(); }
+any::operator const dash::object::ptr &() const { return as_object(); }
 
 } //end reflect.
