@@ -48,6 +48,10 @@ public:
 
     operator const std::string       &() const;
     operator const dash::object::ptr &() const;
+
+    template<class Type> operator std::shared_ptr<Type>() const {
+        return std::dynamic_pointer_cast<Type>(_object);
+    }
     
 private:
     enum class data_type {

@@ -11,11 +11,8 @@ inline any get_this_arg() {
     return get_argument(0);
 }
 
-template<> struct class_name_of<class base_function> {
-    static symbol *value() {
-        static symbol *sym = symbol::make("function");
-        return sym;
-    }
+template<> struct reflectable_type<class base_function> {
+    static constexpr const char *const name = "function";
 };
 
 class base_function : public extends<base_function, object> {
@@ -27,10 +24,10 @@ protected:
 };
 
 template<class> class function;
-template<class Ret, class... Args> class function<Ret (Args...)> : public base_function {
+template<class Ret, class... Args> class function<Ret (Args...)>
+    : public extends<function<Ret (Args...)>, base_function>
+{
 public:
-    typedef std::shared_ptr<function> ptr;
-
     template<class Fn> function(const Fn &fn) {
         _fn = fn;
     }
