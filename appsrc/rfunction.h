@@ -34,12 +34,12 @@ public:
 
     any call_with_this(const any &this_arg, Args... args) const {
         std::vector<any> list = { this_arg, args... };
-        return call_with_args(list);
+        return this->call_with_args(list);
     }
 
     any call(Args... args) const {
         std::vector<any> list = { nullptr, args... };
-        return call_with_args(list);
+        return this->call_with_args(list);
     }
 
 protected:
