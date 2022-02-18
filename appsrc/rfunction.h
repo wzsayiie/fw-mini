@@ -28,8 +28,8 @@ template<class Ret, class... Args> class function<Ret (Args...)>
     : public extends<function<Ret (Args...)>, base_function>
 {
 public:
-    template<class Fn> function(const Fn &fn) {
-        _fn = fn;
+    template<class Fcn> function(const Fcn &fcn) {
+        _fcn = fcn;
     }
 
     any call_with_this(const any &this_arg, Args... args) const {
@@ -44,7 +44,7 @@ public:
 
 protected:
     void on_call() const override {
-        caller<0>::call(_fn);
+        caller<0>::call(_fcn);
     }
 
 private:
@@ -65,30 +65,30 @@ private:
     };
     
     template<class Result> struct returner {
-        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
-            Result result = fn(unfold...);
+        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
+            Result result = fcn(unfold...);
             return_value(result);
         }
     };
     template<> struct returner<void> {
-        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
-            fn(unfold...);
+        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
+            fcn(unfold...);
         }
     };
 
     template<int Index> struct caller {
-        template<class... Unfold> static void call(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
+        template<class... Unfold> static void call(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
             auto value = (typename type_at<Index, void (Args...)>::type)get_argument(Index + 1);
-            caller<Index + 1>::call(fn, unfold..., value);
+            caller<Index + 1>::call(fcn, unfold..., value);
         }
     };
     template<> struct caller<arg_count<void (Args...)>::value> {
-        template<class... Unfold> static void call(const std::function<Ret (Args...)> &fn, Unfold... unfold) {
-            returner<Ret>::retv(fn, unfold...);
+        template<class... Unfold> static void call(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
+            returner<Ret>::retv(fcn, unfold...);
         }
     };
 
-    std::function<Ret (Args...)> _fn;
+    std::function<Ret (Args...)> _fcn;
 };
 
 } //end reflect.
