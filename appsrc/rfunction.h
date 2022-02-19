@@ -11,10 +11,7 @@ inline any get_this_arg() {
     return get_argument(0);
 }
 
-template<> struct reflectable_type<class base_function> {
-    static constexpr const char *const name = "function";
-};
-
+reflect_reflectable_class(base_function);
 class base_function : public extends<base_function, object> {
 public:
     any call_with_args(const std::vector<any> &args) const;

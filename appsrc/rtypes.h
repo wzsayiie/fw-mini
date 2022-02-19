@@ -7,7 +7,7 @@ namespace reflect {
 enum class type_category {
     is_void  ,  //void.
     is_bool  ,  //bool.
-    is_int32 ,  //int.
+    is_int   ,  //int.
     is_int64 ,  //int64_t.
     is_float ,  //float.
     is_double,  //double.
@@ -47,3 +47,8 @@ template<> struct reflectable_type<double     > { static constexpr const char *c
 template<> struct reflectable_type<std::string> { static constexpr const char *const name = "string"; };
 
 } // end reflect.
+
+#define reflect_reflectable_class(Name)                             \
+/**/    template<> struct reflect::reflectable_type<class Name> {   \
+/**/        static constexpr const char *const name = #Name;        \
+/**/    }
