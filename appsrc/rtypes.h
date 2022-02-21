@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rutility.h"
+#include "rset.h"
 
 namespace reflect {
 
@@ -29,26 +29,4 @@ enum class form_category {
     shared      ,   //std::shared_ptr<value>.
 };
 
-template<class> struct reflectable_type;
-
-template<class Type> struct type_name {
-    static symbol *value() {
-        static symbol *sym = symbol::make(reflectable_type<Type>::name);
-        return sym;
-    }
-};
-
-template<> struct reflectable_type<void       > { static constexpr const char *const name = "void"  ; };
-template<> struct reflectable_type<bool       > { static constexpr const char *const name = "bool"  ; };
-template<> struct reflectable_type<int        > { static constexpr const char *const name = "int"   ; };
-template<> struct reflectable_type<int64_t    > { static constexpr const char *const name = "int64" ; };
-template<> struct reflectable_type<float      > { static constexpr const char *const name = "float" ; };
-template<> struct reflectable_type<double     > { static constexpr const char *const name = "double"; };
-template<> struct reflectable_type<std::string> { static constexpr const char *const name = "string"; };
-
 } // end reflect.
-
-#define reflect_reflectable_class(Name)                             \
-/**/    template<> struct reflect::reflectable_type<class Name> {   \
-/**/        static constexpr const char *const name = #Name;        \
-/**/    }

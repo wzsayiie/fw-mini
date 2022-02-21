@@ -1,10 +1,13 @@
 #pragma once
 
-#include "rtypes.h"
+#include "rutility.h"
 
 namespace reflect {
 
-reflect_reflectable_class(object);
+template<> struct type_name_of<class object> {
+    static constexpr const char *const name = "object";
+};
+
 class object : public dash::extends<object, dash::object> {
 public:
     virtual symbol *class_name() const;

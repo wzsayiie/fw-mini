@@ -2,6 +2,9 @@
 
 namespace reflect {
 
+//symbol:
+//
+
 static dash::lazy_var<std::set<symbol>> s_symbols;
 
 symbol *symbol::make(const char *str) {
@@ -30,6 +33,9 @@ const char *symbol::str() const {
 symbol::symbol(const char *str) {
     _str = str;
 }
+
+//any:
+//
 
 any::any() {
 }

@@ -4,6 +4,9 @@
 
 namespace reflect {
 
+//symbol:
+//
+
 class symbol {
 public:
     static symbol *make(const char *str);
@@ -16,6 +19,21 @@ private:
     
     const char *_str;
 };
+
+//type_name:
+//
+
+template<class> struct type_name_of;
+
+template<class Type> struct type_name {
+    static symbol *value() {
+        static symbol *sym = symbol::make(type_name_of<Type>::name);
+        return sym;
+    }
+};
+
+//any:
+//
 
 class any {
 public:

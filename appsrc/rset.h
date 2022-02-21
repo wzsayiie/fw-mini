@@ -4,9 +4,11 @@
 
 namespace reflect {
 
-reflect_reflectable_class(base_set);
-class base_set : extends<base_set, object> {
-public:
+template<> struct type_name_of<struct base_set> {
+    static constexpr const char *const name = "base_set";
+};
+
+struct base_set : extends<base_set, object> {
     virtual void insert(const any &value) = 0;
     virtual void erase (const any &value) = 0;
     virtual bool has   (const any &value) const = 0;
@@ -32,13 +34,5 @@ template<class Value> struct set : extends<set<Value>, base_set> {
         return (int)this->set.size();
     }
 };
-
-//builtin set types.
-reflect_reflectable_class(set<bool>       );
-reflect_reflectable_class(set<int>        );
-reflect_reflectable_class(set<int64_t>    );
-reflect_reflectable_class(set<float>      );
-reflect_reflectable_class(set<double>     );
-reflect_reflectable_class(set<std::string>);
 
 } // end reflect.
