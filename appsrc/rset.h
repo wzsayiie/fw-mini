@@ -4,18 +4,20 @@
 
 namespace reflect {
 
-template<> struct type_name_of<struct base_set> {
+template<> struct type_name_of<class base_set> {
     static constexpr const char *const name = "base_set";
 };
 
-struct base_set : extends<base_set, object> {
+class base_set : public extends<base_set, object> {
+public:
     virtual void insert(const any &value) = 0;
     virtual void erase (const any &value) = 0;
     virtual bool has   (const any &value) const = 0;
     virtual int  size  () const = 0;
 };
 
-template<class Value> struct set : extends<set<Value>, base_set> {
+template<class Value> class set : public extends<set<Value>, base_set> {
+public:
     std::set<Value> set;
 
     void insert(const any &value) override {
