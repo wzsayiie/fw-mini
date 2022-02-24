@@ -10,6 +10,7 @@ namespace reflect {
 class symbol {
 public:
     static symbol *make(const char *str);
+    static symbol *find(const char *str);
     
     bool operator<(const symbol &that) const;
     const char *str() const;

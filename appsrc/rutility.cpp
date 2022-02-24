@@ -22,6 +22,19 @@ symbol *symbol::make(const char *str) {
     }
 }
 
+symbol *symbol::find(const char *str) {
+    if (!str || !*str) {
+        return nullptr;
+    }
+    
+    auto the = s_symbols->find(symbol(str));
+    if (the != s_symbols->end()) {
+        return (symbol *)&*the;
+    } else {
+        return nullptr;
+    }
+}
+
 bool symbol::operator<(const symbol &that) const {
     return strcmp(_str, that._str) < 0;
 }
