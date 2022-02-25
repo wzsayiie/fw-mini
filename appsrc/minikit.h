@@ -5,7 +5,6 @@
 #include "mconvention.h"
 #include "mdebug.h"
 #include "mencode.h"
-#include "menviron.h"
 #include "mhostapi.h"
 #include "mhostjs.h"
 #include "mhostloop.h"
