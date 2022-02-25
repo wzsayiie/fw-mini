@@ -15,11 +15,14 @@ enum class type_category {
     is_float   ,    //float.
     is_double  ,    //double.
     is_string  ,    //std::string.
+    
     is_function,    //reflect::function<ret (args...)>.
+    
+    is_vector  ,    //reflect::vector<value>.
     is_map     ,    //reflect::map<key, value>.
     is_set     ,    //reflect::set<value>.
-    is_vector  ,    //reflect::vector<value>.
-    is_usrclass,    //reflect::object (exclude function, map, set and vector).
+    
+    is_class   ,    //reflect::object (exclude function, map, set and vector).
 };
 
 enum class type_qualifier {
@@ -40,10 +43,7 @@ struct basic_meta {
     symbol       *name = nullptr;
 };
 
-struct class_meta : basic_meta {
-};
-
-struct function_meta : class_meta {
+struct function_meta : basic_meta {
     symbol                     *belong_class   = nullptr;
     bool                        is_static      = false;
     std::vector<type_qualifier> arg_qualifiers ;
@@ -53,20 +53,20 @@ struct function_meta : class_meta {
     base_function::ptr          function       ;
 };
 
-struct map_meta : class_meta {
+struct vector_map : basic_meta {
+    symbol *val_type = nullptr;
+};
+
+struct map_meta : basic_meta {
     symbol *key_type = nullptr;
     symbol *val_type = nullptr;
 };
 
-struct set_meta : class_meta {
+struct set_meta : basic_meta {
     symbol *val_type = nullptr;
 };
 
-struct vector_map : class_meta {
-    symbol *val_type = nullptr;
-};
-
-struct usrclass_meta : class_meta {
+struct class_meta : basic_meta {
     std::map<symbol *, struct function_meta *> function_map;
     std::vector<struct function_meta *>        function_seq;
 };
@@ -76,12 +76,14 @@ void commit_meta(basic_meta *meta);
 //query:
 //
 
-const function_meta *find_function(const char *name);
-const class_meta    *find_class   (const char *name);
-const basic_meta    *find_basic   (const char *name);
+const basic_meta    *find_basic    (const char *name);
+const function_meta *find_function (const char *name);
+const basic_meta    *find_container(const char *name);
+const class_meta    *find_class    (const char *name);
 
-const std::vector<function_meta *> &functions();
-const std::vector<class_meta    *> &classes  ();
-const std::vector<basic_meta    *> &basics   ();
+const std::vector<basic_meta    *> &basics    ();
+const std::vector<function_meta *> &functions ();
+const std::vector<basic_meta    *> &containers();
+const std::vector<class_meta    *> &classes   ();
 
 } // end reflect.
