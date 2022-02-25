@@ -54,7 +54,7 @@ public:
 
         //NOTE: on the implementations of clang and gcc,
         //a member function pointer occupies two pointers space.
-      #if M_CPL_CLANG || M_CPL_GCC
+      #if DASH_COMPILER_CLANG || DASH_COMPILER_GCC
         void *c = ((void **)&func)[1];
       #else
         void *c = nullptr;

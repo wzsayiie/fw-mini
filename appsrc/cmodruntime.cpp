@@ -408,7 +408,7 @@ static CModMethod *FindMethod(IModObj *obj, const cmod_char *methodName) {
     return nullptr;
 }
 
-#if M_PTR_64
+#if DASH_PTR_64
     typedef intptr_t INT64_T;
 #else
     typedef int64_t  INT64_T;

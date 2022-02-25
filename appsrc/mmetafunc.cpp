@@ -86,7 +86,7 @@ static MObject *CopyNumberObject(MTypeId dst, MObject *src) {
 //template instantiation parameters only use 5 types: void, intptr_t, INT64_T, float and double,
 //to prevent code bloat.
 
-#if M_PTR_64
+#if DASH_PTR_64
     typedef intptr_t INT64_T;
 #else
     typedef int64_t  INT64_T;

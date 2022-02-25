@@ -3,7 +3,7 @@
 #include <cstdarg>
 #include "menviron.h"
 
-#if M_CPL_CL
+#if DASH_COMPILER_MSC
     #include <sal.h>
     #define __printflike(format, list)
 #else

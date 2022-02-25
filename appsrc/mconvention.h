@@ -46,7 +46,7 @@ constexpr int _MHashId(const char *name) {
 #define M_FUNC_HOST extern "C"
 
 //exported functions.
-#if M_CPL_CL
+#if DASH_COMPILER_MSC
     #define M_FUNC_EXPORT extern "C" __declspec(dllexport)
 #else
     #define M_FUNC_EXPORT extern "C" __attribute((visibility("default")))
