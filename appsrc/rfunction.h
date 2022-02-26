@@ -7,10 +7,6 @@ namespace reflect {
 any  get_argument(int index);
 void return_value(const any &value);
 
-inline any get_this_arg() {
-    return get_argument(0);
-}
-
 template<> struct type_name_of<class base_function> {
     static constexpr const char *const name = "base_function";
 };
@@ -28,23 +24,23 @@ template<class Ret, class... Args> class function<Ret (Args...)>
     : public extends<function<Ret (Args...)>, base_function>
 {
 public:
+    function() {
+    }
+    
     template<class Fcn> function(const Fcn &fcn) {
         _fcn = fcn;
     }
 
-    any call_with_this(const any &this_arg, Args... args) const {
-        std::vector<any> list = { this_arg, args... };
-        return this->call_with_args(list);
-    }
-
     any call(Args... args) const {
-        std::vector<any> list = { nullptr, args... };
+        std::vector<any> list = { args... };
         return this->call_with_args(list);
     }
 
 protected:
     void on_call() const override {
-        caller<0>::call(_fcn);
+        if (_fcn) {
+            caller<0>::call(_fcn);
+        }
     }
 
 private:
@@ -78,7 +74,7 @@ private:
 
     template<int Index> struct caller {
         template<class... Unfold> static void call(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
-            auto value = (typename type_at<Index, void (Args...)>::type)get_argument(Index + 1);
+            auto value = (typename type_at<Index, void (Args...)>::type)get_argument(Index);
             caller<Index + 1>::call(fcn, unfold..., value);
         }
     };
