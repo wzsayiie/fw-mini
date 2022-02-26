@@ -21,6 +21,10 @@ struct object {
 
 template<class Class, class Super> struct extends : Super {
     typedef std::shared_ptr<Class> ptr;
+    
+    static ptr create() {
+        return std::make_shared<Class>();
+    }
 };
 
 } //end dash.
