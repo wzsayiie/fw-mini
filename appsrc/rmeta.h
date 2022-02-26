@@ -38,12 +38,16 @@ enum class type_qualifier {
 //meta:
 //
 
-struct basic_meta {
+struct type_meta {
     type_category type = type_category::is_void;
     symbol       *name = nullptr;
 };
 
-struct function_meta : basic_meta {
+struct super_meta : type_meta {
+    object::ptr (*create)() = nullptr;
+};
+
+struct function_meta : super_meta {
     symbol                     *belong_class   = nullptr;
     bool                        is_static      = false;
     std::vector<type_qualifier> arg_qualifiers ;
@@ -53,37 +57,38 @@ struct function_meta : basic_meta {
     base_function::ptr          function       ;
 };
 
-struct vector_map : basic_meta {
+struct vector_map : super_meta {
     symbol *val_type = nullptr;
 };
 
-struct map_meta : basic_meta {
+struct map_meta : super_meta {
     symbol *key_type = nullptr;
     symbol *val_type = nullptr;
 };
 
-struct set_meta : basic_meta {
+struct set_meta : super_meta {
     symbol *val_type = nullptr;
 };
 
-struct class_meta : basic_meta {
+struct class_meta : super_meta {
     std::map<symbol *, struct function_meta *> function_map;
     std::vector<struct function_meta *>        function_seq;
 };
 
-void commit_meta(basic_meta *meta);
+void commit_meta(type_meta *meta);
 
 //query:
 //
 
-const basic_meta    *find_basic    (const char *name);
+const type_meta     *find_type     (const char *name);
+const type_meta     *find_basic    (const char *name);
 const function_meta *find_function (const char *name);
-const basic_meta    *find_container(const char *name);
+const super_meta    *find_container(const char *name);
 const class_meta    *find_class    (const char *name);
 
-const std::vector<basic_meta    *> &basics    ();
+const std::vector<type_meta     *> &basics    ();
 const std::vector<function_meta *> &functions ();
-const std::vector<basic_meta    *> &containers();
+const std::vector<super_meta    *> &containers();
 const std::vector<class_meta    *> &classes   ();
 
 } // end reflect.
