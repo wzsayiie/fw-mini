@@ -17,7 +17,7 @@
     #error "unknown compiler."
 #endif
 
-//how many bits of cpu word.
+//how many bits is a cpu word.
 #if _WIN64 || (__ILP64__ || __LP64__ || __LLP64__)
     #define DASH_PTR_64 1
     #define DASH_PTR_32 0
@@ -28,7 +28,7 @@
     #error "unknown cpu word."
 #endif
 
-//which of the following os platform.
+//which os platform.
 //
 // +---------------------------------------+ +---------+
 // |                   posix               | | windows |
