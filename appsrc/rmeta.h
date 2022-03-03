@@ -90,9 +90,11 @@ struct class_meta : super_meta {
 };
 
 struct const_meta : type_meta {
-    symbol     *belong_enum = nullptr;
-    const char *str_value   = nullptr;
-    int         int_value   = 0;
+    symbol       *belong_enum  = nullptr;
+    type_category value_type   = type_category::is_void;
+    const char   *string_value = nullptr;
+    double        double_value = 0;
+    int64_t       int64_value  = 0;
 };
 
 struct enum_meta : type_meta {

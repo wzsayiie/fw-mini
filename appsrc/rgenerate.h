@@ -30,7 +30,7 @@
 
 #define define_reflectable_enum_const(Enum, Const)                  \
 /**/    static reflect::committor _unused_##Enum##_##Const(         \
-/**/        #Enum, #Const, Enum::Const                              \
+/**/        #Enum, #Const, (int)Enum::Const                         \
 /**/    );
 
 #define define_reflectable_const(Const)                             \
@@ -107,7 +107,19 @@ struct committor {
     committor(const char *name, const char *value) {
     }
 
-    //integer constant.
+    //double constant.
+    committor(const char *name, double value) {
+    }
+
+    //float constant.
+    committor(const char *name, float value) {
+    }
+
+    //int64 constant.
+    committor(const char *name, int64_t value) {
+    }
+
+    //int constant.
     committor(const char *name, int value) {
     }
 };
