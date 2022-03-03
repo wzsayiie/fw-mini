@@ -83,6 +83,7 @@ struct function_meta : super_meta {
     type_qualifier              ret_qualifier  = type_qualifier::value;
     symbol                     *ret_type       = nullptr;
     base_function::ptr          function       ;
+    const char *                annotation     = nullptr;
 };
 
 struct class_meta : super_meta {

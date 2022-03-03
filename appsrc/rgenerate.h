@@ -18,14 +18,14 @@
 /**/        static constexpr const char *const name = #Name;        \
 /**/    };
 
-#define define_reflectable_class_function(Class, Function)          \
+#define define_reflectable_class_function(Class, Function, ...)     \
 /**/    static reflect::committor _unused_##Class##_##Function(     \
-/**/        #Class, #Function, &Class::Function                     \
+/**/        #Class, #Function, &Class::Function, ##__VA_ARGS__      \
 /**/    );
 
-#define define_reflectable_function(Function)                       \
+#define define_reflectable_function(Function, ...)                  \
 /**/    static reflect::committor _unused_##Function(               \
-/**/        #Function, Function                                     \
+/**/        #Function, Function, ##__VA_ARGS__                      \
 /**/    );
 
 #define define_reflectable_enum_const(Enum, Const)                  \
@@ -83,19 +83,19 @@ declare_reflectable_class(set<std::string>)
 struct committor {
     //class instance function.
     template<class Ret, class Class, class... Args> committor(
-        const char *const class_name, const char *fcn_name, Ret (Class::*fcn)(Args...))
+        const char *class_name, const char *fcn_name, Ret (Class::*fcn)(Args...), const char *note = nullptr)
     {
     }
 
     //class static function.
     template<class Ret, class... Args> committor(
-        const char *const class_name, const char *fcn_name, Ret (*fcn)(Args...))
+        const char *class_name, const char *fcn_name, Ret (*fcn)(Args...), const char *note = nullptr)
     {
     }
 
     //global function.
     template<class Ret, class... Args> committor(
-        const char *fcn_name, Ret (*fcn)(Args...))
+        const char *fcn_name, Ret (*fcn)(Args...), const char *note = nullptr)
     {
     }
 

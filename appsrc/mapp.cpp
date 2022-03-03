@@ -26,7 +26,7 @@ void MApp::update() {
     }
 }
 
-define_reflectable_class_function(MApp, command)
+define_reflectable_class_function(MApp, command, "args:line;")
 void MApp::command(const std::string &line) {
     mCommand = line;
 
@@ -37,7 +37,7 @@ void MApp::command(const std::string &line) {
     mCommand.clear();
 }
 
-define_reflectable_class_function(MApp, addListener)
+define_reflectable_class_function(MApp, addListener, "args:event,listener;")
 void MApp::addListener(MAppEvent event, const MFunction<void ()>::ptr &listener) {
     if (!listener) {
         return;
@@ -48,7 +48,7 @@ void MApp::addListener(MAppEvent event, const MFunction<void ()>::ptr &listener)
     else if (event == MAppEvent::Command) { mCommandListeners.insert(listener); }
 }
 
-define_reflectable_class_function(MApp, removeListener)
+define_reflectable_class_function(MApp, removeListener, "args:event,listener;")
 void MApp::removeListener(MAppEvent event, const MFunction<void ()>::ptr &listener) {
     if (!listener) {
         return;
