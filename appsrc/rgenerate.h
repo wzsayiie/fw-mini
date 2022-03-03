@@ -7,20 +7,34 @@
 //generation mark:
 //
 
-#define reflectable_class(...)                                          \
-/**/    template<> struct reflect::type_name_of<class __VA_ARGS__> {    \
-/**/        static constexpr const char *const name = #__VA_ARGS__;     \
+#define declare_reflectable_class(...)                              \
+/**/    template<> struct reflect::type_name_of<class __VA_ARGS__> {\
+/**/        static constexpr const char *const name = #__VA_ARGS__; \
 /**/    };
 
-#define reflectable_class_function(Class, Function)                         \
-/**/    static reflect::function_commit _unused_var_##Class##_##Function(   \
-/**/        #Class, #Function, &Class::Function                             \
+#define declare_reflectable_enum(Name)                              \
+/**/    enum class Name;                                            \
+/**/    template<> struct reflect::type_name_of<Name> {             \
+/**/        static constexpr const char *const name = #Name;        \
+/**/    };
+
+#define define_reflectable_class_function(Class, Function)          \
+/**/    static reflect::committor _unused_##Class##_##Function(     \
+/**/        #Class, #Function, &Class::Function                     \
 /**/    );
 
-#define reflectable_function(Function)                          \
-/**/    static reflect::function_commit _unused_var_##Function( \
-/**/        #Function, Function                                 \
+#define define_reflectable_function(Function)                       \
+/**/    static reflect::committor _unused_##Function(               \
+/**/        #Function, Function                                     \
 /**/    );
+
+#define define_reflectable_enum_const(Enum, Const)                  \
+/**/    static reflect::committor _unused_##Enum##_##Const(         \
+/**/        #Enum, #Const, Enum::Const                              \
+/**/    );
+
+#define define_reflectable_const(Const)                             \
+/**/    static reflect::committor _unused_##Name(#Const, Const);    \
 
 namespace reflect {
 
@@ -35,51 +49,66 @@ template<> struct type_name_of<float      > { static constexpr const char *const
 template<> struct type_name_of<double     > { static constexpr const char *const name = "double"; };
 template<> struct type_name_of<std::string> { static constexpr const char *const name = "string"; };
 
-reflectable_class(vector<bool>       )
-reflectable_class(vector<int>        )
-reflectable_class(vector<int64_t>    )
-reflectable_class(vector<float>      )
-reflectable_class(vector<double>     )
-reflectable_class(vector<std::string>)
+declare_reflectable_class(vector<bool>       )
+declare_reflectable_class(vector<int>        )
+declare_reflectable_class(vector<int64_t>    )
+declare_reflectable_class(vector<float>      )
+declare_reflectable_class(vector<double>     )
+declare_reflectable_class(vector<std::string>)
 
-reflectable_class(map<std::string, bool>       )
-reflectable_class(map<std::string, int>        )
-reflectable_class(map<std::string, int64_t>    )
-reflectable_class(map<std::string, float>      )
-reflectable_class(map<std::string, double>     )
-reflectable_class(map<std::string, std::string>)
+declare_reflectable_class(map<std::string, bool>       )
+declare_reflectable_class(map<std::string, int>        )
+declare_reflectable_class(map<std::string, int64_t>    )
+declare_reflectable_class(map<std::string, float>      )
+declare_reflectable_class(map<std::string, double>     )
+declare_reflectable_class(map<std::string, std::string>)
 
-reflectable_class(map<int, bool>       )
-reflectable_class(map<int, int>        )
-reflectable_class(map<int, int64_t>    )
-reflectable_class(map<int, float>      )
-reflectable_class(map<int, double>     )
-reflectable_class(map<int, std::string>)
+declare_reflectable_class(map<int, bool>       )
+declare_reflectable_class(map<int, int>        )
+declare_reflectable_class(map<int, int64_t>    )
+declare_reflectable_class(map<int, float>      )
+declare_reflectable_class(map<int, double>     )
+declare_reflectable_class(map<int, std::string>)
 
-reflectable_class(set<bool>       )
-reflectable_class(set<int>        )
-reflectable_class(set<int64_t>    )
-reflectable_class(set<float>      )
-reflectable_class(set<double>     )
-reflectable_class(set<std::string>)
+declare_reflectable_class(set<bool>       )
+declare_reflectable_class(set<int>        )
+declare_reflectable_class(set<int64_t>    )
+declare_reflectable_class(set<float>      )
+declare_reflectable_class(set<double>     )
+declare_reflectable_class(set<std::string>)
 
-//function extraction:
+//type extraction:
 //
 
-struct function_commit {
-    template<class Ret, class Class, class... Args> function_commit(
+struct committor {
+    //class instance function.
+    template<class Ret, class Class, class... Args> committor(
         const char *const class_name, const char *fcn_name, Ret (Class::*fcn)(Args...))
     {
     }
 
-    template<class Ret, class... Args> function_commit(
+    //class static function.
+    template<class Ret, class... Args> committor(
         const char *const class_name, const char *fcn_name, Ret (*fcn)(Args...))
     {
     }
 
-    template<class Ret, class... Args> function_commit(
+    //global function.
+    template<class Ret, class... Args> committor(
         const char *fcn_name, Ret (*fcn)(Args...))
     {
+    }
+
+    //enumeration constant.
+    committor(const char *enum_name, const char *value_name, int value) {
+    }
+
+    //string constant.
+    committor(const char *name, const char *value) {
+    }
+
+    //integer constant.
+    committor(const char *name, int value) {
     }
 };
 

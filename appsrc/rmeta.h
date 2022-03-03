@@ -16,13 +16,15 @@ enum class type_category {
     is_double  ,    //double.
     is_string  ,    //std::string.
     
-    is_function,    //reflect::function<ret (args...)>.
-    
     is_vector  ,    //reflect::vector<value>.
     is_map     ,    //reflect::map<key, value>.
     is_set     ,    //reflect::set<value>.
-    
+
+    is_function,    //reflect::function<ret (args...)>.
     is_class   ,    //reflect::object (exclude function, map, set and vector).
+
+    is_const   ,    //"int" or "const char *" constant.
+    is_enum    ,    //"int" enumeration.
 };
 
 enum class type_qualifier {
@@ -37,6 +39,18 @@ enum class type_qualifier {
 
 //meta:
 //
+//  +-- type
+//  |   +-- super
+//  |   |   +-- vector
+//  |   |   +-- map
+//  |   |   +-- map
+//  |   |   +-- function
+//  |   |   +-- class
+//  |   |
+//  |   +-- const
+//  |   +-- enum
+//  |
+//
 
 struct type_meta {
     type_category type = type_category::is_void;
@@ -45,16 +59,6 @@ struct type_meta {
 
 struct super_meta : type_meta {
     object::ptr (*create)() = nullptr;
-};
-
-struct function_meta : super_meta {
-    symbol                     *belong_class   = nullptr;
-    bool                        is_static      = false;
-    std::vector<type_qualifier> arg_qualifiers ;
-    std::vector<symbol *>       arg_types      ;
-    type_qualifier              ret_qualifier  = type_qualifier::value;
-    symbol                     *ret_type       = nullptr;
-    base_function::ptr          function       ;
 };
 
 struct vector_map : super_meta {
@@ -70,9 +74,30 @@ struct set_meta : super_meta {
     symbol *val_type = nullptr;
 };
 
+struct function_meta : super_meta {
+    symbol                     *belong_class   = nullptr;
+    bool                        is_static      = false;
+    std::vector<type_qualifier> arg_qualifiers ;
+    std::vector<symbol *>       arg_types      ;
+    type_qualifier              ret_qualifier  = type_qualifier::value;
+    symbol                     *ret_type       = nullptr;
+    base_function::ptr          function       ;
+};
+
 struct class_meta : super_meta {
-    std::map<symbol *, struct function_meta *> function_map;
-    std::vector<struct function_meta *>        function_seq;
+    std::map<symbol *, function_meta *> function_map;
+    std::vector<function_meta *>        function_seq;
+};
+
+struct const_meta : type_meta {
+    symbol     *belong_enum = nullptr;
+    const char *str_value   = nullptr;
+    int         int_value   = 0;
+};
+
+struct enum_meta : type_meta {
+    std::map<symbol *, const_meta *> value_map;
+    std::vector<const_meta *>        value_seq;
 };
 
 void commit_meta(type_meta *meta);
@@ -80,15 +105,7 @@ void commit_meta(type_meta *meta);
 //query:
 //
 
-const type_meta     *find_type     (const char *name);
-const type_meta     *find_basic    (const char *name);
-const function_meta *find_function (const char *name);
-const super_meta    *find_container(const char *name);
-const class_meta    *find_class    (const char *name);
-
-const std::vector<type_meta     *> &basics    ();
-const std::vector<function_meta *> &functions ();
-const std::vector<super_meta    *> &containers();
-const std::vector<class_meta    *> &classes   ();
+const type_meta *find_type(const char *name);
+const std::vector<type_meta *> &all_types();
 
 } // end reflect.
