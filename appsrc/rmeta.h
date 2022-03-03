@@ -10,6 +10,7 @@ namespace reflect {
 enum class type_category {
     is_void    ,    //void.
     is_bool    ,    //bool.
+    is_byte    ,    //uint8_t.
     is_int     ,    //int.
     is_int64   ,    //int64_t.
     is_float   ,    //float.
