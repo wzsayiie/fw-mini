@@ -12,9 +12,9 @@ class object : public dash::extends<object, dash::object> {
 public:
     virtual symbol *class_name() const;
     
-    virtual int ref_count() const;
-    virtual object *retain();
-    virtual void release();
+    int  ref_count() const;
+    void retain();
+    void release();
     
 private:
     int _ref_count = 1;
@@ -25,5 +25,14 @@ template<class Class, class Super> struct extends : dash::extends<Class, Super> 
         return type_name<Class>::value();
     }
 };
+
+template<class Object> typename Object::ptr shared(Object *obj) {
+    if (!obj) {
+        return Object::ptr();
+    }
+
+    obj->retain();
+    return Object::ptr(obj, [](Object *a) { a->release(); });
+}
 
 } //end reflect.

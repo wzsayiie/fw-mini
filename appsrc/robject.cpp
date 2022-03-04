@@ -10,9 +10,8 @@ int object::ref_count() const {
     return _ref_count;
 }
 
-object *object::retain() {
+void object::retain() {
     _ref_count++;
-    return this;
 }
 
 void object::release() {
