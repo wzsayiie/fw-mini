@@ -2,17 +2,17 @@
 
 namespace reflect {
 
-//ftable:
+//function_table:
 //
 
-void ftable::add(const char *name, const base_function::ptr &func) {
+void function_table::add(const char *name, const base_function::ptr &func) {
     if (name && *name && func) {
         symbol *sym = symbol::make(name);
         _functions.insert({ sym, func });
     }
 }
 
-base_function::ptr ftable::find(const char *name) {
+base_function::ptr function_table::find(const char *name) {
     symbol *sym = symbol::find(name);
 
     auto target = _functions.find(sym);
@@ -26,13 +26,13 @@ base_function::ptr ftable::find(const char *name) {
 //injectable:
 //
 
-void injectable::inject(const ftable::ptr &ftab) {
-    _ftab = ftab;
+void injectable::inject(const function_table::ptr &table) {
+    _table = table;
 }
 
 base_function::ptr injectable::find_injected(const char *name) {
-    if (_ftab) {
-        return _ftab->find(name);
+    if (_table) {
+        return _table->find(name);
     }
     return nullptr;
 }

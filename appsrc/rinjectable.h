@@ -4,10 +4,10 @@
 
 namespace reflect {
 
-//ftable:
+//function_table:
 //
 
-class ftable : public dash::extends<ftable, dash::object> {
+class function_table : public dash::extends<function_table, dash::object> {
 public:
     void add(const char *name, const base_function::ptr &func);
     base_function::ptr find(const char *name);
@@ -25,11 +25,11 @@ template<> struct type_name_of<class injectable> {
 
 class injectable : public extends<injectable, object> {
 public:
-    void inject(const ftable::ptr &ftab);
+    void inject(const function_table::ptr &table);
     base_function::ptr find_injected(const char *name);
 
 private:
-    ftable::ptr _ftab;
+    function_table::ptr _table;
 };
 
 } //end reflect.
