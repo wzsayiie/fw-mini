@@ -50,6 +50,7 @@ template<> struct type_name_of<double     > { static constexpr const char *const
 template<> struct type_name_of<std::string> { static constexpr const char *const name = "string"; };
 
 declare_reflectable_class(vector<bool>       )
+declare_reflectable_class(vector<uint8_t>    )
 declare_reflectable_class(vector<int>        )
 declare_reflectable_class(vector<int64_t>    )
 declare_reflectable_class(vector<float>      )
@@ -62,13 +63,12 @@ declare_reflectable_class(map<std::string, int64_t>    )
 declare_reflectable_class(map<std::string, float>      )
 declare_reflectable_class(map<std::string, double>     )
 declare_reflectable_class(map<std::string, std::string>)
-
-declare_reflectable_class(map<int, bool>       )
-declare_reflectable_class(map<int, int>        )
-declare_reflectable_class(map<int, int64_t>    )
-declare_reflectable_class(map<int, float>      )
-declare_reflectable_class(map<int, double>     )
-declare_reflectable_class(map<int, std::string>)
+declare_reflectable_class(map<int        , bool>       )
+declare_reflectable_class(map<int        , int>        )
+declare_reflectable_class(map<int        , int64_t>    )
+declare_reflectable_class(map<int        , float>      )
+declare_reflectable_class(map<int        , double>     )
+declare_reflectable_class(map<int        , std::string>)
 
 declare_reflectable_class(set<bool>       )
 declare_reflectable_class(set<int>        )
