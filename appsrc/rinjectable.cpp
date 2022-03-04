@@ -6,7 +6,7 @@ namespace reflect {
 //
 
 void ftable::add(const char *name, const base_function::ptr &func) {
-    if (name && *name || func) {
+    if (name && *name && func) {
         symbol *sym = symbol::make(name);
         _functions.insert({ sym, func });
     }
