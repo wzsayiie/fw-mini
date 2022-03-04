@@ -6,12 +6,6 @@ define_reflectable_enum_const(MAppEvent, Launch )
 define_reflectable_enum_const(MAppEvent, Update )
 define_reflectable_enum_const(MAppEvent, Command)
 
-define_reflectable_class_function(MApp, shared)
-MApp *MApp::shared() {
-    static auto object = new MApp();
-    return object;
-}
-
 define_reflectable_class_function(MApp, launch)
 void MApp::launch() {
     for (auto &it : mLaunchListeners) {
@@ -64,7 +58,13 @@ const std::string &MApp::currentCommand() {
     return mCommand;
 }
 
-MAppLaunchRegister::MAppLaunchRegister(void (*fcn)()) {
+define_reflectable_function(MGetApp)
+MApp *MGetApp() {
+    static auto object = new MApp();
+    return object;
+}
+
+_MAppLaunchRegister::_MAppLaunchRegister(void (*fcn)()) {
     auto func = MFunction<void ()>::create(fcn);
-    MApp::shared()->addListener(MAppEvent::Launch, func);
+    MGetApp()->addListener(MAppEvent::Launch, func);
 }

@@ -14,13 +14,12 @@ enum class MAppEvent {
 declare_reflectable_class(MApp)
 class MApp : public MExtends<MApp, MBaseObject> {
 public:
-    static MApp *shared();
-
-    //these three functions are called by host.
+    //these functions are called by host.
     void launch ();
     void update ();
     void command(const std::string &line);
 
+public:
     void addListener   (MAppEvent event, const MFunction<void ()>::ptr &listener);
     void removeListener(MAppEvent event, const MFunction<void ()>::ptr &listener);
 
@@ -34,8 +33,9 @@ private:
     std::string mCommand;
 };
 
-#define mapp_launch(fcn) ; static MAppLaunchRegister _unused_##fcn(fcn); void fcn()
+MApp *MGetApp();
 
-struct MAppLaunchRegister {
-    MAppLaunchRegister(void (*fcn)());
+#define mapp_launch(fcn) ; static _MAppLaunchRegister _unused_##fcn(fcn); void fcn()
+struct _MAppLaunchRegister {
+    _MAppLaunchRegister(void (*fcn)());
 };
