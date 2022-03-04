@@ -6,7 +6,7 @@
 //
 
 declare_reflectable_class(MBaseObject)
-class MBaseObject : public reflect::extends<MBaseObject, reflect::object> {
+class MBaseObject : public reflect::extends<MBaseObject, reflect::injectable> {
 };
 
 template<class Class, class Super> struct MExtends : reflect::extends<Class, Super> {

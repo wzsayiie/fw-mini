@@ -2,6 +2,7 @@
 
 #include "rfunction.h"
 #include "rgenerate.h"
+#include "rinjectable.h"
 #include "rmap.h"
 #include "rmeta.h"
 #include "robject.h"

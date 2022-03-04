@@ -139,39 +139,51 @@ bool MWindow::writingEnabled() {
 }
 
 void MWindow::OnLoad() {
+    implement_injected_function((void))
 }
 
 void MWindow::OnShow() {
+    implement_injected_function((void))
 }
 
 void MWindow::OnHide() {
+    implement_injected_function((void))
 }
 
 void MWindow::OnResize(float width, float height) {
+    implement_injected_function((void), width, height)
 }
 
 void MWindow::OnDraw() {
+    implement_injected_function((void))
 }
 
 void MWindow::OnTouchBegin(float x, float y) {
+    implement_injected_function((void), x, y)
 }
 
 void MWindow::OnTouchMove(float x, float y) {
+    implement_injected_function((void), x, y)
 }
 
 void MWindow::OnTouchEnd(float x, float y) {
+    implement_injected_function((void), x, y)
 }
 
 void MWindow::OnMouseMove(float x, float y) {
+    implement_injected_function((void), x, y)
 }
 
 void MWindow::OnMouseWheel(float delta) {
+    implement_injected_function((void), delta)
 }
 
 void MWindow::OnKeyDown(MKey key) {
+    implement_injected_function((void), (int)key)
 }
 
 void MWindow::OnWrite(const std::string &text, bool enter) {
+    implement_injected_function((void), text, enter)
 }
 
 static dash::lazy_var<MWindow::ptr> sMainWindow;
