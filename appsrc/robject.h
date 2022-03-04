@@ -28,11 +28,11 @@ template<class Class, class Super> struct extends : dash::extends<Class, Super> 
 
 template<class Object> typename Object::ptr shared(Object *obj) {
     if (!obj) {
-        return Object::ptr();
+        return typename Object::ptr();
     }
 
     obj->retain();
-    return Object::ptr(obj, [](Object *a) { a->release(); });
+    return typename Object::ptr(obj, [](Object *a) { a->release(); });
 }
 
 } //end reflect.
