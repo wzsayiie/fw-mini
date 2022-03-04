@@ -43,6 +43,7 @@ namespace reflect {
 
 template<> struct type_name_of<void       > { static constexpr const char *const name = "void"  ; };
 template<> struct type_name_of<bool       > { static constexpr const char *const name = "bool"  ; };
+template<> struct type_name_of<uint8_t    > { static constexpr const char *const name = "byte"  ; };
 template<> struct type_name_of<int        > { static constexpr const char *const name = "int"   ; };
 template<> struct type_name_of<int64_t    > { static constexpr const char *const name = "int64" ; };
 template<> struct type_name_of<float      > { static constexpr const char *const name = "float" ; };
