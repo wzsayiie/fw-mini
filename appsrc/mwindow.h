@@ -30,26 +30,24 @@ const float MWindowUpdateIntervalSeconds = 0.1f;
 declare_reflectable_class(MWindow)
 class MWindow : public MExtends<MWindow, MBaseObject> {
 public:
-    //these functions need to be called by host:
-    void load();
-    void show();
-    void hide();
+    M_HOST_CALL void load();
+    M_HOST_CALL void show();
+    M_HOST_CALL void hide();
 
-    void resizePixel(float widthPx, float heightPx);
-    void draw();
+    M_HOST_CALL void resizePixel(float widthPx, float heightPx);
+    M_HOST_CALL void draw();
 
-    void touchBeginPixel(float xPx, float yPx);
-    void touchMovePixel (float xPx, float yPx);
-    void touchEndPixel  (float xPx, float yPx);
-    void mouseMovePixel (float xPx, float yPx);
-    void mouseWheel     (float delta);
+    M_HOST_CALL void touchBeginPixel(float xPx, float yPx);
+    M_HOST_CALL void touchMovePixel (float xPx, float yPx);
+    M_HOST_CALL void touchEndPixel  (float xPx, float yPx);
+    M_HOST_CALL void mouseMovePixel (float xPx, float yPx);
+    M_HOST_CALL void mouseWheel     (float delta);
 
-    void keyDown(MKey key);
+    M_HOST_CALL void keyDown(MKey key);
 
-    void write(const std::string &text, bool enter);
-    bool checkWriting();
+    M_HOST_CALL void write(const std::string &text, bool enter);
+    M_HOST_CALL bool checkWriting();
 
-public:
     bool loaded();
     bool shown();
 

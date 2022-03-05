@@ -21,3 +21,9 @@ template<class Class, class Super> struct MExtends : reflect::extends<Class, Sup
 #define MSet      reflect::set
 
 declare_reflectable_class(MFunction<void ()>)
+
+//macro:
+//
+
+//flag for functions that need to be called by host.
+#define M_HOST_CALL
