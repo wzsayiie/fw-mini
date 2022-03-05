@@ -30,7 +30,7 @@ const float MWindowUpdateIntervalSeconds = 0.1f;
 declare_reflectable_class(MWindow)
 class MWindow : public MExtends<MWindow, MBaseObject> {
 public:
-    //these functions are called by host:
+    //these functions need to be called by host:
     void load();
     void show();
     void hide();
@@ -57,7 +57,6 @@ public:
     const std::string &writingText();
     bool writingEnabled();
 
-protected:
     virtual void OnLoad();
     virtual void OnShow();
     virtual void OnHide();

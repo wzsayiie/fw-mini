@@ -14,7 +14,7 @@ enum class MAppEvent {
 declare_reflectable_class(MApp)
 class MApp : public MExtends<MApp, MBaseObject> {
 public:
-    //these functions are called by host.
+    //these functions need to be called by host.
     void launch ();
     void update ();
     void command(const std::string &line);

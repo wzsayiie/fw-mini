@@ -138,56 +138,69 @@ bool MWindow::writingEnabled() {
     return mWritingEnabled;
 }
 
+define_reflectable_class_function(MWindow, OnLoad)
 void MWindow::OnLoad() {
-    implement_injected_function((void))
+    implement_injectable_function((void))
 }
 
+define_reflectable_class_function(MWindow, OnShow)
 void MWindow::OnShow() {
-    implement_injected_function((void))
+    implement_injectable_function((void))
 }
 
+define_reflectable_class_function(MWindow, OnHide)
 void MWindow::OnHide() {
-    implement_injected_function((void))
+    implement_injectable_function((void))
 }
 
+define_reflectable_class_function(MWindow, OnResize, "args:width,height;")
 void MWindow::OnResize(float width, float height) {
-    implement_injected_function((void), width, height)
+    implement_injectable_function((void), width, height)
 }
 
+define_reflectable_class_function(MWindow, OnDraw)
 void MWindow::OnDraw() {
-    implement_injected_function((void))
+    implement_injectable_function((void))
 }
 
+define_reflectable_class_function(MWindow, OnTouchBegin, "args:x,y;")
 void MWindow::OnTouchBegin(float x, float y) {
-    implement_injected_function((void), x, y)
+    implement_injectable_function((void), x, y)
 }
 
+define_reflectable_class_function(MWindow, OnTouchMove, "args:x,y;")
 void MWindow::OnTouchMove(float x, float y) {
-    implement_injected_function((void), x, y)
+    implement_injectable_function((void), x, y)
 }
 
+define_reflectable_class_function(MWindow, OnTouchEnd, "args:x,y;")
 void MWindow::OnTouchEnd(float x, float y) {
-    implement_injected_function((void), x, y)
+    implement_injectable_function((void), x, y)
 }
 
+define_reflectable_class_function(MWindow, OnMouseMove, "args:x,y;")
 void MWindow::OnMouseMove(float x, float y) {
-    implement_injected_function((void), x, y)
+    implement_injectable_function((void), x, y)
 }
 
+define_reflectable_class_function(MWindow, OnMouseWheel, "args:delta;")
 void MWindow::OnMouseWheel(float delta) {
-    implement_injected_function((void), delta)
+    implement_injectable_function((void), delta)
 }
 
+define_reflectable_class_function(MWindow, OnKeyDown, "args:key;")
 void MWindow::OnKeyDown(MKey key) {
-    implement_injected_function((void), (int)key)
+    implement_injectable_function((void), (int)key)
 }
 
+define_reflectable_class_function(MWindow, OnWrite, "args:text,enter;")
 void MWindow::OnWrite(const std::string &text, bool enter) {
-    implement_injected_function((void), text, enter)
+    implement_injectable_function((void), text, enter)
 }
 
 static dash::lazy_var<MWindow::ptr> sMainWindow;
 
+define_reflectable_function(MSetMainWindow, "args:window;")
 void MSetMainWindow(const MWindow::ptr &window) {
     if (!window) {
         return;
@@ -208,6 +221,7 @@ void MSetMainWindow(const MWindow::ptr &window) {
     *sMainWindow = window;
 }
 
+define_reflectable_function(MGetMainWindow)
 MWindow *MGetMainWindow() {
     if (!*sMainWindow) {
         *sMainWindow = MWindow::create();

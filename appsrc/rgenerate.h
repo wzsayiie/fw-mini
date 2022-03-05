@@ -36,7 +36,7 @@
 #define define_reflectable_const(Const)                             \
 /**/    static reflect::committor _unused_##Name(#Const, Const);    \
 
-#define implement_injected_function(Ret, ...)                       \
+#define implement_injectable_function(Ret, ...)                     \
 /**/    if (auto f = find_injected(__func__)) {                     \
 /**/        auto self = std::static_pointer_cast<dash::object>(     \
 /**/            reflect::shared(this)                               \
