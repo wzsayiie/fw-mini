@@ -61,13 +61,13 @@ private:
     };
     
     template<class Result> struct returner {
-        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
+        template<class... Unfold> static void ret(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
             Result result = fcn(unfold...);
             return_value(result);
         }
     };
     template<> struct returner<void> {
-        template<class... Unfold> static void retv(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
+        template<class... Unfold> static void ret(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
             fcn(unfold...);
         }
     };
@@ -80,7 +80,7 @@ private:
     };
     template<> struct caller<arg_count<void (Args...)>::value> {
         template<class... Unfold> static void call(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
-            returner<Ret>::retv(fcn, unfold...);
+            returner<Ret>::ret(fcn, unfold...);
         }
     };
 
