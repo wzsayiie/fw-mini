@@ -48,6 +48,7 @@ public:
     M_HOST_CALL void write(const std::string &text, bool enter);
     M_HOST_CALL bool checkWriting();
 
+public:
     bool loaded();
     bool shown();
 
@@ -55,6 +56,7 @@ public:
     const std::string &writingText();
     bool writingEnabled();
 
+//protected:
     virtual void OnLoad();
     virtual void OnShow();
     virtual void OnHide();

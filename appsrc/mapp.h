@@ -18,6 +18,7 @@ public:
     M_HOST_CALL void update ();
     M_HOST_CALL void command(const std::string &line);
 
+public:
     void addListener   (MAppEvent event, const MFunction<void ()>::ptr &listener);
     void removeListener(MAppEvent event, const MFunction<void ()>::ptr &listener);
 
