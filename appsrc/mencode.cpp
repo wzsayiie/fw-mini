@@ -61,10 +61,6 @@ int MReadU16(const char16_t *begin, const char16_t *end, char32_t *outCode) {
     }
 }
 
-int MReadGBK(const uint8_t *begin, const uint8_t *end, uint16_t *outCode) {
-    return 0;
-}
-
 int MWriteU8(char *dst, char32_t code) {
     if (code <= 0x7F) {
         //up to 7 bits, occupy 1 byte. 0xxx'xxxx.
@@ -121,10 +117,6 @@ int MWriteU16(char16_t *dst, char32_t code) {
         dst[0] = (char16_t)code;
         return 1;
     }
-}
-
-int MWriteGBK(uint8_t *dst, uint16_t code) {
-    return 0;
 }
 
 std::string MU8StringFromU16(const char16_t *u16chars) {
