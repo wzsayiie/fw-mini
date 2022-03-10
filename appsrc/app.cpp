@@ -1,16 +1,4 @@
-#include "cuikit.h"
-#include "gamekit.h"
+#include "minikit.h"
 
-def_class(MainController) : public CViewController {
-
-protected:
-    void onViewLoad() override {
-        view()->setBackgroundColor(CColor::ClearColor);
-    }
-
-private:
-};
-
-static void Launch() MAPP_LAUNCH(Launch, MAppLaunchPriority_UI) {
-    (new MainController)->asRootController();
+static void Launch() mapp_launch(Launch) {
 }

@@ -13,7 +13,7 @@ define_reflectable_enum_const(MKey, D    )
 define_reflectable_enum_const(MKey, S    )
 define_reflectable_enum_const(MKey, W    )
 
-define_reflectable_const(MWindowUpdateIntervalSeconds)
+define_reflectable_const(MWindowUpdateEverySeconds)
 
 define_reflectable_class_function(MWindow, load)
 void MWindow::load() {

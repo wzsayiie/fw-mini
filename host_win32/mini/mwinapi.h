@@ -1,37 +1,37 @@
-﻿#pragma once
+﻿// #pragma once
 
-#include <windows.h> //"gdiplus.h" need.
-#include <gdiplus.h>
-#include "mhostapi.h"
+// #include <windows.h> //"gdiplus.h" need.
+// #include <gdiplus.h>
+// #include "mhostapi.h"
 
-//native types:
+// //native types:
 
-class MWin32Image : public MImage
-{
-public:
-    MWin32Image(Gdiplus::Image *gdiImage);
-    ~MWin32Image();
+// class MWin32Image : public MImage
+// {
+// public:
+//     MWin32Image(Gdiplus::Image *gdiImage);
+//     ~MWin32Image();
 
-    Gdiplus::Image *gdiImage();
+//     Gdiplus::Image *gdiImage();
 
-private:
-    Gdiplus::Image *mGdiImage;
-};
+// private:
+//     Gdiplus::Image *mGdiImage;
+// };
 
-//color pattern:
+// //color pattern:
 
-union MWin32ColorPattern
-{
-    struct
-    {
-        uint8_t blue ;
-        uint8_t green;
-        uint8_t red  ;
-        uint8_t alpha;
-    };
-    int color;
-};
+// union MWin32ColorPattern
+// {
+//     struct
+//     {
+//         uint8_t blue ;
+//         uint8_t green;
+//         uint8_t red  ;
+//         uint8_t alpha;
+//     };
+//     int color;
+// };
 
-//host api:
+// //host api:
 
-void MRegisterApi();
+// void MRegisterApi();

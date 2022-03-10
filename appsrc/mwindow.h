@@ -25,7 +25,7 @@ enum class MKey {
 //window:
 //
 
-const float MWindowUpdateIntervalSeconds = 0.1f;
+const float MWindowUpdateEverySeconds = 0.1f;
 
 declare_reflectable_class(MWindow)
 class MWindow : public MExtends<MWindow, MBaseObject> {

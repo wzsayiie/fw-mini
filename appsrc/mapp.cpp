@@ -1,6 +1,6 @@
 #include "mapp.h"
 
-define_reflectable_const(MAppUpdateIntervalSeconds)
+define_reflectable_const(MAppUpdateEverySeconds)
 
 define_reflectable_enum_const(MAppEvent, Launch )
 define_reflectable_enum_const(MAppEvent, Update )

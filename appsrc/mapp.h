@@ -2,7 +2,7 @@
 
 #include "mobject.h"
 
-const float MAppUpdateIntervalSeconds = 0.1f;
+const float MAppUpdateEverySeconds = 0.1f;
 
 declare_reflectable_enum(MAppEvent)
 enum class MAppEvent {

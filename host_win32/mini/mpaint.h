@@ -1,8 +1,8 @@
-﻿#pragma once
+﻿// #pragma once
 
-#include <windows.h>
+// #include <windows.h>
 
-void MPaintStart();
-void MPaintStop();
+// void MPaintStart();
+// void MPaintStop();
 
-void MPaint(HDC dc);
+// void MPaint(HDC dc);

@@ -1,11 +1,8 @@
 ﻿#include <clocale>
 #include <io.h>
+#include <windows.h>
 #include <windowsx.h>
-#include "mhostloop.h"
-#include "mhostui.h"
-#include "mjsrt.h"
-#include "mpaint.h"
-#include "mwinapi.h"
+#include "minikit.h"
 
 const int ConsoleFrameX     =   20;
 const int ConsoleFrameY     =  100;
@@ -50,27 +47,28 @@ static void OpenConsole(void)
     EnableMenuItem(menu, SC_CLOSE, MF_DISABLED);
 }
 
-static void GetClientSize(HWND wnd, int *width, int *height)
+static SIZE GetClientSize(HWND wnd)
 {
     RECT rect = {0};
     GetClientRect(wnd, &rect);
 
-    *width  = rect.right  - rect.left;
-    *height = rect.bottom - rect.top ;
+    SIZE size = {0};
+    size.cx = rect.right  - rect.left;
+    size.cy = rect.bottom - rect.top ;
+
+    return size;
 }
 
-static MString *CopyEditText(HWND edit)
+static std::u16string CopyEditText(HWND edit)
 {
-    const int BufferSize = 1024;
-    
-    WCHAR buffer[BufferSize] = L"";
-    GetWindowTextW(edit, buffer, BufferSize);
+    WCHAR buffer[1024] = L"";
+    GetWindowTextW(edit, buffer, (int)(sizeof(buffer) / sizeof(*buffer)));
 
-    return MStringCreateU16((const char16_t *)buffer);
+    return (const char16_t *)buffer;
 }
 
-const UINT_PTR UpdateTimerID = 1;
-const UINT_PTR DrawTimerID   = 2;
+const UINT_PTR AppUpdateTimerId    = 1;
+const UINT_PTR WindowUpdateTimerId = 2;
 
 static HWND    sEditWnd         = nullptr;
 static WNDPROC sEditDefaultProc = nullptr;
@@ -80,8 +78,11 @@ static LRESULT CALLBACK EditCustomProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM
 {
     if (msg == WM_KEYDOWN && wParam == VK_RETURN)
     {
-        MStringRef text = m_auto_release CopyEditText(wnd);
-        _MWindowOnTextBox(text.get(), true);
+        std::u16string u16text = CopyEditText(wnd);
+        std::string    u8text  = MU8StringFromU16(u16text.c_str());
+
+        MGetMainWindow()->write(u8text, true);
+
         return 0;
     }
     else
@@ -121,21 +122,21 @@ static void AdjustEditPosition(int parentWidth, int parentHeight)
 
 static void UpdateEditState()
 {
-    if (!_MWindowTextBoxUpdated())
+    MWindow *window = MGetMainWindow();
+    if (!window->checkWriting())
     {
         return;
     }
 
-    //IMPORTANT: reset the flag.
-    MWindowSetTextBoxUpdated(false);
-
-    if (_MWindowTextBoxEnabled())
+    if (window->writingEnabled())
     {
-        MString *textBoxString  = _MWindowTextBoxRawString();
-        WPARAM   selectionBegin = 0;
-        LPARAM   selectionEnd   = MStringU16Size(textBoxString);
+        std::string    u8text  = window->writingText();
+        std::u16string u16text = MU16StringFromU8(u8text.c_str());
 
-        SetWindowTextW(sEditWnd, (LPWSTR)MStringU16Chars(textBoxString));
+        auto selectionBegin = (WPARAM)0;
+        auto selectionEnd   = (LPARAM)u16text.size();
+
+        SetWindowTextW(sEditWnd, (LPWSTR)u16text.c_str());
         SendMessageW(sEditWnd, EM_SETSEL, selectionBegin, selectionEnd);
 
         ShowWindow(sEditWnd, SW_SHOW);
@@ -150,42 +151,40 @@ static void UpdateEditState()
 static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     OpenConsole();
-    MPaintStart();
+    //MPaintStart();
 
-    MInstallJSRuntime();
-    MRegisterApi();
-
-    int width  = 0;
-    int height = 0;
-    GetClientSize(wnd, &width, &height);
+    SIZE clientSize = GetClientSize(wnd);
 
     //create edit control.
     CreateEditWithParent(wnd);
-    AdjustEditPosition(width, height);
+    AdjustEditPosition(clientSize.cx, clientSize.cy);
 
     //application events.
-    _MAppLaunch();
-    SetTimer(wnd, UpdateTimerID, (UINT)(1000 * _MAppUpdateInterval), nullptr);
+    MGetApp()->launch();
+    SetTimer(wnd, AppUpdateTimerId, (UINT)(1000 * MAppUpdateEverySeconds), nullptr);
 
     //window events:
-    _MWindowOnResize((_MPixel)width, (_MPixel)height);
-    _MWindowOnLoad();
+    MWindow *window = MGetMainWindow();
+    window->resizePixel((float)clientSize.cx, (float)clientSize.cy);
+    window->load();
 
-    SetTimer(wnd, DrawTimerID, (UINT)(1000 * _MWindowDrawInterval), nullptr);
+    SetTimer(wnd, WindowUpdateTimerId, (UINT)(1000 * MWindowUpdateEverySeconds), nullptr);
 
     return 0;
 }
 
 static LRESULT OnShowWindow(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
+    MWindow *window = MGetMainWindow();
+
     auto shown = (BOOL)wParam;
     if (shown)
     {
-        _MWindowOnShow();
+        window->show();
     }
     else
     {
-        _MWindowOnHide();
+        window->hide();
     }
 
     return 0;
@@ -193,10 +192,10 @@ static LRESULT OnShowWindow(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnDestroy(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MPaintStop();
+    //MPaintStop();
 
-    KillTimer(wnd, UpdateTimerID);
-    KillTimer(wnd, DrawTimerID);
+    KillTimer(wnd, WindowUpdateTimerId);
+    KillTimer(wnd, AppUpdateTimerId);
 
     PostQuitMessage(0);
     return 0;
@@ -204,13 +203,13 @@ static LRESULT OnDestroy(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    UINT_PTR timerID = wParam;
-    if (timerID == UpdateTimerID)
+    UINT_PTR timerId = wParam;
+    if (timerId == AppUpdateTimerId)
     {
         UpdateEditState();
-        _MAppUpdate();
+        MGetApp()->update();
     }
-    else if (timerID == DrawTimerID)
+    else if (timerId == WindowUpdateTimerId)
     {
         InvalidateRect(wnd, nullptr, FALSE);
     }
@@ -220,38 +219,38 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnSize(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
+    MWindow *window = MGetMainWindow();
+
     LPARAM clientSize = lParam;
     int width  = LOWORD(clientSize);
     int height = HIWORD(clientSize);
 
     AdjustEditPosition(width, height);
-    _MWindowOnResize((_MPixel)width, (_MPixel)height);
+    window->resizePixel((float)width, (float)height);
     
     return 0;
 }
 
 static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    int width  = 0;
-    int height = 0;
-    GetClientSize(wnd, &width, &height);
+    SIZE clientSize = GetClientSize(wnd);
 
     PAINTSTRUCT paint = {0};
     BeginPaint(wnd, &paint);
     {
         HDC dc = CreateCompatibleDC(paint.hdc);
-        HBITMAP bmp = CreateCompatibleBitmap(paint.hdc, width, height);
+        HBITMAP bmp = CreateCompatibleBitmap(paint.hdc, clientSize.cx, clientSize.cy);
         SelectBitmap(dc, bmp);
 
         //set the background gray.
-        RECT rect = { 0, 0, width, height };
+        RECT rect = { 0, 0, clientSize.cy, clientSize.cy };
         HBRUSH backgroundBrush = CreateSolidBrush(0xF0F0F0);
         FillRect(dc, &rect, backgroundBrush);
         DeleteBrush(backgroundBrush);
 
-        MPaint(dc);
+        //MPaint(dc);
 
-        BitBlt(paint.hdc, 0, 0, width, height, dc, 0, 0, SRCCOPY);
+        BitBlt(paint.hdc, 0, 0, clientSize.cx, clientSize.cy, dc, 0, 0, SRCCOPY);
         DeleteDC(dc);
         DeleteBitmap(bmp);
     }
@@ -261,16 +260,18 @@ static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
+    MWindow *window = MGetMainWindow();
+
     LPARAM clientPoint = lParam;
-    auto x = (_MPixel)GET_X_LPARAM(clientPoint);
-    auto y = (_MPixel)GET_Y_LPARAM(clientPoint);
+    auto x = GET_X_LPARAM(clientPoint);
+    auto y = GET_Y_LPARAM(clientPoint);
 
     //mouse event.
-    _MWindowOnMouseMove(x, y);
+    window->mouseMovePixel((float)x, (float)y);
 
-    //touch event:
+    //touch event.
     sLButtonDowned = true;
-    _MWindowOnTouchBegin(x, y);
+    window->touchBeginPixel((float)x, (float)y);
 
     //NOTE: to capture events when the mouse moves outside the window.
     SetCapture(wnd);
@@ -280,25 +281,25 @@ static LRESULT OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
+    MWindow *window = MGetMainWindow();
+
     LPARAM clientPoint = lParam;
     int x = GET_X_LPARAM(clientPoint);
     int y = GET_Y_LPARAM(clientPoint);
 
     //mouse event:
-    int width  = 0;
-    int height = 0;
-    GetClientSize(wnd, &width, &height);
+    SIZE clientSize = GetClientSize(wnd);
 
-    if (0 <= x && x <= width
-     && 0 <= y && y <= height)
+    if (0 <= x && x <= clientSize.cx
+     && 0 <= y && y <= clientSize.cy)
     {
-        _MWindowOnMouseMove((_MPixel)x, (_MPixel)y);
+        window->mouseMovePixel((float)x, (float)y);
     }
 
     //touch event.
     if (sLButtonDowned)
     {
-        _MWindowOnTouchMove((_MPixel)x, (_MPixel)y);
+        window->touchMovePixel((float)x, (float)y);
     }
 
     return 0;
@@ -306,23 +307,23 @@ static LRESULT OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
+    MWindow *window = MGetMainWindow();
+
     LPARAM clientPoint = lParam;
     int x = GET_X_LPARAM(clientPoint);
     int y = GET_Y_LPARAM(clientPoint);
 
     //mouse event:
-    int width  = 0;
-    int height = 0;
-    GetClientSize(wnd, &width, &height);
+    SIZE clientSize = GetClientSize(wnd);
 
-    if (0 <= x && x <= width
-     && 0 <= y && y <= height)
+    if (0 <= x && x <= clientSize.cx
+     && 0 <= y && y <= clientSize.cy)
     {
-        _MWindowOnMouseMove((_MPixel)x, (_MPixel)y);
+        window->mouseMovePixel((float)x, (float)y);
     }
 
     //touch event.
-    _MWindowOnTouchEnd((_MPixel)x, (_MPixel)y);
+    window->touchEndPixel((float)x, (float)y);
     sLButtonDowned = false;
     ReleaseCapture();
 
@@ -332,8 +333,30 @@ static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 static LRESULT OnMouseWheel(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     short delta = GET_WHEEL_DELTA_WPARAM(wParam);
-    _MWindowOnMouseWheel(delta);
+    MGetMainWindow()->mouseWheel(delta);
 
+    return 0;
+}
+
+static LRESULT OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
+{
+    MWindow *window = MGetMainWindow();
+
+    WPARAM virtualkey = wParam;
+    switch (virtualkey)
+    {
+        case VK_BACK  : window->keyDown(MKey::Back ); break;
+        case VK_RETURN: window->keyDown(MKey::Enter); break;
+        case VK_SPACE : window->keyDown(MKey::Space); break;
+        case VK_LEFT  : window->keyDown(MKey::Left ); break;
+        case VK_UP    : window->keyDown(MKey::Up   ); break;
+        case VK_RIGHT : window->keyDown(MKey::Right); break;
+        case VK_DOWN  : window->keyDown(MKey::Down ); break;
+        case 'A'      : window->keyDown(MKey::A    ); break;
+        case 'D'      : window->keyDown(MKey::D    ); break;
+        case 'S'      : window->keyDown(MKey::S    ); break;
+        case 'W'      : window->keyDown(MKey::W    ); break;
+    }
     return 0;
 }
 
@@ -344,55 +367,12 @@ static LRESULT OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     if (controlWnd == sEditWnd && notifyCode == EN_CHANGE)
     {
-        MStringRef text = m_auto_release CopyEditText(sEditWnd);
-        _MWindowOnTextBox(text.get(), false);
+        std::u16string u16text = CopyEditText(sEditWnd);
+        std::string    u8text  = MU8StringFromU16(u16text.c_str());
+
+        MGetMainWindow()->OnWrite(u8text, false);
     }
 
-    return 0;
-}
-
-static LRESULT OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
-{
-    WPARAM virutalKey = wParam;
-    switch (virutalKey)
-    {
-        case VK_BACK  : _MWindowOnKeyDown(MKey_Back ); break;
-        case VK_RETURN: _MWindowOnKeyDown(MKey_Enter); break;
-        case VK_SPACE : _MWindowOnKeyDown(MKey_Space); break;
-        case VK_LEFT  : _MWindowOnKeyDown(MKey_Left ); break;
-        case VK_UP    : _MWindowOnKeyDown(MKey_Up   ); break;
-        case VK_RIGHT : _MWindowOnKeyDown(MKey_Right); break;
-        case VK_DOWN  : _MWindowOnKeyDown(MKey_Down ); break;
-
-        case 'A': _MWindowOnKeyDown(MKey_A); break;
-        case 'B': _MWindowOnKeyDown(MKey_B); break;
-        case 'C': _MWindowOnKeyDown(MKey_C); break;
-        case 'D': _MWindowOnKeyDown(MKey_D); break;
-        case 'E': _MWindowOnKeyDown(MKey_E); break;
-        case 'F': _MWindowOnKeyDown(MKey_F); break;
-        case 'G': _MWindowOnKeyDown(MKey_G); break;
-        case 'H': _MWindowOnKeyDown(MKey_H); break;
-        case 'I': _MWindowOnKeyDown(MKey_I); break;
-        case 'J': _MWindowOnKeyDown(MKey_J); break;
-        case 'K': _MWindowOnKeyDown(MKey_K); break;
-        case 'L': _MWindowOnKeyDown(MKey_L); break;
-        case 'M': _MWindowOnKeyDown(MKey_M); break;
-        case 'N': _MWindowOnKeyDown(MKey_N); break;
-        case 'O': _MWindowOnKeyDown(MKey_O); break;
-        case 'P': _MWindowOnKeyDown(MKey_P); break;
-        case 'Q': _MWindowOnKeyDown(MKey_Q); break;
-        case 'R': _MWindowOnKeyDown(MKey_R); break;
-        case 'S': _MWindowOnKeyDown(MKey_S); break;
-        case 'T': _MWindowOnKeyDown(MKey_T); break;
-        case 'U': _MWindowOnKeyDown(MKey_U); break;
-        case 'V': _MWindowOnKeyDown(MKey_V); break;
-        case 'W': _MWindowOnKeyDown(MKey_W); break;
-        case 'X': _MWindowOnKeyDown(MKey_X); break;
-        case 'Y': _MWindowOnKeyDown(MKey_Y); break;
-        case 'Z': _MWindowOnKeyDown(MKey_Z); break;
-
-        default:;
-    }
     return 0;
 }
 
@@ -410,18 +390,18 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
         case WM_MOUSEMOVE  : return OnMouseMove  (wnd, wParam, lParam);
         case WM_LBUTTONUP  : return OnLButtonUp  (wnd, wParam, lParam);
         case WM_MOUSEWHEEL : return OnMouseWheel (wnd, wParam, lParam);
-        case WM_COMMAND    : return OnCommand    (wnd, wParam, lParam);
         case WM_KEYDOWN    : return OnKeyDown    (wnd, wParam, lParam);
+        case WM_COMMAND    : return OnCommand    (wnd, wParam, lParam);
 
         default: return DefWindowProcW(wnd, msg, wParam, lParam);
     }
 }
 
-M_FUNC_EXPORT void MAppMain()
+extern "C" __declspec(dllexport) void MAppMain()
 {
     HINSTANCE instance = GetModuleHandleW(nullptr);
 
-    //register window class.
+    //register window class:
     LPCWSTR className = L"MWindow";
     WNDCLASSW wndClass = {0};
 
@@ -438,11 +418,11 @@ M_FUNC_EXPORT void MAppMain()
 
     RegisterClassW(&wndClass);
 
-    //show window.
+    //show window:
     HWND wnd = CreateWindowExW(
         /* dwExStyle    */ 0,
         /* lpClassName  */ className,
-        /* lpWindowName */ (const WCHAR *)MWindowTitleU16Name,
+        /* lpWindowName */ L"Mini",
         /* dwStyle      */ WS_OVERLAPPEDWINDOW,
         /* x            */ WindowFrameX,
         /* y            */ WindowFrameY,
