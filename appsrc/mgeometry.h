@@ -6,7 +6,7 @@
 //
 
 declare_reflectable_class(MPoint)
-class MPoint : public MExtends<MPoint, MBaseObject> {
+class MPoint : public MExtends<MPoint, MObject> {
 public:
     MPoint();
     MPoint(float x, float y);
@@ -26,7 +26,7 @@ private:
 //
 
 declare_reflectable_class(MSize)
-class MSize : public MExtends<MSize, MBaseObject> {
+class MSize : public MExtends<MSize, MObject> {
 public:
     MSize();
     MSize(float width, float height);
@@ -46,7 +46,7 @@ private:
 //
 
 declare_reflectable_class(MRect)
-class MRect : public MExtends<MRect, MBaseObject> {
+class MRect : public MExtends<MRect, MObject> {
 public:
     MRect();
     MRect(const MPoint::ptr &origin, const MSize::ptr &size);

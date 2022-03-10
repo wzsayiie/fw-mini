@@ -9,7 +9,7 @@ template<class Type> struct lazy_var {
     Type &operator* () const { return  value(); }
     
     Type &value() const {
-        static Type obj;
+        static Type obj{};
         return obj;
     }
 };

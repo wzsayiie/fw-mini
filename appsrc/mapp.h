@@ -12,7 +12,7 @@ enum class MAppEvent {
 };
 
 declare_reflectable_class(MApp)
-class MApp : public MExtends<MApp, MBaseObject> {
+class MApp : public MExtends<MApp, MObject> {
 public:
     M_HOST_CALL void launch ();
     M_HOST_CALL void update ();
