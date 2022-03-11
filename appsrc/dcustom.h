@@ -4,15 +4,27 @@
 
 namespace dash {
 
-template<class Type> struct lazy_var {
-    Type *operator->() const { return &value(); }
-    Type &operator* () const { return  value(); }
+//lazy var:
+//
+
+template<class Type> class lazy_var {
+public:
+    Type *operator->() { return  ptr(); }
+    Type &operator* () { return *ptr(); }
     
-    Type &value() const {
-        static Type obj{};
-        return obj;
+    Type *ptr() {
+        if (!_obj) {
+            _obj = new Type();
+        }
+        return _obj;
     }
+
+private:
+    Type *_obj = nullptr;
 };
+
+//object:
+//
 
 struct object {
     typedef std::shared_ptr<object> ptr;
