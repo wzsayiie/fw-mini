@@ -223,30 +223,30 @@ void MSetMainWindow(const MWindow::ptr &window) {
         return;
     }
 
-    if (*sMainWindow) {
+    if (sMainWindow) {
         //window size.
-        MSize::ptr size = (*sMainWindow)->size();
+        MSize::ptr size = sMainWindow->size();
         window->resizePixel(
             px_from_pt size->width (),
             px_from_pt size->height()
         );
 
         //loaded and shown flags.
-        if ((*sMainWindow)->loaded()) { window->load(); }
-        if ((*sMainWindow)->shown ()) { window->show(); }
+        if (sMainWindow->loaded()) { window->load(); }
+        if (sMainWindow->shown ()) { window->show(); }
 
         //text box state.
-        if ((*sMainWindow)->writingEnabled()) {
+        if (sMainWindow->writingEnabled()) {
             window->setWritingEnabled(true, "");
         }
     }
-    *sMainWindow = window;
+    sMainWindow = window;
 }
 
 define_reflectable_function(MGetMainWindow)
 MWindow *MGetMainWindow() {
-    if (!*sMainWindow) {
-        *sMainWindow = MWindow::create();
+    if (!sMainWindow) {
+        sMainWindow = MWindow::create();
     }
-    return sMainWindow->get();
+    return sMainWindow;
 }
