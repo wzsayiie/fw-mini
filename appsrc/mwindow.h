@@ -62,22 +62,22 @@ public:
     bool writingEnabled();
 
 //protected:
-    virtual void OnLoad();
-    virtual void OnShow();
-    virtual void OnHide();
+    virtual void onLoad();
+    virtual void onShow();
+    virtual void onHide();
 
-    virtual void OnResize(float width, float height);
-    virtual void OnDraw();
+    virtual void onResize(float width, float height);
+    virtual void onDraw();
 
-    virtual void OnTouchBegin(float x, float y);
-    virtual void OnTouchMove (float x, float y);
-    virtual void OnTouchEnd  (float x, float y);
-    virtual void OnMouseMove (float x, float y);
-    virtual void OnMouseWheel(float delta);
+    virtual void onTouchBegin(float x, float y);
+    virtual void onTouchMove (float x, float y);
+    virtual void onTouchEnd  (float x, float y);
+    virtual void onMouseMove (float x, float y);
+    virtual void onMouseWheel(float delta);
 
-    virtual void OnKeyDown(MKey key);
+    virtual void onKeyDown(MKey key);
 
-    virtual void OnWrite(const std::string &text, bool enter);
+    virtual void onWrite(const std::string &text, bool enter);
 
 private:
     bool mLoaded = false;

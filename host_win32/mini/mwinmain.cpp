@@ -369,7 +369,7 @@ static LRESULT OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
         std::u16string u16text = CopyEditText(sEditWnd);
         std::string    u8text  = MU8StringFromU16(u16text.c_str());
 
-        MGetMainWindow()->OnWrite(u8text, false);
+        MGetMainWindow()->write(u8text, false);
     }
 
     return 0;
