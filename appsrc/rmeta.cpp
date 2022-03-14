@@ -26,6 +26,35 @@ static enum_meta  *get_enum (symbol *n) { return get<enum_meta >(n, type_categor
 
 void commit_meta(type_meta *meta) {
     switch (meta->type) {
+    case type_category::is_const:
+        {
+            auto real = (const_meta *)meta;
+            if (real->belong_class) {
+                //is class member.
+                class_meta *belong = get_class(real->belong_class);
+                belong->const_map.insert({ real->name, real });
+                belong->const_seq.push_back(real);
+
+            } else if (real->belong_enum) {
+                //is enum value.
+                enum_meta *belong = get_enum(real->belong_enum);
+                belong->value_map.insert({ real->name, real });
+                belong->value_seq.push_back(real);
+
+            } else {
+                //is global constant.
+                s_map->insert({ real->name, real });
+                s_seq->push_back(real);
+            }
+        }
+        break;
+
+    case type_category::is_enum:
+        {
+            get_enum(meta->name);
+        }
+        break;
+
     case type_category::is_function:
         {
             auto real = (function_meta *)meta;
@@ -46,29 +75,6 @@ void commit_meta(type_meta *meta) {
     case type_category::is_class:
         {
             get_class(meta->name);
-        }
-        break;
-
-    case type_category::is_const:
-        {
-            auto real = (const_meta *)meta;
-            if (real->belong_enum) {
-                //is enum value.
-                enum_meta *belong = get_enum(real->belong_enum);
-                belong->value_map.insert({ real->name, real });
-                belong->value_seq.push_back(real);
-
-            } else {
-                //is global constant.
-                s_map->insert({ real->name, real });
-                s_seq->push_back(real);
-            }
-        }
-        break;
-
-    case type_category::is_enum:
-        {
-            get_enum(meta->name);
         }
         break;
 

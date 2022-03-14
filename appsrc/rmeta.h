@@ -41,21 +41,33 @@ enum class type_qualifier {
 //meta:
 //
 //  +-- type
+//  |   +-- const
+//  |   +-- enum
 //  |   +-- super
 //  |   |   +-- vector
 //  |   |   +-- map
-//  |   |   +-- map
+//  |   |   +-- set
 //  |   |   +-- function
 //  |   |   +-- class
-//  |   |
-//  |   +-- const
-//  |   +-- enum
-//  |
 //
 
 struct type_meta {
     type_category type = type_category::is_void;
     symbol       *name = nullptr;
+};
+
+struct const_meta : type_meta {
+    symbol       *belong_class = nullptr;
+    symbol       *belong_enum  = nullptr;
+    type_category value_type   = type_category::is_void;
+    const char   *string_value = nullptr;
+    double        double_value = 0;
+    int64_t       int64_value  = 0;
+};
+
+struct enum_meta : type_meta {
+    std::map<symbol *, const_meta *> value_map;
+    std::vector<const_meta *>        value_seq;
 };
 
 struct super_meta : type_meta {
@@ -89,19 +101,8 @@ struct function_meta : super_meta {
 struct class_meta : super_meta {
     std::map<symbol *, function_meta *> function_map;
     std::vector<function_meta *>        function_seq;
-};
-
-struct const_meta : type_meta {
-    symbol       *belong_enum  = nullptr;
-    type_category value_type   = type_category::is_void;
-    const char   *string_value = nullptr;
-    double        double_value = 0;
-    int64_t       int64_value  = 0;
-};
-
-struct enum_meta : type_meta {
-    std::map<symbol *, const_meta *> value_map;
-    std::vector<const_meta *>        value_seq;
+    std::map<symbol *, const_meta *>    const_map   ;
+    std::vector<const_meta *>           const_seq   ;
 };
 
 void commit_meta(type_meta *meta);
