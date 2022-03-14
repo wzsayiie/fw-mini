@@ -28,9 +28,14 @@
 /**/        #Function, Function, ##__VA_ARGS__                      \
 /**/    );
 
+#define define_reflectable_class_const(Class, Const)                \
+/**/    static reflect::committor _unused_##Class##_##Const(        \
+/**/        #Class, #Const, Class::Const                            \
+/**/    );
+
 #define define_reflectable_enum_const(Enum, Const)                  \
 /**/    static reflect::committor _unused_##Enum##_##Const(         \
-/**/        #Enum, #Const, (int)Enum::Const                         \
+/**/        0, #Enum, #Const, (int)Enum::Const                      \
 /**/    );
 
 #define define_reflectable_const(Const)                             \
@@ -108,27 +113,31 @@ struct committor {
     {
     }
 
-    //enumeration constant.
-    committor(const char *enum_name, const char *value_name, int value) {
+    //class constant member.
+    committor(const char *class_name, const char *value_name, const char *value) {
+    }
+    committor(const char *class_name, const char *value_name, double value) {
+    }
+    committor(const char *class_name, const char *value_name, float value) {
+    }
+    committor(const char *class_name, const char *value_name, int64_t value) {
+    }
+    committor(const char *class_name, const char *value_name, int value) {
     }
 
-    //string constant.
+    //enumeration member.
+    committor(int, const char *enum_name, const char *value_name, int64_t value) {
+    }
+
+    //global constant.
     committor(const char *name, const char *value) {
     }
-
-    //double constant.
     committor(const char *name, double value) {
     }
-
-    //float constant.
     committor(const char *name, float value) {
     }
-
-    //int64 constant.
     committor(const char *name, int64_t value) {
     }
-
-    //int constant.
     committor(const char *name, int value) {
     }
 };
