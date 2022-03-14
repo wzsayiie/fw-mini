@@ -4,23 +4,43 @@
 
 namespace dash {
 
-//lazy var:
+//lazy_var:
 //
 
 template<class Type> class lazy_var {
 public:
-    Type *operator->() { return  ptr(); }
-    Type &operator* () { return *ptr(); }
+    Type *operator->() { return  this->ptr(); }
+    Type &operator* () { return *this->ptr(); }
     
     Type *ptr() {
-        if (!_obj) {
-            _obj = new Type();
+        if (!this->_obj) {
+            this->_obj = new Type();
         }
-        return _obj;
+        return this->_obj;
     }
 
 private:
     Type *_obj = nullptr;
+};
+
+//auto_assign_ptr:
+//a pointer that automatically generate object.
+//
+
+template<class Type> class auto_assign_ptr {
+public:
+    Type *operator->() { return this->shared().get(); }
+    Type &operator* () { return this->shared().get(); }
+
+    const std::shared_ptr<Type> &shared() {
+        if (!this->_ptr) {
+            this->_ptr = std::make_shared<Type>();
+        }
+        return this->_ptr;
+    }
+
+private:
+    std::shared_ptr<Type> _ptr;
 };
 
 //object:
