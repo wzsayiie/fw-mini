@@ -20,8 +20,8 @@ public:
     MPoint::ptr copy();
 
 private:
-    float mX;
-    float mY;
+    float mX = 0;
+    float mY = 0;
 };
 
 //size:
@@ -42,8 +42,8 @@ public:
     MSize::ptr copy();
 
 private:
-    float mWidth ;
-    float mHeight;
+    float mWidth  = 0;
+    float mHeight = 0;
 };
 
 //rect:
@@ -68,8 +68,8 @@ public:
     MRect::ptr copy();
 
 private:
-    float mX;
-    float mY;
-    float mWidth ;
-    float mHeight;
+    float mX      = 0;
+    float mY      = 0;
+    float mWidth  = 0;
+    float mHeight = 0;
 };
