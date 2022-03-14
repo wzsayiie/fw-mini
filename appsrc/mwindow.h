@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mobject.h"
+#include "mgeometry.h"
 
 //key:
 //
@@ -46,14 +46,19 @@ public:
     M_HOST_CALL void keyDown(MKey key);
 
     M_HOST_CALL void write(const std::string &text, bool enter);
-    M_HOST_CALL bool checkWriting();
+
+    //text box control.
+    M_HOST_CALL bool        checkWritingUpdated();
+    M_HOST_CALL bool        checkWritingEnabled();
+    M_HOST_CALL std::string checkWritingRawText();
 
 public:
     bool loaded();
-    bool shown();
+    bool shown ();
 
-    void enableWriting(bool enabled, const std::string &text);
-    const std::string &writingText();
+    MSize::ptr size();
+
+    void setWritingEnabled(bool enabled, const std::string &rawText);
     bool writingEnabled();
 
 //protected:
@@ -78,9 +83,11 @@ private:
     bool mLoaded = false;
     bool mShown  = false;
 
-    bool mUpdateWriting  = false;
-    bool mWritingEnabled = false;
-    std::string mWritingText;
+    dash::auto_assign_ptr<MSize> mSize;
+
+    bool        mWritingUpdated = false;
+    bool        mWritingEnabled = false;
+    std::string mWritingRawText ;
 };
 
 void MSetMainWindow(const MWindow::ptr &window);

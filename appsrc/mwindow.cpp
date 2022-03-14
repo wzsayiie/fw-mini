@@ -37,7 +37,15 @@ define_reflectable_class_function(MWindow, resizePixel, "args:widthPx,heightPx;"
 void MWindow::resizePixel(float widthPx, float heightPx) {
     float width  = pt_from_px widthPx ;
     float height = pt_from_px heightPx;
-    OnResize(width, height);
+
+    mSize->setWidth (width );
+    mSize->setHeight(height);
+
+    //NOTE: "resiePixel" may be called before "load".
+    //but need to ensure that "onLoad" is the first window event.
+    if (mLoaded) {
+        OnResize(width, height);
+    }
 }
 
 define_reflectable_class_function(MWindow, draw)
@@ -88,14 +96,23 @@ void MWindow::write(const std::string &text, bool enter) {
     OnWrite(text, enter);
 }
 
-define_reflectable_class_function(MWindow, checkWriting)
-bool MWindow::checkWriting() {
-    if (mUpdateWriting) {
-        mUpdateWriting = false;
+define_reflectable_class_function(MWindow, checkWritingUpdated)
+bool MWindow::checkWritingUpdated() {
+    if (mWritingUpdated) {
+        mWritingUpdated = false;
         return true;
-    } else {
-        return false;
     }
+    return false;
+}
+
+define_reflectable_class_function(MWindow, checkWritingEnabled)
+bool MWindow::checkWritingEnabled() {
+    return mWritingEnabled;
+}
+
+define_reflectable_class_function(MWindow, checkWritingRawText)
+std::string MWindow::checkWritingRawText() {
+    return mWritingRawText;
 }
 
 define_reflectable_class_function(MWindow, loaded)
@@ -108,29 +125,29 @@ bool MWindow::shown() {
     return mShown;
 }
 
-define_reflectable_class_function(MWindow, enableWriting, "args:enabled,text;")
-void MWindow::enableWriting(bool enabled, const std::string &text) {
-    if (mWritingEnabled && enabled && text != mWritingText) {
-        //change writing text.
-        mWritingText = text;
-        mUpdateWriting = true;
-
-    } else if (!mWritingEnabled && enabled) {
-        //open writing.
-        mWritingEnabled = true;
-        mWritingText = text;
-        mUpdateWriting = true;
-
-    } else if (mWritingEnabled && !enabled) {
-        //close writing.
-        mWritingEnabled = false;
-        mUpdateWriting = true;
-    }
+define_reflectable_class_function(MWindow, size)
+MSize::ptr MWindow::size() {
+    return mSize->copy();
 }
 
-define_reflectable_class_function(MWindow, writingText)
-const std::string &MWindow::writingText() {
-    return mWritingText;
+define_reflectable_class_function(MWindow, setWritingEnabled, "args:enabled,rawText;")
+void MWindow::setWritingEnabled(bool enabled, const std::string &rawText) {
+    if (mWritingEnabled && enabled && rawText != mWritingRawText) {
+        //change writing text.
+        mWritingRawText = rawText;
+        mWritingUpdated = true;
+
+    } else if (!mWritingEnabled && enabled) {
+        //enable writing.
+        mWritingEnabled = true;
+        mWritingRawText = rawText;
+        mWritingUpdated = true;
+
+    } else if (mWritingEnabled && !enabled) {
+        //disable writing.
+        mWritingEnabled = false;
+        mWritingUpdated = true;
+    }
 }
 
 define_reflectable_class_function(MWindow, writingEnabled)
@@ -207,15 +224,20 @@ void MSetMainWindow(const MWindow::ptr &window) {
     }
 
     if (*sMainWindow) {
-        if ((*sMainWindow)->loaded()) {
-            window->load();
-        }
-        if ((*sMainWindow)->shown()) {
-            window->show();
-        }
+        //window size.
+        MSize::ptr size = (*sMainWindow)->size();
+        window->resizePixel(
+            px_from_pt size->width (),
+            px_from_pt size->height()
+        );
+
+        //loaded and shown flags.
+        if ((*sMainWindow)->loaded()) { window->load(); }
+        if ((*sMainWindow)->shown ()) { window->show(); }
+
+        //text box state.
         if ((*sMainWindow)->writingEnabled()) {
-            const std::string &text = (*sMainWindow)->writingText();
-            window->enableWriting(true, text);
+            window->setWritingEnabled(true, "");
         }
     }
     *sMainWindow = window;
