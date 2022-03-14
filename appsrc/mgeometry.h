@@ -17,6 +17,8 @@ public:
     float x();
     float y();
 
+    MPoint::ptr copy();
+
 private:
     float mX;
     float mY;
@@ -37,6 +39,8 @@ public:
     float width ();
     float height();
 
+    MSize::ptr copy();
+
 private:
     float mWidth ;
     float mHeight;
@@ -49,16 +53,23 @@ declare_reflectable_class(MRect)
 class MRect : public MExtends<MRect, MObject> {
 public:
     MRect();
-    MRect(const MPoint::ptr &origin, const MSize::ptr &size);
     MRect(float x, float y, float width, float height);
 
-    void setOrigin(const MPoint::ptr &origin);
-    void setSize  (const MSize ::ptr &size  );
+    void setX     (float x     );
+    void setY     (float y     );
+    void setWidth (float width );
+    void setHeight(float height);
 
-    const MPoint::ptr &origin();
-    const MSize ::ptr &size  ();
+    float x     ();
+    float y     ();
+    float width ();
+    float height();
+
+    MRect::ptr copy();
 
 private:
-    MPoint::ptr mOrigin;
-    MSize ::ptr mSize  ;
+    float mX;
+    float mY;
+    float mWidth ;
+    float mHeight;
 };
