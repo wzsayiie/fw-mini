@@ -2,8 +2,6 @@
 
 #include "mobject.h"
 
-const float MAppUpdateEverySeconds = 0.1f;
-
 declare_reflectable_enum(MAppEvent)
 enum class MAppEvent {
     Launch  = 1,
@@ -13,6 +11,9 @@ enum class MAppEvent {
 
 declare_reflectable_class(MApp)
 class MApp : public MExtends<MApp, MObject> {
+public:
+    static constexpr const float UpdateEverySeconds = 0.1f;
+
 public:
     M_HOST_CALL void launch ();
     M_HOST_CALL void update ();
@@ -34,7 +35,7 @@ private:
 
 MApp *MGetApp();
 
-#define mapp_launch(fcn) ; static _MAppLaunchRegister _unused_##fcn(fcn); void fcn()
-struct _MAppLaunchRegister {
-    _MAppLaunchRegister(void (*fcn)());
+#define mapp_launch(fcn) ; static _MAppLaunchRegistrar _unused_##fcn(fcn); void fcn()
+struct _MAppLaunchRegistrar {
+    _MAppLaunchRegistrar(void (*fcn)());
 };

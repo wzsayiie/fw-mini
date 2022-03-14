@@ -25,10 +25,11 @@ enum class MKey {
 //window:
 //
 
-const float MWindowUpdateEverySeconds = 0.1f;
-
 declare_reflectable_class(MWindow)
 class MWindow : public MExtends<MWindow, MObject> {
+public:
+    static constexpr const float UpdateEverySeconds = 0.1f;
+
 public:
     M_HOST_CALL void load();
     M_HOST_CALL void show();

@@ -160,14 +160,14 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     //application events.
     MGetApp()->launch();
-    SetTimer(wnd, AppUpdateTimerId, (UINT)(1000 * MAppUpdateEverySeconds), nullptr);
+    SetTimer(wnd, AppUpdateTimerId, (UINT)(1000 * MApp::UpdateEverySeconds), nullptr);
 
     //window events:
     MWindow *window = MGetMainWindow();
     window->resizePixel((float)clientSize.cx, (float)clientSize.cy);
     window->load();
 
-    SetTimer(wnd, WindowUpdateTimerId, (UINT)(1000 * MWindowUpdateEverySeconds), nullptr);
+    SetTimer(wnd, WindowUpdateTimerId, (UINT)(1000 * MWindow::UpdateEverySeconds), nullptr);
 
     return 0;
 }

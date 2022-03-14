@@ -1,10 +1,10 @@
 #include "mapp.h"
 
-define_reflectable_const(MAppUpdateEverySeconds)
-
 define_reflectable_enum_const(MAppEvent, Launch )
 define_reflectable_enum_const(MAppEvent, Update )
 define_reflectable_enum_const(MAppEvent, Command)
+
+define_reflectable_class_const(MApp, UpdateEverySeconds)
 
 define_reflectable_class_function(MApp, launch)
 void MApp::launch() {
@@ -64,7 +64,7 @@ MApp *MGetApp() {
     return object;
 }
 
-_MAppLaunchRegister::_MAppLaunchRegister(void (*fcn)()) {
+_MAppLaunchRegistrar::_MAppLaunchRegistrar(void (*fcn)()) {
     auto func = MFunction<void ()>::create(fcn);
     MGetApp()->addListener(MAppEvent::Launch, func);
 }
