@@ -123,19 +123,18 @@ static void AdjustEditPosition(int parentWidth, int parentHeight)
 static void UpdateEditState()
 {
     MWindow *window = MGetMainWindow();
-    if (!window->checkWriting())
+    if (!window->checkWritingUpdated())
     {
         return;
     }
 
     if (window->writingEnabled())
     {
-        std::string    u8text  = window->writingText();
+        std::string    u8text  = window->checkWritingRawText();
         std::u16string u16text = MU16StringFromU8(u8text.c_str());
 
         auto selectionBegin = (WPARAM)0;
         auto selectionEnd   = (LPARAM)u16text.size();
-
         SetWindowTextW(sEditWnd, (LPWSTR)u16text.c_str());
         SendMessageW(sEditWnd, EM_SETSEL, selectionBegin, selectionEnd);
 
