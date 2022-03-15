@@ -1,4 +1,4 @@
 #include "minikit.h"
 
-static void Launch() mapp_launch(Launch) {
+static void Launch() m_app_launch(Launch) {
 }

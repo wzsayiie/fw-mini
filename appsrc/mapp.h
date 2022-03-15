@@ -35,7 +35,7 @@ private:
 
 MApp *MGetApp();
 
-#define mapp_launch(fcn) ; static _MAppLaunchRegistrar _unused_##fcn(fcn); void fcn()
+#define m_app_launch(fcn) ; static _MAppLaunchRegistrar _unused_##fcn(fcn); void fcn()
 struct _MAppLaunchRegistrar {
     _MAppLaunchRegistrar(void (*fcn)());
 };
