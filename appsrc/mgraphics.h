@@ -88,6 +88,22 @@ public:
     static const int BrownRGBA     = 0xE29C45ff;
     static const int ClearRGBA     = 0x00000000;
 
+    static const MColor::ptr &blackColor    ();
+    static const MColor::ptr &darkGrayColor ();
+    static const MColor::ptr &grayColor     ();
+    static const MColor::ptr &lightGrayColor();
+    static const MColor::ptr &whiteColor    ();
+    static const MColor::ptr &redColor      ();
+    static const MColor::ptr &greenColor    ();
+    static const MColor::ptr &blueColor     ();
+    static const MColor::ptr &cyanColor     ();
+    static const MColor::ptr &yellowColor   ();
+    static const MColor::ptr &magentaColor  ();
+    static const MColor::ptr &orangeColor   ();
+    static const MColor::ptr &purpleColor   ();
+    static const MColor::ptr &brownColor    ();
+    static const MColor::ptr &clearColor    ();
+
 public:
     MColor();
     MColor(float redCom, float greenCom, float blueCom, float alphaCom);
