@@ -35,8 +35,8 @@ void MWindow::hide() {
 
 define_reflectable_class_function(MWindow, resizePixel, "args:widthPx,heightPx;")
 void MWindow::resizePixel(float widthPx, float heightPx) {
-    float width  = pt_from_px widthPx ;
-    float height = pt_from_px heightPx;
+    float width  = m_pt_from_px widthPx ;
+    float height = m_pt_from_px heightPx;
 
     mSize->setWidth (width );
     mSize->setHeight(height);
@@ -55,29 +55,29 @@ void MWindow::draw() {
 
 define_reflectable_class_function(MWindow, touchBeginPixel, "args:xPx,yPx;")
 void MWindow::touchBeginPixel(float xPx, float yPx) {
-    float x = pt_from_px xPx;
-    float y = pt_from_px yPx;
+    float x = m_pt_from_px xPx;
+    float y = m_pt_from_px yPx;
     onTouchBegin(x, y);
 }
 
 define_reflectable_class_function(MWindow, touchMovePixel, "args:xPx,yPx;")
 void MWindow::touchMovePixel(float xPx, float yPx) {
-    float x = pt_from_px xPx;
-    float y = pt_from_px yPx;
+    float x = m_pt_from_px xPx;
+    float y = m_pt_from_px yPx;
     onTouchMove(x, y);
 }
 
 define_reflectable_class_function(MWindow, touchEndPixel, "args:xPx,yPx;")
 void MWindow::touchEndPixel(float xPx, float yPx) {
-    float x = pt_from_px xPx;
-    float y = pt_from_px yPx;
+    float x = m_pt_from_px xPx;
+    float y = m_pt_from_px yPx;
     onTouchEnd(x, y);
 }
 
 define_reflectable_class_function(MWindow, mouseMovePixel, "args:xPx,yPx;")
 void MWindow::mouseMovePixel(float xPx, float yPx) {
-    float x = pt_from_px xPx;
-    float y = pt_from_px yPx;
+    float x = m_pt_from_px xPx;
+    float y = m_pt_from_px yPx;
     onMouseMove(x, y);
 }
 
@@ -227,8 +227,8 @@ void MSetMainWindow(const MWindow::ptr &window) {
         //window size.
         MSize::ptr size = sMainWindow->size();
         window->resizePixel(
-            px_from_pt size->width (),
-            px_from_pt size->height()
+            m_px_from_pt size->width (),
+            m_px_from_pt size->height()
         );
 
         //loaded and shown flags.
