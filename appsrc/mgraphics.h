@@ -5,7 +5,7 @@
 //pixel scale:
 //
 
-M_HOST_CALL void MSetPixelScale(float scale);
+M_NEED_HOST_CALL void MSetPixelScale(float scale);
 float MGetPixelScale();
 
 #define pt_from_px _MPointFromPixelCaster()<<

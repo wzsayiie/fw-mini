@@ -15,9 +15,9 @@ public:
     static constexpr const float UpdateEverySeconds = 0.1f;
 
 public:
-    M_HOST_CALL void launch ();
-    M_HOST_CALL void update ();
-    M_HOST_CALL void command(const std::string &line);
+    M_NEED_HOST_CALL void launch ();
+    M_NEED_HOST_CALL void update ();
+    M_NEED_HOST_CALL void command(const std::string &line);
 
 public:
     void addListener   (MAppEvent event, const MFunction<void ()>::ptr &listener);

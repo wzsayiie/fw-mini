@@ -26,4 +26,4 @@ declare_reflectable_class(MFunction<void ()>)
 //
 
 //flag for functions that need to be called by host.
-#define M_HOST_CALL
+#define M_NEED_HOST_CALL

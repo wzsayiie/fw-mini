@@ -31,27 +31,27 @@ public:
     static constexpr const float UpdateEverySeconds = 0.1f;
 
 public:
-    M_HOST_CALL void load();
-    M_HOST_CALL void show();
-    M_HOST_CALL void hide();
+    M_NEED_HOST_CALL void load();
+    M_NEED_HOST_CALL void show();
+    M_NEED_HOST_CALL void hide();
 
-    M_HOST_CALL void resizePixel(float widthPx, float heightPx);
-    M_HOST_CALL void draw();
+    M_NEED_HOST_CALL void resizePixel(float widthPx, float heightPx);
+    M_NEED_HOST_CALL void draw();
 
-    M_HOST_CALL void touchBeginPixel(float xPx, float yPx);
-    M_HOST_CALL void touchMovePixel (float xPx, float yPx);
-    M_HOST_CALL void touchEndPixel  (float xPx, float yPx);
-    M_HOST_CALL void mouseMovePixel (float xPx, float yPx);
-    M_HOST_CALL void mouseWheel     (float delta);
+    M_NEED_HOST_CALL void touchBeginPixel(float xPx, float yPx);
+    M_NEED_HOST_CALL void touchMovePixel (float xPx, float yPx);
+    M_NEED_HOST_CALL void touchEndPixel  (float xPx, float yPx);
+    M_NEED_HOST_CALL void mouseMovePixel (float xPx, float yPx);
+    M_NEED_HOST_CALL void mouseWheel     (float delta);
 
-    M_HOST_CALL void keyDown(MKey key);
+    M_NEED_HOST_CALL void keyDown(MKey key);
 
-    M_HOST_CALL void write(const std::string &text, bool enter);
+    M_NEED_HOST_CALL void write(const std::string &text, bool enter);
 
     //text box control.
-    M_HOST_CALL bool        checkWritingUpdated();
-    M_HOST_CALL bool        checkWritingEnabled();
-    M_HOST_CALL std::string checkWritingRawText();
+    M_NEED_HOST_CALL bool        checkWritingUpdated();
+    M_NEED_HOST_CALL bool        checkWritingEnabled();
+    M_NEED_HOST_CALL std::string checkWritingRawText();
 
 public:
     bool loaded();
