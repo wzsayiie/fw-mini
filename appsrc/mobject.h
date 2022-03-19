@@ -20,10 +20,12 @@ template<class Class, class Super> struct MExtends : reflect::extends<Class, Sup
 #define MMap      reflect::map
 #define MSet      reflect::set
 
+declare_reflectable_class(MFunction<void (const std::string &)>)
 declare_reflectable_class(MFunction<void ()>)
 
 //macro:
 //
 
-//flag for functions that need to be called by host.
-#define M_NEED_HOST_CALL
+//flag for needing host to implement and call.
+#define M_HOST_IMPLEMENT_CLASS
+#define M_HOST_CALL_FUNCTION

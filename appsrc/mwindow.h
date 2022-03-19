@@ -30,34 +30,35 @@ class MWindow : public MExtends<MWindow, MObject> {
 public:
     static constexpr const float UpdateEverySeconds = 0.1f;
 
+    static void setMainWindow(const MWindow::ptr &window);
+    static MWindow *mainWindow();
+
 public:
-    M_NEED_HOST_CALL void load();
-    M_NEED_HOST_CALL void show();
-    M_NEED_HOST_CALL void hide();
+    M_HOST_CALL_FUNCTION void load();
+    M_HOST_CALL_FUNCTION void show();
+    M_HOST_CALL_FUNCTION void hide();
 
-    M_NEED_HOST_CALL void resizePixel(float widthPx, float heightPx);
-    M_NEED_HOST_CALL void draw();
+    M_HOST_CALL_FUNCTION void resizePixel(float widthPx, float heightPx);
+    M_HOST_CALL_FUNCTION void draw();
 
-    M_NEED_HOST_CALL void touchBeginPixel(float xPx, float yPx);
-    M_NEED_HOST_CALL void touchMovePixel (float xPx, float yPx);
-    M_NEED_HOST_CALL void touchEndPixel  (float xPx, float yPx);
-    M_NEED_HOST_CALL void mouseMovePixel (float xPx, float yPx);
-    M_NEED_HOST_CALL void mouseWheel     (float delta);
+    M_HOST_CALL_FUNCTION void touchBeginPixel(float xPx, float yPx);
+    M_HOST_CALL_FUNCTION void touchMovePixel (float xPx, float yPx);
+    M_HOST_CALL_FUNCTION void touchEndPixel  (float xPx, float yPx);
+    M_HOST_CALL_FUNCTION void mouseMovePixel (float xPx, float yPx);
+    M_HOST_CALL_FUNCTION void mouseWheel     (float delta);
 
-    M_NEED_HOST_CALL void keyDown(MKey key);
+    M_HOST_CALL_FUNCTION void keyDown(MKey key);
 
-    M_NEED_HOST_CALL void write(const std::string &text, bool enter);
+    M_HOST_CALL_FUNCTION void write(const std::string &text, bool enter);
 
     //text box control.
-    M_NEED_HOST_CALL bool        checkWritingUpdated();
-    M_NEED_HOST_CALL bool        checkWritingEnabled();
-    M_NEED_HOST_CALL std::string checkWritingRawText();
+    M_HOST_CALL_FUNCTION bool        checkWritingUpdated();
+    M_HOST_CALL_FUNCTION bool        checkWritingEnabled();
+    M_HOST_CALL_FUNCTION std::string checkWritingRawText();
 
-public:
-    bool loaded();
-    bool shown ();
-
-    MSize::ptr size();
+    bool       loaded();
+    bool       shown ();
+    MSize::ptr size  ();
 
     void setWritingEnabled(bool enabled, const std::string &rawText);
     bool writingEnabled();
@@ -81,6 +82,9 @@ public:
     virtual void onWrite(const std::string &text, bool enter);
 
 private:
+    static MWindow::ptr sMainWindow;
+
+private:
     bool mLoaded = false;
     bool mShown  = false;
 
@@ -90,6 +94,3 @@ private:
     bool        mWritingEnabled = false;
     std::string mWritingRawText ;
 };
-
-void MSetMainWindow(const MWindow::ptr &window);
-MWindow *MGetMainWindow();

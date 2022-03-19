@@ -1,10 +1,12 @@
 #include "mapp.h"
 
-define_reflectable_enum_const(MAppEvent, Launch )
-define_reflectable_enum_const(MAppEvent, Update )
-define_reflectable_enum_const(MAppEvent, Command)
-
 define_reflectable_class_const(MApp, UpdateEverySeconds)
+
+define_reflectable_class_function(MApp, sharedObject)
+MApp *MApp::sharedObject() {
+    static auto obj = MApp::create();
+    return obj.get();
+}
 
 define_reflectable_class_function(MApp, launch)
 void MApp::launch() {
@@ -22,49 +24,33 @@ void MApp::update() {
 
 define_reflectable_class_function(MApp, command, "args:line;")
 void MApp::command(const std::string &line) {
-    mCommand = line;
-
     for (auto &it : mCommandListeners) {
-        it->call();
+        it->call(line);
     }
-
-    mCommand.clear();
 }
 
-define_reflectable_class_function(MApp, addListener, "args:event,listener;")
-void MApp::addListener(MAppEvent event, const MFunction<void ()>::ptr &listener) {
-    if (!listener) {
-        return;
+define_reflectable_class_function(MApp, addLaunchListener, "args:listener;")
+void MApp::addLaunchListener(const MFunction<void ()>::ptr &listener) {
+    if (listener) {
+        mLaunchListeners.insert(listener);
     }
-
-    if /**/ (event == MAppEvent::Launch ) { mLaunchListeners .insert(listener); }
-    else if (event == MAppEvent::Update ) { mUpdateListeners .insert(listener); }
-    else if (event == MAppEvent::Command) { mCommandListeners.insert(listener); }
 }
 
-define_reflectable_class_function(MApp, removeListener, "args:event,listener;")
-void MApp::removeListener(MAppEvent event, const MFunction<void ()>::ptr &listener) {
-    if (!listener) {
-        return;
+define_reflectable_class_function(MApp, addUpdateListener, "args:listener;")
+void MApp::addUpdateListener(const MFunction<void ()>::ptr &listener) {
+    if (listener) {
+        mUpdateListeners.insert(listener);
     }
-
-    if /**/ (event == MAppEvent::Launch ) { mLaunchListeners .erase(listener); }
-    else if (event == MAppEvent::Update ) { mUpdateListeners .erase(listener); }
-    else if (event == MAppEvent::Command) { mCommandListeners.erase(listener); }
 }
 
-define_reflectable_class_function(MApp, currentCommand)
-const std::string &MApp::currentCommand() {
-    return mCommand;
-}
-
-define_reflectable_function(MGetApp)
-MApp *MGetApp() {
-    static auto object = new MApp();
-    return object;
+define_reflectable_class_function(MApp, addCommandListener, "args:listener;")
+void MApp::addCommandListener(const MFunction<void (const std::string &)>::ptr &listener) {
+    if (listener) {
+        mCommandListeners.insert(listener);
+    }
 }
 
 _MAppLaunchRegistrar::_MAppLaunchRegistrar(void (*fcn)()) {
     auto func = MFunction<void ()>::create(fcn);
-    MGetApp()->addListener(MAppEvent::Launch, func);
+    MApp::sharedObject()->addLaunchListener(func);
 }

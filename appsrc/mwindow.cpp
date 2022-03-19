@@ -1,6 +1,9 @@
 #include "mwindow.h"
 #include "mgraphics.h"
 
+//key:
+//
+
 define_reflectable_enum_const(MKey, Back )
 define_reflectable_enum_const(MKey, Enter)
 define_reflectable_enum_const(MKey, Space)
@@ -13,7 +16,28 @@ define_reflectable_enum_const(MKey, D    )
 define_reflectable_enum_const(MKey, S    )
 define_reflectable_enum_const(MKey, W    )
 
+//window:
+//
+
 define_reflectable_class_const(MWindow, UpdateEverySeconds)
+
+MWindow::ptr MWindow::sMainWindow;
+
+define_reflectable_class_function(MWindow, setMainWindow)
+void MWindow::setMainWindow(const MWindow::ptr &window) {
+    //NOTE: a window has its own state and lifecycle, only can be assigned once.
+    if (!sMainWindow) {
+        sMainWindow = window;
+    }
+}
+
+define_reflectable_class_function(MWindow, mainWindow)
+MWindow *MWindow::mainWindow() {
+    if (!sMainWindow) {
+        sMainWindow = MWindow::create();
+    }
+    return sMainWindow.get();
+}
 
 define_reflectable_class_function(MWindow, load)
 void MWindow::load() {
@@ -213,40 +237,4 @@ void MWindow::onKeyDown(MKey key) {
 define_reflectable_class_function(MWindow, onWrite, "args:text,enter;")
 void MWindow::onWrite(const std::string &text, bool enter) {
     implement_injectable_function((void), text, enter)
-}
-
-static dash::lazy_var<MWindow::ptr> sMainWindow;
-
-define_reflectable_function(MSetMainWindow, "args:window;")
-void MSetMainWindow(const MWindow::ptr &window) {
-    if (!window) {
-        return;
-    }
-
-    if (sMainWindow) {
-        //window size.
-        MSize::ptr size = sMainWindow->size();
-        window->resizePixel(
-            m_px_from_pt size->width (),
-            m_px_from_pt size->height()
-        );
-
-        //loaded and shown flags.
-        if (sMainWindow->loaded()) { window->load(); }
-        if (sMainWindow->shown ()) { window->show(); }
-
-        //text box state.
-        if (sMainWindow->writingEnabled()) {
-            window->setWritingEnabled(true, "");
-        }
-    }
-    sMainWindow = window;
-}
-
-define_reflectable_function(MGetMainWindow)
-MWindow *MGetMainWindow() {
-    if (!sMainWindow) {
-        sMainWindow = MWindow::create();
-    }
-    return sMainWindow;
 }

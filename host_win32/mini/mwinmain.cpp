@@ -81,7 +81,7 @@ static LRESULT CALLBACK EditCustomProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM
         std::u16string u16text = CopyEditText(wnd);
         std::string    u8text  = MU8StringFromU16(u16text.c_str());
 
-        MGetMainWindow()->write(u8text, true);
+        MWindow::mainWindow()->write(u8text, true);
 
         return 0;
     }
@@ -122,7 +122,7 @@ static void AdjustEditPosition(int parentWidth, int parentHeight)
 
 static void UpdateEditState()
 {
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
     if (!window->checkWritingUpdated())
     {
         return;
@@ -159,11 +159,11 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     AdjustEditPosition(clientSize.cx, clientSize.cy);
 
     //application events.
-    MGetApp()->launch();
+    MApp::sharedObject()->launch();
     SetTimer(wnd, AppUpdateTimerId, (UINT)(1000 * MApp::UpdateEverySeconds), nullptr);
 
     //window events:
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
     window->resizePixel((float)clientSize.cx, (float)clientSize.cy);
     window->load();
 
@@ -174,7 +174,7 @@ static LRESULT OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnShowWindow(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
 
     auto shown = (BOOL)wParam;
     if (shown)
@@ -206,7 +206,7 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
     if (timerId == AppUpdateTimerId)
     {
         UpdateEditState();
-        MGetApp()->update();
+        MApp::sharedObject()->update();
     }
     else if (timerId == WindowUpdateTimerId)
     {
@@ -218,7 +218,7 @@ static LRESULT OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnSize(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
 
     LPARAM clientSize = lParam;
     int width  = LOWORD(clientSize);
@@ -259,7 +259,7 @@ static LRESULT OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
 
     LPARAM clientPoint = lParam;
     auto x = GET_X_LPARAM(clientPoint);
@@ -280,7 +280,7 @@ static LRESULT OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
 
     LPARAM clientPoint = lParam;
     int x = GET_X_LPARAM(clientPoint);
@@ -306,7 +306,7 @@ static LRESULT OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
 
     LPARAM clientPoint = lParam;
     int x = GET_X_LPARAM(clientPoint);
@@ -332,14 +332,14 @@ static LRESULT OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 static LRESULT OnMouseWheel(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     short delta = GET_WHEEL_DELTA_WPARAM(wParam);
-    MGetMainWindow()->mouseWheel(delta);
+    MWindow::mainWindow()->mouseWheel(delta);
 
     return 0;
 }
 
 static LRESULT OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MGetMainWindow();
+    MWindow *window = MWindow::mainWindow();
 
     WPARAM virtualkey = wParam;
     switch (virtualkey)
@@ -369,7 +369,7 @@ static LRESULT OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
         std::u16string u16text = CopyEditText(sEditWnd);
         std::string    u8text  = MU8StringFromU16(u16text.c_str());
 
-        MGetMainWindow()->write(u8text, false);
+        MWindow::mainWindow()->write(u8text, false);
     }
 
     return 0;
