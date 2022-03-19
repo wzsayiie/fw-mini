@@ -10,7 +10,8 @@ class MFileManager : public MExtends<MFileManager, MObject> {
 public:
     static MFileManager *sharedObject();
 
-public /* data read and write */:
+public:
+    //data read and write:
     MVector<uint8_t>::ptr bytesFromBundle(const std::string &path);
     MVector<uint8_t>::ptr bytesFromFile  (const std::string &path);
 
@@ -20,7 +21,7 @@ public /* data read and write */:
     void writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const std::string &path);
     void writeTextToFile (const std::string           &text , const std::string &path);
 
-public /* path control */:
+    //path control:
     MVector<std::string>::ptr contentsOfDirectory(const std::string &path);
 
     bool directoryExistsAt(const std::string &path);
@@ -28,7 +29,7 @@ public /* path control */:
     void createDirectory  (const std::string &path);
     void removePath       (const std::string &path);
 
-public /* app specific directories */:
+    //app specific directories.
     std::string documentDirectory ();
     std::string temporaryDirectory();
 };
@@ -36,6 +37,7 @@ public /* app specific directories */:
 //bundle:
 //
 
+M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MBundle)
 class MBundle : public MExtends<MBundle, MObject> {
 public:

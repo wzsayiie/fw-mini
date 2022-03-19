@@ -1,5 +1,8 @@
 #include "mapp.h"
 
+//app:
+//
+
 define_reflectable_class_const(MApp, UpdateEverySeconds)
 
 define_reflectable_class_function(MApp, sharedObject)
@@ -49,6 +52,32 @@ void MApp::addCommandListener(const MFunction<void (const std::string &)>::ptr &
         mCommandListeners.insert(listener);
     }
 }
+
+define_reflectable_class_function(MApp, removeListener, "args:listener;")
+void MApp::removeListener(const MObject::ptr &listener) {
+    if (!listener) {
+        return;
+    }
+
+    for (auto &it : mLaunchListeners) {
+        if ((MObject *)it.get() == listener.get()) {
+            mLaunchListeners.erase(it);
+        }
+    }
+    for (auto &it : mUpdateListeners) {
+        if ((MObject *)it.get() == listener.get()) {
+            mUpdateListeners.erase(it);
+        }
+    }
+    for (auto &it : mCommandListeners) {
+        if ((MObject *)it.get() == listener.get()) {
+            mCommandListeners.erase(it);
+        }
+    }
+}
+
+//launch registrar:
+//
 
 _MAppLaunchRegistrar::_MAppLaunchRegistrar(void (*fcn)()) {
     auto func = MFunction<void ()>::create(fcn);

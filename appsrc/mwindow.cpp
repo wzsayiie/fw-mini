@@ -23,7 +23,7 @@ define_reflectable_class_const(MWindow, UpdateEverySeconds)
 
 MWindow::ptr MWindow::sMainWindow;
 
-define_reflectable_class_function(MWindow, setMainWindow)
+define_reflectable_class_function(MWindow, setMainWindow, "args:window")
 void MWindow::setMainWindow(const MWindow::ptr &window) {
     //NOTE: a window has its own state and lifecycle, only can be assigned once.
     if (!sMainWindow) {

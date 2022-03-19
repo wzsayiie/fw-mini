@@ -2,6 +2,10 @@
 
 #include "mgeometry.h"
 
+//image:
+//
+
+M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MImageImpl)
 class MImageImpl : public MExtends<MImageImpl, MObject> {
 };
@@ -22,11 +26,19 @@ public:
     MSize::ptr sizePixel();
 
 private:
-    MImageImpl::ptr MImageImpl;
+    MImageImpl::ptr sImpl;
 };
 
+//image factory:
+//
+
+M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MImageFactory)
 class MImageFactory : public MExtends<MImageFactory, MObject> {
+public:
+    static void setSharedObject(const MImageFactory::ptr &factory);
+    static MImageFactory *sharedObject();
+
 public:
     //image from file format data.
     virtual MImageImpl::ptr imageFromFFData(const MVector<uint8_t>::ptr ffData);
@@ -40,7 +52,7 @@ public:
 
     //image pixel size.
     virtual MSize::ptr sizePixel();
-};
 
-void MSetImageFactory(const MImageFactory::ptr &factory);
-MImageFactory *MGetImageFactory();
+private:
+    static MImageFactory::ptr sFactory;
+};
