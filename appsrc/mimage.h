@@ -2,6 +2,15 @@
 
 #include "mgeometry.h"
 
+//file format:
+//
+
+declare_reflectable_enum(MImageFileFormat)
+enum class MImageFileFormat {
+    JPEG = 1,
+    PNG  = 2,
+};
+
 //image:
 //
 
@@ -18,15 +27,16 @@ public:
     static MImage::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData);
     static MImage::ptr imageFromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height);
 
-    void writeFile(const std::string &path);
+public:
+    void writeFile(const std::string &path, MImageFileFormat format);
 
-    MVector<uint8_t>::ptr copyFFData();
+    MVector<uint8_t>::ptr copyFFData(MImageFileFormat format);
     MVector<uint8_t>::ptr copyBitmap();
 
     MSize::ptr sizePixel();
 
 private:
-    MImageImpl::ptr sImpl;
+    MImageImpl::ptr mImpl;
 };
 
 //image factory:
@@ -36,22 +46,22 @@ M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MImageFactory)
 class MImageFactory : public MExtends<MImageFactory, MObject> {
 public:
-    static void setSharedObject(const MImageFactory::ptr &factory);
+    M_HOST_CALL_FUNCTION static void setSharedObject(const MImageFactory::ptr &factory);
     static MImageFactory *sharedObject();
 
 public:
     //image from file format data.
-    virtual MImageImpl::ptr imageFromFFData(const MVector<uint8_t>::ptr ffData);
+    virtual MImageImpl::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData);
     //image from 32-bit depth bitmap.
-    virtual MImageImpl::ptr imageFromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height);
+    virtual MImageImpl::ptr imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height);
 
     //file format data from image.
-    virtual MVector<uint8_t>::ptr ffDataFromImage(const MImageImpl::ptr image);
+    virtual MVector<uint8_t>::ptr ffDataFromImage(const MImageImpl::ptr &image, MImageFileFormat format);
     //32-bit depth bitmap from image.
-    virtual MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr image);
+    virtual MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr &image);
 
     //image pixel size.
-    virtual MSize::ptr sizePixel();
+    virtual MSize::ptr sizePixel(const MImageImpl::ptr &image);
 
 private:
     static MImageFactory::ptr sFactory;
