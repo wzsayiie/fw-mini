@@ -41,7 +41,7 @@ M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MBundle)
 class MBundle : public MExtends<MBundle, MObject> {
 public:
-    static void setSharedObject(const MBundle::ptr &bundle);
+    M_HOST_CALL_FUNCTION static void setSharedObject(const MBundle::ptr &obj);
     static MBundle *sharedObject();
 
 public:
@@ -49,4 +49,7 @@ public:
 
     virtual std::string documentDirectory ();
     virtual std::string temporaryDirectory();
+
+private:
+    static MBundle::ptr sSharedObject;
 };
