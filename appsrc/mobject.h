@@ -20,7 +20,6 @@ template<class Class, class Super> struct MExtends : reflect::extends<Class, Sup
 #define MMap      reflect::map
 #define MSet      reflect::set
 
-declare_reflectable_class(MFunction<void (const std::string &)>)
 declare_reflectable_class(MFunction<void ()>)
 
 //macro:

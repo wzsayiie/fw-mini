@@ -14,20 +14,16 @@ public:
     static MApp *sharedObject();
 
 public:
-    M_HOST_CALL_FUNCTION void launch ();
-    M_HOST_CALL_FUNCTION void update ();
-    M_HOST_CALL_FUNCTION void command(const std::string &line);
+    M_HOST_CALL_FUNCTION void launch();
+    M_HOST_CALL_FUNCTION void update();
 
-    void addLaunchListener (const MFunction<void ()>::ptr &listener);
-    void addUpdateListener (const MFunction<void ()>::ptr &listener);
-    void addCommandListener(const MFunction<void (const std::string &)>::ptr &listener);
-
-    void removeListener(const MObject::ptr &listener);
+    void addLaunchListener(const MFunction<void ()>::ptr &listener);
+    void addUpdateListener(const MFunction<void ()>::ptr &listener);
+    void removeListener   (const MFunction<void ()>::ptr &listener);
 
 private:
     std::set<MFunction<void ()>::ptr> mLaunchListeners;
     std::set<MFunction<void ()>::ptr> mUpdateListeners;
-    std::set<MFunction<void (const std::string &)>::ptr> mCommandListeners;
 };
 
 //launch registrar:
