@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -e -u
+
+cd `dirname $0`
+
+exe_nam="mini"
+obj_dir="objs"
+hdr_inc="-I./../appsrc"
+cc_dirs="app ../appsrc"
+dep_cmd="c++ $hdr_inc -MM -MT"
+exe_cmd="c++ $hdr_inc --std=c++17 -o $exe_nam"
+obj_cmd="c++ $hdr_inc --std=c++17 -c -o"
+
+# generate the temporary object file directory.
+mkdir -p $obj_dir
+
+# generate the makefile:
+function scan() {
+    for src in `find $cc_dirs -iname *.cpp`; do
+        local obj="$obj_dir/`basename $src .cpp`.o"
+        $1 $obj $src
+    done
+}
+
+function every_obj_file_to_makefile() {
+    echo " $1\c" >> makefile
+}
+
+echo   "$exe_nam:\c" > makefile
+scan every_obj_file_to_makefile
+echo ""             >> makefile
+
+echo "\t$exe_cmd\c" >> makefile
+scan every_obj_file_to_makefile
+echo ""             >> makefile
+
+function gen_obj_dep() {
+    echo  "`$dep_cmd $1 $2`" >> makefile
+    echo "\t$obj_cmd $1 $2"  >> makefile
+}
+scan gen_obj_dep

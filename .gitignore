@@ -23,11 +23,16 @@ host_win32/**/Release/
 host_win32/**/x64/
 host_win32/.vs/
 
-# node.js project local files:
+# gnu toolchain cache files.
+host_linux/makefile
+host_linux/mini
+host_linux/objs/
+
+# node.js project local files.
 appts/app/@types/
 appts/node_modules/
 appts/package-lock.json
 
-# the framework built files:
+# the framework built files.
 appres/mini.bundle/bundle.js
 BUILD/
