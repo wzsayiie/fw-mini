@@ -5,7 +5,7 @@ set -e -u
 cd `dirname $0`
 
 nam="libmini.dylib"
-src="appsrc/m*.cpp host_osx/mini/*.mm"
+src="appsrc/*.cpp host_osx/mini/*.mm"
 inc="-Iappsrc"
 ref="-framework Cocoa -framework JavaScriptCore"
 flg="--std=c++17 -fobjc-arc -dynamiclib"
