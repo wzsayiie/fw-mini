@@ -50,7 +50,7 @@ void MApp::removeListener(const MFunction<void ()>::ptr &listener) {
 //launch registrar:
 //
 
-_MAppLaunchRegistrar::_MAppLaunchRegistrar(void (*fcn)()) {
+_MAppLaunchRegistrar::_MAppLaunchRegistrar(void (*fcn)()) noexcept {
     auto func = MFunction<void ()>::create(fcn);
     MApp::sharedObject()->addLaunchListener(func);
 }

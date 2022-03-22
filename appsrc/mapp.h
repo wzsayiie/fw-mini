@@ -35,5 +35,5 @@ private:
 /**/    void fcn()
 
 struct _MAppLaunchRegistrar {
-    _MAppLaunchRegistrar(void (*fcn)());
+    _MAppLaunchRegistrar(void (*fcn)()) noexcept;
 };
