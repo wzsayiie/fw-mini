@@ -43,7 +43,7 @@
 #if __APPLE__
     #include <TargetConditionals.h>
 #endif
-#if ANDROID
+#if __ANDROID__
     #define DASH_OS_ANDROID 1
     #define DASH_OS_IOS     0
     #define DASH_OS_WIN32   0
