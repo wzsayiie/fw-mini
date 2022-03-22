@@ -5,7 +5,10 @@
 #include "rvector.h"
 
 //generation mark:
-//
+
+//NOTE: an explicit template specialization must be declared
+//in the namespace that includes the template (although msvc and clang have not this limitation).
+//so 'declare_reflectable_xx' only can be used in the global scope.
 
 #define declare_reflectable_class(...)                              \
 /**/    template<> struct reflect::type_name_of<class __VA_ARGS__> {\
@@ -52,7 +55,6 @@
 namespace reflect {
 
 //builtin types:
-//
 
 template<> struct type_name_of<void       > { static constexpr const char *const name = "void"  ; };
 template<> struct type_name_of<bool       > { static constexpr const char *const name = "bool"  ; };
@@ -63,36 +65,7 @@ template<> struct type_name_of<float      > { static constexpr const char *const
 template<> struct type_name_of<double     > { static constexpr const char *const name = "double"; };
 template<> struct type_name_of<std::string> { static constexpr const char *const name = "string"; };
 
-declare_reflectable_class(vector<bool>       )
-declare_reflectable_class(vector<uint8_t>    )
-declare_reflectable_class(vector<int>        )
-declare_reflectable_class(vector<int64_t>    )
-declare_reflectable_class(vector<float>      )
-declare_reflectable_class(vector<double>     )
-declare_reflectable_class(vector<std::string>)
-
-declare_reflectable_class(map<std::string, bool>       )
-declare_reflectable_class(map<std::string, int>        )
-declare_reflectable_class(map<std::string, int64_t>    )
-declare_reflectable_class(map<std::string, float>      )
-declare_reflectable_class(map<std::string, double>     )
-declare_reflectable_class(map<std::string, std::string>)
-declare_reflectable_class(map<int        , bool>       )
-declare_reflectable_class(map<int        , int>        )
-declare_reflectable_class(map<int        , int64_t>    )
-declare_reflectable_class(map<int        , float>      )
-declare_reflectable_class(map<int        , double>     )
-declare_reflectable_class(map<int        , std::string>)
-
-declare_reflectable_class(set<bool>       )
-declare_reflectable_class(set<int>        )
-declare_reflectable_class(set<int64_t>    )
-declare_reflectable_class(set<float>      )
-declare_reflectable_class(set<double>     )
-declare_reflectable_class(set<std::string>)
-
 //type extraction:
-//
 
 struct committor {
     //class instance function.
@@ -142,4 +115,34 @@ struct committor {
     }
 };
 
-} // end reflect.
+} //end reflect.
+
+//builtin types:
+
+declare_reflectable_class(reflect::vector<bool>       )
+declare_reflectable_class(reflect::vector<uint8_t>    )
+declare_reflectable_class(reflect::vector<int>        )
+declare_reflectable_class(reflect::vector<int64_t>    )
+declare_reflectable_class(reflect::vector<float>      )
+declare_reflectable_class(reflect::vector<double>     )
+declare_reflectable_class(reflect::vector<std::string>)
+
+declare_reflectable_class(reflect::map<std::string, bool>       )
+declare_reflectable_class(reflect::map<std::string, int>        )
+declare_reflectable_class(reflect::map<std::string, int64_t>    )
+declare_reflectable_class(reflect::map<std::string, float>      )
+declare_reflectable_class(reflect::map<std::string, double>     )
+declare_reflectable_class(reflect::map<std::string, std::string>)
+declare_reflectable_class(reflect::map<int        , bool>       )
+declare_reflectable_class(reflect::map<int        , int>        )
+declare_reflectable_class(reflect::map<int        , int64_t>    )
+declare_reflectable_class(reflect::map<int        , float>      )
+declare_reflectable_class(reflect::map<int        , double>     )
+declare_reflectable_class(reflect::map<int        , std::string>)
+
+declare_reflectable_class(reflect::set<bool>       )
+declare_reflectable_class(reflect::set<int>        )
+declare_reflectable_class(reflect::set<int64_t>    )
+declare_reflectable_class(reflect::set<float>      )
+declare_reflectable_class(reflect::set<double>     )
+declare_reflectable_class(reflect::set<std::string>)
