@@ -15,12 +15,11 @@ template<class Class, class Super> struct MExtends : reflect::extends<Class, Sup
 //builtin types:
 //
 
-#define MFunction reflect::function
-#define MVector   reflect::vector
-#define MMap      reflect::map
-#define MSet      reflect::set
+template<class K, class V> using MMap = reflect::map<K, V>;
 
-declare_reflectable_class(MFunction<void ()>)
+template<class V> using MVector   = reflect::vector<V>;
+template<class V> using MSet      = reflect::set<V>;
+template<class F> using MFunction = reflect::function<F>;
 
 //macro:
 //

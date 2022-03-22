@@ -146,3 +146,5 @@ declare_reflectable_class(reflect::set<int64_t>    )
 declare_reflectable_class(reflect::set<float>      )
 declare_reflectable_class(reflect::set<double>     )
 declare_reflectable_class(reflect::set<std::string>)
+
+declare_reflectable_class(reflect::function<void ()>)
