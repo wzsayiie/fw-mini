@@ -8,35 +8,38 @@ exe_nam="mini"
 obj_dir="objs"
 hdr_inc="-I./../appsrc"
 cc_dirs="app ../appsrc"
-dep_cmd="c++ $hdr_inc -MM -MT"
-exe_cmd="c++ $hdr_inc --std=c++17 -o $exe_nam"
-obj_cmd="c++ $hdr_inc --std=c++17 -c -o"
+dpd_cmd="c++ -MM $hdr_inc -MT"
+obj_cmd="c++ -c  $hdr_inc --std=c++17 -o"
+exe_cmd="c++ -o  $exe_nam --std=c++17"
 
 # generate the temporary object file directory.
 mkdir -p $obj_dir
 
 # generate the makefile:
-function scan() {
+function rewrit_mf() { echo -e -n "$1"  > makefile; }
+function append_mf() { echo -e -n "$1" >> makefile; }
+
+function every_src() {
     for src in `find $cc_dirs -iname *.cpp`; do
         local obj="$obj_dir/`basename $src .cpp`.o"
         $1 $obj $src
     done
 }
 
-function every_obj_file_to_makefile() {
-    echo " $1\c" >> makefile
+function obj_itm_to_mf() {
+    append_mf " $1"
+}
+function obj_dpd_to_mf() {
+    append_mf  "`$dpd_cmd $1 $2`\n"
+    append_mf "\t$obj_cmd $1 $2\n"
 }
 
-echo   "$exe_nam:\c" > makefile
-scan every_obj_file_to_makefile
-echo ""             >> makefile
+rewrit_mf "$exe_nam:"
+every_src obj_itm_to_mf
+append_mf "\n"
 
-echo "\t$exe_cmd\c" >> makefile
-scan every_obj_file_to_makefile
-echo ""             >> makefile
+append_mf "\t$exe_cmd"
+every_src obj_itm_to_mf
+append_mf "\n"
 
-function gen_obj_dep() {
-    echo  "`$dep_cmd $1 $2`" >> makefile
-    echo "\t$obj_cmd $1 $2"  >> makefile
-}
-scan gen_obj_dep
+every_src obj_dpd_to_mf
