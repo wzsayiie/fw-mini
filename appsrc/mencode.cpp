@@ -138,7 +138,7 @@ std::string MU8StringFromU16(const char16_t *u16chars) {
     return u8string;
 }
 
-std::u16string MU16StringFromU8(const char *u8chars ) {
+std::u16string MU16StringFromU8(const char *u8chars) {
     std::u16string u16string;
 
     while (true) {
