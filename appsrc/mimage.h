@@ -46,7 +46,7 @@ M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MImageFactory)
 class MImageFactory : public MExtends<MImageFactory, MObject> {
 public:
-    M_HOST_CALL_FUNCTION static void setSharedObject(const MImageFactory::ptr &factory);
+    M_HOST_CALL_FUNCTION static void setSharedObject(const MImageFactory::ptr &obj);
     static MImageFactory *sharedObject();
 
 public:
@@ -64,5 +64,5 @@ public:
     virtual MSize::ptr sizePixel(const MImageImpl::ptr &image);
 
 private:
-    static MImageFactory::ptr sFactory;
+    static MImageFactory::ptr sSharedObject;
 };

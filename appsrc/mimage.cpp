@@ -91,19 +91,19 @@ MSize::ptr MImage::sizePixel() {
 //image factory:
 //
 
-MImageFactory::ptr MImageFactory::sFactory;
+MImageFactory::ptr MImageFactory::sSharedObject;
 
-define_reflectable_class_function(MImageFactory, setSharedObject, "args:factory")
-void MImageFactory::setSharedObject(const MImageFactory::ptr &factory) {
-    sFactory = factory;
+define_reflectable_class_function(MImageFactory, setSharedObject, "args:obj")
+void MImageFactory::setSharedObject(const MImageFactory::ptr &obj) {
+    sSharedObject = obj;
 }
 
 define_reflectable_class_function(MImageFactory, sharedObject)
 MImageFactory *MImageFactory::sharedObject() {
-    if (!sFactory) {
-        sFactory = MImageFactory::create();
+    if (!sSharedObject) {
+        sSharedObject = MImageFactory::create();
     }
-    return sFactory.get();
+    return sSharedObject.get();
 }
 
 define_reflectable_class_function(MImageFactory, imageFromFFData, "args:ffData;")
