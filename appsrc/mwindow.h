@@ -38,13 +38,13 @@ public:
     M_HOST_CALL_FUNCTION void show();
     M_HOST_CALL_FUNCTION void hide();
 
-    M_HOST_CALL_FUNCTION void resizePixel(float widthPx, float heightPx);
+    M_HOST_CALL_FUNCTION void resizePixel(float pixelW, float pixelH);
     M_HOST_CALL_FUNCTION void draw();
 
-    M_HOST_CALL_FUNCTION void touchBeginPixel(float xPx, float yPx);
-    M_HOST_CALL_FUNCTION void touchMovePixel (float xPx, float yPx);
-    M_HOST_CALL_FUNCTION void touchEndPixel  (float xPx, float yPx);
-    M_HOST_CALL_FUNCTION void mouseMovePixel (float xPx, float yPx);
+    M_HOST_CALL_FUNCTION void touchBeginPixel(float pixelX, float pixelY);
+    M_HOST_CALL_FUNCTION void touchMovePixel (float pixelX, float pixelY);
+    M_HOST_CALL_FUNCTION void touchEndPixel  (float pixelX, float pixelY);
+    M_HOST_CALL_FUNCTION void mouseMovePixel (float pixelX, float pixelY);
     M_HOST_CALL_FUNCTION void mouseWheel     (float delta);
 
     M_HOST_CALL_FUNCTION void keyDown(MKey key);

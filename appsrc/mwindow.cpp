@@ -57,10 +57,10 @@ void MWindow::hide() {
     onHide();
 }
 
-define_reflectable_class_function(MWindow, resizePixel, "args:widthPx,heightPx;")
-void MWindow::resizePixel(float widthPx, float heightPx) {
-    float width  = m_pt_from_px widthPx ;
-    float height = m_pt_from_px heightPx;
+define_reflectable_class_function(MWindow, resizePixel, "args:pixelW,pixelH;")
+void MWindow::resizePixel(float pixelW, float pixelH) {
+    float width  = m_pt_from_px pixelW;
+    float height = m_pt_from_px pixelH;
 
     mSize->setWidth (width );
     mSize->setHeight(height);
@@ -77,31 +77,31 @@ void MWindow::draw() {
     onDraw();
 }
 
-define_reflectable_class_function(MWindow, touchBeginPixel, "args:xPx,yPx;")
-void MWindow::touchBeginPixel(float xPx, float yPx) {
-    float x = m_pt_from_px xPx;
-    float y = m_pt_from_px yPx;
+define_reflectable_class_function(MWindow, touchBeginPixel, "args:pixelX,pixelY;")
+void MWindow::touchBeginPixel(float pixelX, float pixelY) {
+    float x = m_pt_from_px pixelX;
+    float y = m_pt_from_px pixelY;
     onTouchBegin(x, y);
 }
 
-define_reflectable_class_function(MWindow, touchMovePixel, "args:xPx,yPx;")
-void MWindow::touchMovePixel(float xPx, float yPx) {
-    float x = m_pt_from_px xPx;
-    float y = m_pt_from_px yPx;
+define_reflectable_class_function(MWindow, touchMovePixel, "args:pixelX,pixelY;")
+void MWindow::touchMovePixel(float pixelX, float pixelY) {
+    float x = m_pt_from_px pixelX;
+    float y = m_pt_from_px pixelY;
     onTouchMove(x, y);
 }
 
-define_reflectable_class_function(MWindow, touchEndPixel, "args:xPx,yPx;")
-void MWindow::touchEndPixel(float xPx, float yPx) {
-    float x = m_pt_from_px xPx;
-    float y = m_pt_from_px yPx;
+define_reflectable_class_function(MWindow, touchEndPixel, "args:pixelX,pixelY;")
+void MWindow::touchEndPixel(float pixelX, float pixelY) {
+    float x = m_pt_from_px pixelX;
+    float y = m_pt_from_px pixelY;
     onTouchEnd(x, y);
 }
 
-define_reflectable_class_function(MWindow, mouseMovePixel, "args:xPx,yPx;")
-void MWindow::mouseMovePixel(float xPx, float yPx) {
-    float x = m_pt_from_px xPx;
-    float y = m_pt_from_px yPx;
+define_reflectable_class_function(MWindow, mouseMovePixel, "args:pixelX,pixelY;")
+void MWindow::mouseMovePixel(float pixelX, float pixelY) {
+    float x = m_pt_from_px pixelX;
+    float y = m_pt_from_px pixelY;
     onMouseMove(x, y);
 }
 
