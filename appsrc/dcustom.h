@@ -10,6 +10,7 @@ namespace dash {
 template<class Type> class lazy_var {
 public:
     Type *operator->() { return  this->obj(); }
+    Type *operator& () { return  this->obj(); }
     Type &operator* () { return *this->obj(); }
 
     void operator=(const Type &that) {
@@ -34,6 +35,7 @@ private:
 template<class Type> class lazy_var<std::shared_ptr<Type>> {
 public:
     Type *operator->() { return  this->obj()->get(); }
+    Type *operator& () { return  this->obj()->get(); }
     Type &operator* () { return *this->obj()->get(); }
 
     void operator=(const std::shared_ptr<Type> &that) {
