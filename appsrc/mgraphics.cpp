@@ -85,9 +85,6 @@ const MColor::ptr &MColor::purpleColor   () { static auto a = MColor::create(Pur
 const MColor::ptr &MColor::brownColor    () { static auto a = MColor::create(BrownRGBA    ); return a; }
 const MColor::ptr &MColor::clearColor    () { static auto a = MColor::create(ClearRGBA    ); return a; }
 
-MColor::MColor() {
-}
-
 MColor::MColor(float redCom, float greenCom, float blueCom, float alphaCom) {
     _rgba.red   = (uint8_t)(redCom   * 255.f);
     _rgba.green = (uint8_t)(greenCom * 255.f);

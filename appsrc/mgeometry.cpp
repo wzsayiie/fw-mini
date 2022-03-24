@@ -3,9 +3,6 @@
 //point:
 //
 
-MPoint::MPoint() {
-}
-
 MPoint::MPoint(float x, float y) {
     mX = x;
     mY = y;
@@ -39,9 +36,6 @@ MPoint::ptr MPoint::copy() {
 //size:
 //
 
-MSize::MSize() {
-}
-
 MSize::MSize(float width, float height) {
     mWidth  = width ;
     mHeight = height;
@@ -74,9 +68,6 @@ MSize::ptr MSize::copy() {
 
 //rect:
 //
-
-MRect::MRect() {
-}
 
 MRect::MRect(float x, float y, float width, float height) {
     mX      = x     ;

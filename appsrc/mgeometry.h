@@ -8,7 +8,7 @@
 declare_reflectable_class(MPoint)
 class MPoint : public MExtends<MPoint, MObject> {
 public:
-    MPoint();
+    MPoint() = default;
     MPoint(float x, float y);
 
     void setX(float x);
@@ -30,7 +30,7 @@ private:
 declare_reflectable_class(MSize)
 class MSize : public MExtends<MSize, MObject> {
 public:
-    MSize();
+    MSize() = default;
     MSize(float width, float height);
 
     void setWidth (float width );
@@ -52,7 +52,7 @@ private:
 declare_reflectable_class(MRect)
 class MRect : public MExtends<MRect, MObject> {
 public:
-    MRect();
+    MRect() = default;
     MRect(float x, float y, float width, float height);
 
     void setX     (float x     );

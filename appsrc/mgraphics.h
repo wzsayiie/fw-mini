@@ -105,7 +105,7 @@ public:
     static const MColor::ptr &clearColor    ();
 
 public:
-    MColor();
+    MColor() = default;
     MColor(float redCom, float greenCom, float blueCom, float alphaCom);
     MColor(int rgba);
 
