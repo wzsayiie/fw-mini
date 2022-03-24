@@ -177,7 +177,7 @@ float MImageGraph::pixelH() { return m_px_from_pt mH; }
 define_reflectable_class_function(MTextGraph, type)
 MGraphType MTextGraph::type() {
     implement_injectable_function((MGraphType)(int))
-    return MGraphType::Image;
+    return MGraphType::Text;
 }
 
 define_reflectable_class_function(MTextGraph, text    )
