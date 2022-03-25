@@ -1,4 +1,5 @@
 #include "mgeometry.h"
+#include <algorithm>
 
 //point:
 //
@@ -61,6 +62,11 @@ float MSize::height() {
     return mHeight;
 }
 
+define_reflectable_class_function(MSize, none)
+bool MSize::none() {
+    return mWidth <= 0 && mHeight <= 0;
+}
+
 define_reflectable_class_function(MSize, copy)
 MSize::ptr MSize::copy() {
     return MSize::create(mWidth, mHeight);
@@ -114,6 +120,25 @@ float MRect::width() {
 define_reflectable_class_function(MRect, height)
 float MRect::height() {
     return mHeight;
+}
+
+define_reflectable_class_function(MRect, none)
+bool MRect::none() {
+    return mWidth <= 0 || mHeight <= 0;
+}
+
+define_reflectable_class_function(MRect, intersect)
+MRect::ptr MRect::intersect(const MRect::ptr &rect) {
+    float left   = std::max(mX, rect->mX);
+    float top    = std::max(mY, rect->mY);
+    float right  = std::min(mX + mWidth , rect->mX + rect->mWidth );
+    float bottom = std::min(mY + mHeight, rect->mY + rect->mHeight);
+
+    if (left < right || top < bottom) {
+        return MRect::create(left, top, right - left, bottom - top);
+    } else {
+        return MRect::create(0.f, 0.f, 0.f, 0.f);
+    }
 }
 
 define_reflectable_class_function(MRect, copy)

@@ -38,6 +38,7 @@ public:
 
     float width ();
     float height();
+    bool  none  ();
 
     MSize::ptr copy();
 
@@ -64,7 +65,9 @@ public:
     float y     ();
     float width ();
     float height();
+    bool  none  ();
 
+    MRect::ptr intersect(const MRect::ptr &rect);
     MRect::ptr copy();
 
 private:
