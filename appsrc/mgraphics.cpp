@@ -86,14 +86,14 @@ const MColor::ptr &MColor::brownColor    () { static auto a = MColor::create(Bro
 const MColor::ptr &MColor::clearColor    () { static auto a = MColor::create(ClearRGBA    ); return a; }
 
 MColor::MColor(float redCom, float greenCom, float blueCom, float alphaCom) {
-    _rgba.red   = (uint8_t)(redCom   * 255.f);
-    _rgba.green = (uint8_t)(greenCom * 255.f);
-    _rgba.blue  = (uint8_t)(blueCom  * 255.f);
-    _rgba.alpha = (uint8_t)(alphaCom * 255.f);
+    mRGBA.red   = (uint8_t)(redCom   * 255.f);
+    mRGBA.green = (uint8_t)(greenCom * 255.f);
+    mRGBA.blue  = (uint8_t)(blueCom  * 255.f);
+    mRGBA.alpha = (uint8_t)(alphaCom * 255.f);
 }
 
 MColor::MColor(int rgba) {
-    _rgba.rgba = rgba;
+    mRGBA.rgba = rgba;
 }
 
 define_reflectable_class_function(MColor, redCom  )
@@ -101,17 +101,32 @@ define_reflectable_class_function(MColor, greenCom)
 define_reflectable_class_function(MColor, blueCom )
 define_reflectable_class_function(MColor, alphaCom)
 
-float MColor::redCom  () { return _rgba.red   / 255.f; }
-float MColor::greenCom() { return _rgba.green / 255.f; }
-float MColor::blueCom () { return _rgba.blue  / 255.f; }
-float MColor::alphaCom() { return _rgba.alpha / 255.f; }
+float MColor::redCom  () { return mRGBA.red   / 255.f; }
+float MColor::greenCom() { return mRGBA.green / 255.f; }
+float MColor::blueCom () { return mRGBA.blue  / 255.f; }
+float MColor::alphaCom() { return mRGBA.alpha / 255.f; }
 
 define_reflectable_class_function(MColor, rgba)
 int MColor::rgba() {
-    return _rgba.rgba;
+    return mRGBA.rgba;
+}
+
+define_reflectable_class_function(MColor, opaque)
+bool MColor::opaque() {
+    return mRGBA.alpha == 255;
+}
+
+define_reflectable_class_function(MColor, translucent)
+bool MColor::translucent() {
+    return 0 < mRGBA.alpha && mRGBA.alpha < 255;
+}
+
+define_reflectable_class_function(MColor, none)
+bool MColor::none() {
+    return mRGBA.alpha == 0;
 }
 
 define_reflectable_class_function(MColor, copy)
 MColor::ptr MColor::copy() {
-    return MColor::create(_rgba.rgba);
+    return MColor::create(mRGBA.rgba);
 }

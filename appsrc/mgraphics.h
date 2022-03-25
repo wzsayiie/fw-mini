@@ -113,11 +113,14 @@ public:
     float greenCom();
     float blueCom ();
     float alphaCom();
+    int   rgba    ();
 
-    int rgba();
+    bool opaque();      //alpha is 1.
+    bool translucent(); //alpha is between (0, 1).
+    bool none();        //alpha is 0.
 
     MColor::ptr copy();
 
 private:
-    MColorRGBA _rgba;
+    MColorRGBA mRGBA;
 };
