@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="appsrc">
+      <UniqueIdentifier>{adb3e51c-f2b0-42b4-a713-0cf744b0e8de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mini_pc">
+      <UniqueIdentifier>{78d73e1e-0a0a-407b-aba9-bf0490e23300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mini_win32">
+      <UniqueIdentifier>{6a51ea08-f72d-4cde-ac3c-861b9bef2a67}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\appsrc\README.cpp">
+      <Filter>appsrc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\host\mini_pc\mpcbundle.cpp">
+      <Filter>mini_pc</Filter>
+    </ClCompile>
+    <ClCompile Include="mwin32gdiplus.cpp">
+      <Filter>mini_win32</Filter>
+    </ClCompile>
+    <ClCompile Include="mwin32imagefactory.cpp">
+      <Filter>mini_win32</Filter>
+    </ClCompile>
+    <ClCompile Include="mwin32main.cpp">
+      <Filter>mini_win32</Filter>
+    </ClCompile>
+    <ClCompile Include="mwin32paint.cpp">
+      <Filter>mini_win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\host\mini_pc\mpcbundle.h">
+      <Filter>mini_pc</Filter>
+    </ClInclude>
+    <ClInclude Include="mwin32gdiplus.h">
+      <Filter>mini_win32</Filter>
+    </ClInclude>
+    <ClInclude Include="mwin32imagefactory.h">
+      <Filter>mini_win32</Filter>
+    </ClInclude>
+    <ClInclude Include="mwin32paint.h">
+      <Filter>mini_win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

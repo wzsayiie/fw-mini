@@ -20,15 +20,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\appsrc\README.cpp" />
-    <ClCompile Include="mjsrt.cpp" />
-    <ClCompile Include="mwinapi.cpp" />
-    <ClCompile Include="mpaint.cpp" />
-    <ClCompile Include="mwinmain.cpp" />
+    <ClCompile Include="..\..\host\mini_pc\mpcbundle.cpp" />
+    <ClCompile Include="mwin32gdiplus.cpp" />
+    <ClCompile Include="mwin32imagefactory.cpp" />
+    <ClCompile Include="mwin32main.cpp" />
+    <ClCompile Include="mwin32paint.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mjsrt.h" />
-    <ClInclude Include="mwinapi.h" />
-    <ClInclude Include="mpaint.h" />
+    <ClInclude Include="..\..\host\mini_pc\mpcbundle.h" />
+    <ClInclude Include="mwin32gdiplus.h" />
+    <ClInclude Include="mwin32imagefactory.h" />
+    <ClInclude Include="mwin32paint.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -84,19 +86,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\appsrc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\..\appsrc;..\..\host\mini_pc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\appsrc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\..\appsrc;..\..\host\mini_pc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\appsrc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\..\appsrc;..\..\host\mini_pc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\appsrc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\..\appsrc;..\..\host\mini_pc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
