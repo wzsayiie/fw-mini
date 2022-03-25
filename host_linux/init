@@ -6,8 +6,8 @@ cd `dirname $0`
 
 exe_nam="mini"
 obj_dir="objs"
-hdr_inc="-I./../appsrc"
-cc_dirs="app ../appsrc"
+hdr_inc="-I../appsrc -I../host/mini_pc"
+cc_dirs="  ../appsrc   ../host/mini_pc mini_linux"
 dpd_cmd="c++ -MM $hdr_inc -MT"
 obj_cmd="c++ -c  $hdr_inc --std=c++17 -o"
 exe_cmd="c++ -o  $exe_nam --std=c++17"
