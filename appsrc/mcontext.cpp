@@ -5,96 +5,240 @@
 
 static dash::lazy_var<MVector<MGraph::ptr>> sGraphs;
 
-static dash::lazy_var<MVector<MPoint>> sOffsetStack;
-static dash::lazy_var<MVector<MRect >> sClipStack;
+declare_reflectable_special(MVector<MRect ::ptr>)
+declare_reflectable_special(MVector<MPoint::ptr>)
+
+static dash::lazy_var<MVector<MRect ::ptr>> sClipStack;
+static dash::lazy_var<MVector<MPoint::ptr>> sOffsetStack;
 static float sOffsetX = 0;
 static float sOffsetY = 0;
 
 static dash::lazy_var<MImage::ptr> sImage;
 static dash::lazy_var<std::string> sText;
-static float   sFontSize  = 0;
-static float   sLineWidth = 0;
-static MHAlign sHAlign    = MHAlign::Center;
-static MVAlign sVAlign    = MVAlign::Middle;
-static int     sRGBA      = 0;
+static MColorRGBA sRGBA      = {0};
+static float      sLineWidth = 0;
+static float      sFontSize  = 0;
+static MHAlign    sHAlign    = MHAlign::Center;
+static MVAlign    sVAlign    = MVAlign::Middle;
 
 //draw function:
 //
 
-define_reflectable_function(MContextSelectImage, "args:image;")
-void MContextSelectImage(const MImage::ptr &image) {
-}
-
-define_reflectable_function(MContextSelectText, "args:text;")
-void MContextSelectText(const std::string &text) {
-}
-
-define_reflectable_function(MContextSelectFontSize, "args:size;")
-void MContextSelectFontSize(float size) {
-}
-
+define_reflectable_function(MContextSelectImage    , "args:image;")
+define_reflectable_function(MContextSelectText     , "args:text;" )
+define_reflectable_function(MContextSelectRGBA     , "args:rgba;" )
 define_reflectable_function(MContextSelectLineWidth, "args:width;")
-void MContextSelectLineWidth(float width) {
-}
+define_reflectable_function(MContextSelectFontSize , "args:size;" )
+define_reflectable_function(MContextSelectHAlign   , "args:align;")
+define_reflectable_function(MContextSelectVAlign   , "args:align;")
 
-define_reflectable_function(MContextSelectHAlign, "args:align;")
-void MContextSelectHAlign(MHAlign align) {
-}
+void MContextSelectImage(const MImage::ptr &image) { sImage = image; }
+void MContextSelectText (const std::string &text ) { sText  = text ; }
 
-define_reflectable_function(MContextSelectVAlign, "args:align;")
-void MContextSelectVAlign(MVAlign align) {
-}
-
-define_reflectable_function(MContextSelectRGBA, "args:rgba;")
-void MContextSelectRGBA(int rgba) {
-}
+void MContextSelectRGBA     (int     rgba ) { sRGBA.rgba = rgba ; }
+void MContextSelectLineWidth(float   width) { sLineWidth = width; }
+void MContextSelectFontSize (float   size ) { sFontSize  = size ; }
+void MContextSelectHAlign   (MHAlign align) { sHAlign    = align; }
+void MContextSelectVAlign   (MVAlign align) { sVAlign    = align; }
 
 define_reflectable_function(MContextPushClip, "args:x,y,w,h;")
 void MContextPushClip(float x, float y, float w, float h) {
+    //push the clip:
+    auto clip = MRect::create(x, y, w, h);
+
+    if (!sClipStack->vector.empty()) {
+        auto last = sClipStack->vector.back();
+        clip = clip->intersect(last);
+    }
+
+    sClipStack->vector.push_back(clip);
+
+    //create the graph:
+    auto graph = MClipGraph::create();
+    graph->mX = clip->x();
+    graph->mY = clip->y();
+    graph->mW = clip->width ();
+    graph->mH = clip->height();
+
+    sGraphs->vector.push_back(graph);
 }
 
 define_reflectable_function(MContextPopClip)
 void MContextPopClip() {
+    if (sClipStack->vector.empty()) {
+        return;
+    }
+
+    //pop the clip.
+    MRect::ptr clip = sClipStack->vector.back();
+    sClipStack->vector.pop_back();
+
+    //create the graph:
+    auto graph = MClipGraph::create();
+    graph->mX = clip->x();
+    graph->mY = clip->y();
+    graph->mW = clip->width ();
+    graph->mH = clip->height();
+
+    sGraphs->vector.push_back(graph);
 }
 
 define_reflectable_function(MContextPushOffset, "args:x,y;")
 void MContextPushOffset(float x, float y) {
+    sOffsetX += x;
+    sOffsetY += y;
+
+    auto point = MPoint::create(sOffsetX, sOffsetY);
+    sOffsetStack->vector.push_back(point);
 }
 
 define_reflectable_function(MContextPopOffset)
 void MContextPopOffset() {
+    auto point = MPoint::create();
+
+    if (!sOffsetStack->vector.empty()) {
+        point = sOffsetStack->vector.back();
+        sOffsetStack->vector.pop_back();
+    }
+
+    sOffsetX = point->x();
+    sOffsetY = point->y();
 }
 
 define_reflectable_function(MContextDrawTriangle, "args:x0,y0,x1,y1,x2,y2;")
 void MContextDrawTriangle(float x0, float y0, float x1, float y1, float x2, float y2) {
+    if (sRGBA.alpha == 0) {
+        return;
+    }
+
+    if (x0 == x1 && y0 == y1) { return; }
+    if (x0 == x2 && y0 == y2) { return; }
+    if (x1 == x2 && y1 == y2) { return; }
+
+    auto graph = MTriangleGraph::create();
+    graph->mRGBA = sRGBA.rgba;
+    graph->mX0   = sOffsetX + x0;
+    graph->mY0   = sOffsetY + y0;
+    graph->mX1   = sOffsetX + x1;
+    graph->mY1   = sOffsetY + y1;
+    graph->mX2   = sOffsetX + x2;
+    graph->mY2   = sOffsetY + y2;
+
+    sGraphs->vector.push_back(graph);
 }
 
 define_reflectable_function(MContextDrawRect, "args:x,y,w,h;")
 void MContextDrawRect(float x, float y, float w, float h) {
+    if (sRGBA.rgba == 0) {
+        return;
+    }
+    if (w <= 0 || h <= 0) {
+        return;
+    }
+
+    //  a - b
+    //  |  /|
+    //  | / |
+    //  |/  |
+    //  c - d
+    float ax = sOffsetX + x;
+    float ay = sOffsetX + y;
+    float bx = sOffsetX + x + w;
+    float by = sOffsetX + y;
+    float cx = sOffsetX + x;
+    float cy = sOffsetX + y + h;
+    float dx = sOffsetX + x + w;
+    float dy = sOffsetX + y + h;
+
+    auto abc = MTriangleGraph::create();
+    auto bcd = MTriangleGraph::create();
+    abc->mRGBA = sRGBA.rgba;
+    bcd->mRGBA = sRGBA.rgba;
+
+    abc->mX0 = ax;
+    abc->mY0 = ay;
+    abc->mX1 = bx;
+    abc->mY1 = by;
+    abc->mX2 = cx;
+    abc->mY2 = cy;
+
+    bcd->mX0 = bx;
+    bcd->mY0 = by;
+    bcd->mX1 = cx;
+    bcd->mY1 = cy;
+    bcd->mX2 = dx;
+    bcd->mY2 = dy;
+
+    sGraphs->vector.push_back(abc);
+    sGraphs->vector.push_back(bcd);
 }
 
 define_reflectable_function(MContextDrawEllipse, "args:x,y,w,h;")
 void MContextDrawEllipse(float x, float y, float w, float h) {
+    //TODO.
 }
 
 define_reflectable_function(MContextDrawFlatLine, "args:x0,y0,x1,y1;")
 void MContextDrawFlatLine(float x0, float y0, float x1, float y1) {
+    //TODO.
 }
 
 define_reflectable_function(MContextDrawSquareLine, "args:x0,y0,x1,y1;")
 void MContextDrawSquareLine(float x0, float y0, float x1, float y1) {
+    //TODO.
 }
 
 define_reflectable_function(MContextDrawRoundLine, "args:x0,y0,x1,y1;")
 void MContextDrawRoundLine(float x0, float y0, float x1, float y1) {
+    //TODO.
 }
 
 define_reflectable_function(MContextDrawImage, "args:x,y,w,h;")
 void MContextDrawImage(float x, float y, float w, float h) {
+    if (sImage == nullptr) {
+        return;
+    }
+    if (w <= 0 || h <= 0) {
+        return;
+    }
+
+    auto graph = MImageGraph::create();
+    graph->mImage = sImage;
+    graph->mX     = sOffsetX + x;
+    graph->mY     = sOffsetY + y;
+    graph->mW     = w;
+    graph->mH     = h;
+
+    sGraphs->vector.push_back(graph);
 }
 
-define_reflectable_function(MContextDrawString, "args:x,y,w,h;")
-void MContextDrawString(float x, float y, float w, float h) {
+define_reflectable_function(MContextDrawText, "args:x,y,w,h;")
+void MContextDrawText(float x, float y, float w, float h) {
+    if (sText->empty()) {
+        return;
+    }
+    if (sRGBA.alpha == 0) {
+        return;
+    }
+    if (sFontSize <= 0) {
+        return;
+    }
+    if (w <= 0 || h <= 0) {
+        return;
+    }
+
+    auto graph = MTextGraph::create();
+    graph->mText     = sText;
+    graph->mRGBA     = sRGBA.rgba;
+    graph->mFontSize = sFontSize;
+    graph->mHAlign   = sHAlign;
+    graph->mVAlign   = sVAlign;
+    graph->mX        = sOffsetX + x;
+    graph->mY        = sOffsetY + y;
+    graph->mW        = w;
+    graph->mH        = h;
+
+    sGraphs->vector.push_back(graph);
 }
 
 //graphs:
@@ -211,4 +355,7 @@ MVector<MGraph::ptr> *MContextGetGraphs() {
 
 void MContextReset() {
     sGraphs->vector.clear();
+
+    sImage = nullptr;
+    sText  = "";
 }

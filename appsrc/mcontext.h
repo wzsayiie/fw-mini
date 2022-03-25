@@ -6,13 +6,14 @@
 //draw function:
 //
 
-void MContextSelectImage    (const MImage::ptr &image);
-void MContextSelectText     (const std::string &text );
-void MContextSelectFontSize (float   size );
+void MContextSelectImage(const MImage::ptr &image);
+void MContextSelectText (const std::string &text );
+
+void MContextSelectRGBA     (int     rgba );
 void MContextSelectLineWidth(float   width);
+void MContextSelectFontSize (float   size );
 void MContextSelectHAlign   (MHAlign align);
 void MContextSelectVAlign   (MVAlign align);
-void MContextSelectRGBA     (int     rgba );
 
 void MContextPushClip  (float x, float y, float w, float h);
 void MContextPopClip   ();
@@ -26,7 +27,7 @@ void MContextDrawFlatLine  (float x0, float y0, float x1, float y1);
 void MContextDrawSquareLine(float x0, float y0, float x1, float y1);
 void MContextDrawRoundLine (float x0, float y0, float x1, float y1);
 void MContextDrawImage     (float x , float y , float w , float h );
-void MContextDrawString    (float x , float y , float w , float h );
+void MContextDrawText      (float x , float y , float w , float h );
 
 //graphs:
 //
