@@ -17,8 +17,8 @@ public:
     virtual void pop_back () = 0;
     
     virtual any at(int index) const = 0;
-    virtual any first() const = 0;
-    virtual any last() const = 0;
+    virtual any front() const = 0;
+    virtual any back () const = 0;
     
     virtual int size() const = 0;
 };
@@ -47,8 +47,8 @@ public:
         return this->vector.at(index);
     }
     
-    any first() const override { return *this->vector.begin (); }
-    any last () const override { return *this->vector.rbegin(); }
+    any front() const override { return this->vector.front(); }
+    any back () const override { return this->vector.back (); }
     
     int size() const override {
         return (int)this->vector.size();
