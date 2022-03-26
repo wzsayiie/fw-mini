@@ -2,11 +2,11 @@
 #import "MOSXDrawView.h"
 #import <Carbon/Carbon.h>
 
-const float ViewContentWidth  = 360;
-const float ViewContentHeight = 640;
-const float TextFieldWidth    = 300;
-const float TextFieldHeight   =  20;
-const float TextFieldBottom   =  20;
+const CGFloat ViewContentWidth  = 360;
+const CGFloat ViewContentHeight = 640;
+const CGFloat TextFieldWidth    = 300;
+const CGFloat TextFieldHeight   =  20;
+const CGFloat TextFieldBottom   =  20;
 
 @implementation MOSXViewController
 
