@@ -1,4 +1,4 @@
-#import "MViewController.h"
+#import "MIOSViewController.h"
 
 #pragma mark - application delegate
 
@@ -8,11 +8,11 @@
 
 @implementation MAppDelegate
 
-- (BOOL) /* ====== */ application:(UIApplication *)application
+- (BOOL) /* ...... */ application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)options
 {
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    self.window.rootViewController = [[MViewController alloc] init];
+    self.window.rootViewController = [[MIOSViewController alloc] init];
     [self.window makeKeyAndVisible];
 
     return YES;
