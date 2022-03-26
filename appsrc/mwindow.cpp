@@ -47,14 +47,20 @@ void MWindow::load() {
 
 define_reflectable_class_function(MWindow, show)
 void MWindow::show() {
-    mShown = true;
-    onShow();
+    //on desktop platforms, a windows have various states such as "focus", "losing focus", and "minimizing".
+    //simplifying them as the two states of "shown" and "hidden" requires attention to fault tolerance.
+    if (!mShown) {
+        mShown = true;
+        onShow();
+    }
 }
 
 define_reflectable_class_function(MWindow, hide)
 void MWindow::hide() {
-    mShown = false;
-    onHide();
+    if (mShown) {
+        mShown = false;
+        onHide();
+    }
 }
 
 define_reflectable_class_function(MWindow, resizePixel, "args:pixelW,pixelH;")
@@ -65,7 +71,7 @@ void MWindow::resizePixel(float pixelW, float pixelH) {
     mSize->setWidth (width );
     mSize->setHeight(height);
 
-    //NOTE: "resiePixel" may be called before "load".
+    //NOTE: "resizePixel" may be called before "load".
     //but need to ensure that "onLoad" is the first window event.
     if (mLoaded) {
         onResize(width, height);
