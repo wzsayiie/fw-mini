@@ -1,29 +1,25 @@
-#import "MViewController.h"
-#import "mhostui.h"
+#import "MOSXViewController.h"
 
 #pragma mark - window controller
 
-@interface MWindowController : NSWindowController
+@interface MOSXWindowController : NSWindowController
 @end
 
-@implementation MWindowController
+@implementation MOSXWindowController
 
-+ (MWindowController *)windowController {
++ (MOSXWindowController *)windowController {
     //only assign the origin, the size will be taken care of by content view.
     NSRect rect = NSMakeRect(1000, 200, 0, 0);
     
-    NSWindowStyleMask style = self.windowStyle;
+    NSWindowStyleMask  style   = self.windowStyle;
     NSBackingStoreType backing = NSBackingStoreBuffered;
+    
     NSWindow *window = [[NSWindow alloc] initWithContentRect:rect styleMask:style backing:backing defer:NO];
-    [window setTitle:@(MWindowTitleU8Name)];
-    
-    MWindowController *controller = [[MWindowController alloc] initWithWindow:window];
-    window.contentViewController = [[MViewController alloc] init];
-    
-    //to accept mouse move event.
-    [window makeFirstResponder:window.contentViewController];
+    window.contentViewController = [[MOSXViewController alloc] init];
     window.acceptsMouseMovedEvents = YES;
+    window.title = @"Mini";
     
+    MOSXWindowController *controller = [[MOSXWindowController alloc] initWithWindow:window];
     return controller;
 }
 
@@ -40,14 +36,14 @@
 
 #pragma mark - application delegate
 
-@interface MAppDelegate : NSObject <NSApplicationDelegate>
-@property (nonatomic) MWindowController *windowController;
+@interface MOSXAppDelegate : NSObject <NSApplicationDelegate>
+@property (nonatomic) MOSXWindowController *windowController;
 @end
 
-@implementation MAppDelegate
+@implementation MOSXAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
-    self.windowController = [MWindowController windowController];
+    self.windowController = [MOSXWindowController windowController];
     [self.windowController showWindow:nil];
 }
 
@@ -59,11 +55,11 @@
 
 #pragma mark - main
 
-M_FUNC_EXPORT void MAppMain() {
-    Class clazz = NSClassFromString(@"MAppDelegate");
+extern "C" void MOSXAppMain() {
+    Class clazz = NSClassFromString(@"MOSXAppDelegate");
     id<NSApplicationDelegate> delegate = [[clazz alloc] init];
     
-    //NOTE: the "delegate" is weak.
+    //NOTE: the "delegate" is weak. user needs to keep its reference count.
     NSApplication.sharedApplication.delegate = delegate;
     
     //NSApplicationMain() will try to read the info.plist.
@@ -72,5 +68,5 @@ M_FUNC_EXPORT void MAppMain() {
 }
 
 int main() {
-    MAppMain();
+    MOSXAppMain();
 }
