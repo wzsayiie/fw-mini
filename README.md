@@ -15,6 +15,10 @@ it will compile the sources into *appres/mini.bundle/bundle.js*.
 
 * appts/
 
+sources shared by multiple os platforms.
+
+* host/
+
 os-related sources files and ide projects.
 
 * host_android/
