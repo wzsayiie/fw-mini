@@ -52,7 +52,6 @@ goto :eof
     if "%plat%"=="x86" ( call vcvarsall x64_x86 )
 
     cl  /Fe%file% ^
-        /fd%file% ^
         /Fo%objs% ^
         %_flg% ^
         %_inc% ^
