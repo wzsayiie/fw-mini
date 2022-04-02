@@ -4,42 +4,66 @@ set -e -u
 
 cd `dirname $0`
 
-exe_nam="mini"
-obj_dir="objs"
-hdr_inc="-I../appsrc -I../host/mini_pc"
-cc_dirs="  ../appsrc   ../host/mini_pc mini_linux"
-dpd_cmd="c++ -MM $hdr_inc -MT"
-obj_cmd="c++ -c  $hdr_inc --std=c++17 -o"
-exe_cmd="c++ -o  $exe_nam --std=c++17"
+_outexe="mini"
+_objdir="objs"
 
-# generate the temporary object file directory.
-mkdir -p $obj_dir
+_flg="\
+    -std=c++17 \
+    -m64 \
+    -O3"
 
-# generate the makefile:
-function rewrit_mf() { echo -e -n "$1"  > makefile; }
-function append_mf() { echo -e -n "$1" >> makefile; }
+_inc="\
+    -I../appsrc \
+    -I../host/mini_pc \
+    -Imini_linux"
 
-function every_src() {
-    for src in `find $cc_dirs -iname *.cpp`; do
-        local obj="$obj_dir/`basename $src .cpp`.o"
-        $1 $obj $src
+_src="\
+    ../appsrc \
+    ../host/mini_pc \
+    mini_linux"
+
+function write_makefile() {
+    echo -e -n "$1" >> makefile
+}
+
+function add_obj_path() {
+    local obj=$1
+
+    write_makefile " $obj"
+}
+
+function add_obj_make() {
+    local obj=$1
+    local cxx=$2
+
+    write_makefile " `c++ $_inc -MM     -MT $obj $cxx`\n"
+    write_makefile "\tc++ $_inc $_flg -c -o $obj $cxx \n"
+}
+
+function for_every_csrc() {
+    local callback=$1
+    for cxx in `find $_src -iname *.cpp`; do
+        local obj="$_objdir/`basename $cxx .cpp`.o"
+        $callback $obj $cxx
     done
 }
 
-function obj_itm_to_mf() {
-    append_mf " $1"
+function main() {
+    rm makefile
+    rm -rf $_objdir
+    mkdir  $_objdir
+
+    # final target:
+    write_makefile "$_outexe:"
+    for_every_csrc add_obj_path
+    write_makefile "\n"
+
+    write_makefile "\tc++ -o $_outexe"
+    for_every_csrc add_obj_path
+    write_makefile "\n"
+
+    # obj files.
+    for_every_csrc add_obj_make
 }
-function obj_dpd_to_mf() {
-    append_mf  "`$dpd_cmd $1 $2`\n"
-    append_mf "\t$obj_cmd $1 $2\n"
-}
 
-rewrit_mf "$exe_nam:"
-every_src obj_itm_to_mf
-append_mf "\n"
-
-append_mf "\t$exe_cmd"
-every_src obj_itm_to_mf
-append_mf "\n"
-
-every_src obj_dpd_to_mf
+main

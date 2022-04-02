@@ -1,1 +1,29 @@
 #!/bin/bash
+
+set -e -u
+
+cd `dirname $0`
+
+_dir=BUILD/linux_x64
+_out=libmini.so
+
+_flg="\
+    -std=c++17 \
+    -shared \
+    -fPIC \
+    -m64 \
+    -O3"
+
+_inc="\
+    -Iappsrc \
+    -Ihost_linux/mini_linux \
+    -Ihost/mini_pc"
+
+_src="\
+    appsrc/*.cpp \
+    host_linux/mini_linux/*.cpp \
+    host/mini_pc/*.cpp"
+
+mkdir -p $_dir
+rm    -f $_dir/$_out
+c++   -o $_dir/$_out $_flg $_inc $_src

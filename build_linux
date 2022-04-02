@@ -1,1 +1,19 @@
 #!/bin/bash
+
+set -e -u
+
+cd `dirname $0`
+
+_prjdir="host_linux"
+_rawexe="host_linux/mini"
+_outdir="BUILD/linux_x64"
+
+pushd $_prjdir
+./init
+make
+popd
+
+mkdir -p $_outdir
+rm    -f $_outdir/$_rawexe
+
+cp $_rawexe $_outdir
