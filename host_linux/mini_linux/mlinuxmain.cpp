@@ -1,5 +1,5 @@
-#include "minikit.h"
 #include <unistd.h>
+#include "mapp.h"
 
 int main() {
     MApp *app = MApp::sharedObject();
