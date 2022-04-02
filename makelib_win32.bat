@@ -4,6 +4,8 @@ setlocal
 
 cd %~dp0
 
+set _out=mini
+
 set _flg= ^
     /nologo ^
     /std:c++17 ^
@@ -30,16 +32,15 @@ set _lib= ^
     user32.lib
 
 :main
-    call :build "x64" "BUILD\windows_x64" "mini"
-    call :build "x86" "BUILD\windows_x86" "mini"
+    call :build "x64" "BUILD\windows_x64"
+    call :build "x86" "BUILD\windows_x86"
 goto :eof
 
 :build
     set plat=%~1
     set ddir=%~2
-    set name=%~3
 
-    set file=%ddir%\%name%
+    set file=%ddir%\%_out%
     set objs=%ddir%\objs\
 
     call :newdir  %objs%
