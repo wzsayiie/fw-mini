@@ -2,18 +2,15 @@
 
 set -e -u
 
-cd `dirname $0`
+cd `dirname $0`/host_linux
 
-_prjdir="host_linux"
-_rawexe="host_linux/mini"
-_outdir="BUILD/linux_x64"
-
-pushd $_prjdir
-./init
-make
-popd
+_rawexe="mini"
+_outdir="../BUILD/linux_x64"
 
 mkdir -p $_outdir
 rm    -f $_outdir/$_rawexe
+
+./init
+make
 
 cp $_rawexe $_outdir
