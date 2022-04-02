@@ -52,7 +52,7 @@ MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
 
     size_t size = 0; {
         file.seekg(0, std::ios::end);
-        size = file.tellg();
+        size = (size_t)file.tellg();
         file.seekg(0, std::ios::beg);
     }
 
