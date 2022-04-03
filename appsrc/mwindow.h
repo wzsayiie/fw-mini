@@ -29,7 +29,9 @@ declare_reflectable_class(MWindow)
 class MWindow : public MExtends<MWindow, MObject> {
 public:
     static constexpr const float UpdateEverySeconds = 0.1f;
+    static constexpr const char *const TitleName = "Mini";
 
+public:
     static void setMainWindow(const MWindow::ptr &window);
     static MWindow *mainWindow();
 
