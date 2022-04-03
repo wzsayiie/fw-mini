@@ -12,11 +12,11 @@
 		CE107D9E2674C6A400823730 /* MOSXViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE107D992674C6A400823730 /* MOSXViewController.mm */; };
 		CE107DA72674C77C00823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107DA02674C77C00823730 /* mini.bundle */; };
 		CE107DA82674C77C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107DA22674C77C00823730 /* README.cpp */; };
+		CE58B28027F99230004720AD /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58B27F27F99230004720AD /* AppKit.framework */; };
+		CE58B28227F99241004720AD /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58B28127F99241004720AD /* JavaScriptCore.framework */; };
 		CECBCBB527EF1B0C00F15C6D /* MOSXBundle.mm in Sources */ = {isa = PBXBuildFile; fileRef = CECBCBB127EF1B0C00F15C6D /* MOSXBundle.mm */; };
 		CECBCBB627EF1B0C00F15C6D /* MOSXImageFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CECBCBB427EF1B0C00F15C6D /* MOSXImageFactory.mm */; };
 		CECBCBBA27EF1B8000F15C6D /* MMACJavaScriptCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = CECBCBB927EF1B8000F15C6D /* MMACJavaScriptCore.mm */; };
-		CEDE116626DB8DB50098D3C8 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE116526DB8DB50098D3C8 /* JavaScriptCore.framework */; };
-		CEDE116826DB8DBD0098D3C8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE116726DB8DBD0098D3C8 /* Cocoa.framework */; };
 		CEE4971B269332C1005C4957 /* MOSXDrawView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE49717269332C1005C4957 /* MOSXDrawView.mm */; };
 /* End PBXBuildFile section */
 
@@ -30,14 +30,14 @@
 		CE107D9B2674C6A400823730 /* MOSXViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MOSXViewController.h; sourceTree = "<group>"; };
 		CE107DA02674C77C00823730 /* mini.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mini.bundle; sourceTree = "<group>"; };
 		CE107DA22674C77C00823730 /* README.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = README.cpp; sourceTree = "<group>"; };
+		CE58B27F27F99230004720AD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		CE58B28127F99241004720AD /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		CECBCBB127EF1B0C00F15C6D /* MOSXBundle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MOSXBundle.mm; sourceTree = "<group>"; };
 		CECBCBB227EF1B0C00F15C6D /* MOSXImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MOSXImageFactory.h; sourceTree = "<group>"; };
 		CECBCBB327EF1B0C00F15C6D /* MOSXBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MOSXBundle.h; sourceTree = "<group>"; };
 		CECBCBB427EF1B0C00F15C6D /* MOSXImageFactory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MOSXImageFactory.mm; sourceTree = "<group>"; };
 		CECBCBB827EF1B8000F15C6D /* MMACJavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACJavaScriptCore.h; sourceTree = "<group>"; };
 		CECBCBB927EF1B8000F15C6D /* MMACJavaScriptCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACJavaScriptCore.mm; sourceTree = "<group>"; };
-		CEDE116526DB8DB50098D3C8 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		CEDE116726DB8DBD0098D3C8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		CEE49717269332C1005C4957 /* MOSXDrawView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MOSXDrawView.mm; sourceTree = "<group>"; };
 		CEE49719269332C1005C4957 /* MOSXDrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MOSXDrawView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -47,8 +47,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDE116826DB8DBD0098D3C8 /* Cocoa.framework in Frameworks */,
-				CEDE116626DB8DB50098D3C8 /* JavaScriptCore.framework in Frameworks */,
+				CE58B28227F99241004720AD /* JavaScriptCore.framework in Frameworks */,
+				CE58B28027F99230004720AD /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,7 +60,7 @@
 			children = (
 				CE107D9F2674C77C00823730 /* appres */,
 				CE107DA12674C77C00823730 /* appsrc */,
-				CEDE116426DB8DB50098D3C8 /* frameworks */,
+				CE58B27E27F99230004720AD /* frameworks */,
 				CECBCBB727EF1B8000F15C6D /* mini_mac */,
 				CE107D812674C5E900823730 /* mini_osx */,
 				CE107D802674C5E900823730 /* products */,
@@ -112,6 +112,15 @@
 			path = ../appsrc;
 			sourceTree = "<group>";
 		};
+		CE58B27E27F99230004720AD /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE58B27F27F99230004720AD /* AppKit.framework */,
+				CE58B28127F99241004720AD /* JavaScriptCore.framework */,
+			);
+			name = frameworks;
+			sourceTree = "<group>";
+		};
 		CECBCBB727EF1B8000F15C6D /* mini_mac */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,15 +129,6 @@
 			);
 			name = mini_mac;
 			path = ../host/mini_mac;
-			sourceTree = "<group>";
-		};
-		CEDE116426DB8DB50098D3C8 /* frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				CEDE116726DB8DBD0098D3C8 /* Cocoa.framework */,
-				CEDE116526DB8DB50098D3C8 /* JavaScriptCore.framework */,
-			);
-			name = frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
