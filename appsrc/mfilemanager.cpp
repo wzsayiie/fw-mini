@@ -177,6 +177,9 @@ std::string MFileManager::temporaryDirectory() {
 //bundle:
 //
 
+define_reflectable_class_const(MBundle, PrivateDirectoryName)
+define_reflectable_class_const(MBundle, BundleDirectoryName )
+
 MBundle::ptr MBundle::sSharedObject;
 
 define_reflectable_class_function(MBundle, setSharedObject, "args:bundle;")

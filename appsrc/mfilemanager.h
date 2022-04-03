@@ -41,6 +41,10 @@ M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MBundle)
 class MBundle : public MExtends<MBundle, MObject> {
 public:
+    static constexpr const char *const PrivateDirectoryName = "mini";
+    static constexpr const char *const BundleDirectoryName  = "mini.bundle";
+    
+public:
     M_HOST_CALL_FUNCTION static void setSharedObject(const MBundle::ptr &obj);
     static MBundle *sharedObject();
 
