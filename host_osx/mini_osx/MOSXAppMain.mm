@@ -17,7 +17,7 @@
     NSWindow *window = [[NSWindow alloc] initWithContentRect:rect styleMask:style backing:backing defer:NO];
     window.contentViewController = [[MOSXViewController alloc] init];
     window.acceptsMouseMovedEvents = YES;
-    window.title = @"Mini";
+    window.title = @(MWindow::TitleName);
     
     MOSXWindowController *controller = [[MOSXWindowController alloc] initWithWindow:window];
     return controller;
