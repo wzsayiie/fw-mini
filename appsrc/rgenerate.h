@@ -48,7 +48,7 @@
 /**/    );
 
 #define define_reflectable_const(Const)                             \
-/**/    static reflect::committor _unused_##Name(#Const, Const);    \
+/**/    static reflect::committor _unused_##Const(#Const, Const);   \
 
 #define implement_injectable_function(Ret, ...)                     \
 /**/    if (auto f = find_injected(__func__)) {                     \
