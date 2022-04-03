@@ -1,4 +1,4 @@
-#import <Cocoa/Cocoa.h>
+#import <Appkit/AppKit.h>
 
 @interface MOSXDrawView : NSView
 @end

@@ -1,4 +1,4 @@
-#import <Cocoa/Cocoa.h>
+#import <AppKit/AppKit.h>
 #import "mapp.h"
 #import "mwindow.h"
 
