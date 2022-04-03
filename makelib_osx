@@ -4,12 +4,44 @@ set -e -u
 
 cd `dirname $0`
 
-nam="libmini.dylib"
-src="appsrc/*.cpp host_osx/mini/*.mm"
-inc="-Iappsrc"
-ref="-framework Cocoa -framework JavaScriptCore"
-flg="--std=c++17 -fobjc-arc -dynamiclib"
+_out="libmini.dylib"
 
-mkdir   -p BUILD
-rm      -f BUILD/$nam
-clang++ -o BUILD/$nam $inc $ref $flg $src
+_flg="\
+    -framework Cocoa \
+    -framework JavaScriptCore \
+    -dynamiclib \
+    -fobjc-arc \
+    -std=c++17 \
+    -Os"
+
+_inc="\
+    -Iappsrc \
+    -Ihost_osx/mini_osx \
+    -Ihost/mini_mac"
+
+_src="\
+    appsrc/*.cpp \
+    host_osx/mini_osx/*.mm \
+    host/mini_mac/*.mm"
+
+function build() {
+    local plat=$1
+    local ddir=$2
+
+    mkdir -p $ddir
+    rm    -f $ddir/$_out
+
+    clang++ \
+        -o $ddir/$_out \
+        -target $plat \
+        $_flg \
+        $_inc \
+        $_src
+}
+
+function main() {
+    build "arm64-apple-macosx12"  "BUILD/osx_arm64"
+    build "x86_64-apple-macosx12" "BUILD/osx_x64"
+}
+
+main
