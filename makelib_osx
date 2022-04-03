@@ -7,7 +7,7 @@ cd `dirname $0`
 _out="libmini.dylib"
 
 _flg="\
-    -framework Cocoa \
+    -framework AppKit \
     -framework JavaScriptCore \
     -dynamiclib \
     -fobjc-arc \
