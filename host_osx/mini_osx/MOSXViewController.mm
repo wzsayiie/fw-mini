@@ -1,5 +1,7 @@
 #import "MOSXViewController.h"
+#import "MOSXBundle.h"
 #import "MOSXDrawView.h"
+#import "MOSXImageFactory.h"
 #import <Carbon/Carbon.h>
 
 const CGFloat ViewContentWidth  = 360;
@@ -42,6 +44,9 @@ const CGFloat TextFieldBottom   =  20;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    MOSXBundle::install();
+    MOSXImageFactory::install();
     
     //application events:
     self.app->launch();
