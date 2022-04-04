@@ -33,7 +33,7 @@ public:
     MVector<uint8_t>::ptr copyFFData(MImageFileFormat format);
     MVector<uint8_t>::ptr copyBitmap();
 
-    MSize::ptr sizePixel();
+    MSize::ptr pixelSize();
 
 private:
     MImageImpl::ptr mImpl;
@@ -61,7 +61,7 @@ public:
     virtual MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr &image);
 
     //image pixel size.
-    virtual MSize::ptr sizePixel(const MImageImpl::ptr &image);
+    virtual MSize::ptr pixelSize(const MImageImpl::ptr &image);
 
 private:
     static MImageFactory::ptr sSharedObject;

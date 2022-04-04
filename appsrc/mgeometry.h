@@ -8,16 +8,11 @@
 declare_reflectable_class(MPoint)
 class MPoint : public MExtends<MPoint, MObject> {
 public:
-    MPoint() = default;
-    MPoint(float x, float y);
+    static MPoint::ptr from(float x, float y);
 
-    void setX(float x);
-    void setY(float y);
-
+public:
     float x();
     float y();
-
-    MPoint::ptr copy();
 
 private:
     float mX = 0;
@@ -30,17 +25,12 @@ private:
 declare_reflectable_class(MSize)
 class MSize : public MExtends<MSize, MObject> {
 public:
-    MSize() = default;
-    MSize(float width, float height);
+    static MSize::ptr from(float width, float height);
 
-    void setWidth (float width );
-    void setHeight(float height);
-
+public:
     float width ();
     float height();
     bool  none  ();
-
-    MSize::ptr copy();
 
 private:
     float mWidth  = 0;
@@ -53,26 +43,21 @@ private:
 declare_reflectable_class(MRect)
 class MRect : public MExtends<MRect, MObject> {
 public:
-    MRect() = default;
-    MRect(float x, float y, float width, float height);
+    static MRect::ptr from(float x, float y, float width, float height);
 
-    void setX     (float x     );
-    void setY     (float y     );
-    void setWidth (float width );
-    void setHeight(float height);
+public:
+    float       x     ();
+    float       y     ();
+    float       width ();
+    float       height();
+    MPoint::ptr origin();
+    MSize::ptr  size  ();
+    bool        none  ();
 
-    float x     ();
-    float y     ();
-    float width ();
-    float height();
-    bool  none  ();
-
-    MRect::ptr intersect(const MRect::ptr &rect);
-    MRect::ptr copy();
+    MRect::ptr intersects(const MRect::ptr  &rect );
+    bool       contains  (const MPoint::ptr &point);
 
 private:
-    float mX      = 0;
-    float mY      = 0;
-    float mWidth  = 0;
-    float mHeight = 0;
+    MPoint::ptr mOrigin;
+    MSize::ptr  mSize  ;
 };

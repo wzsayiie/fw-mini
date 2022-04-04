@@ -80,12 +80,12 @@ MVector<uint8_t>::ptr MImage::copyBitmap() {
     return nullptr;
 }
 
-define_reflectable_class_function(MImage, sizePixel)
-MSize::ptr MImage::sizePixel() {
+define_reflectable_class_function(MImage, pixelSize)
+MSize::ptr MImage::pixelSize() {
     if (mImpl) {
-        return MImageFactory::sharedObject()->sizePixel(mImpl);
+        return MImageFactory::sharedObject()->pixelSize(mImpl);
     }
-    return nullptr;
+    return MSize::create();
 }
 
 //image factory:
@@ -130,8 +130,8 @@ MVector<uint8_t>::ptr MImageFactory::bitmapFromImage(const MImageImpl::ptr &imag
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, sizePixel, "args:image;")
-MSize::ptr MImageFactory::sizePixel(const MImageImpl::ptr &image) {
+define_reflectable_class_function(MImageFactory, pixelSize, "args:image;")
+MSize::ptr MImageFactory::pixelSize(const MImageImpl::ptr &image) {
     implement_injectable_function((MSize::ptr))
-    return nullptr;
+    return MSize::create();
 }

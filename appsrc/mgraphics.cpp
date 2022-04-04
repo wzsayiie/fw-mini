@@ -69,31 +69,37 @@ define_reflectable_class_function(MColor, purpleColor   )
 define_reflectable_class_function(MColor, brownColor    )
 define_reflectable_class_function(MColor, clearColor    )
 
-const MColor::ptr &MColor::blackColor    () { static auto a = MColor::create(BlackRGBA    ); return a; }
-const MColor::ptr &MColor::darkGrayColor () { static auto a = MColor::create(DarkGrayRGBA ); return a; }
-const MColor::ptr &MColor::grayColor     () { static auto a = MColor::create(GrayRGBA     ); return a; }
-const MColor::ptr &MColor::lightGrayColor() { static auto a = MColor::create(LightGrayRGBA); return a; }
-const MColor::ptr &MColor::whiteColor    () { static auto a = MColor::create(WhiteRGBA    ); return a; }
-const MColor::ptr &MColor::redColor      () { static auto a = MColor::create(RedRGBA      ); return a; }
-const MColor::ptr &MColor::greenColor    () { static auto a = MColor::create(GreenRGBA    ); return a; }
-const MColor::ptr &MColor::blueColor     () { static auto a = MColor::create(BlueRGBA     ); return a; }
-const MColor::ptr &MColor::cyanColor     () { static auto a = MColor::create(CyanRGBA     ); return a; }
-const MColor::ptr &MColor::yellowColor   () { static auto a = MColor::create(YellowRGBA   ); return a; }
-const MColor::ptr &MColor::magentaColor  () { static auto a = MColor::create(MagentaRGBA  ); return a; }
-const MColor::ptr &MColor::orangeColor   () { static auto a = MColor::create(OrangeRGBA   ); return a; }
-const MColor::ptr &MColor::purpleColor   () { static auto a = MColor::create(PurpleRGBA   ); return a; }
-const MColor::ptr &MColor::brownColor    () { static auto a = MColor::create(BrownRGBA    ); return a; }
-const MColor::ptr &MColor::clearColor    () { static auto a = MColor::create(ClearRGBA    ); return a; }
+const MColor::ptr &MColor::blackColor    () { static auto a = MColor::fromRGBA(BlackRGBA    ); return a; }
+const MColor::ptr &MColor::darkGrayColor () { static auto a = MColor::fromRGBA(DarkGrayRGBA ); return a; }
+const MColor::ptr &MColor::grayColor     () { static auto a = MColor::fromRGBA(GrayRGBA     ); return a; }
+const MColor::ptr &MColor::lightGrayColor() { static auto a = MColor::fromRGBA(LightGrayRGBA); return a; }
+const MColor::ptr &MColor::whiteColor    () { static auto a = MColor::fromRGBA(WhiteRGBA    ); return a; }
+const MColor::ptr &MColor::redColor      () { static auto a = MColor::fromRGBA(RedRGBA      ); return a; }
+const MColor::ptr &MColor::greenColor    () { static auto a = MColor::fromRGBA(GreenRGBA    ); return a; }
+const MColor::ptr &MColor::blueColor     () { static auto a = MColor::fromRGBA(BlueRGBA     ); return a; }
+const MColor::ptr &MColor::cyanColor     () { static auto a = MColor::fromRGBA(CyanRGBA     ); return a; }
+const MColor::ptr &MColor::yellowColor   () { static auto a = MColor::fromRGBA(YellowRGBA   ); return a; }
+const MColor::ptr &MColor::magentaColor  () { static auto a = MColor::fromRGBA(MagentaRGBA  ); return a; }
+const MColor::ptr &MColor::orangeColor   () { static auto a = MColor::fromRGBA(OrangeRGBA   ); return a; }
+const MColor::ptr &MColor::purpleColor   () { static auto a = MColor::fromRGBA(PurpleRGBA   ); return a; }
+const MColor::ptr &MColor::brownColor    () { static auto a = MColor::fromRGBA(BrownRGBA    ); return a; }
+const MColor::ptr &MColor::clearColor    () { static auto a = MColor::fromRGBA(ClearRGBA    ); return a; }
 
-MColor::MColor(float redCom, float greenCom, float blueCom, float alphaCom) {
-    mRGBA.red   = (uint8_t)(redCom   * 255.f);
-    mRGBA.green = (uint8_t)(greenCom * 255.f);
-    mRGBA.blue  = (uint8_t)(blueCom  * 255.f);
-    mRGBA.alpha = (uint8_t)(alphaCom * 255.f);
+MColor::ptr MColor::fromComs(float redCom, float greenCom, float blueCom, float alphaCom) {
+    auto obj = MColor::create();
+    
+    obj->mRGBA.red   = (uint8_t)(redCom   * 255.f);
+    obj->mRGBA.green = (uint8_t)(greenCom * 255.f);
+    obj->mRGBA.blue  = (uint8_t)(blueCom  * 255.f);
+    obj->mRGBA.alpha = (uint8_t)(alphaCom * 255.f);
+    
+    return obj;
 }
 
-MColor::MColor(int rgba) {
-    mRGBA.rgba = rgba;
+MColor::ptr MColor::fromRGBA(int rgba) {
+    auto obj = MColor::create();
+    obj->mRGBA.rgba = rgba;
+    return obj;
 }
 
 define_reflectable_class_function(MColor, redCom  )
@@ -124,9 +130,4 @@ bool MColor::translucent() {
 define_reflectable_class_function(MColor, none)
 bool MColor::none() {
     return mRGBA.alpha == 0;
-}
-
-define_reflectable_class_function(MColor, copy)
-MColor::ptr MColor::copy() {
-    return MColor::create(mRGBA.rgba);
 }

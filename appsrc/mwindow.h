@@ -87,11 +87,9 @@ private:
     static MWindow::ptr sMainWindow;
 
 private:
-    bool mLoaded = false;
-    bool mShown  = false;
-
-    dash::auto_assign_ptr<MSize> mSize;
-
+    bool        mLoaded         = false;
+    bool        mShown          = false;
+    MSize::ptr  mSize           ;
     bool        mWritingUpdated = false;
     bool        mWritingEnabled = false;
     std::string mWritingRawText ;

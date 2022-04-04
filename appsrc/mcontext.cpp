@@ -44,11 +44,11 @@ void MContextSelectVAlign   (MVAlign align) { sVAlign    = align; }
 define_reflectable_function(MContextPushClip, "args:x,y,w,h;")
 void MContextPushClip(float x, float y, float w, float h) {
     //push the clip:
-    auto clip = MRect::create(x, y, w, h);
+    auto clip = MRect::from(x, y, w, h);
 
     if (!sClipStack->vector.empty()) {
         auto last = sClipStack->vector.back();
-        clip = clip->intersect(last);
+        clip = clip->intersects(last);
     }
 
     sClipStack->vector.push_back(clip);
@@ -88,7 +88,7 @@ void MContextPushOffset(float x, float y) {
     sOffsetX += x;
     sOffsetY += y;
 
-    auto point = MPoint::create(sOffsetX, sOffsetY);
+    auto point = MPoint::from(sOffsetX, sOffsetY);
     sOffsetStack->vector.push_back(point);
 }
 

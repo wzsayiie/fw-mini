@@ -105,10 +105,10 @@ public:
     static const MColor::ptr &clearColor    ();
 
 public:
-    MColor() = default;
-    MColor(float redCom, float greenCom, float blueCom, float alphaCom);
-    MColor(int rgba);
+    static MColor::ptr fromComs(float redCom, float greenCom, float blueCom, float alphaCom);
+    static MColor::ptr fromRGBA(int rgba);
 
+public:
     float redCom  ();
     float greenCom();
     float blueCom ();
@@ -118,8 +118,6 @@ public:
     bool opaque();      //alpha is 1.
     bool translucent(); //alpha is between (0, 1).
     bool none();        //alpha is 0.
-
-    MColor::ptr copy();
 
 private:
     MColorRGBA mRGBA;

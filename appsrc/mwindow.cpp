@@ -69,8 +69,7 @@ void MWindow::resizePixel(float pixelW, float pixelH) {
     float width  = m_pt_from_px pixelW;
     float height = m_pt_from_px pixelH;
 
-    mSize->setWidth (width );
-    mSize->setHeight(height);
+    mSize = MSize::from(width, height);
 
     //NOTE: "resizePixel" may be called before "load".
     //but need to ensure that "onLoad" is the first window event.
@@ -158,7 +157,7 @@ bool MWindow::shown() {
 
 define_reflectable_class_function(MWindow, size)
 MSize::ptr MWindow::size() {
-    return mSize->copy();
+    return mSize ? mSize : MSize::create();
 }
 
 define_reflectable_class_function(MWindow, setWritingEnabled, "args:enabled,rawText;")
