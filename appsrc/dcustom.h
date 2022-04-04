@@ -65,26 +65,6 @@ private:
     std::shared_ptr<Type> *_obj = nullptr;
 };
 
-//auto_assign_ptr:
-//a pointer that automatically generate object.
-//
-
-template<class Type> class auto_assign_ptr {
-public:
-    Type *operator->() { return this->shared().get(); }
-    Type &operator* () { return this->shared().get(); }
-
-    const std::shared_ptr<Type> &shared() {
-        if (!this->_ptr) {
-            this->_ptr = std::make_shared<Type>();
-        }
-        return this->_ptr;
-    }
-
-private:
-    std::shared_ptr<Type> _ptr;
-};
-
 //object:
 //
 
