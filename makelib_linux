@@ -12,7 +12,7 @@ _flg="\
     -shared \
     -fPIC \
     -m64 \
-    -O3"
+    -Os"
 
 _inc="\
     -Iappsrc \

@@ -10,7 +10,7 @@ _objdir="objs"
 _flg="\
     -std=c++17 \
     -m64 \
-    -O3"
+    -Os"
 
 _inc="\
     -I../appsrc \
