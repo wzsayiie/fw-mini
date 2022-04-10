@@ -32,6 +32,10 @@ public:
     //app specific directories.
     std::string documentDirectory ();
     std::string temporaryDirectory();
+    
+private:
+    std::string mDocumentDirectory ;
+    std::string mTemporaryDirectory;
 };
 
 //bundle:

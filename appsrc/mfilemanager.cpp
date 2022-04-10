@@ -10,15 +10,19 @@
 //but for unix and its derivatives, "\" can be included in filename.
 //use normalized paths to avoid ambiguity.
 
-static std::string NormalizePath(const std::string &path) {
-    std::string normal = path;
-    for (auto it = normal.begin(); it != normal.end(); ++it) {
-        if (*it == '\\') {
-            *it = '/';
+struct PathNormalizer {
+    std::string operator<<(const std::string &path) {
+        std::string normal = path;
+        for (auto it = normal.begin(); it != normal.end(); ++it) {
+            if (*it == '\\') {
+                *it = '/';
+            }
         }
+        return normal;
     }
-    return normal;
-}
+};
+
+#define m_normal_path PathNormalizer()<<
 
 //file manager:
 //
@@ -32,8 +36,7 @@ MFileManager *MFileManager::sharedObject() {
 define_reflectable_class_function(MFileManager, bytesFromBundle, "args:path;")
 MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
     if (!path.empty()) {
-        std::string normalPath = NormalizePath(path);
-        return MBundle::sharedObject()->loadAsset(normalPath);
+        return MBundle::sharedObject()->loadAsset(m_normal_path path);
     }
     return nullptr;
 }
@@ -44,8 +47,7 @@ MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
         return nullptr;
     }
 
-    std::string normalPath = NormalizePath(path);
-    std::ifstream file(normalPath, std::ios::binary);
+    std::ifstream file(m_normal_path path, std::ios::binary);
     if (!file.is_open()) {
         return nullptr;
     }
@@ -92,8 +94,7 @@ void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const st
         return;
     }
 
-    std::string normalString = NormalizePath(path);
-    std::ofstream file(path, std::ios::binary);
+    std::ofstream file(m_normal_path path, std::ios::binary);
     if (!file.is_open()) {
         return;
     }
@@ -107,24 +108,26 @@ void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const st
 
 define_reflectable_class_function(MFileManager, writeU8StringToFile, "args:str,path;")
 void MFileManager::writeU8StringToFile(const std::string &string, const std::string &path) {
-    auto bgn = (uint8_t *)string.c_str();
-    auto end = (uint8_t *)string.c_str() + string.size();
+    if (path.empty()) {
+        return;
+    }
 
-    auto bytes = MVector<uint8_t>::create();
-    bytes->vector.insert(bytes->vector.end(), bgn, end);
-    writeBytesToFile(bytes, path);
+    std::ofstream file(m_normal_path path, std::ios::binary);
+    if (!file.is_open()) {
+        return;
+    }
+    
+    file.write(string.c_str(), string.size());
 }
 
 define_reflectable_class_function(MFileManager, contentsOfDirectory, "args:path;")
 MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &path) {
     auto contents = MVector<std::string>::create();
 
-    std::string normalPath = NormalizePath(path);
-    std::filesystem::directory_iterator iterator(normalPath);
+    std::filesystem::directory_iterator iterator(m_normal_path path);
     for (auto &entry : iterator) {
         std::string item = entry.path().string();
-        std::string norm = NormalizePath(item);
-        contents->push_back(norm);
+        contents->push_back(m_normal_path item);
     }
 
     return contents;
@@ -133,8 +136,7 @@ MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &p
 define_reflectable_class_function(MFileManager, fileExistsAt, "args:path;")
 bool MFileManager::fileExistsAt(const std::string &path) {
     if (!path.empty()) {
-        std::string normalPath = NormalizePath(path);
-        return std::filesystem::exists(normalPath);
+        return std::filesystem::exists(m_normal_path path);
     }
     return false;
 }
@@ -142,8 +144,7 @@ bool MFileManager::fileExistsAt(const std::string &path) {
 define_reflectable_class_function(MFileManager, directoryExistsAt, "args:path;")
 bool MFileManager::directoryExistsAt(const std::string &path) {
     if (!path.empty()) {
-        std::string normalPath = NormalizePath(path);
-        return std::filesystem::is_directory(normalPath);
+        return std::filesystem::is_directory(m_normal_path path);
     }
     return false;
 }
@@ -151,27 +152,31 @@ bool MFileManager::directoryExistsAt(const std::string &path) {
 define_reflectable_class_function(MFileManager, createDirectory, "args:path;")
 void MFileManager::createDirectory(const std::string &path) {
     if (!path.empty()) {
-        std::string normalPath = NormalizePath(path);
-        std::filesystem::create_directories(normalPath);
+        std::filesystem::create_directories(m_normal_path path);
     }
 }
 
 define_reflectable_class_function(MFileManager, removePath, "args:path;")
 void MFileManager::removePath(const std::string &path) {
     if (!path.empty()) {
-        std::string normalPath = NormalizePath(path);
-        std::filesystem::remove_all(normalPath);
+        std::filesystem::remove_all(m_normal_path path);
     }
 }
 
 define_reflectable_class_function(MFileManager, documentDirectory)
 std::string MFileManager::documentDirectory() {
-    return MBundle::sharedObject()->documentDirectory();
+    if (mDocumentDirectory.empty()) {
+        mDocumentDirectory = m_normal_path MBundle::sharedObject()->documentDirectory();
+    }
+    return mDocumentDirectory;
 }
 
 define_reflectable_class_function(MFileManager, temporaryDirectory)
 std::string MFileManager::temporaryDirectory() {
-    return MBundle::sharedObject()->temporaryDirectory();
+    if (mTemporaryDirectory.empty()) {
+        mTemporaryDirectory = m_normal_path MBundle::sharedObject()->temporaryDirectory();
+    }
+    return mTemporaryDirectory;
 }
 
 //bundle:
