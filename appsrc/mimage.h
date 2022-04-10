@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mgeometry.h"
+#include "mgraphics.h"
 
 //file format:
 //
@@ -52,16 +53,16 @@ public:
 public:
     //image from file format data.
     virtual MImageImpl::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData);
-    //image from 32-bit depth bitmap.
+    //image from rgba 32-bit depth bitmap.
     virtual MImageImpl::ptr imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height);
 
     //file format data from image.
-    virtual MVector<uint8_t>::ptr ffDataFromImage(const MImageImpl::ptr &image, MImageFileFormat format);
-    //32-bit depth bitmap from image.
-    virtual MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr &image);
+    virtual MVector<uint8_t>::ptr ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format);
+    //rgba 32-bit depth bitmap from image.
+    virtual MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr &impl);
 
     //image pixel size.
-    virtual MSize::ptr pixelSize(const MImageImpl::ptr &image);
+    virtual MSize::ptr pixelSize(const MImageImpl::ptr &impl);
 
 private:
     static MImageFactory::ptr sSharedObject;
