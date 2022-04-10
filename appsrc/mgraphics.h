@@ -69,6 +69,20 @@ union MColorABGR {
     };
 };
 
+template<class Src, class Dst> void MColorTransform(Src *src, Dst *dst, int count) {
+    for (; count-- > 0; ++src, ++dst) {
+        //NOTE: src and dst may point to a same position.
+        Src item = *src;
+        
+        dst->red   = item.red  ;
+        dst->green = item.green;
+        dst->blue  = item.blue ;
+        dst->alpha = item.alpha;
+    }
+}
+template<class T> void MColorTransform(T *src, T *dst, int count) {
+}
+
 declare_reflectable_class(MColor)
 class MColor : public MExtends<MColor, MObject> {
 public:
