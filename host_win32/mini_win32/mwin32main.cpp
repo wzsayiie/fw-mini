@@ -1,9 +1,11 @@
 ﻿#include <clocale>
 #include <io.h>
-#include <windows.h>
 #include <windowsx.h>
 #include "mapp.h"
 #include "mencode.h"
+#include "mpcbundle.h"
+#include "mwin32imagefactory.h"
+#include "mwin32paint.h"
 #include "mwindow.h"
 
 const POINT    ConsoleOrigin       = {   20, 100 };
@@ -149,9 +151,13 @@ static void UpdateEditState()
 
 static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    OpenConsole();
-
     SIZE clientSize = GetClientSize(wnd);
+
+    //components initialization.
+    OpenConsole();
+    MWin32GdiplusShutdown();
+    MPCBundle::install();
+    MWin32ImageFactory::install();
 
     //create edit.
     CreateEditWithParent(wnd);
@@ -189,6 +195,7 @@ static void OnDestroy(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     KillTimer(wnd, WindowUpdateTimerId);
     KillTimer(wnd, AppUpdateTimerId);
+    MWin32GdiplusShutdown();
 
     PostQuitMessage(0);
 }
@@ -234,7 +241,7 @@ static void OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
         FillRect(dc, &rect, backgroundBrush);
         DeleteBrush(backgroundBrush);
 
-        //MPaint(dc);
+        MWin32Paint(dc);
 
         BitBlt(paint.hdc, 0, 0, clientSize.cx, clientSize.cy, dc, 0, 0, SRCCOPY);
         DeleteDC(dc);
