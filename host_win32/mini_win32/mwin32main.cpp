@@ -11,7 +11,6 @@
 const POINT    ConsoleOrigin       = {   20, 100 };
 const POINT    WindowOrigin        = { 1000, 100 };
 const SIZE     WindowSize          = {  376, 679 };
-const int      CharsBufferLength   = 256;
 const UINT_PTR AppUpdateTimerId    = 1;
 const UINT_PTR WindowUpdateTimerId = 2;
 
@@ -42,9 +41,8 @@ static void OpenConsole(void)
     }
     HWND wnd = nullptr;
     {
-        WCHAR title[CharsBufferLength] = L"\0";
-        GetConsoleTitleW(title, CharsBufferLength);
-        wnd = FindWindowW(nullptr, title);
+        GetConsoleTitleW(dash::buffer<WCHAR>(), (DWORD)dash::buffer_size<WCHAR>());
+        wnd = FindWindowW(nullptr, dash::buffer<WCHAR>());
     }
 
     //move the console window.
@@ -349,9 +347,8 @@ static void OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     if (notifyCode == EN_CHANGE && controlWnd == sEditWnd)
     {
-        char16_t u16chars[CharsBufferLength] = u"";
-        GetWindowTextW(sEditWnd, (LPWSTR)u16chars, CharsBufferLength);
-        std::string u8text = MU8StringFromU16(u16chars);
+        GetWindowTextW(sEditWnd, dash::buffer<WCHAR>(), dash::buffer_size<WCHAR>());
+        std::string u8text = MU8StringFromU16(dash::buffer<char16_t>());
 
         if (sEditEmitEnter) {
             sEditEmitEnter = false;

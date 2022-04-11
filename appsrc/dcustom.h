@@ -65,6 +65,19 @@ private:
     std::shared_ptr<Type> *_obj = nullptr;
 };
 
+//temporary buffer:
+//
+
+void *bytes_buffer();
+int   bytes_buffer_size();
+
+template<class T> T *buffer() {
+    return (T *)bytes_buffer();
+}
+template<class T> int buffer_size() {
+    return bytes_buffer_size() / (int)sizeof(T);
+}
+
 //object:
 //
 
