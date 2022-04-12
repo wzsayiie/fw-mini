@@ -14,5 +14,5 @@ public:
     std::string temporaryDirectory() override;
 
 private:
-    std::string mBundeDirectory;
+    std::filesystem::path mBundeDirectory;
 };
