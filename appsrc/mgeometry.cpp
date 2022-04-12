@@ -1,5 +1,4 @@
 #include "mgeometry.h"
-#include <algorithm>
 
 //point:
 //
