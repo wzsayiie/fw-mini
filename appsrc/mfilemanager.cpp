@@ -1,7 +1,4 @@
 #include "mfilemanager.h"
-#include "mencode.h"
-#include <filesystem>
-#include <fstream>
 
 //normal path:
 //
@@ -35,38 +32,37 @@ MFileManager *MFileManager::sharedObject() {
 
 define_reflectable_class_function(MFileManager, bytesFromBundle, "args:path;")
 MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
-    if (!path.empty()) {
-        return MBundle::sharedObject()->loadAsset(m_normal_path path);
-    }
-    return nullptr;
-}
-
-define_reflectable_class_function(MFileManager, bytesFromFile)
-MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
     if (path.empty()) {
         return nullptr;
     }
 
-    std::ifstream file(m_normal_path path, std::ios::binary);
-    if (!file.is_open()) {
+    MVector<uint8_t>::ptr bytes = MBundle::sharedObject()->loadAsset(m_normal_path path);
+    if (!bytes || bytes->vector.empty()) {
         return nullptr;
     }
 
-    size_t size = 0; {
-        file.seekg(0, std::ios::end);
-        size = (size_t)file.tellg();
-        file.seekg(0, std::ios::beg);
-    }
-
-    auto bytes = MVector<uint8_t>::create();
-    bytes->vector.resize(size);
-    file.read((char *)bytes->vector.data(), size);
     return bytes;
+}
+
+define_reflectable_class_function(MFileManager, bytesFromFile)
+MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
+    auto bytes = MVector<uint8_t>::create();
+    
+    dash::read_file((m_normal_path path).c_str(), [&](int size) {
+        bytes->vector.resize((size_t)size);
+        return bytes->vector.data();
+    });
+
+    return bytes->vector.empty() ? nullptr : bytes;
 }
 
 define_reflectable_class_function(MFileManager, u8stringFromBundle, "args:path;")
 std::string MFileManager::u8stringFromBundle(const std::string &path) {
-    MVector<uint8_t>::ptr bytes = bytesFromBundle(path);
+    if (path.empty()) {
+        return "";
+    }
+
+    MVector<uint8_t>::ptr bytes = MBundle::sharedObject()->loadAsset(m_normal_path path);
     if (!bytes || bytes->vector.empty()) {
         return "";
     }
@@ -78,46 +74,26 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
 
 define_reflectable_class_function(MFileManager, u8stringFromFile, "args:path;")
 std::string MFileManager::u8stringFromFile(const std::string &path) {
-    MVector<uint8_t>::ptr bytes = bytesFromFile(path);
-    if (!bytes || bytes->vector.empty()) {
-        return "";
-    }
+    std::string str;
 
-    auto bgn = (char *)bytes->vector.data();
-    auto end = (char *)bytes->vector.data() + bytes->vector.size();
-    return std::string(bgn, end);
+    dash::read_file((m_normal_path path).c_str(), [&](int size) {
+        str.resize((size_t)(size + 1));
+        return str.data();
+    });
+
+    return str;
 }
 
 define_reflectable_class_function(MFileManager, writeBytesToFile, "args:bytes,path;")
 void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const std::string &path) {
-    if (path.empty()) {
-        return;
-    }
-
-    std::ofstream file(m_normal_path path, std::ios::binary);
-    if (!file.is_open()) {
-        return;
-    }
-
-    if (bytes && !bytes->vector.empty()) {
-        file.write((const char *)bytes->vector.data(), bytes->vector.size());
-    } else {
-        file.write("", 0);
+    if (bytes) {
+        dash::write_file((m_normal_path path).c_str(), bytes->vector.data(), (int)bytes->vector.size());
     }
 }
 
 define_reflectable_class_function(MFileManager, writeU8StringToFile, "args:str,path;")
 void MFileManager::writeU8StringToFile(const std::string &string, const std::string &path) {
-    if (path.empty()) {
-        return;
-    }
-
-    std::ofstream file(m_normal_path path, std::ios::binary);
-    if (!file.is_open()) {
-        return;
-    }
-    
-    file.write(string.c_str(), string.size());
+    dash::write_file((m_normal_path path).c_str(), string.c_str(), (int)string.size());
 }
 
 define_reflectable_class_function(MFileManager, contentsOfDirectory, "args:path;")
