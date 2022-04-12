@@ -78,12 +78,28 @@ template<class T> int buffer_size() {
     return bytes_buffer_size() / (int)sizeof(T);
 }
 
+//file operations:
+//
+
+void read_file (const char *path, const std::function<void *(int size)> &buffer);
+void write_file(const char *path, const void *bytes, int size);
+
 //object:
 //
 
-struct object {
+struct trivial_object {
+};
+
+struct virtual_object {
+    virtual ~virtual_object() = default;
+};
+
+struct object : virtual_object {
     typedef std::shared_ptr<object> ptr;
-    virtual ~object() = default;
+
+    static ptr create() {
+        return std::make_shared<object>();
+    }
 };
 
 template<class Class, class Super> struct extends : Super {
