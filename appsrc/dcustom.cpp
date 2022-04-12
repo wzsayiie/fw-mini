@@ -1,5 +1,3 @@
-#pragma once
-
 #include "dcustom.h"
 #include <fstream>
 
