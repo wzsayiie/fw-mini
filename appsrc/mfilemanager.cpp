@@ -48,7 +48,8 @@ define_reflectable_class_function(MFileManager, bytesFromFile)
 MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
     auto bytes = MVector<uint8_t>::create();
     
-    dash::read_file((m_normal_path path).c_str(), [&](int size) {
+    std::string nPath = m_normal_path path;
+    dash::read_file(nPath.c_str(), [&](int size) {
         bytes->vector.resize((size_t)size);
         return bytes->vector.data();
     });
@@ -76,7 +77,8 @@ define_reflectable_class_function(MFileManager, u8stringFromFile, "args:path;")
 std::string MFileManager::u8stringFromFile(const std::string &path) {
     std::string str;
 
-    dash::read_file((m_normal_path path).c_str(), [&](int size) {
+    std::string nPath = m_normal_path path;
+    dash::read_file(nPath.c_str(), [&](int size) {
         str.resize((size_t)(size + 1));
         return str.data();
     });
@@ -86,14 +88,19 @@ std::string MFileManager::u8stringFromFile(const std::string &path) {
 
 define_reflectable_class_function(MFileManager, writeBytesToFile, "args:bytes,path;")
 void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const std::string &path) {
+    std::string nPath = m_normal_path path;
     if (bytes) {
-        dash::write_file((m_normal_path path).c_str(), bytes->vector.data(), (int)bytes->vector.size());
+        dash::write_file(nPath.c_str(), bytes->vector.data(), (int)bytes->vector.size());
+    } else {
+        //clear the file.
+        dash::write_file(nPath.c_str(), nullptr, 0);
     }
 }
 
 define_reflectable_class_function(MFileManager, writeU8StringToFile, "args:str,path;")
 void MFileManager::writeU8StringToFile(const std::string &string, const std::string &path) {
-    dash::write_file((m_normal_path path).c_str(), string.c_str(), (int)string.size());
+    std::string nPath = m_normal_path path;
+    dash::write_file(nPath.c_str(), string.c_str(), (int)string.size());
 }
 
 define_reflectable_class_function(MFileManager, contentsOfDirectory, "args:path;")

@@ -22,9 +22,7 @@ template<class Last> void print_with_stream(std::stringstream &stream, Last last
     dash_puts(stream.str().c_str());
 }
 
-template<class First, class... Others> void print_with_stream(
-    std::stringstream &stream, First first, Others... others)
-{
+template<class First, class... Others> void print_with_stream(std::stringstream &stream, First first, Others... others) {
     stream << first << " ";
     print_with_stream(stream, others...);
 }
