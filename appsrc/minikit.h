@@ -8,4 +8,5 @@
 #include "mgraphics.h"
 #include "mimage.h"
 #include "mobject.h"
+#include "mprint.h"
 #include "mwindow.h"
