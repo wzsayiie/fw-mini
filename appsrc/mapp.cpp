@@ -25,21 +25,21 @@ void MApp::update() {
     }
 }
 
-define_reflectable_class_function(MApp, addLaunchListener, "args:listener;")
+define_reflectable_class_function(MApp, addLaunchListener, "args:listener")
 void MApp::addLaunchListener(const MFunction<void ()>::ptr &listener) {
     if (listener) {
         mLaunchListeners.insert(listener);
     }
 }
 
-define_reflectable_class_function(MApp, addUpdateListener, "args:listener;")
+define_reflectable_class_function(MApp, addUpdateListener, "args:listener")
 void MApp::addUpdateListener(const MFunction<void ()>::ptr &listener) {
     if (listener) {
         mUpdateListeners.insert(listener);
     }
 }
 
-define_reflectable_class_function(MApp, removeListener, "args:listener;")
+define_reflectable_class_function(MApp, removeListener, "args:listener")
 void MApp::removeListener(const MFunction<void ()>::ptr &listener) {
     if (listener) {
         mLaunchListeners.erase(listener);

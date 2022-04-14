@@ -24,13 +24,13 @@ static MVAlign    sVAlign    = MVAlign::Middle;
 //draw function:
 //
 
-define_reflectable_function(MContextSelectImage    , "args:image;")
-define_reflectable_function(MContextSelectText     , "args:text;" )
-define_reflectable_function(MContextSelectRGBA     , "args:rgba;" )
-define_reflectable_function(MContextSelectLineWidth, "args:width;")
-define_reflectable_function(MContextSelectFontSize , "args:size;" )
-define_reflectable_function(MContextSelectHAlign   , "args:align;")
-define_reflectable_function(MContextSelectVAlign   , "args:align;")
+define_reflectable_function(MContextSelectImage    , "args:image")
+define_reflectable_function(MContextSelectText     , "args:text" )
+define_reflectable_function(MContextSelectRGBA     , "args:rgba" )
+define_reflectable_function(MContextSelectLineWidth, "args:width")
+define_reflectable_function(MContextSelectFontSize , "args:size" )
+define_reflectable_function(MContextSelectHAlign   , "args:align")
+define_reflectable_function(MContextSelectVAlign   , "args:align")
 
 void MContextSelectImage(const MImage::ptr &image) { sImage = image; }
 void MContextSelectText (const std::string &text ) { sText  = text ; }
@@ -41,7 +41,7 @@ void MContextSelectFontSize (float   size ) { sFontSize  = size ; }
 void MContextSelectHAlign   (MHAlign align) { sHAlign    = align; }
 void MContextSelectVAlign   (MVAlign align) { sVAlign    = align; }
 
-define_reflectable_function(MContextPushClip, "args:x,y,w,h;")
+define_reflectable_function(MContextPushClip, "args:x,y,w,h")
 void MContextPushClip(float x, float y, float w, float h) {
     //push the clip:
     auto clip = MRect::from(x, y, w, h);
@@ -83,7 +83,7 @@ void MContextPopClip() {
     sGraphs->vector.push_back(graph);
 }
 
-define_reflectable_function(MContextPushOffset, "args:x,y;")
+define_reflectable_function(MContextPushOffset, "args:x,y")
 void MContextPushOffset(float x, float y) {
     sOffsetX += x;
     sOffsetY += y;
@@ -105,7 +105,7 @@ void MContextPopOffset() {
     sOffsetY = point->y();
 }
 
-define_reflectable_function(MContextDrawTriangle, "args:x0,y0,x1,y1,x2,y2;")
+define_reflectable_function(MContextDrawTriangle, "args:x0,y0,x1,y1,x2,y2")
 void MContextDrawTriangle(float x0, float y0, float x1, float y1, float x2, float y2) {
     if (sRGBA.alpha == 0) {
         return;
@@ -127,7 +127,7 @@ void MContextDrawTriangle(float x0, float y0, float x1, float y1, float x2, floa
     sGraphs->vector.push_back(graph);
 }
 
-define_reflectable_function(MContextDrawRect, "args:x,y,w,h;")
+define_reflectable_function(MContextDrawRect, "args:x,y,w,h")
 void MContextDrawRect(float x, float y, float w, float h) {
     if (sRGBA.rgba == 0) {
         return;
@@ -173,27 +173,27 @@ void MContextDrawRect(float x, float y, float w, float h) {
     sGraphs->vector.push_back(bcd);
 }
 
-define_reflectable_function(MContextDrawEllipse, "args:x,y,w,h;")
+define_reflectable_function(MContextDrawEllipse, "args:x,y,w,h")
 void MContextDrawEllipse(float x, float y, float w, float h) {
     //TODO.
 }
 
-define_reflectable_function(MContextDrawFlatLine, "args:x0,y0,x1,y1;")
+define_reflectable_function(MContextDrawFlatLine, "args:x0,y0,x1,y1")
 void MContextDrawFlatLine(float x0, float y0, float x1, float y1) {
     //TODO.
 }
 
-define_reflectable_function(MContextDrawSquareLine, "args:x0,y0,x1,y1;")
+define_reflectable_function(MContextDrawSquareLine, "args:x0,y0,x1,y1")
 void MContextDrawSquareLine(float x0, float y0, float x1, float y1) {
     //TODO.
 }
 
-define_reflectable_function(MContextDrawRoundLine, "args:x0,y0,x1,y1;")
+define_reflectable_function(MContextDrawRoundLine, "args:x0,y0,x1,y1")
 void MContextDrawRoundLine(float x0, float y0, float x1, float y1) {
     //TODO.
 }
 
-define_reflectable_function(MContextDrawImage, "args:x,y,w,h;")
+define_reflectable_function(MContextDrawImage, "args:x,y,w,h")
 void MContextDrawImage(float x, float y, float w, float h) {
     if (sImage == nullptr) {
         return;
@@ -212,7 +212,7 @@ void MContextDrawImage(float x, float y, float w, float h) {
     sGraphs->vector.push_back(graph);
 }
 
-define_reflectable_function(MContextDrawText, "args:x,y,w,h;")
+define_reflectable_function(MContextDrawText, "args:x,y,w,h")
 void MContextDrawText(float x, float y, float w, float h) {
     if (sText->empty()) {
         return;

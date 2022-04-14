@@ -30,7 +30,7 @@ MFileManager *MFileManager::sharedObject() {
     return obj.get();
 }
 
-define_reflectable_class_function(MFileManager, bytesFromBundle, "args:path;")
+define_reflectable_class_function(MFileManager, bytesFromBundle, "args:path")
 MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
     if (path.empty()) {
         return nullptr;
@@ -57,7 +57,7 @@ MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
     return bytes->vector.empty() ? nullptr : bytes;
 }
 
-define_reflectable_class_function(MFileManager, u8stringFromBundle, "args:path;")
+define_reflectable_class_function(MFileManager, u8stringFromBundle, "args:path")
 std::string MFileManager::u8stringFromBundle(const std::string &path) {
     if (path.empty()) {
         return "";
@@ -73,7 +73,7 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
     return std::string(bgn, end);
 }
 
-define_reflectable_class_function(MFileManager, u8stringFromFile, "args:path;")
+define_reflectable_class_function(MFileManager, u8stringFromFile, "args:path")
 std::string MFileManager::u8stringFromFile(const std::string &path) {
     std::string str;
 
@@ -86,7 +86,7 @@ std::string MFileManager::u8stringFromFile(const std::string &path) {
     return str;
 }
 
-define_reflectable_class_function(MFileManager, writeBytesToFile, "args:bytes,path;")
+define_reflectable_class_function(MFileManager, writeBytesToFile, "args:bytes,path")
 void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const std::string &path) {
     std::string nPath = m_normal_path path;
     if (bytes) {
@@ -97,13 +97,13 @@ void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const st
     }
 }
 
-define_reflectable_class_function(MFileManager, writeU8StringToFile, "args:str,path;")
+define_reflectable_class_function(MFileManager, writeU8StringToFile, "args:str,path")
 void MFileManager::writeU8StringToFile(const std::string &string, const std::string &path) {
     std::string nPath = m_normal_path path;
     dash::write_file(nPath.c_str(), string.c_str(), (int)string.size());
 }
 
-define_reflectable_class_function(MFileManager, contentsOfDirectory, "args:path;")
+define_reflectable_class_function(MFileManager, contentsOfDirectory, "args:path")
 MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &path) {
     auto contents = MVector<std::string>::create();
 
@@ -116,7 +116,7 @@ MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &p
     return contents;
 }
 
-define_reflectable_class_function(MFileManager, fileExistsAt, "args:path;")
+define_reflectable_class_function(MFileManager, fileExistsAt, "args:path")
 bool MFileManager::fileExistsAt(const std::string &path) {
     if (!path.empty()) {
         return std::filesystem::exists(m_normal_path path);
@@ -124,7 +124,7 @@ bool MFileManager::fileExistsAt(const std::string &path) {
     return false;
 }
 
-define_reflectable_class_function(MFileManager, directoryExistsAt, "args:path;")
+define_reflectable_class_function(MFileManager, directoryExistsAt, "args:path")
 bool MFileManager::directoryExistsAt(const std::string &path) {
     if (!path.empty()) {
         return std::filesystem::is_directory(m_normal_path path);
@@ -132,14 +132,14 @@ bool MFileManager::directoryExistsAt(const std::string &path) {
     return false;
 }
 
-define_reflectable_class_function(MFileManager, createDirectory, "args:path;")
+define_reflectable_class_function(MFileManager, createDirectory, "args:path")
 void MFileManager::createDirectory(const std::string &path) {
     if (!path.empty()) {
         std::filesystem::create_directories(m_normal_path path);
     }
 }
 
-define_reflectable_class_function(MFileManager, removePath, "args:path;")
+define_reflectable_class_function(MFileManager, removePath, "args:path")
 void MFileManager::removePath(const std::string &path) {
     if (!path.empty()) {
         std::filesystem::remove_all(m_normal_path path);
@@ -170,7 +170,7 @@ define_reflectable_class_const(MBundle, BundleDirectoryName )
 
 MBundle::ptr MBundle::sSharedObject;
 
-define_reflectable_class_function(MBundle, setSharedObject, "args:bundle;")
+define_reflectable_class_function(MBundle, setSharedObject, "args:bundle")
 void MBundle::setSharedObject(const MBundle::ptr &obj) {
     sSharedObject = obj;
 }
@@ -183,7 +183,7 @@ MBundle *MBundle::sharedObject() {
     return sSharedObject.get();
 }
 
-define_reflectable_class_function(MBundle, loadAsset, "args:path;")
+define_reflectable_class_function(MBundle, loadAsset, "args:path")
 MVector<uint8_t>::ptr MBundle::loadAsset(const std::string &path) {
     implement_injectable_function((MVector<uint8_t>::ptr), path);
     return nullptr;

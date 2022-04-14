@@ -10,13 +10,13 @@ define_reflectable_enum_const(MImageFileFormat, PNG )
 //image:
 //
 
-define_reflectable_class_function(MImage, imageFromBundle, "args:path;")
+define_reflectable_class_function(MImage, imageFromBundle, "args:path")
 MImage::ptr MImage::imageFromBundle(const std::string &path) {
     MVector<uint8_t>::ptr bytes = MFileManager::sharedObject()->bytesFromBundle(path);
     return imageFromFFData(bytes);
 }
 
-define_reflectable_class_function(MImage, imageFromFile, "args:path;")
+define_reflectable_class_function(MImage, imageFromFile, "args:path")
 MImage::ptr MImage::imageFromFile(const std::string &path) {
     MVector<uint8_t>::ptr bytes = MFileManager::sharedObject()->bytesFromFile(path);
     return imageFromFFData(bytes);
@@ -58,13 +58,13 @@ MImage::ptr MImage::imageFromBitmap(const MVector<uint8_t>::ptr bitmap, int widt
     return image;
 }
 
-define_reflectable_class_function(MImage, writeFile, "args:path,format;")
+define_reflectable_class_function(MImage, writeFile, "args:path,format")
 void MImage::writeFile(const std::string &path, MImageFileFormat format) {
     MVector<uint8_t>::ptr bytes = copyFFData(format);
     MFileManager::sharedObject()->writeBytesToFile(bytes, path);
 }
 
-define_reflectable_class_function(MImage, copyFFData, "args:format;")
+define_reflectable_class_function(MImage, copyFFData, "args:format")
 MVector<uint8_t>::ptr MImage::copyFFData(MImageFileFormat format) {
     if (mImpl) {
         return MImageFactory::sharedObject()->ffDataFromImage(mImpl, format);
@@ -106,31 +106,31 @@ MImageFactory *MImageFactory::sharedObject() {
     return sSharedObject.get();
 }
 
-define_reflectable_class_function(MImageFactory, imageFromFFData, "args:ffData;")
+define_reflectable_class_function(MImageFactory, imageFromFFData, "args:ffData")
 MImageImpl::ptr MImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {
     implement_injectable_function((MImageImpl::ptr), ffData)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, imageFromBitmap, "args:bitmap,width,height;")
+define_reflectable_class_function(MImageFactory, imageFromBitmap, "args:bitmap,width,height")
 MImageImpl::ptr MImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
     implement_injectable_function((MImageImpl::ptr), bitmap, width, height)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, ffDataFromImage, "args:image,format;")
+define_reflectable_class_function(MImageFactory, ffDataFromImage, "args:image,format")
 MVector<uint8_t>::ptr MImageFactory::ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format) {
     implement_injectable_function((MVector<uint8_t>::ptr), impl, (int)format)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, bitmapFromImage, "args:image;")
+define_reflectable_class_function(MImageFactory, bitmapFromImage, "args:image")
 MVector<uint8_t>::ptr MImageFactory::bitmapFromImage(const MImageImpl::ptr &impl) {
     implement_injectable_function((MVector<uint8_t>::ptr), impl)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, pixelSize, "args:image;")
+define_reflectable_class_function(MImageFactory, pixelSize, "args:image")
 MSize::ptr MImageFactory::pixelSize(const MImageImpl::ptr &impl) {
     implement_injectable_function((MSize::ptr))
     return MSize::create();
