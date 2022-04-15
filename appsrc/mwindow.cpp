@@ -80,7 +80,7 @@ void MWindow::resizePixel(float pixelW, float pixelH) {
 
 define_reflectable_class_function(MWindow, draw)
 void MWindow::draw() {
-    onDraw();
+    onDraw(mSize->width(), mSize->height());
 }
 
 define_reflectable_class_function(MWindow, touchBeginPixel, "args:pixelX,pixelY")
@@ -205,8 +205,8 @@ void MWindow::onResize(float width, float height) {
     implement_injectable_function((void), width, height)
 }
 
-define_reflectable_class_function(MWindow, onDraw)
-void MWindow::onDraw() {
+define_reflectable_class_function(MWindow, onDraw, "args:width,height")
+void MWindow::onDraw(float width, float height) {
     implement_injectable_function((void))
 }
 

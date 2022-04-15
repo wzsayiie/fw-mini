@@ -71,7 +71,7 @@ public:
     virtual void onHide();
 
     virtual void onResize(float width, float height);
-    virtual void onDraw();
+    virtual void onDraw  (float width, float height);
 
     virtual void onTouchBegin(float x, float y);
     virtual void onTouchMove (float x, float y);
