@@ -65,6 +65,23 @@ private:
     std::shared_ptr<Type> *_obj = nullptr;
 };
 
+//defer:
+//
+
+class defer {
+public:
+    template<class Fcn> defer(const Fcn &fcn) {
+        _fcn = fcn;
+    }
+
+    ~defer() {
+        _fcn();
+    }
+
+private:
+    std::function<void ()> _fcn;
+};
+
 //temporary buffer:
 //
 
@@ -111,3 +128,15 @@ template<class Class, class Super> struct extends : Super {
 };
 
 } //end dash.
+
+//any name:
+//
+
+#define  dash_name      _dash_name_a(__LINE__)
+#define _dash_name_a(n) _dash_name_b(n)
+#define _dash_name_b(n) _dash_name_##n
+
+//defer macro:
+//
+
+#define dash_defer dash::defer dash_name = [&]()
