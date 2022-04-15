@@ -125,21 +125,21 @@ public:
     MGraphType type() override;
 
     std::string text();
+    float pixelFontSize();
 
-    int     rgba    ();
-    float   fontSize();
-    MHAlign hAlign  ();
-    MVAlign vAlign  ();
-    float   pixelX  ();
-    float   pixelY  ();
-    float   pixelW  ();
-    float   pixelH  ();
+    int     rgba  ();
+    MHAlign hAlign();
+    MVAlign vAlign();
+    float   pixelX();
+    float   pixelY();
+    float   pixelW();
+    float   pixelH();
 
 public:
     std::string mText;
 
-    int     mRGBA     = 0;
     float   mFontSize = 0;
+    int     mRGBA     = 0;
     MHAlign mHAlign   = MHAlign::Center;
     MVAlign mVAlign   = MVAlign::Middle;
     float   mX        = 0;

@@ -302,13 +302,15 @@ MGraphType MImageGraph::type() {
     return MGraphType::Image;
 }
 
-define_reflectable_class_function(MImageGraph, image )
+define_reflectable_class_function(MImageGraph, image)
+MImage::ptr MImageGraph::image() {
+    return mImage;
+}
+
 define_reflectable_class_function(MImageGraph, pixelX)
 define_reflectable_class_function(MImageGraph, pixelY)
 define_reflectable_class_function(MImageGraph, pixelW)
 define_reflectable_class_function(MImageGraph, pixelH)
-
-MImage::ptr MImageGraph::image() { return mImage; }
 
 float MImageGraph::pixelX() { return m_px_from_pt mX; }
 float MImageGraph::pixelY() { return m_px_from_pt mY; }
@@ -324,22 +326,28 @@ MGraphType MTextGraph::type() {
     return MGraphType::Text;
 }
 
-define_reflectable_class_function(MTextGraph, text    )
-define_reflectable_class_function(MTextGraph, rgba    )
-define_reflectable_class_function(MTextGraph, fontSize)
-define_reflectable_class_function(MTextGraph, hAlign  )
-define_reflectable_class_function(MTextGraph, vAlign  )
-define_reflectable_class_function(MTextGraph, pixelX  )
-define_reflectable_class_function(MTextGraph, pixelY  )
-define_reflectable_class_function(MTextGraph, pixelW  )
-define_reflectable_class_function(MTextGraph, pixelH  )
+define_reflectable_class_function(MTextGraph, text)
+std::string MTextGraph::text() {
+    return mText;
+}
 
-std::string MTextGraph::text() { return mText; }
+define_reflectable_class_function(MTextGraph, pixelFontSize)
+float MTextGraph::pixelFontSize() {
+    return m_px_from_pt mFontSize;
+}
 
-int     MTextGraph::rgba    () { return mRGBA    ; }
-float   MTextGraph::fontSize() { return mFontSize; }
-MHAlign MTextGraph::hAlign  () { return mHAlign  ; }
-MVAlign MTextGraph::vAlign  () { return mVAlign  ; }
+define_reflectable_class_function(MTextGraph, rgba  )
+define_reflectable_class_function(MTextGraph, hAlign)
+define_reflectable_class_function(MTextGraph, vAlign)
+
+int     MTextGraph::rgba  () { return mRGBA  ; }
+MHAlign MTextGraph::hAlign() { return mHAlign; }
+MVAlign MTextGraph::vAlign() { return mVAlign; }
+
+define_reflectable_class_function(MTextGraph, pixelX)
+define_reflectable_class_function(MTextGraph, pixelY)
+define_reflectable_class_function(MTextGraph, pixelW)
+define_reflectable_class_function(MTextGraph, pixelH)
 
 float MTextGraph::pixelX() { return m_px_from_pt mX; }
 float MTextGraph::pixelY() { return m_px_from_pt mY; }
