@@ -1,5 +1,7 @@
 #pragma once
 
-#include "mwin32gdiplus.h"
+#include "mencode.h"
+#include "mcontext.h"
+#include "mwin32imagefactory.h"
 
 void MWin32Paint(HDC dc);

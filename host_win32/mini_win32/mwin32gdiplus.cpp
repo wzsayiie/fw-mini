@@ -10,6 +10,6 @@ void MWin32GdiplusStartup()
 
 void MWin32GdiplusShutdown()
 {
-    Gdiplus::GdiplusShutdown(sGdiplusToken);
-    sGdiplusToken = 0;
+    //Gdiplus::GdiplusShutdown(sGdiplusToken);
+    //sGdiplusToken = 0;
 }

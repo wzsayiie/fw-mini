@@ -2,9 +2,7 @@
 #include <io.h>
 #include <windowsx.h>
 #include "mapp.h"
-#include "mencode.h"
 #include "mpcbundle.h"
-#include "mwin32imagefactory.h"
 #include "mwin32paint.h"
 #include "mwindow.h"
 
@@ -239,7 +237,9 @@ static void OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
         FillRect(dc, &rect, backgroundBrush);
         DeleteBrush(backgroundBrush);
 
+        MWindow::mainWindow()->draw();
         MWin32Paint(dc);
+        MContextReset();
 
         BitBlt(paint.hdc, 0, 0, clientSize.cx, clientSize.cy, dc, 0, 0, SRCCOPY);
         DeleteDC(dc);
