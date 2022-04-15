@@ -110,7 +110,7 @@ MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &p
     std::filesystem::directory_iterator iterator(m_normal_path path);
     for (auto &entry : iterator) {
         std::string item = entry.path().string();
-        contents->push_back(m_normal_path item);
+        contents->vector.push_back(m_normal_path item);
     }
 
     return contents;
