@@ -88,6 +88,11 @@ MSize::ptr MImage::pixelSize() {
     return MSize::create();
 }
 
+define_reflectable_class_function(MImage, impl)
+MImageImpl::ptr MImage::impl() {
+    return mImpl;
+}
+
 //image factory:
 //
 

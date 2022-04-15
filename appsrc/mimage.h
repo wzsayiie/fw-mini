@@ -36,6 +36,8 @@ public:
 
     MSize::ptr pixelSize();
 
+    MImageImpl::ptr impl();
+
 private:
     MImageImpl::ptr mImpl;
 };
