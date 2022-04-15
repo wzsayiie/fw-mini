@@ -1,4 +1,7 @@
 #include "mwin32paint.h"
+#include "mencode.h"
+#include "mcontext.h"
+#include "mwin32imagefactory.h"
 
 static void PaintClip(Gdiplus::Graphics *pen, MClipGraph *graph)
 {

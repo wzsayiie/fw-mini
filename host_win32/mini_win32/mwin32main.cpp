@@ -2,7 +2,10 @@
 #include <io.h>
 #include <windowsx.h>
 #include "mapp.h"
+#include "mcontext.h"
+#include "mencode.h"
 #include "mpcbundle.h"
+#include "mwin32imagefactory.h"
 #include "mwin32paint.h"
 #include "mwindow.h"
 
