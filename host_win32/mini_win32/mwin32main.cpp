@@ -153,7 +153,7 @@ static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     //components initialization.
     OpenConsole();
-    MWin32GdiplusShutdown();
+    MWin32GdiplusStartup();
     MPCBundle::install();
     MWin32ImageFactory::install();
 
