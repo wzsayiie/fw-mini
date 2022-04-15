@@ -1,8 +1,8 @@
 #include "mpcbundle.h"
 
 #if DASH_OS_WIN32
-    #include <windows.h>
-    #include <shlobj.h>
+    #include <ShlObj.h>
+    #include <Windows.h>
 #elif DASH_OS_LINUX
     #include <pwd.h>
     #include <unistd.h>

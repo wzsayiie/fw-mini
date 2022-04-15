@@ -1,6 +1,6 @@
 #pragma once
 
-#include <windows.h> //"gdiplus.h" need.
+#include <Windows.h> //"gdiplus.h" need.
 #include <gdiplus.h>
 
 void MWin32GdiplusStartup();
