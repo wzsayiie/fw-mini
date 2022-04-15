@@ -6,7 +6,7 @@
 declare_reflectable_class(MWin32ImageImpl)
 class MWin32ImageImpl : public MExtends<MWin32ImageImpl, MImageImpl> {
 public:
-    Gdiplus::Image *mReal = nullptr;
+    std::shared_ptr<Gdiplus::Image> mReal;
 };
 
 declare_reflectable_class(MWin32ImageFactory)
