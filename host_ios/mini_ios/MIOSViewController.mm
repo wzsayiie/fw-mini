@@ -1,5 +1,7 @@
 #import "MIOSViewController.h"
-#import "MIOSDrawView.h"
+#import "MMACBundle.h"
+#import "MMACDrawView.h"
+#import "MMACImageFactory.h"
 
 const CGFloat TextFieldWidth  = 300;
 const CGFloat TextFieldHeight =  30;
@@ -36,11 +38,14 @@ const CGFloat TextFieldBottom =  20;
 }
 
 - (void)loadView {
-    self.view = [[MIOSDrawView alloc] init];
+    self.view = [[MMACDrawView alloc] init];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    MMACBundle::install();
+    MMACImageFactory::install();
     
     //application events:
     self.app->launch();

@@ -1,7 +1,7 @@
 #import "MOSXViewController.h"
-#import "MOSXBundle.h"
-#import "MOSXDrawView.h"
-#import "MOSXImageFactory.h"
+#import "MMACBundle.h"
+#import "MMACDrawView.h"
+#import "MMACImageFactory.h"
 #import <Carbon/Carbon.h>
 
 const CGFloat ViewContentWidth  = 360;
@@ -39,14 +39,14 @@ const CGFloat TextFieldBottom   =  20;
 
 - (void)loadView {
     //NOTE: don't call [super loadView], that will try to unarchive a nib.
-    self.view = [[MOSXDrawView alloc] initWithFrame:NSMakeRect(0, 0, ViewContentWidth, ViewContentHeight)];
+    self.view = [[MMACDrawView alloc] initWithFrame:NSMakeRect(0, 0, ViewContentWidth, ViewContentHeight)];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    MOSXBundle::install();
-    MOSXImageFactory::install();
+    MMACBundle::install();
+    MMACImageFactory::install();
     
     //application events:
     self.app->launch();
