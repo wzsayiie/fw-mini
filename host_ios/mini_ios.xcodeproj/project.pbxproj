@@ -13,13 +13,11 @@
 		CE107D682674C19500823730 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE107D652674C19500823730 /* LaunchScreen.storyboard */; };
 		CE107D6F2674C42C00823730 /* README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE107D6A2674C42C00823730 /* README.cpp */; };
 		CE107D752674C4B900823730 /* mini.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CE107D742674C4B900823730 /* mini.bundle */; };
-		CE38B31C27EF62D900CFAC87 /* MIOSImageFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE38B31827EF62D900CFAC87 /* MIOSImageFactory.mm */; };
-		CE38B31D27EF62D900CFAC87 /* MIOSBundle.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE38B31A27EF62D900CFAC87 /* MIOSBundle.mm */; };
+		CE1FC5C5280C54CC005215EC /* MMACBundle.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5BF280C54CC005215EC /* MMACBundle.mm */; };
+		CE1FC5C6280C54CC005215EC /* MMACImageFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5C0280C54CC005215EC /* MMACImageFactory.mm */; };
+		CE1FC5C7280C54CC005215EC /* MMACDrawView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5C3280C54CC005215EC /* MMACDrawView.mm */; };
 		CEDE116E26DB8E0E0098D3C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE116D26DB8E0E0098D3C8 /* UIKit.framework */; };
-		CEDE117026DB8E170098D3C8 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE116F26DB8E170098D3C8 /* JavaScriptCore.framework */; };
 		CEDE117226DB8E1E0098D3C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE117126DB8E1E0098D3C8 /* CoreGraphics.framework */; };
-		CEE49720269332E0005C4957 /* MIOSDrawView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE4971C269332E0005C4957 /* MIOSDrawView.mm */; };
-		CEFC4AA427EF61C00082461A /* MMACJavaScriptCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEFC4AA327EF61C00082461A /* MMACJavaScriptCore.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,17 +30,14 @@
 		CE107D652674C19500823730 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CE107D6A2674C42C00823730 /* README.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = README.cpp; sourceTree = "<group>"; };
 		CE107D742674C4B900823730 /* mini.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = mini.bundle; sourceTree = "<group>"; };
-		CE38B31827EF62D900CFAC87 /* MIOSImageFactory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MIOSImageFactory.mm; sourceTree = "<group>"; };
-		CE38B31927EF62D900CFAC87 /* MIOSBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIOSBundle.h; sourceTree = "<group>"; };
-		CE38B31A27EF62D900CFAC87 /* MIOSBundle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MIOSBundle.mm; sourceTree = "<group>"; };
-		CE38B31B27EF62D900CFAC87 /* MIOSImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIOSImageFactory.h; sourceTree = "<group>"; };
+		CE1FC5BF280C54CC005215EC /* MMACBundle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACBundle.mm; sourceTree = "<group>"; };
+		CE1FC5C0280C54CC005215EC /* MMACImageFactory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACImageFactory.mm; sourceTree = "<group>"; };
+		CE1FC5C1280C54CC005215EC /* MMACImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACImageFactory.h; sourceTree = "<group>"; };
+		CE1FC5C2280C54CC005215EC /* MMACBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACBundle.h; sourceTree = "<group>"; };
+		CE1FC5C3280C54CC005215EC /* MMACDrawView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACDrawView.mm; sourceTree = "<group>"; };
+		CE1FC5C4280C54CC005215EC /* MMACDrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACDrawView.h; sourceTree = "<group>"; };
 		CEDE116D26DB8E0E0098D3C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		CEDE116F26DB8E170098D3C8 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		CEDE117126DB8E1E0098D3C8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		CEE4971C269332E0005C4957 /* MIOSDrawView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MIOSDrawView.mm; sourceTree = "<group>"; };
-		CEE4971D269332E0005C4957 /* MIOSDrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MIOSDrawView.h; sourceTree = "<group>"; };
-		CEFC4AA227EF61C00082461A /* MMACJavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACJavaScriptCore.h; sourceTree = "<group>"; };
-		CEFC4AA327EF61C00082461A /* MMACJavaScriptCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACJavaScriptCore.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +46,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEDE117226DB8E1E0098D3C8 /* CoreGraphics.framework in Frameworks */,
-				CEDE117026DB8E170098D3C8 /* JavaScriptCore.framework in Frameworks */,
 				CEDE116E26DB8E0E0098D3C8 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -86,12 +80,6 @@
 				CE107D592674C11400823730 /* Info.plist */,
 				CE107D652674C19500823730 /* LaunchScreen.storyboard */,
 				CE107D5A2674C11400823730 /* MIOSAppMain.mm */,
-				CE38B31927EF62D900CFAC87 /* MIOSBundle.h */,
-				CE38B31A27EF62D900CFAC87 /* MIOSBundle.mm */,
-				CEE4971D269332E0005C4957 /* MIOSDrawView.h */,
-				CEE4971C269332E0005C4957 /* MIOSDrawView.mm */,
-				CE38B31B27EF62D900CFAC87 /* MIOSImageFactory.h */,
-				CE38B31827EF62D900CFAC87 /* MIOSImageFactory.mm */,
 				CE107D642674C19500823730 /* MIOSViewController.h */,
 				CE107D622674C19500823730 /* MIOSViewController.mm */,
 			);
@@ -120,7 +108,6 @@
 			isa = PBXGroup;
 			children = (
 				CEDE117126DB8E1E0098D3C8 /* CoreGraphics.framework */,
-				CEDE116F26DB8E170098D3C8 /* JavaScriptCore.framework */,
 				CEDE116D26DB8E0E0098D3C8 /* UIKit.framework */,
 			);
 			name = frameworks;
@@ -129,8 +116,12 @@
 		CEFC4AA127EF61C00082461A /* mini_mac */ = {
 			isa = PBXGroup;
 			children = (
-				CEFC4AA227EF61C00082461A /* MMACJavaScriptCore.h */,
-				CEFC4AA327EF61C00082461A /* MMACJavaScriptCore.mm */,
+				CE1FC5C2280C54CC005215EC /* MMACBundle.h */,
+				CE1FC5BF280C54CC005215EC /* MMACBundle.mm */,
+				CE1FC5C4280C54CC005215EC /* MMACDrawView.h */,
+				CE1FC5C3280C54CC005215EC /* MMACDrawView.mm */,
+				CE1FC5C1280C54CC005215EC /* MMACImageFactory.h */,
+				CE1FC5C0280C54CC005215EC /* MMACImageFactory.mm */,
 			);
 			name = mini_mac;
 			path = ../host/mini_mac;
@@ -205,12 +196,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE38B31D27EF62D900CFAC87 /* MIOSBundle.mm in Sources */,
-				CE38B31C27EF62D900CFAC87 /* MIOSImageFactory.mm in Sources */,
-				CEE49720269332E0005C4957 /* MIOSDrawView.mm in Sources */,
 				CE107D672674C19500823730 /* MIOSViewController.mm in Sources */,
+				CE1FC5C5280C54CC005215EC /* MMACBundle.mm in Sources */,
 				CE107D6F2674C42C00823730 /* README.cpp in Sources */,
-				CEFC4AA427EF61C00082461A /* MMACJavaScriptCore.mm in Sources */,
+				CE1FC5C6280C54CC005215EC /* MMACImageFactory.mm in Sources */,
+				CE1FC5C7280C54CC005215EC /* MMACDrawView.mm in Sources */,
 				CE107D5B2674C11400823730 /* MIOSAppMain.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
