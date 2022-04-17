@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mgraphics.h"
 #include "mimage.h"
 
 //draw function:
