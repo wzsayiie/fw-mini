@@ -10,11 +10,6 @@ cross-plaform resources and c++ sources files.
 * appres/mini.bundle/
 * appsrc/
 
-the typescript project based on **node.js** environment.
-it will compile the sources into *appres/mini.bundle/bundle.js*.
-
-* appts/
-
 sources shared by multiple os platforms.
 
 * host/
