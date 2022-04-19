@@ -32,4 +32,4 @@ template<class... Args> void print(Args... args) {
     print_with_stream(stream, args...);
 }
 
-} // end dash.
+} //end dash.

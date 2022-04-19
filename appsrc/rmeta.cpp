@@ -98,4 +98,4 @@ const std::vector<type_meta *> &all_types() {
     return *s_seq;
 }
 
-} // end reflect.
+} //end reflect.

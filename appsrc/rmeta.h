@@ -113,4 +113,4 @@ void commit_meta(type_meta *meta);
 const type_meta *find_type(const char *name);
 const std::vector<type_meta *> &all_types();
 
-} // end reflect.
+} //end reflect.

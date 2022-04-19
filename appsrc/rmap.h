@@ -57,4 +57,4 @@ private:
     typename std::map<Key, Value>::iterator _it;
 };
 
-} // end reflect.
+} //end reflect.
