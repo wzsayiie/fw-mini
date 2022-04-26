@@ -1,25 +1,7 @@
-#include "dcustom.h"
+#include "dfile.h"
 #include <fstream>
 
 namespace dash {
-
-//temporary buffer:
-//
-
-const int c_bytes_buffer_size = 4096;
-
-void *bytes_buffer() {
-    static thread_local void *buffer = new uint8_t[c_bytes_buffer_size];
-    return buffer;
-}
-
-int bytes_buffer_size() {
-    return c_bytes_buffer_size;
-}
-
-
-//file operations:
-//
 
 void read_file(const char *path, const std::function<void *(int size)> &buffer) {
     if (!path || !*path || !buffer) {
