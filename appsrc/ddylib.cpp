@@ -12,7 +12,7 @@
 
 namespace dash {
 
-static lazy_var<std::map<std::string, dylib *>> s_libs;
+static lazy<std::map<std::string, dylib *>> s_libs;
 
 dylib *load_dylib(const char *path) {
     if (!path || !*path) {

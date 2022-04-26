@@ -3,18 +3,18 @@
 //context data:
 //
 
-static dash::lazy_var<MVector<MGraph::ptr>> sGraphs;
+static dash::lazy<MVector<MGraph::ptr>> sGraphs;
 
 declare_reflectable_special(MVector<MRect ::ptr>)
 declare_reflectable_special(MVector<MPoint::ptr>)
 
-static dash::lazy_var<MVector<MRect ::ptr>> sClipStack;
-static dash::lazy_var<MVector<MPoint::ptr>> sOffsetStack;
+static dash::lazy<MVector<MRect ::ptr>> sClipStack;
+static dash::lazy<MVector<MPoint::ptr>> sOffsetStack;
 static float sOffsetX = 0;
 static float sOffsetY = 0;
 
-static dash::lazy_var<MImage::ptr> sImage;
-static dash::lazy_var<std::string> sText;
+static dash::lazy<MImage::ptr> sImage;
+static dash::lazy<std::string> sText;
 static MColorRGBA sRGBA      = {0};
 static float      sLineWidth = 0;
 static float      sFontSize  = 0;

@@ -6,7 +6,7 @@ struct stack_frame {
     std::vector<any> args;
     any returned;
 };
-static dash::lazy_var<std::vector<stack_frame>> s_frames;
+static dash::lazy<std::vector<stack_frame>> s_frames;
 
 any get_argument(int index) {
     if (s_frames->empty()) {

@@ -5,7 +5,7 @@ namespace reflect {
 //symbol:
 //
 
-static dash::lazy_var<std::set<symbol>> s_symbols;
+static dash::lazy<std::set<symbol>> s_symbols;
 
 symbol *symbol::make(const char *str) {
     if (!str || !*str) {

@@ -5,10 +5,10 @@
 
 namespace dash {
 
-//lazy_var:
+//lazy:
 //
 
-template<class Type> class lazy_var {
+template<class Type> class lazy {
 public:
     Type *operator->() { return  this->obj(); }
     Type *operator& () { return  this->obj(); }
@@ -33,7 +33,7 @@ private:
     Type *_obj = nullptr;
 };
 
-template<class Type> class lazy_var<std::shared_ptr<Type>> {
+template<class Type> class lazy<std::shared_ptr<Type>> {
 public:
     Type *operator->() { return  this->obj()->get(); }
     Type *operator& () { return  this->obj()->get(); }

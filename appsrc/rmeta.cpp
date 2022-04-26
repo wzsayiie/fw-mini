@@ -2,8 +2,8 @@
 
 namespace reflect {
 
-static dash::lazy_var<std::map<symbol *, type_meta *>> s_map;
-static dash::lazy_var<std::vector<type_meta *>>        s_seq;
+static dash::lazy<std::map<symbol *, type_meta *>> s_map;
+static dash::lazy<std::vector<type_meta *>>        s_seq;
 
 template<class Meta> Meta *get(symbol *name, type_category type) {
     auto it = s_map->find(name);
