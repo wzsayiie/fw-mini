@@ -1,0 +1,13 @@
+{
+    "name": "fw-mini",
+    "scripts": {
+        "app": "webpack --config wp-app.js --watch",
+        "dev": "webpack --config wp-dev.js --watch"
+    },
+    "devDependencies": {
+        "webpack-cli": "*",
+        "webpack": "*",
+        "typescript": "*",
+        "ts-loader": "*"
+    }
+}

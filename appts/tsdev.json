@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "moduleResolution": "node",
+        "target": "ESNext"
+    },
+    "exclude": [ "node_modules" ],
+    "include": [ "dev" ]
+}
