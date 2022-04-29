@@ -1,7 +1,6 @@
 #include "mgraphics.h"
 
 //pixel scale:
-//
 
 static float sPixelScale = 1.0f;
 
@@ -24,7 +23,6 @@ float _MPixelFromPointCaster::operator<<(float pt) {
 }
 
 //alignment:
-//
 
 define_reflectable_enum_const(MHAlign, Left  )
 define_reflectable_enum_const(MHAlign, Center)
@@ -35,7 +33,6 @@ define_reflectable_enum_const(MVAlign, Middle)
 define_reflectable_enum_const(MVAlign, Bottom)
 
 //color:
-//
 
 define_reflectable_class_const(MColor, BlackRGBA    )
 define_reflectable_class_const(MColor, DarkGrayRGBA )

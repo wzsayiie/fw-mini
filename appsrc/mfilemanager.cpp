@@ -1,7 +1,6 @@
 #include "mfilemanager.h"
 
 //normal path:
-//
 
 //on windows platform, "\" and "/" are both path separators.
 //but for unix and its derivatives, "\" can be included in filename.
@@ -22,7 +21,6 @@ struct PathNormalizer {
 #define m_normal_path PathNormalizer()<<
 
 //file manager:
-//
 
 define_reflectable_class_function(MFileManager, sharedObject)
 MFileManager *MFileManager::sharedObject() {
@@ -163,7 +161,6 @@ std::string MFileManager::temporaryDirectory() {
 }
 
 //bundle:
-//
 
 define_reflectable_class_const(MBundle, PrivateDirectoryName)
 define_reflectable_class_const(MBundle, BundleDirectoryName )

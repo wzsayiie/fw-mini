@@ -4,7 +4,6 @@
 #include "mgraphics.h" //bitmap processing will use color struct.
 
 //file format:
-//
 
 declare_reflectable_enum(MImageFileFormat)
 enum class MImageFileFormat {
@@ -13,7 +12,6 @@ enum class MImageFileFormat {
 };
 
 //image:
-//
 
 M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MImageImpl)
@@ -43,7 +41,6 @@ private:
 };
 
 //image factory:
-//
 
 M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MImageFactory)

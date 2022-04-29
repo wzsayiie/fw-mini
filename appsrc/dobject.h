@@ -4,14 +4,12 @@
 
 namespace dash {
 
-//trivial:
-//
+//pod:
 
-struct trivial_object {
+struct pod_object {
 };
 
 //virtual:
-//
 
 struct virtual_object {
     virtual ~virtual_object() = default;

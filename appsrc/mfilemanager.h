@@ -3,7 +3,6 @@
 #include "mobject.h"
 
 //file manager:
-//
 
 declare_reflectable_class(MFileManager)
 class MFileManager : public MExtends<MFileManager, MObject> {
@@ -39,7 +38,6 @@ private:
 };
 
 //bundle:
-//
 
 M_HOST_IMPLEMENT_CLASS
 declare_reflectable_class(MBundle)

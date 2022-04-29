@@ -1,7 +1,6 @@
 #include "mgeometry.h"
 
 //point:
-//
 
 MPoint::ptr MPoint::from(float x, float y) {
     auto obj = MPoint::create();
@@ -19,7 +18,6 @@ float MPoint::x() { return mX; }
 float MPoint::y() { return mY; }
 
 //size:
-//
 
 MSize::ptr MSize::from(float width, float height) {
     auto obj = MSize::create();
@@ -42,7 +40,6 @@ bool MSize::none() {
 }
 
 //rect:
-//
 
 MRect::ptr MRect::from(float x, float y, float width, float height) {
     auto obj = MRect::create();

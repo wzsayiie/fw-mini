@@ -2,13 +2,11 @@
 #include "mfilemanager.h"
 
 //file format:
-//
 
 define_reflectable_enum_const(MImageFileFormat, JPEG)
 define_reflectable_enum_const(MImageFileFormat, PNG )
 
 //image:
-//
 
 define_reflectable_class_function(MImage, imageFromBundle, "args:path")
 MImage::ptr MImage::imageFromBundle(const std::string &path) {
@@ -94,7 +92,6 @@ MImageImpl::ptr MImage::impl() {
 }
 
 //image factory:
-//
 
 MImageFactory::ptr MImageFactory::sSharedObject;
 

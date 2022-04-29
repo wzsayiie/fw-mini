@@ -1,7 +1,6 @@
 #import "MMACImageFactory.h"
 
 //bitmap context:
-//
 
 static CGContextRef CreateBitmapContext(void *bytes, int width, int height) {
     CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
@@ -20,7 +19,6 @@ static CGContextRef CreateBitmapContext(void *bytes, int width, int height) {
 }
 
 //image factory:
-//
 
 void MMACImageFactory::install() {
     auto obj = MMACImageFactory::create();

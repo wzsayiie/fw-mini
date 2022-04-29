@@ -1,7 +1,6 @@
 #include "mapp.h"
 
 //app:
-//
 
 define_reflectable_class_const(MApp, UpdateEverySeconds)
 
@@ -48,7 +47,6 @@ void MApp::removeListener(const MFunction<void ()>::ptr &listener) {
 }
 
 //launch registrar:
-//
 
 _MAppLaunchRegistrar::_MAppLaunchRegistrar(void (*fcn)()) noexcept {
     auto func = MFunction<void ()>::create(fcn);

@@ -2,7 +2,6 @@
 #include "mgraphics.h"
 
 //key:
-//
 
 define_reflectable_enum_const(MKey, Back )
 define_reflectable_enum_const(MKey, Enter)
@@ -17,7 +16,6 @@ define_reflectable_enum_const(MKey, S    )
 define_reflectable_enum_const(MKey, W    )
 
 //window:
-//
 
 define_reflectable_class_const(MWindow, UpdateEverySeconds)
 define_reflectable_class_const(MWindow, TitleName)

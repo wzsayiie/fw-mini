@@ -3,7 +3,6 @@
 #include "mobject.h"
 
 //pixel scale:
-//
 
 M_HOST_CALL_FUNCTION void MSetPixelScale(float scale);
 float MGetPixelScale();
@@ -15,7 +14,6 @@ struct _MPointFromPixelCaster { float operator<<(float px); };
 struct _MPixelFromPointCaster { float operator<<(float pt); };
 
 //alignment:
-//
 
 declare_reflectable_enum(MHAlign)
 enum class MHAlign {
@@ -32,7 +30,6 @@ enum class MVAlign {
 };
 
 //color:
-//
 
 union MColorRGBA {
     int rgba = 0;

@@ -3,7 +3,6 @@
 #include "mobject.h"
 
 //point:
-//
 
 declare_reflectable_class(MPoint)
 class MPoint : public MExtends<MPoint, MObject> {
@@ -20,7 +19,6 @@ private:
 };
 
 //size:
-//
 
 declare_reflectable_class(MSize)
 class MSize : public MExtends<MSize, MObject> {
@@ -38,7 +36,6 @@ private:
 };
 
 //rect:
-//
 
 declare_reflectable_class(MRect)
 class MRect : public MExtends<MRect, MObject> {

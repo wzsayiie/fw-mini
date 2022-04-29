@@ -5,7 +5,6 @@
 namespace reflect {
 
 //type:
-//
 
 enum class type_category {
     is_void    ,    //void.
@@ -108,7 +107,6 @@ struct class_meta : super_meta {
 void commit_meta(type_meta *meta);
 
 //query:
-//
 
 const type_meta *find_type(const char *name);
 const std::vector<type_meta *> &all_types();

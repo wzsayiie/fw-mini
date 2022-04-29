@@ -3,7 +3,6 @@
 #include "mimage.h"
 
 //draw function:
-//
 
 void MContextSelectImage(const MImage::ptr &image);
 void MContextSelectText (const std::string &text );
@@ -29,7 +28,6 @@ void MContextDrawImage     (float x , float y , float w , float h );
 void MContextDrawText      (float x , float y , float w , float h );
 
 //graphs:
-//
 
 declare_reflectable_enum(MGraphType)
 enum class MGraphType {
@@ -46,7 +44,6 @@ public:
 };
 
 //clip graph:
-//
 
 declare_reflectable_class(MClipGraph)
 class MClipGraph : public MExtends<MClipGraph, MGraph> {
@@ -66,7 +63,6 @@ public:
 };
 
 //triangle graph:
-//
 
 declare_reflectable_class(MTriangleGraph)
 class MTriangleGraph : public MExtends<MTriangleGraph, MGraph> {
@@ -92,7 +88,6 @@ public:
 };
 
 //image graph:
-//
 
 declare_reflectable_class(MImageGraph)
 class MImageGraph : public MExtends<MImageGraph, MGraph> {
@@ -116,7 +111,6 @@ public:
 };
 
 //text graph:
-//
 
 declare_reflectable_class(MTextGraph)
 class MTextGraph : public MExtends<MTextGraph, MGraph> {
@@ -148,7 +142,6 @@ public:
 };
 
 //host functions:
-//
 
 declare_reflectable_special(MVector<MGraph::ptr>)
 

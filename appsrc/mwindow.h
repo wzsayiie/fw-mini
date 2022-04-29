@@ -3,7 +3,6 @@
 #include "mgeometry.h"
 
 //key:
-//
 
 declare_reflectable_enum(MKey)
 enum class MKey {
@@ -23,7 +22,6 @@ enum class MKey {
 };
 
 //window:
-//
 
 declare_reflectable_class(MWindow)
 class MWindow : public MExtends<MWindow, MObject> {

@@ -1,7 +1,6 @@
 #include "mcontext.h"
 
 //context data:
-//
 
 static dash::lazy<MVector<MGraph::ptr>> sGraphs;
 
@@ -22,7 +21,6 @@ static MHAlign    sHAlign    = MHAlign::Center;
 static MVAlign    sVAlign    = MVAlign::Middle;
 
 //draw function:
-//
 
 define_reflectable_function(MContextSelectImage    , "args:image")
 define_reflectable_function(MContextSelectText     , "args:text" )
@@ -242,7 +240,6 @@ void MContextDrawText(float x, float y, float w, float h) {
 }
 
 //graphs:
-//
 
 define_reflectable_enum_const(MGraphType, Clip    )
 define_reflectable_enum_const(MGraphType, Triangle)
@@ -250,7 +247,6 @@ define_reflectable_enum_const(MGraphType, Image   )
 define_reflectable_enum_const(MGraphType, Text    )
 
 //clip graph:
-//
 
 define_reflectable_class_function(MClipGraph, type)
 MGraphType MClipGraph::type() {
@@ -269,7 +265,6 @@ float MClipGraph::pixelW() { return m_px_from_pt mW; }
 float MClipGraph::pixelH() { return m_px_from_pt mH; }
 
 //triangle graph:
-//
 
 define_reflectable_class_function(MTriangleGraph, type)
 MGraphType MTriangleGraph::type() {
@@ -294,7 +289,6 @@ float MTriangleGraph::pixelX2() { return m_px_from_pt mX2; }
 float MTriangleGraph::pixelY2() { return m_px_from_pt mY2; }
 
 //image graph:
-//
 
 define_reflectable_class_function(MImageGraph, type)
 MGraphType MImageGraph::type() {
@@ -318,7 +312,6 @@ float MImageGraph::pixelW() { return m_px_from_pt mW; }
 float MImageGraph::pixelH() { return m_px_from_pt mH; }
 
 //text graph:
-//
 
 define_reflectable_class_function(MTextGraph, type)
 MGraphType MTextGraph::type() {
@@ -355,7 +348,6 @@ float MTextGraph::pixelW() { return m_px_from_pt mW; }
 float MTextGraph::pixelH() { return m_px_from_pt mH; }
 
 //host functions:
-//
 
 MVector<MGraph::ptr> *MContextGetGraphs() {
     return &sGraphs;

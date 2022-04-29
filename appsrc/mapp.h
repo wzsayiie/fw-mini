@@ -3,7 +3,6 @@
 #include "mobject.h"
 
 //app:
-//
 
 declare_reflectable_class(MApp)
 class MApp : public MExtends<MApp, MObject> {
@@ -27,7 +26,6 @@ private:
 };
 
 //launch registrar:
-//
 
 #define m_app_launch(fcn)                               \
 /**/    ;                                               \
