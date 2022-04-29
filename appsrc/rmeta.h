@@ -53,12 +53,12 @@ enum class type_qualifier {
 
 struct type_meta {
     type_category type = type_category::is_void;
-    symbol       *name = nullptr;
+    symbol        sym  ;
 };
 
 struct const_meta : type_meta {
-    symbol       *belong_class = nullptr;
-    symbol       *belong_enum  = nullptr;
+    symbol        belong_class ;
+    symbol        belong_enum  ;
     type_category value_type   = type_category::is_void;
     const char   *string_value = nullptr;
     double        double_value = 0;
@@ -66,8 +66,8 @@ struct const_meta : type_meta {
 };
 
 struct enum_meta : type_meta {
-    std::map<symbol *, const_meta *> value_map;
-    std::vector<const_meta *>        value_seq;
+    std::map<symbol, const_meta *> value_map;
+    std::vector<const_meta *>      value_seq;
 };
 
 struct super_meta : type_meta {
@@ -75,34 +75,34 @@ struct super_meta : type_meta {
 };
 
 struct vector_map : super_meta {
-    symbol *val_type = nullptr;
+    symbol val_type;
 };
 
 struct map_meta : super_meta {
-    symbol *key_type = nullptr;
-    symbol *val_type = nullptr;
+    symbol key_type;
+    symbol val_type;
 };
 
 struct set_meta : super_meta {
-    symbol *val_type = nullptr;
+    symbol val_type;
 };
 
 struct function_meta : super_meta {
-    symbol                     *belong_class   = nullptr;
+    symbol                      belong_class   ;
     bool                        is_static      = false;
     std::vector<type_qualifier> arg_qualifiers ;
     std::vector<symbol *>       arg_types      ;
     type_qualifier              ret_qualifier  = type_qualifier::value;
-    symbol                     *ret_type       = nullptr;
+    symbol                      ret_type       ;
     base_function::ptr          function       ;
     const char *                annotation     = nullptr;
 };
 
 struct class_meta : super_meta {
-    std::map<symbol *, function_meta *> function_map;
-    std::vector<function_meta *>        function_seq;
-    std::map<symbol *, const_meta *>    const_map   ;
-    std::vector<const_meta *>           const_seq   ;
+    std::map<symbol, function_meta *> function_map;
+    std::vector<function_meta *>      function_seq;
+    std::map<symbol, const_meta *>    const_map   ;
+    std::vector<const_meta *>         const_seq   ;
 };
 
 void commit_meta(type_meta *meta);

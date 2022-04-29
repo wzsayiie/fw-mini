@@ -6,21 +6,10 @@ namespace reflect {
 //
 
 void function_table::add(const char *name, const base_function::ptr &func) {
-    if (name && *name && func) {
-        symbol *sym = symbol::make(name);
-        _functions.insert({ sym, func });
-    }
 }
 
 base_function::ptr function_table::find(const char *name) {
-    symbol *sym = symbol::find(name);
-
-    auto target = _functions.find(sym);
-    if (target != _functions.end()) {
-        return target->second;
-    } else {
-        return nullptr;
-    }
+    return nullptr;
 }
 
 //injectable:

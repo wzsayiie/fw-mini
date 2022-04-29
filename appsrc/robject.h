@@ -11,7 +11,7 @@ template<> struct type_name_of<class object> {
 
 class object : public dash::extends<object, dash::object> {
 public:
-    virtual symbol *class_name() const;
+    virtual symbol class_symbol() const;
     
     int  ref_count() const;
     void retain();
@@ -22,7 +22,7 @@ private:
 };
 
 template<class Class, class Super> struct extends : dash::extends<Class, Super> {
-    symbol *class_name() const override {
+    symbol class_symbol() const override {
         return type_name<Class>::value();
     }
 };

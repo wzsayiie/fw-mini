@@ -3,46 +3,47 @@
 
 namespace reflect {
 
-static dash::lazy<std::set<symbol>> s_symbols;
+static dash::lazy<std::set<std::string>> s_strings;
 
-symbol *symbol::make(const char *str) {
-    if (!str || !*str) {
-        return nullptr;
-    }
-    
-    symbol sym(str);
-    
-    auto the = s_symbols->find(sym);
-    if (the == s_symbols->end()) {
-        return (symbol *)&*s_symbols->insert(sym).first;
-    } else {
-        return (symbol *)&*the;
-    }
+symbol symbol::make(const char *str) {
+    return symbol(str);
 }
 
-symbol *symbol::find(const char *str) {
-    if (!str || !*str) {
-        return nullptr;
+symbol symbol::find(const char *str) {
+    if (str && *str) {
+        auto it = s_strings->find(str);
+        if (it != s_strings->end()) {
+            return symbol(it->c_str());
+        }
     }
-    
-    auto the = s_symbols->find(symbol(str));
-    if (the != s_symbols->end()) {
-        return (symbol *)&*the;
-    } else {
-        return nullptr;
-    }
+    return symbol(nullptr);
 }
 
-bool symbol::operator<(const symbol &that) const {
-    return strcmp(_str, that._str) < 0;
-}
-
-const char *symbol::str() const {
-    return _str;
+symbol::symbol() {
+    _str = nullptr;
 }
 
 symbol::symbol(const char *str) {
-    _str = str;
+    if (str && *str) {
+        auto pair = s_strings->insert(str);
+        _str = pair.first->c_str();
+    } else {
+        _str = nullptr;
+    }
+}
+
+bool symbol::operator< (const symbol &that) const { return _str <  that._str; }
+bool symbol::operator<=(const symbol &that) const { return _str <= that._str; }
+bool symbol::operator> (const symbol &that) const { return _str >  that._str; }
+bool symbol::operator>=(const symbol &that) const { return _str >= that._str; }
+bool symbol::operator==(const symbol &that) const { return _str == that._str; }
+bool symbol::operator!=(const symbol &that) const { return _str != that._str; }
+
+symbol::operator const char *() const { return _str; }
+symbol::operator bool        () const { return _str; }
+
+const char *symbol::str() const {
+    return _str;
 }
 
 } //end reflect.

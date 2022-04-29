@@ -2,7 +2,7 @@
 
 namespace reflect {
 
-symbol *object::class_name() const {
+symbol object::class_symbol() const {
     return type_name<object>::value();
 }
 
