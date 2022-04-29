@@ -4,20 +4,22 @@
 
 namespace reflect {
 
-//function_table:
-//
+//function table:
 
 class function_table : public dash::extends<function_table, dash::object> {
 public:
-    void add(const char *name, const base_function::ptr &func);
+    void insert(const char *name, const base_function::ptr &func);
+    void append(const function_table::ptr &that);
+
     base_function::ptr find(const char *name);
 
 private:
-    std::map<symbol *, base_function::ptr> _functions;
+    std::map<symbol, base_function::ptr> _functions;
 };
 
+void inject(const char *class_name, const function_table::ptr &table);
+
 //injectable:
-//
 
 template<> struct type_name<class injectable> {
     static constexpr const char *const name = "injectable";
@@ -25,11 +27,7 @@ template<> struct type_name<class injectable> {
 
 class injectable : public extends<injectable, object> {
 public:
-    void inject(const function_table::ptr &table);
     base_function::ptr find_injected(const char *name);
-
-private:
-    function_table::ptr _table;
 };
 
 } //end reflect.

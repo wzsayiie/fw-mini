@@ -2,28 +2,63 @@
 
 namespace reflect {
 
-//function_table:
-//
+//function table:
 
-void function_table::add(const char *name, const base_function::ptr &func) {
+static dash::lazy<std::map<symbol, function_table::ptr>> s_tables;
+
+void function_table::insert(const char *name, const base_function::ptr &func) {
+    symbol sym = symbol::make(name);
+    if (sym && func) {
+        _functions.insert({ sym, func });
+    }
+}
+
+void function_table::append(const function_table::ptr &that) {
+    if (that) {
+        _functions.insert(that->_functions.begin(), that->_functions.end());
+    }
 }
 
 base_function::ptr function_table::find(const char *name) {
-    return nullptr;
+    symbol sym = symbol::find(name);
+    if (!sym) {
+        return nullptr;
+    }
+
+    auto it = _functions.find(sym);
+    if (it == _functions.end()) {
+        return nullptr;
+    }
+
+    return it->second;
+}
+
+void inject(const char *class_name, const function_table::ptr &table) {
+    symbol sym = symbol::make(class_name);
+    if (!sym) {
+        return;
+    }
+
+    auto it = s_tables->find(sym);
+    if (it == s_tables->end()) {
+        auto stored = function_table::create();
+        stored->append(table);
+        s_tables->insert({ sym, stored });
+
+    } else {
+        it->second->append(table);
+    }
 }
 
 //injectable:
-//
-
-void injectable::inject(const function_table::ptr &table) {
-    _table = table;
-}
 
 base_function::ptr injectable::find_injected(const char *name) {
-    if (_table) {
-        return _table->find(name);
+    auto it = s_tables->find(class_symbol());
+    if (it == s_tables->end()) {
+        return nullptr;
     }
-    return nullptr;
+
+    return it->second->find(name);
 }
 
 } //end reflect.
