@@ -69,7 +69,7 @@ template<int Index, class Ret, class... Args> struct caller<Index, Index, Ret (A
 
 //base_function:
 
-template<> struct type_name_of<class base_function> {
+template<> struct type_name<class base_function> {
     static constexpr const char *const name = "base_function";
 };
 

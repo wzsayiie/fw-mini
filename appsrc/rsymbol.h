@@ -2,6 +2,8 @@
 
 namespace reflect {
 
+//symbol:
+
 class symbol {
 public:
     static symbol make(const char *str);
@@ -28,11 +30,13 @@ private:
     const char *_str;
 };
 
-template<class> struct type_name_of;
+//type symbol:
 
-template<class Type> struct type_name {
+template<class> struct type_name;
+
+template<class Type> struct type_symbol {
     static symbol value() {
-        static symbol sym(type_name_of<Type>::name);
+        static symbol sym(type_name<Type>::name);
         return sym;
     }
 };

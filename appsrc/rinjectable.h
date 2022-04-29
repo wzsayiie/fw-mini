@@ -19,7 +19,7 @@ private:
 //injectable:
 //
 
-template<> struct type_name_of<class injectable> {
+template<> struct type_name<class injectable> {
     static constexpr const char *const name = "injectable";
 };
 

@@ -3,7 +3,7 @@
 namespace reflect {
 
 symbol object::class_symbol() const {
-    return type_name<object>::value();
+    return type_symbol<object>::value();
 }
 
 int object::ref_count() const {

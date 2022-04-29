@@ -5,7 +5,7 @@
 
 namespace reflect {
 
-template<> struct type_name_of<class base_map> {
+template<> struct type_name<class base_map> {
     static constexpr const char *const name = "base_map";
 };
 

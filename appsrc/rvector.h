@@ -5,7 +5,7 @@
 
 namespace reflect {
 
-template<> struct type_name_of<class base_vector> {
+template<> struct type_name<class base_vector> {
     static constexpr const char *const name = "base_vector";
 };
 

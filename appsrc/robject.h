@@ -5,7 +5,7 @@
 
 namespace reflect {
 
-template<> struct type_name_of<class object> {
+template<> struct type_name<class object> {
     static constexpr const char *const name = "object";
 };
 
@@ -23,7 +23,7 @@ private:
 
 template<class Class, class Super> struct extends : dash::extends<Class, Super> {
     symbol class_symbol() const override {
-        return type_name<Class>::value();
+        return type_symbol<Class>::value();
     }
 };
 
