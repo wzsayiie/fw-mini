@@ -1,6 +1,7 @@
 #pragma once
 
-#include "rutility.h"
+#include "dash.h"
+#include "rsymbol.h"
 
 namespace reflect {
 
