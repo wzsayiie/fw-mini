@@ -48,9 +48,7 @@
 
 #define implement_injectable_function(Ret, ...)                     \
 /**/    if (auto f = find_injected(__func__)) {                     \
-/**/        auto self = std::static_pointer_cast<dash::object>(     \
-/**/            reflect::shared(this)                               \
-/**/        );                                                      \
+/**/        auto self = shared();                                   \
 /**/        return Ret f->call_with_args({ self, ##__VA_ARGS__ });  \
 /**/    }
 
