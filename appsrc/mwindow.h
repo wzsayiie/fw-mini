@@ -63,7 +63,7 @@ public:
     void setWritingEnabled(bool enabled, const std::string &rawText);
     bool writingEnabled();
 
-//protected:
+protected: public:
     virtual void onLoad();
     virtual void onShow();
     virtual void onHide();
@@ -75,8 +75,8 @@ public:
     virtual void onTouchMove (float x, float y);
     virtual void onTouchEnd  (float x, float y);
     virtual void onMouseMove (float x, float y);
+    
     virtual void onMouseWheel(float delta);
-
     virtual void onKeyDown(MKey key);
 
     virtual void onWrite(const std::string &text, bool enter);
