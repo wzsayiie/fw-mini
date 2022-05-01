@@ -13,6 +13,8 @@ class object : public dash::extends<object, dash::object> {
 public:
     virtual symbol class_symbol() const;
     
+    object::ptr shared();
+    
     int  ref_count() const;
     void retain();
     void release();
@@ -25,15 +27,10 @@ template<class Class, class Super> struct extends : dash::extends<Class, Super> 
     symbol class_symbol() const override {
         return type_symbol<Class>::value();
     }
-};
-
-template<class Object> typename Object::ptr shared(Object *obj) {
-    if (!obj) {
-        return typename Object::ptr();
+    
+    std::shared_ptr<Class> shared() {
+        return std::static_pointer_cast<Class>(object::shared());
     }
-
-    obj->retain();
-    return typename Object::ptr(obj, [](Object *a) { a->release(); });
-}
+};
 
 } //end reflect.

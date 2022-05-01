@@ -6,6 +6,13 @@ symbol object::class_symbol() const {
     return type_symbol<object>::value();
 }
 
+object::ptr object::shared() {
+    retain();
+    return object::ptr(this, [](object *a) {
+        a->release();
+    });
+}
+
 int object::ref_count() const {
     return _ref_count;
 }
