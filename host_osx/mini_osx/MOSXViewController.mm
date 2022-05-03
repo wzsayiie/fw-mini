@@ -150,8 +150,6 @@ const CGFloat TextFieldBottom   =  20;
         case kVK_ANSI_D    : self.window->key(MKey::D    ); break;
         case kVK_ANSI_S    : self.window->key(MKey::S    ); break;
         case kVK_ANSI_W    : self.window->key(MKey::W    ); break;
-
-        default:;
     }
     return nil;
 }
