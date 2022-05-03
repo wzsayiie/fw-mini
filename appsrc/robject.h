@@ -11,6 +11,13 @@ template<> struct type_name<class object> {
 
 class object : public dash::extends<object, dash::object> {
 public:
+    static object::ptr create() {
+        return object::ptr(new object, [](object *a) {
+            a->release();
+        });
+    }
+    
+public:
     virtual symbol class_symbol() const;
     
     object::ptr shared();
@@ -24,6 +31,14 @@ private:
 };
 
 template<class Class, class Super> struct extends : dash::extends<Class, Super> {
+public:
+    template<class... Args> static std::shared_ptr<Class> create(Args... args) {
+        return std::shared_ptr<Class>(new Class(args...), [](Class *a) {
+            return a->release();
+        });
+    }
+    
+public:
     symbol class_symbol() const override {
         return type_symbol<Class>::value();
     }
