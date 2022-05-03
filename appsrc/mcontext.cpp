@@ -83,24 +83,24 @@ void MContextPopClip() {
 
 define_reflectable_function(MContextPushOffset, "args:x,y")
 void MContextPushOffset(float x, float y) {
+    auto current = MPoint::from(sOffsetX, sOffsetY);
+    sOffsetStack->vector.push_back(current);
+    
     sOffsetX += x;
     sOffsetY += y;
-
-    auto point = MPoint::from(sOffsetX, sOffsetY);
-    sOffsetStack->vector.push_back(point);
 }
 
 define_reflectable_function(MContextPopOffset)
 void MContextPopOffset() {
-    auto point = MPoint::create();
+    auto last = MPoint::zero();
 
     if (!sOffsetStack->vector.empty()) {
-        point = sOffsetStack->vector.back();
+        last = sOffsetStack->vector.back();
         sOffsetStack->vector.pop_back();
     }
 
-    sOffsetX = point->x();
-    sOffsetY = point->y();
+    sOffsetX = last->x();
+    sOffsetY = last->y();
 }
 
 define_reflectable_function(MContextDrawTriangle, "args:x0,y0,x1,y1,x2,y2")
@@ -140,13 +140,13 @@ void MContextDrawRect(float x, float y, float w, float h) {
     //  |/  |
     //  c - d
     float ax = sOffsetX + x;
-    float ay = sOffsetX + y;
+    float ay = sOffsetY + y;
     float bx = sOffsetX + x + w;
-    float by = sOffsetX + y;
+    float by = sOffsetY + y;
     float cx = sOffsetX + x;
-    float cy = sOffsetX + y + h;
+    float cy = sOffsetY + y + h;
     float dx = sOffsetX + x + w;
-    float dy = sOffsetX + y + h;
+    float dy = sOffsetY + y + h;
 
     auto abc = MTriangleGraph::create();
     auto bcd = MTriangleGraph::create();
