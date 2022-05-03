@@ -111,7 +111,7 @@ bool MRect::contains(const MPoint::ptr &point) {
     }
     
     return (
-        x() <= point->x() && point->y() < x() + width () &&
+        x() <= point->x() && point->x() < x() + width () &&
         y() <= point->y() && point->y() < y() + height()
     );
 }
