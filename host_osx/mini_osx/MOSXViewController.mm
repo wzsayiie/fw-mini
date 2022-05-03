@@ -137,19 +137,19 @@ const CGFloat TextFieldBottom   =  20;
     }
     
     switch (event.keyCode) {
-        case kVK_Delete    : self.window->keyDown(MKey::Back ); break;
-        case kVK_Return    : self.window->keyDown(MKey::Enter); break;
-        case kVK_Space     : self.window->keyDown(MKey::Space); break;
+        case kVK_Delete    : self.window->key(MKey::Back ); break;
+        case kVK_Return    : self.window->key(MKey::Enter); break;
+        case kVK_Space     : self.window->key(MKey::Space); break;
             
-        case kVK_LeftArrow : self.window->keyDown(MKey::Left ); break;
-        case kVK_UpArrow   : self.window->keyDown(MKey::Up   ); break;
-        case kVK_RightArrow: self.window->keyDown(MKey::Right); break;
-        case kVK_DownArrow : self.window->keyDown(MKey::Down ); break;
+        case kVK_LeftArrow : self.window->key(MKey::Left ); break;
+        case kVK_UpArrow   : self.window->key(MKey::Up   ); break;
+        case kVK_RightArrow: self.window->key(MKey::Right); break;
+        case kVK_DownArrow : self.window->key(MKey::Down ); break;
         
-        case kVK_ANSI_A    : self.window->keyDown(MKey::A    ); break;
-        case kVK_ANSI_D    : self.window->keyDown(MKey::D    ); break;
-        case kVK_ANSI_S    : self.window->keyDown(MKey::S    ); break;
-        case kVK_ANSI_W    : self.window->keyDown(MKey::W    ); break;
+        case kVK_ANSI_A    : self.window->key(MKey::A    ); break;
+        case kVK_ANSI_D    : self.window->key(MKey::D    ); break;
+        case kVK_ANSI_S    : self.window->key(MKey::S    ); break;
+        case kVK_ANSI_W    : self.window->key(MKey::W    ); break;
 
         default:;
     }

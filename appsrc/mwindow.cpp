@@ -106,6 +106,8 @@ define_reflectable_class_function(MWindow, mouseMovePixel, "args:pixelX,pixelY")
 void MWindow::mouseMovePixel(float pixelX, float pixelY) {
     float x = m_pt_from_px pixelX;
     float y = m_pt_from_px pixelY;
+    
+    mMousePosition = MPoint::from(x, y);
     onMouseMove(x, y);
 }
 
@@ -114,9 +116,9 @@ void MWindow::mouseWheel(float delta) {
     onMouseWheel(delta);
 }
 
-define_reflectable_class_function(MWindow, keyDown, "args:key")
-void MWindow::keyDown(MKey key) {
-    onKeyDown(key);
+define_reflectable_class_function(MWindow, key, "args:key")
+void MWindow::key(MKey key) {
+    onKey(key);
 }
 
 define_reflectable_class_function(MWindow, write, "args:text,enter")
@@ -155,7 +157,12 @@ bool MWindow::shown() {
 
 define_reflectable_class_function(MWindow, size)
 MSize::ptr MWindow::size() {
-    return mSize ? mSize : MSize::create();
+    return mSize ? mSize : MSize::zero();
+}
+
+define_reflectable_class_function(MWindow, mousePosition)
+MPoint::ptr MWindow::mousePosition() {
+    return mMousePosition ? mMousePosition : MPoint::zero();
 }
 
 define_reflectable_class_function(MWindow, setWritingEnabled, "args:enabled,rawText")
@@ -212,8 +219,8 @@ void MWindow::onMouseWheel(float delta) {
     implement_injectable_function((void), delta)
 }
 
-define_reflectable_class_function(MWindow, onKeyDown, "args:key")
-void MWindow::onKeyDown(MKey key) {
+define_reflectable_class_function(MWindow, onKey, "args:key")
+void MWindow::onKey(MKey key) {
     implement_injectable_function((void), (int)key)
 }
 

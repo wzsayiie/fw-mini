@@ -45,10 +45,9 @@ public:
     M_HOST_CALL_FUNCTION void touchMovePixel (float pixelX, float pixelY);
     M_HOST_CALL_FUNCTION void touchEndPixel  (float pixelX, float pixelY);
     M_HOST_CALL_FUNCTION void mouseMovePixel (float pixelX, float pixelY);
-    M_HOST_CALL_FUNCTION void mouseWheel     (float delta);
-
-    M_HOST_CALL_FUNCTION void keyDown(MKey key);
-
+    
+    M_HOST_CALL_FUNCTION void mouseWheel(float delta);
+    M_HOST_CALL_FUNCTION void key(MKey key);
     M_HOST_CALL_FUNCTION void write(const std::string &text, bool enter);
 
     //text box control.
@@ -56,9 +55,10 @@ public:
     M_HOST_CALL_FUNCTION bool        checkWritingEnabled();
     M_HOST_CALL_FUNCTION std::string checkWritingRawText();
 
-    bool       loaded();
-    bool       shown ();
-    MSize::ptr size  ();
+    bool        loaded();
+    bool        shown();
+    MSize::ptr  size();
+    MPoint::ptr mousePosition();
 
     void setWritingEnabled(bool enabled, const std::string &rawText);
     bool writingEnabled();
@@ -77,8 +77,7 @@ protected: public:
     virtual void onMouseMove (float x, float y);
     
     virtual void onMouseWheel(float delta);
-    virtual void onKeyDown(MKey key);
-
+    virtual void onKey(MKey key);
     virtual void onWrite(const std::string &text, bool enter);
 
 private:
@@ -88,6 +87,7 @@ private:
     bool        mLoaded         = false;
     bool        mShown          = false;
     MSize::ptr  mSize           ;
+    MPoint::ptr mMousePosition  ;
     bool        mWritingUpdated = false;
     bool        mWritingEnabled = false;
     std::string mWritingRawText ;
