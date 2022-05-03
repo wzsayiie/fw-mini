@@ -8,6 +8,7 @@ declare_reflectable_class(MPoint)
 class MPoint : public MExtends<MPoint, MObject> {
 public:
     static MPoint::ptr from(float x, float y);
+    static MPoint::ptr zero();
 
 public:
     float x();
@@ -24,6 +25,7 @@ declare_reflectable_class(MSize)
 class MSize : public MExtends<MSize, MObject> {
 public:
     static MSize::ptr from(float width, float height);
+    static MSize::ptr zero();
 
 public:
     float width ();
@@ -41,6 +43,7 @@ declare_reflectable_class(MRect)
 class MRect : public MExtends<MRect, MObject> {
 public:
     static MRect::ptr from(float x, float y, float width, float height);
+    static MRect::ptr zero();
 
 public:
     float       x     ();

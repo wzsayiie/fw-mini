@@ -83,7 +83,7 @@ MSize::ptr MImage::pixelSize() {
     if (mImpl) {
         return MImageFactory::sharedObject()->pixelSize(mImpl);
     }
-    return MSize::create();
+    return MSize::zero();
 }
 
 define_reflectable_class_function(MImage, impl)
@@ -135,5 +135,5 @@ MVector<uint8_t>::ptr MImageFactory::bitmapFromImage(const MImageImpl::ptr &impl
 define_reflectable_class_function(MImageFactory, pixelSize, "args:image")
 MSize::ptr MImageFactory::pixelSize(const MImageImpl::ptr &impl) {
     implement_injectable_function((MSize::ptr))
-    return MSize::create();
+    return MSize::zero();
 }

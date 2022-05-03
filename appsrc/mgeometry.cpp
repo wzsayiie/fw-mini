@@ -11,6 +11,11 @@ MPoint::ptr MPoint::from(float x, float y) {
     return obj;
 }
 
+MPoint::ptr MPoint::zero() {
+    static auto obj = MPoint::create();
+    return obj;
+}
+
 define_reflectable_class_function(MPoint, x)
 define_reflectable_class_function(MPoint, y)
 
@@ -25,6 +30,11 @@ MSize::ptr MSize::from(float width, float height) {
     obj->mWidth  = width ;
     obj->mHeight = height;
     
+    return obj;
+}
+
+MSize::ptr MSize::zero() {
+    static auto obj = MSize::create();
     return obj;
 }
 
@@ -50,6 +60,11 @@ MRect::ptr MRect::from(float x, float y, float width, float height) {
     return obj;
 }
 
+MRect::ptr MRect::zero() {
+    static auto obj = MRect::create();
+    return obj;
+}
+
 define_reflectable_class_function(MRect, x     )
 define_reflectable_class_function(MRect, y     )
 define_reflectable_class_function(MRect, width )
@@ -63,8 +78,8 @@ float MRect::height() { return mSize   ? mSize->height() : 0.f; }
 define_reflectable_class_function(MRect, origin)
 define_reflectable_class_function(MRect, size  )
 
-MPoint::ptr MRect::origin() { return mOrigin ? mOrigin : MPoint::create(); }
-MSize::ptr  MRect::size  () { return mSize   ? mSize   : MSize ::create(); }
+MPoint::ptr MRect::origin() { return mOrigin ? mOrigin : MPoint::zero(); }
+MSize::ptr  MRect::size  () { return mSize   ? mSize   : MSize ::zero(); }
 
 define_reflectable_class_function(MRect, none)
 bool MRect::none() {
@@ -74,7 +89,7 @@ bool MRect::none() {
 define_reflectable_class_function(MRect, intersects)
 MRect::ptr MRect::intersects(const MRect::ptr &rect) {
     if (none() || !rect || rect->none()) {
-        return MRect::create();
+        return MRect::zero();
     }
     
     float left   = std::max(x(), rect->x());
@@ -85,7 +100,7 @@ MRect::ptr MRect::intersects(const MRect::ptr &rect) {
     if (left < right && top < bottom) {
         return MRect::from(left, top, right - left, bottom - top);
     } else {
-        return MRect::create();
+        return MRect::zero();
     }
 }
 
