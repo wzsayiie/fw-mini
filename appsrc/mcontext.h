@@ -37,16 +37,14 @@ enum class MGraphType {
     Text     = 4,
 };
 
-declare_reflectable_class(MGraph)
-class MGraph : public MExtends<MGraph, MObject> {
+m_class(MGraph, MObject) {
 public:
     virtual MGraphType type() = 0;
 };
 
 //clip graph:
 
-declare_reflectable_class(MClipGraph)
-class MClipGraph : public MExtends<MClipGraph, MGraph> {
+m_class(MClipGraph, MGraph) {
 public:
     MGraphType type() override;
 
@@ -64,8 +62,7 @@ public:
 
 //triangle graph:
 
-declare_reflectable_class(MTriangleGraph)
-class MTriangleGraph : public MExtends<MTriangleGraph, MGraph> {
+m_class(MTriangleGraph, MGraph) {
 public:
     MGraphType type() override;
 
@@ -89,8 +86,7 @@ public:
 
 //image graph:
 
-declare_reflectable_class(MImageGraph)
-class MImageGraph : public MExtends<MImageGraph, MGraph> {
+m_class(MImageGraph, MGraph) {
 public:
     MGraphType type() override;
 
@@ -112,8 +108,7 @@ public:
 
 //text graph:
 
-declare_reflectable_class(MTextGraph)
-class MTextGraph : public MExtends<MTextGraph, MGraph> {
+m_class(MTextGraph, MGraph) {
 public:
     MGraphType type() override;
 

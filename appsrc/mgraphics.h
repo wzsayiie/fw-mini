@@ -80,8 +80,7 @@ template<class Src, class Dst> void MColorTransform(Src *src, Dst *dst, int coun
 template<class T> void MColorTransform(T *src, T *dst, int count) {
 }
 
-declare_reflectable_class(MColor)
-class MColor : public MExtends<MColor, MObject> {
+m_class(MColor, MObject) {
 public:
     static const int BlackRGBA     = 0x000000ff;
     static const int DarkGrayRGBA  = 0x404040ff;

@@ -4,8 +4,7 @@
 
 //app:
 
-declare_reflectable_class(MApp)
-class MApp : public MExtends<MApp, MObject> {
+m_class(MApp, MObject) {
 public:
     static constexpr const float UpdateEverySeconds = 0.1f;
 

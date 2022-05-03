@@ -1,7 +1,6 @@
 #include "centui.h"
 
-declare_reflectable_class(MainViewController)
-class MainViewController : public CExtends<MainViewController, CViewController> {
+c_class(MainViewController, CViewController) {
 protected:
     void onViewLoad() override {
     }

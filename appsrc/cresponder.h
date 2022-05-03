@@ -6,8 +6,7 @@ class CResponder;
 declare_reflectable_special(MFunction<bool (const std::shared_ptr<CResponder> &, float, float)>)
 using CResponderDetector =  MFunction<bool (const std::shared_ptr<CResponder> &, float, float)>;
 
-declare_reflectable_class(CResponder)
-class CResponder : public CExtends<CResponder, CObject> {
+c_class(CResponder, CObject) {
 public:
     static CResponder::ptr focusResponder();
     

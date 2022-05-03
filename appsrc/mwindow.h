@@ -23,8 +23,7 @@ enum class MKey {
 
 //window:
 
-declare_reflectable_class(MWindow)
-class MWindow : public MExtends<MWindow, MObject> {
+m_class(MWindow, MObject) {
 public:
     static constexpr const float UpdateEverySeconds = 0.1f;
     static constexpr const char *const TitleName = "Mini";

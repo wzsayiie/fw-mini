@@ -5,8 +5,7 @@
 class CViewController;
 declare_reflectable_special(MVector<std::shared_ptr<CViewController>>)
 
-declare_reflectable_class(CViewController)
-class CViewController : public CExtends<CViewController, CResponder> {
+c_class(CViewController, CResponder) {
 public:
     CViewController();
     

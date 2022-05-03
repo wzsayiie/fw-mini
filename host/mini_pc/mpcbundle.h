@@ -2,8 +2,7 @@
 
 #include "mfilemanager.h"
 
-declare_reflectable_class(MPCBundle)
-class MPCBundle : public MExtends<MPCBundle, MBundle> {
+m_class(MPCBundle, MBundle) {
 public:
     static void install();
 

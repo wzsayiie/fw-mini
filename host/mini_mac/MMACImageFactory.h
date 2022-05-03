@@ -11,14 +11,12 @@
 
 #endif
 
-declare_reflectable_class(MMACImageImpl)
-class MMACImageImpl : public MExtends<MMACImageImpl, MImageImpl> {
+m_class(MMACImageImpl, MImageImpl) {
 public:
     _NSImage *mReal = nil;
 };
 
-declare_reflectable_class(MMACImageFactory)
-class MMACImageFactory : public MExtends<MMACImageFactory, MImageFactory> {
+m_class(MMACImageFactory, MImageFactory) {
 public:
     static void install();
     

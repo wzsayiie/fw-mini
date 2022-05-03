@@ -5,8 +5,7 @@
 class CView;
 declare_reflectable_special(MVector<std::shared_ptr<CView>>)
 
-declare_reflectable_class(CView)
-class CView : public CExtends<CView, CResponder> {
+c_class(CView, CResponder) {
 public:
     CView();
     CView(float x, float y, float width, float height);

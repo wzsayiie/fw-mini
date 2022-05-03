@@ -14,12 +14,10 @@ enum class MImageFileFormat {
 //image:
 
 M_HOST_IMPLEMENT_CLASS
-declare_reflectable_class(MImageImpl)
-class MImageImpl : public MExtends<MImageImpl, MObject> {
+m_class(MImageImpl, MObject) {
 };
 
-declare_reflectable_class(MImage)
-class MImage : public MExtends<MImage, MObject> {
+m_class(MImage, MObject) {
 public:
     static MImage::ptr imageFromBundle(const std::string &path);
     static MImage::ptr imageFromFile  (const std::string &path);
@@ -43,8 +41,7 @@ private:
 //image factory:
 
 M_HOST_IMPLEMENT_CLASS
-declare_reflectable_class(MImageFactory)
-class MImageFactory : public MExtends<MImageFactory, MObject> {
+m_class(MImageFactory, MObject) {
 public:
     M_HOST_CALL_FUNCTION static void setSharedObject(const MImageFactory::ptr &obj);
     static MImageFactory *sharedObject();

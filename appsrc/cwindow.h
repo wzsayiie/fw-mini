@@ -2,8 +2,7 @@
 
 #include "cviewcontroller.h"
 
-declare_reflectable_class(CWindow)
-class CWindow : public CExtends<CWindow, MWindow> {
+c_class(CWindow, MWindow) {
 public:
     void setRootViewController(const CViewController::ptr &viewController);
     CViewController::ptr rootViewController();

@@ -4,8 +4,7 @@
 
 //file manager:
 
-declare_reflectable_class(MFileManager)
-class MFileManager : public MExtends<MFileManager, MObject> {
+m_class(MFileManager, MObject) {
 public:
     static MFileManager *sharedObject();
 
@@ -40,8 +39,7 @@ private:
 //bundle:
 
 M_HOST_IMPLEMENT_CLASS
-declare_reflectable_class(MBundle)
-class MBundle : public MExtends<MBundle, MObject> {
+m_class(MBundle, MObject) {
 public:
     static constexpr const char *const PrivateDirectoryName = "mini";
     static constexpr const char *const BundleDirectoryName  = "mini.bundle";

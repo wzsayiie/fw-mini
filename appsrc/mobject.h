@@ -11,6 +11,10 @@ class MObject : public reflect::extends<MObject, reflect::injectable> {
 template<class Class, class Super> struct MExtends : reflect::extends<Class, Super> {
 };
 
+#define m_class(Class, Super)                       \
+/**/    declare_reflectable_class(Class)            \
+/**/    class Class : public MExtends<Class, Super>
+
 //builtin types:
 
 template<class K, class V> using MMap = reflect::map<K, V>;
