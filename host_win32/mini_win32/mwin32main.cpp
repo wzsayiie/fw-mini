@@ -329,17 +329,19 @@ static void OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
     WPARAM virtualkey = wParam;
     switch (virtualkey)
     {
-        case VK_BACK  : window->keyDown(MKey::Back ); break;
-        case VK_RETURN: window->keyDown(MKey::Enter); break;
-        case VK_SPACE : window->keyDown(MKey::Space); break;
-        case VK_LEFT  : window->keyDown(MKey::Left ); break;
-        case VK_UP    : window->keyDown(MKey::Up   ); break;
-        case VK_RIGHT : window->keyDown(MKey::Right); break;
-        case VK_DOWN  : window->keyDown(MKey::Down ); break;
-        case 'A'      : window->keyDown(MKey::A    ); break;
-        case 'D'      : window->keyDown(MKey::D    ); break;
-        case 'S'      : window->keyDown(MKey::S    ); break;
-        case 'W'      : window->keyDown(MKey::W    ); break;
+        case VK_BACK  : window->key(MKey::Back ); break;
+        case VK_RETURN: window->key(MKey::Enter); break;
+        case VK_SPACE : window->key(MKey::Space); break;
+
+        case VK_LEFT  : window->key(MKey::Left ); break;
+        case VK_UP    : window->key(MKey::Up   ); break;
+        case VK_RIGHT : window->key(MKey::Right); break;
+        case VK_DOWN  : window->key(MKey::Down ); break;
+
+        case 'A'      : window->key(MKey::A    ); break;
+        case 'D'      : window->key(MKey::D    ); break;
+        case 'S'      : window->key(MKey::S    ); break;
+        case 'W'      : window->key(MKey::W    ); break;
     }
 }
 
