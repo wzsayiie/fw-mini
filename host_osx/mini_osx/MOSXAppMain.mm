@@ -1,5 +1,19 @@
 #import "MOSXViewController.h"
 
+#pragma mark - window
+
+@interface MOSXWindow : NSWindow
+@end
+
+@implementation MOSXWindow
+
+//NOTE: mouse move event dispatched to window.
+- (void)mouseMoved:(NSEvent *)event {
+    [self.windowController.contentViewController mouseMoved:event];
+}
+
+@end
+
 #pragma mark - window controller
 
 @interface MOSXWindowController : NSWindowController
@@ -7,20 +21,19 @@
 
 @implementation MOSXWindowController
 
-+ (MOSXWindowController *)windowController {
++ (NSWindowController *)windowController {
     //only assign the origin, the size will be taken care of by content view.
     NSRect rect = NSMakeRect(1000, 200, 0, 0);
     
     NSWindowStyleMask  style   = self.windowStyle;
     NSBackingStoreType backing = NSBackingStoreBuffered;
     
-    NSWindow *window = [[NSWindow alloc] initWithContentRect:rect styleMask:style backing:backing defer:NO];
+    NSWindow *window = [[MOSXWindow alloc] initWithContentRect:rect styleMask:style backing:backing defer:NO];
     window.contentViewController = [[MOSXViewController alloc] init];
     window.acceptsMouseMovedEvents = YES;
     window.title = @(MWindow::TitleName);
     
-    MOSXWindowController *controller = [[MOSXWindowController alloc] initWithWindow:window];
-    return controller;
+    return [[MOSXWindowController alloc] initWithWindow:window];
 }
 
 + (NSWindowStyleMask)windowStyle {
@@ -37,7 +50,7 @@
 #pragma mark - application delegate
 
 @interface MOSXAppDelegate : NSObject <NSApplicationDelegate>
-@property (nonatomic) MOSXWindowController *windowController;
+@property (nonatomic) NSWindowController *windowController;
 @end
 
 @implementation MOSXAppDelegate
