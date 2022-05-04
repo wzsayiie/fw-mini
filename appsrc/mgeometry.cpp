@@ -22,6 +22,22 @@ define_reflectable_class_function(MPoint, y)
 float MPoint::x() { return mX; }
 float MPoint::y() { return mY; }
 
+define_reflectable_class_function(MPoint, add, "args:that")
+MPoint::ptr MPoint::add(const MPoint::ptr &that) {
+    if (that) {
+        return from(mX + that->mX, mY + that->mY);
+    }
+    return shared();
+}
+
+define_reflectable_class_function(MPoint, sub, "args:that")
+MPoint::ptr MPoint::sub(const MPoint::ptr &that) {
+    if (that) {
+        return from(mX - that->mX, mY - that->mY);
+    }
+    return shared();
+}
+
 //size:
 
 MSize::ptr MSize::from(float width, float height) {

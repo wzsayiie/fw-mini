@@ -12,6 +12,9 @@ public:
 public:
     float x();
     float y();
+    
+    MPoint::ptr add(const MPoint::ptr &that);
+    MPoint::ptr sub(const MPoint::ptr &that);
 
 private:
     float mX = 0;
