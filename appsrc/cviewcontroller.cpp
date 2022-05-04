@@ -105,6 +105,7 @@ define_reflectable_class_function(CViewController, view)
 CView::ptr CViewController::view() {
     if (!mView) {
         mView = loadView();
+        mView->setViewController(this);
     }
     return mView;
 }

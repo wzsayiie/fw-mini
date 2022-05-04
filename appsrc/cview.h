@@ -27,6 +27,9 @@ public:
     void setVisible(bool visible);
     bool visible();
     
+    void setViewController(CObject *controller);
+    CObject *viewController();
+    
     void addSubview(const CView::ptr &subview);
     void removeFromSuperview();
     MVector<CView::ptr>::ptr subviews();
@@ -53,6 +56,8 @@ private:
     bool mAcceptMouseMove = false;
     bool mTouchable = false;
     bool mVisiable = true;
+    
+    CObject *mViewController = nullptr;
     
     MVector<CView::ptr>::ptr mSubviews;
     CView *mSuperview = nullptr;

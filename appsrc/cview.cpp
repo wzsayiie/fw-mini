@@ -78,6 +78,16 @@ bool CView::visible() {
     return mVisiable;
 }
 
+define_reflectable_class_function(CView, setViewController, "args:controller")
+void CView::setViewController(CObject *controller) {
+    mViewController = controller;
+}
+
+define_reflectable_class_function(CView, viewController)
+CObject *CView::viewController() {
+    return mViewController;
+}
+
 define_reflectable_class_function(CView, addSubview, "args:subview")
 void CView::addSubview(const CView::ptr &subview) {
     if (!subview) {
@@ -132,6 +142,12 @@ CResponder::ptr CView::findResponder(float x, float y, const CResponderDetector:
     
     //find in subviews.
     for (auto &it : mSubviews->vector) {
+        //NOTE: if it is the root view of a view controller, ignore it.
+        //this avoids duplicate lookups.
+        if (it->viewController()) {
+            continue;
+        }
+        
         MRect::ptr frame = it->frame();
         float nx = x - frame->x();
         float ny = y - frame->y();
