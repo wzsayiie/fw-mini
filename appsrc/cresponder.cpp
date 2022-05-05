@@ -36,9 +36,9 @@ bool CResponder::isFocusResponder() {
     return this == sFocusResponder;
 }
 
-define_reflectable_class_function(CResponder, findResponder, "args:x,y,fit")
-CResponder::ptr CResponder::findResponder(float x, float y, const CResponderDetector::ptr &fit) {
-    implement_injectable_function((CResponder::ptr), fit)
+define_reflectable_class_function(CResponder, findResponder, "args:pt,fit")
+CResponder::ptr CResponder::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
+    implement_injectable_function((CResponder::ptr), pt, fit)
     return nullptr;
 }
 
@@ -48,17 +48,17 @@ MPoint::ptr CResponder::responseOffset() {
     return MPoint::zero();
 }
 
-define_reflectable_class_function(CResponder, canRespondTouch    , "args:x,y")
-define_reflectable_class_function(CResponder, canRespondWriting  , "args:x,y")
-define_reflectable_class_function(CResponder, canRespondKey      , "args:x,y")
-define_reflectable_class_function(CResponder, canRespondMouseMove, "args:x,y")
-define_reflectable_class_function(CResponder, canRespondWheel    , "args:x,y")
+define_reflectable_class_function(CResponder, canRespondTouch    , "args:pt")
+define_reflectable_class_function(CResponder, canRespondWriting  , "args:pt")
+define_reflectable_class_function(CResponder, canRespondKey      , "args:pt")
+define_reflectable_class_function(CResponder, canRespondMouseMove, "args:pt")
+define_reflectable_class_function(CResponder, canRespondWheel    , "args:pt")
 
-bool CResponder::canRespondTouch    (float x, float y) { implement_injectable_function((bool), x, y) return false; }
-bool CResponder::canRespondWriting  (float x, float y) {implement_injectable_function ((bool), x, y) return false; }
-bool CResponder::canRespondKey      (float x, float y) { implement_injectable_function((bool), x, y) return false; }
-bool CResponder::canRespondMouseMove(float x, float y) { implement_injectable_function((bool), x, y) return false; }
-bool CResponder::canRespondWheel    (float x, float y) { implement_injectable_function((bool), x, y) return false; }
+bool CResponder::canRespondTouch    (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
+bool CResponder::canRespondWriting  (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
+bool CResponder::canRespondKey      (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
+bool CResponder::canRespondMouseMove(const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
+bool CResponder::canRespondWheel    (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
 
 define_reflectable_class_function(CResponder, onBecomeFocusResponder)
 define_reflectable_class_function(CResponder, onResignFocusResponder)

@@ -35,11 +35,11 @@ public:
     MVector<CView::ptr>::ptr subviews();
     CView *superview();
     
-    CResponder::ptr findResponder(float x, float y, const CResponderDetector::ptr &fit) override;
+    CResponder::ptr findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) override;
     MPoint::ptr responseOffset() override;
     
-    bool canRespondTouch    (float x, float y) override;
-    bool canRespondMouseMove(float x, float y) override;
+    bool canRespondTouch    (const MPoint::ptr &pt) override;
+    bool canRespondMouseMove(const MPoint::ptr &pt) override;
     
     void draw();
     

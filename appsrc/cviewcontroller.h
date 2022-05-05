@@ -21,14 +21,14 @@ public:
     
     CView::ptr view();
     
-    CResponder::ptr findResponder(float x, float y, const CResponderDetector::ptr &fit) override;
+    CResponder::ptr findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) override;
     MPoint::ptr responseOffset() override;
     
-    bool canRespondTouch    (float x, float y) override;
-    bool canRespondMouseMove(float x, float y) override;
-    bool canRespondWriting  (float x, float y) override;
-    bool canRespondKey      (float x, float y) override;
-    bool canRespondWheel    (float x, float y) override;
+    bool canRespondTouch    (const MPoint::ptr &pt) override;
+    bool canRespondMouseMove(const MPoint::ptr &pt) override;
+    bool canRespondWriting  (const MPoint::ptr &pt) override;
+    bool canRespondKey      (const MPoint::ptr &pt) override;
+    bool canRespondWheel    (const MPoint::ptr &pt) override;
     
 protected: public:
     virtual CView::ptr loadView();

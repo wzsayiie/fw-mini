@@ -3,8 +3,8 @@
 #include "cobject.h"
 
 class CResponder;
-declare_reflectable_special(MFunction<bool (const std::shared_ptr<CResponder> &, float, float)>)
-using CResponderDetector =  MFunction<bool (const std::shared_ptr<CResponder> &, float, float)>;
+declare_reflectable_special(MFunction<bool (const std::shared_ptr<CResponder> &, const MPoint::ptr &)>)
+using CResponderDetector =  MFunction<bool (const std::shared_ptr<CResponder> &, const MPoint::ptr &)>;
 
 c_class(CResponder, CObject) {
 public:
@@ -18,14 +18,14 @@ public:
     void resignFocusResponder();
     bool isFocusResponder    ();
     
-    virtual CResponder::ptr findResponder(float x, float y, const CResponderDetector::ptr &fit);
+    virtual CResponder::ptr findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit);
     virtual MPoint::ptr responseOffset();
     
-    virtual bool canRespondTouch    (float x, float y);
-    virtual bool canRespondMouseMove(float x, float y);
-    virtual bool canRespondWriting  (float x, float y);
-    virtual bool canRespondKey      (float x, float y);
-    virtual bool canRespondWheel    (float x, float y);
+    virtual bool canRespondTouch    (const MPoint::ptr &pt);
+    virtual bool canRespondMouseMove(const MPoint::ptr &pt);
+    virtual bool canRespondWriting  (const MPoint::ptr &pt);
+    virtual bool canRespondKey      (const MPoint::ptr &pt);
+    virtual bool canRespondWheel    (const MPoint::ptr &pt);
     
 protected: public:
     virtual void onBecomeFocusResponder();

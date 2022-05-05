@@ -137,8 +137,8 @@ CView *CView::superview() {
 }
 
 define_reflectable_class_function(CView, findResponder, "args:x,y,fit")
-CResponder::ptr CView::findResponder(float x, float y, const CResponderDetector::ptr &fit) {
-    implement_injectable_function((CResponder::ptr), fit, x, y)
+CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
+    implement_injectable_function((CResponder::ptr), fit, pt)
     
     //find in subviews.
     for (auto &it : mSubviews->vector) {
@@ -148,11 +148,10 @@ CResponder::ptr CView::findResponder(float x, float y, const CResponderDetector:
             continue;
         }
         
-        MRect::ptr frame = it->frame();
-        float nx = x - frame->x();
-        float ny = y - frame->y();
-        
-        CResponder::ptr responder = it->findResponder(nx, ny, fit);
+        MPoint::ptr off = it->frame()->origin();
+        MPoint::ptr npt = pt->sub(off);
+
+        CResponder::ptr responder = it->findResponder(npt, fit);
         if (responder) {
             return responder;
         }
@@ -160,7 +159,7 @@ CResponder::ptr CView::findResponder(float x, float y, const CResponderDetector:
     
     //is self suitable.
     auto self = shared();
-    if (fit->call(self, x, y)) {
+    if (fit->call(self, pt)) {
         return self;
     }
     
@@ -182,24 +181,22 @@ MPoint::ptr CView::responseOffset() {
     return MPoint::from(x, y);
 }
 
-define_reflectable_class_function(CView, canRespondTouch, "args:x,y")
-bool CView::canRespondTouch(float x, float y) {
-    implement_injectable_function((bool), x, y)
+define_reflectable_class_function(CView, canRespondTouch, "args:pt")
+bool CView::canRespondTouch(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
     
     if (mTouchable) {
-        auto point = MPoint::from(x, y);
-        return bounds()->contains(point);
+        return bounds()->contains(pt);
     }
     return false;
 }
 
-define_reflectable_class_function(CView, canRespondMouseMove, "args:x,y")
-bool CView::canRespondMouseMove(float x, float y) {
-    implement_injectable_function((bool), x, y)
+define_reflectable_class_function(CView, canRespondMouseMove, "args:pt")
+bool CView::canRespondMouseMove(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
     
     if (mAcceptMouseMove) {
-        auto point = MPoint::from(x, y);
-        return bounds()->contains(point);
+        return bounds()->contains(pt);
     }
     return false;
 }

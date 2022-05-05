@@ -111,30 +111,29 @@ CView::ptr CViewController::view() {
 }
 
 define_reflectable_class_function(CViewController, findResponder, "args:x,y,fit")
-CResponder::ptr CViewController::findResponder(float x, float y, const CResponderDetector::ptr &fit) {
+CResponder::ptr CViewController::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
     implement_injectable_function((CResponder::ptr), fit)
     
     //firstly find in the child controllers.
     for (auto &it : mChildControllers->vector) {
-        MRect::ptr frame = it->view()->frame();
-        float nx = x - frame->x();
-        float ny = y - frame->y();
+        MPoint::ptr off = it->view()->frame()->origin();
+        MPoint::ptr npt = pt->sub(off);
         
-        CResponder::ptr responder = it->findResponder(nx, ny, fit);
+        CResponder::ptr responder = it->findResponder(npt, fit);
         if (responder) {
             return responder;
         }
     }
 
     //secondly find in the views.
-    CResponder::ptr responder = view()->findResponder(x, y, fit);
+    CResponder::ptr responder = view()->findResponder(pt, fit);
     if (responder) {
         return responder;
     }
     
     //lastly detect self.
     auto self = shared();
-    if (fit->call(self, x, y)) {
+    if (fit->call(self, pt)) {
         return self;
     }
     
@@ -148,42 +147,39 @@ MPoint::ptr CViewController::responseOffset()  {
     return view()->responseOffset();
 }
 
-define_reflectable_class_function(CViewController, canRespondTouch, "args:x,y")
-bool CViewController::canRespondTouch(float x, float y) {
-    implement_injectable_function((bool), x, y)
+define_reflectable_class_function(CViewController, canRespondTouch, "args:pt")
+bool CViewController::canRespondTouch(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
     
-    auto point = MPoint::from(x, y);
-    return view()->bounds()->contains(point);
+    return view()->bounds()->contains(pt);
 }
 
-define_reflectable_class_function(CViewController, canRespondMouseMove, "args:x,y")
-bool CViewController::canRespondMouseMove(float x, float y) {
-    implement_injectable_function((bool), x, y)
+define_reflectable_class_function(CViewController, canRespondMouseMove, "args:pt")
+bool CViewController::canRespondMouseMove(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
     
-    auto point = MPoint::from(x, y);
-    return view()->bounds()->contains(point);
+    return view()->bounds()->contains(pt);
 }
 
-define_reflectable_class_function(CViewController, canRespondWriting, "args:x,y")
-bool CViewController::canRespondWriting(float x, float y) {
-    implement_injectable_function((bool), x, y)
+define_reflectable_class_function(CViewController, canRespondWriting, "args:pt")
+bool CViewController::canRespondWriting(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
     
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondKey, "args:x,y")
-bool CViewController::canRespondKey(float x, float y) {
-    implement_injectable_function((bool), x, y)
+define_reflectable_class_function(CViewController, canRespondKey, "args:pt")
+bool CViewController::canRespondKey(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
     
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondWheel, "args:x,y")
-bool CViewController::canRespondWheel(float x, float y) {
-    implement_injectable_function((bool), x, y)
+define_reflectable_class_function(CViewController, canRespondWheel, "args:pt")
+bool CViewController::canRespondWheel(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
     
-    auto point = MPoint::from(x, y);
-    return view()->bounds()->contains(point);
+    return view()->bounds()->contains(pt);
 }
 
 define_reflectable_class_function(CViewController, loadView)

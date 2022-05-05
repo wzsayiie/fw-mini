@@ -32,63 +32,79 @@ void CWindow::onDraw(float width, float height) {
 }
 
 void CWindow::onTouchBegin(float x, float y) {
-    auto fit = CResponderDetector::create([](const CResponder::ptr &obj, float nx, float ny) {
-        return obj->canRespondTouch(nx, ny);
-    });
-    mTouchingResponder = rootViewController()->findResponder(x, y, fit);
+    mTouchingResponder = rootViewController()->findResponder(MPoint::from(x, y),
+        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &npt) {
+            return obj->canRespondTouch(npt);
+        })
+    );
     
     if (mTouchingResponder) {
-        MPoint::ptr point = mTouchingResponder->responseOffset();
-        mTouchingResponder->onTouchBegin(point->x(), point->y());
+        MPoint::ptr off = mTouchingResponder->responseOffset();
+        float nx = x - off->x();
+        float ny = y - off->y();
+
+        mTouchingResponder->onTouchBegin(nx, ny);
     }
 }
 
 void CWindow::onTouchMove(float x, float y) {
     if (mTouchingResponder) {
-        MPoint::ptr point = mTouchingResponder->responseOffset();
-        mTouchingResponder->onTouchMove(point->x(), point->y());
+        MPoint::ptr off = mTouchingResponder->responseOffset();
+        float nx = x - off->x();
+        float ny = y - off->y();
+
+        mTouchingResponder->onTouchMove(nx, ny);
     }
 }
 
 void CWindow::onTouchEnd(float x, float y) {
     if (mTouchingResponder) {
-        MPoint::ptr point = mTouchingResponder->responseOffset();
-        mTouchingResponder->onTouchEnd(point->x(), point->y());
-        
+        MPoint::ptr off = mTouchingResponder->responseOffset();
+        float nx = x - off->x();
+        float ny = y - off->y();
+
+        mTouchingResponder->onTouchEnd(nx, ny);
         mTouchingResponder = nullptr;
     }
 }
 
 void CWindow::onMouseMove(float x, float y) {
-    auto fit = CResponderDetector::create([](const CResponder::ptr &obj, float nx, float ny) {
-        return obj->canRespondMouseMove(nx, ny);
-    });
-    CResponder::ptr responder = rootViewController()->findResponder(x, y, fit);
+    CResponder::ptr responder = rootViewController()->findResponder(MPoint::from(x, y),
+        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &npt) {
+            return obj->canRespondMouseMove(npt);
+        })
+    );
     
     //exit last responder.
     if (mMouseMovingResponder && mMouseMovingResponder != responder) {
-        MPoint::ptr point = mMouseMovingResponder->responseOffset();
-        mMouseMovingResponder->onMouseExit(x - point->x(), y - point->y());
+        MPoint::ptr off = mMouseMovingResponder->responseOffset();
+        float nx = x - off->x();
+        float ny = y - off->y();
+
+        mMouseMovingResponder->onMouseExit(nx, ny);
     }
     
     //process new responder.
     if (responder) {
-        MPoint::ptr point = responder->responseOffset();
+        MPoint::ptr off = responder->responseOffset();
+        float nx = x - off->x();
+        float ny = y - off->y();
+
         if (responder != mMouseMovingResponder) {
-            responder->onMouseEnter(x - point->x(), y - point->y());
+            responder->onMouseEnter(nx, ny);
         } else {
-            responder->onMouseMove (x - point->x(), y - point->y());
+            responder->onMouseMove(nx, ny);
         }
     }
     mMouseMovingResponder = responder;
 }
 
 void CWindow::onMouseWheel(float delta) {
-    auto fit = CResponderDetector::create([](const CResponder::ptr &obj, float nx, float ny) {
-        return obj->canRespondWheel(nx, ny);
-    });
-    MPoint::ptr mouse = mousePosition();
-    CResponder::ptr responder = rootViewController()->findResponder(mouse->x(), mouse->y(), fit);
+    CResponder::ptr responder = rootViewController()->findResponder(mousePosition(),
+        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &npt) {
+            return obj->canRespondWheel(npt);
+        })
+    );
     
     if (responder) {
         responder->onWheel(delta);
@@ -96,10 +112,11 @@ void CWindow::onMouseWheel(float delta) {
 }
 
 void CWindow::onKey(MKey key) {
-    auto fit = CResponderDetector::create([](const CResponder::ptr &obj, float, float) {
-        return obj->canRespondKey(0, 0);
-    });
-    CResponder::ptr responder = rootViewController()->findResponder(0, 0, fit);
+    CResponder::ptr responder = rootViewController()->findResponder(MPoint::zero(),
+        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &) {
+            return obj->canRespondKey(MPoint::zero());
+        })
+    );
     
     if (responder) {
         responder->onKey(key);
@@ -107,10 +124,11 @@ void CWindow::onKey(MKey key) {
 }
 
 void CWindow::onWrite(const std::string &text, bool enter)  {
-    auto fit = CResponderDetector::create([](const CResponder::ptr &obj, float, float) {
-        return obj->canRespondWriting(0, 0);
-    });
-    CResponder::ptr responder = rootViewController()->findResponder(0, 0, fit);
+    CResponder::ptr responder = rootViewController()->findResponder(MPoint::zero(),
+        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &) {
+            return obj->canRespondWriting(MPoint::zero());
+        })
+    );
     
     if (responder) {
         responder->onWrite(text, enter);
