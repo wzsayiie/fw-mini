@@ -3,12 +3,16 @@
 //point:
 
 MPoint::ptr MPoint::from(float x, float y) {
-    auto obj = MPoint::create();
-    
-    obj->mX = x;
-    obj->mY = y;
-    
-    return obj;
+    if (x && y) {
+        auto obj = MPoint::create();
+        obj->mX = x;
+        obj->mY = y;
+
+        return obj;
+
+    } else {
+        return zero();
+    }
 }
 
 MPoint::ptr MPoint::zero() {
@@ -41,12 +45,16 @@ MPoint::ptr MPoint::sub(const MPoint::ptr &that) {
 //size:
 
 MSize::ptr MSize::from(float width, float height) {
-    auto obj = MSize::create();
-    
-    obj->mWidth  = width ;
-    obj->mHeight = height;
-    
-    return obj;
+    if (width && height) {
+        auto obj = MSize::create();
+        obj->mWidth  = width ;
+        obj->mHeight = height;
+
+        return obj;
+
+    } else {
+        return zero();
+    }
 }
 
 MSize::ptr MSize::zero() {
@@ -68,12 +76,16 @@ bool MSize::none() {
 //rect:
 
 MRect::ptr MRect::from(float x, float y, float width, float height) {
-    auto obj = MRect::create();
-    
-    obj->mOrigin = MPoint::from(x, y);
-    obj->mSize   = MSize::from(width, height);
-    
-    return obj;
+    if (x && y && width && height) {
+        auto obj = MRect::create();
+        obj->mOrigin = MPoint::from(x, y);
+        obj->mSize   = MSize ::from(width, height);
+
+        return obj;
+
+    } else {
+        return zero();
+    }
 }
 
 MRect::ptr MRect::zero() {
