@@ -10,25 +10,23 @@ public:
     CView();
     CView(float x, float y, float width, float height);
     
-public:
-    void setFrame(const MRect::ptr &frame);
-    MRect::ptr frame ();
-    MRect::ptr bounds();
-    
-    void setBackgroundColor(const MColor::ptr &color);
-    MColor::ptr backgroundColor();
-    
-    void setAcceptMouseWheel(bool accept);
-    bool acceptMouseWheel();
-
-    void setTouchable(bool touchable);
-    bool touchable();
-    
-    void setVisible(bool visible);
-    bool visible();
-    
+public: 
     void setViewController(CObject *controller);
-    CObject *viewController();
+    void setFrame(const MRect::ptr &frame);
+    void setBackgroundColor(const MColor::ptr &color);
+    void setAcceptMouseMove(bool accept);
+    void setAcceptWheel(bool accept);
+    void setTouchable(bool touchable);
+    void setVisible(bool visible);
+
+    CObject    *viewController();
+    MRect::ptr  frame();
+    MColor::ptr backgroundColor();
+    MRect::ptr  bounds();
+    bool        acceptMouseMove();
+    bool        acceptWheel();
+    bool        touchable();
+    bool        visible();
     
     void addSubview(const CView::ptr &subview);
     void removeFromSuperview();
@@ -40,24 +38,25 @@ public:
     
     bool canRespondTouch    (const MPoint::ptr &pt) override;
     bool canRespondMouseMove(const MPoint::ptr &pt) override;
+    bool canRespondWheel    (const MPoint::ptr &pt) override;
     
     void draw();
     
 protected: public:
     virtual void onLayoutSubviews(float width, float height);
-        
+
     virtual void onDrawBackground(float width, float height);
     virtual void onDraw          (float width, float height);
     virtual void onDrawForeground(float width, float height);
     
 private:
-    MRect::ptr mFrame;
-    MColor::ptr mBackgroundColor;
-    bool mAcceptMouseMove = false;
-    bool mTouchable = false;
-    bool mVisiable = true;
-    
-    CObject *mViewController = nullptr;
+    CObject    *mViewController  = nullptr;
+    MRect::ptr  mFrame           ;
+    MColor::ptr mBackgroundColor ;
+    bool        mAcceptMouseMove = false;
+    bool        mAcceptWheel     = false;
+    bool        mTouchable       = false;
+    bool        mVisiable        = true;
     
     MVector<CView::ptr>::ptr mSubviews;
     CView *mSuperview = nullptr;

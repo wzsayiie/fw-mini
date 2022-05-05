@@ -9,6 +9,11 @@ CView::CView(float x, float y, float width, float height) {
     mFrame = MRect::from(x, y, width, height);
 }
 
+define_reflectable_class_function(CView, setViewController, "args:controller")
+void CView::setViewController(CObject *controller) {
+    mViewController = controller;
+}
+
 define_reflectable_class_function(CView, setFrame, "args:frame")
 void CView::setFrame(const MRect::ptr &frame) {
     float oldWidth  = mFrame ? mFrame->width () : 0;
@@ -21,10 +26,28 @@ void CView::setFrame(const MRect::ptr &frame) {
     if (newWidth  != oldWidth  ||
         newHeight != oldHeight )
     {
-        for (auto &it : mSubviews->vector) {
-            it->onLayoutSubviews(newWidth, newHeight);
-        }
+        onLayoutSubviews(newWidth, newHeight);
     }
+}
+
+define_reflectable_class_function(CView, setBackgroundColor, "args:color")
+void CView::setBackgroundColor(const MColor::ptr &color) {
+    mBackgroundColor = color;
+}
+
+define_reflectable_class_function(CView, setAcceptMouseMove, "args:accept"   )
+define_reflectable_class_function(CView, setAcceptWheel    , "args:accept"   )
+define_reflectable_class_function(CView, setTouchable      , "args:touchable")
+define_reflectable_class_function(CView, setVisible        , "args:visible"  )
+
+void CView::setAcceptMouseMove(bool accept   ) { mAcceptMouseMove = accept   ; }
+void CView::setAcceptWheel    (bool accept   ) { mAcceptWheel     = accept   ; }
+void CView::setTouchable      (bool touchable) { mTouchable       = touchable; }
+void CView::setVisible        (bool visible  ) { mVisiable        = visible  ; }
+
+define_reflectable_class_function(CView, viewController)
+CObject *CView::viewController() {
+    return mViewController;
 }
 
 define_reflectable_class_function(CView, frame)
@@ -38,55 +61,20 @@ MRect::ptr CView::bounds() {
     return MRect::from(0, 0, rect->width(), rect->height());
 }
 
-define_reflectable_class_function(CView, setBackgroundColor, "args:color")
-void CView::setBackgroundColor(const MColor::ptr &color) {
-    mBackgroundColor = color;
-}
-
 define_reflectable_class_function(CView, backgroundColor)
 MColor::ptr CView::backgroundColor() {
     return mBackgroundColor ? mBackgroundColor : MColor::clearColor();
 }
 
-define_reflectable_class_function(CView, setAcceptMouseWheel, "args:accept")
-void CView::setAcceptMouseWheel(bool accept) {
-    mAcceptMouseMove = accept;
-}
+define_reflectable_class_function(CView, acceptMouseMove)
+define_reflectable_class_function(CView, acceptWheel    )
+define_reflectable_class_function(CView, touchable      )
+define_reflectable_class_function(CView, visible        )
 
-define_reflectable_class_function(CView, acceptMouseWheel)
-bool CView::acceptMouseWheel() {
-    return mAcceptMouseMove;
-}
-
-define_reflectable_class_function(CView, setTouchable, "args:touchable")
-void CView::setTouchable(bool touchable) {
-    mTouchable = touchable;
-}
-
-define_reflectable_class_function(CView, touchable)
-bool CView::touchable() {
-    return mTouchable;
-}
-
-define_reflectable_class_function(CView, setVisible, "args:visible")
-void CView::setVisible(bool visible) {
-    mVisiable = visible;
-}
-
-define_reflectable_class_function(CView, visible)
-bool CView::visible() {
-    return mVisiable;
-}
-
-define_reflectable_class_function(CView, setViewController, "args:controller")
-void CView::setViewController(CObject *controller) {
-    mViewController = controller;
-}
-
-define_reflectable_class_function(CView, viewController)
-CObject *CView::viewController() {
-    return mViewController;
-}
+bool CView::acceptMouseMove() { return mAcceptMouseMove; }
+bool CView::acceptWheel    () { return mAcceptWheel    ; }
+bool CView::touchable      () { return mTouchable      ; }
+bool CView::visible        () { return mVisiable       ; }
 
 define_reflectable_class_function(CView, addSubview, "args:subview")
 void CView::addSubview(const CView::ptr &subview) {
@@ -196,6 +184,16 @@ bool CView::canRespondMouseMove(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
     if (mAcceptMouseMove) {
+        return bounds()->contains(pt);
+    }
+    return false;
+}
+
+define_reflectable_class_function(CView, canRespondWheel, "args:pt")
+bool CView::canRespondWheel(const MPoint::ptr &pt) {
+    implement_injectable_function((bool), pt)
+
+    if (mAcceptWheel) {
         return bounds()->contains(pt);
     }
     return false;
