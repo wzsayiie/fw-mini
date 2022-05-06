@@ -18,9 +18,24 @@ void CWindow::makeMainWindow() {
     MWindow::setMainWindow(shared());
 }
 
-void CWindow::onLoad() { rootViewController()->loadView         (); }
-void CWindow::onShow() { rootViewController()->makeViewAppear   (); }
-void CWindow::onHide() { rootViewController()->makeViewDisappear(); }
+void CWindow::onLoad() {
+    //ensure the view size is available.
+    auto bounds = MRect::from(0, 0,
+        size()->width (),
+        size()->height()
+    );
+    rootViewController()->view()->setFrame(bounds);
+
+    rootViewController()->loadView();
+}
+
+void CWindow::onShow() {
+    rootViewController()->makeViewAppear();
+}
+
+void CWindow::onHide() {
+    rootViewController()->makeViewDisappear();
+}
 
 void CWindow::onResize(float width, float height) {
     auto frame = MRect::from(0, 0, width, height);
