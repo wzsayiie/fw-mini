@@ -3,7 +3,7 @@
 //point:
 
 MPoint::ptr MPoint::from(float x, float y) {
-    if (x && y) {
+    if (x || y) {
         auto obj = MPoint::create();
         obj->mX = x;
         obj->mY = y;
@@ -45,7 +45,7 @@ MPoint::ptr MPoint::sub(const MPoint::ptr &that) {
 //size:
 
 MSize::ptr MSize::from(float width, float height) {
-    if (width && height) {
+    if (width || height) {
         auto obj = MSize::create();
         obj->mWidth  = width ;
         obj->mHeight = height;
@@ -76,7 +76,7 @@ bool MSize::none() {
 //rect:
 
 MRect::ptr MRect::from(float x, float y, float width, float height) {
-    if (x && y && width && height) {
+    if (x || y || width || height) {
         auto obj = MRect::create();
         obj->mOrigin = MPoint::from(x, y);
         obj->mSize   = MSize ::from(width, height);
