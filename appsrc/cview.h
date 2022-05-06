@@ -11,22 +11,22 @@ public:
     CView(float x, float y, float width, float height);
     
 public: 
-    void setViewController(CObject *controller);
-    void setFrame(const MRect::ptr &frame);
-    void setBackgroundColor(const MColor::ptr &color);
-    void setAcceptMouseMove(bool accept);
-    void setAcceptWheel(bool accept);
-    void setTouchable(bool touchable);
-    void setVisible(bool visible);
+    void setViewController (CObject           *controller);
+    void setFrame          (const MRect::ptr  &frame     );
+    void setBackgroundColor(const MColor::ptr &color     );
+    void setVisible        (bool               visible   );
+    void setTouchable      (bool               touchable );
+    void setAcceptMouseMove(bool               accept    );
+    void setAcceptWheel    (bool               accept    );
 
-    CObject    *viewController();
-    MRect::ptr  frame();
+    CObject    *viewController ();
+    MRect::ptr  frame          ();
+    MRect::ptr  bounds         ();
     MColor::ptr backgroundColor();
-    MRect::ptr  bounds();
+    bool        visible        ();
+    bool        touchable      ();
     bool        acceptMouseMove();
-    bool        acceptWheel();
-    bool        touchable();
-    bool        visible();
+    bool        acceptWheel    ();
     
     void addSubview(const CView::ptr &subview);
     void removeFromSuperview();
@@ -53,10 +53,10 @@ private:
     CObject    *mViewController  = nullptr;
     MRect::ptr  mFrame           ;
     MColor::ptr mBackgroundColor ;
+    bool        mVisible         = true;
+    bool        mTouchable       = false;
     bool        mAcceptMouseMove = false;
     bool        mAcceptWheel     = false;
-    bool        mTouchable       = false;
-    bool        mVisiable        = true;
     
     MVector<CView::ptr>::ptr mSubviews;
     CView *mSuperview = nullptr;

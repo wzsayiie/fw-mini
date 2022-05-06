@@ -35,15 +35,15 @@ void CView::setBackgroundColor(const MColor::ptr &color) {
     mBackgroundColor = color;
 }
 
+define_reflectable_class_function(CView, setVisible        , "args:visible"  )
+define_reflectable_class_function(CView, setTouchable      , "args:touchable")
 define_reflectable_class_function(CView, setAcceptMouseMove, "args:accept"   )
 define_reflectable_class_function(CView, setAcceptWheel    , "args:accept"   )
-define_reflectable_class_function(CView, setTouchable      , "args:touchable")
-define_reflectable_class_function(CView, setVisible        , "args:visible"  )
 
+void CView::setVisible        (bool visible  ) { mVisible         = visible  ; }
+void CView::setTouchable      (bool touchable) { mTouchable       = touchable; }
 void CView::setAcceptMouseMove(bool accept   ) { mAcceptMouseMove = accept   ; }
 void CView::setAcceptWheel    (bool accept   ) { mAcceptWheel     = accept   ; }
-void CView::setTouchable      (bool touchable) { mTouchable       = touchable; }
-void CView::setVisible        (bool visible  ) { mVisiable        = visible  ; }
 
 define_reflectable_class_function(CView, viewController)
 CObject *CView::viewController() {
@@ -66,15 +66,15 @@ MColor::ptr CView::backgroundColor() {
     return mBackgroundColor ? mBackgroundColor : MColor::clearColor();
 }
 
+define_reflectable_class_function(CView, visible        )
+define_reflectable_class_function(CView, touchable      )
 define_reflectable_class_function(CView, acceptMouseMove)
 define_reflectable_class_function(CView, acceptWheel    )
-define_reflectable_class_function(CView, touchable      )
-define_reflectable_class_function(CView, visible        )
 
+bool CView::visible        () { return mVisible        ; }
+bool CView::touchable      () { return mTouchable      ; }
 bool CView::acceptMouseMove() { return mAcceptMouseMove; }
 bool CView::acceptWheel    () { return mAcceptWheel    ; }
-bool CView::touchable      () { return mTouchable      ; }
-bool CView::visible        () { return mVisiable       ; }
 
 define_reflectable_class_function(CView, addSubview, "args:subview")
 void CView::addSubview(const CView::ptr &subview) {
@@ -204,7 +204,7 @@ void CView::draw() {
     if (!mFrame || mFrame->width() <= 0 || mFrame->height() <= 0) {
         return;
     }
-    if (!mVisiable) {
+    if (!mVisible) {
         return;
     }
     
