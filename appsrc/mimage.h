@@ -19,10 +19,10 @@ m_class(MImageImpl, MObject) {
 
 m_class(MImage, MObject) {
 public:
-    static MImage::ptr imageFromBundle(const std::string &path);
-    static MImage::ptr imageFromFile  (const std::string &path);
-    static MImage::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData);
-    static MImage::ptr imageFromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height);
+    static MImage::ptr fromBundle(const std::string &path);
+    static MImage::ptr fromFile  (const std::string &path);
+    static MImage::ptr fromFFData(const MVector<uint8_t>::ptr &ffData);
+    static MImage::ptr fromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height);
 
 public:
     void writeFile(const std::string &path, MImageFileFormat format);

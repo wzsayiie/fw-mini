@@ -8,20 +8,20 @@ define_reflectable_enum_const(MImageFileFormat, PNG )
 
 //image:
 
-define_reflectable_class_function(MImage, imageFromBundle, "args:path")
-MImage::ptr MImage::imageFromBundle(const std::string &path) {
+define_reflectable_class_function(MImage, fromBundle, "args:path")
+MImage::ptr MImage::fromBundle(const std::string &path) {
     MVector<uint8_t>::ptr bytes = MFileManager::sharedObject()->bytesFromBundle(path);
-    return imageFromFFData(bytes);
+    return fromFFData(bytes);
 }
 
-define_reflectable_class_function(MImage, imageFromFile, "args:path")
-MImage::ptr MImage::imageFromFile(const std::string &path) {
+define_reflectable_class_function(MImage, fromFile, "args:path")
+MImage::ptr MImage::fromFile(const std::string &path) {
     MVector<uint8_t>::ptr bytes = MFileManager::sharedObject()->bytesFromFile(path);
-    return imageFromFFData(bytes);
+    return fromFFData(bytes);
 }
 
-define_reflectable_class_function(MImage, imageFromFFData, "args:ffData")
-MImage::ptr MImage::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {
+define_reflectable_class_function(MImage, fromFFData, "args:ffData")
+MImage::ptr MImage::fromFFData(const MVector<uint8_t>::ptr &ffData) {
     if (!ffData || ffData->vector.empty()) {
         return nullptr;
     }
@@ -36,8 +36,8 @@ MImage::ptr MImage::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {
     return image;
 }
 
-define_reflectable_class_function(MImage, imageFromBitmap, "args:bitmap,width,height")
-MImage::ptr MImage::imageFromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height) {
+define_reflectable_class_function(MImage, fromBitmap, "args:bitmap,width,height")
+MImage::ptr MImage::fromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height) {
     if (!bitmap || bitmap->vector.empty()) {
         return nullptr;
     }
