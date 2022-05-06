@@ -13,10 +13,10 @@ void MContextSelectFontSize (float   size );
 void MContextSelectHAlign   (MHAlign align);
 void MContextSelectVAlign   (MVAlign align);
 
-void MContextPushClip  (float x, float y, float w, float h);
-void MContextPopClip   ();
 void MContextPushOffset(float x, float y);
 void MContextPopOffset ();
+void MContextPushClip  (float x, float y, float w, float h);
+void MContextPopClip   ();
 
 void MContextDrawTriangle  (float x0, float y0, float x1, float y1, float x2, float y2);
 void MContextDrawRect      (float x , float y , float w , float h );

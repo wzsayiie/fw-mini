@@ -208,13 +208,13 @@ void CView::draw() {
         return;
     }
     
-    float x = mFrame->x();
-    float y = mFrame->y();
+    float x      = mFrame->x();
+    float y      = mFrame->y();
     float width  = mFrame->width ();
     float height = mFrame->height();
     
-    MContextPushClip(x, y, width, height);
     MContextPushOffset(x, y);
+    MContextPushClip  (0, 0, width, height);
     {
         onDrawBackground(width, height);
         onDraw(width, height);
@@ -223,8 +223,8 @@ void CView::draw() {
         }
         onDrawForeground(width, height);
     }
+    MContextPopClip  ();
     MContextPopOffset();
-    MContextPopClip();
 }
 
 define_reflectable_class_function(CView, onLayoutSubviews, "args:width,height")

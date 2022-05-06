@@ -39,13 +39,34 @@ void MContextSelectFontSize (float   size ) { sFontSize  = size ; }
 void MContextSelectHAlign   (MHAlign align) { sHAlign    = align; }
 void MContextSelectVAlign   (MVAlign align) { sVAlign    = align; }
 
+define_reflectable_function(MContextPushOffset, "args:x,y")
+void MContextPushOffset(float x, float y) {
+    auto current = MPoint::from(sOffsetX, sOffsetY);
+    sOffsetStack->vector.push_back(current);
+    
+    sOffsetX += x;
+    sOffsetY += y;
+}
+
+define_reflectable_function(MContextPopOffset)
+void MContextPopOffset() {
+    auto last = MPoint::zero();
+
+    if (!sOffsetStack->vector.empty()) {
+        last = sOffsetStack->vector.back();
+        sOffsetStack->vector.pop_back();
+    }
+
+    sOffsetX = last->x();
+    sOffsetY = last->y();
+}
+
 define_reflectable_function(MContextPushClip, "args:x,y,w,h")
 void MContextPushClip(float x, float y, float w, float h) {
     //push the clip:
-    auto clip = MRect::from(x, y, w, h);
-
+    auto clip = MRect::from(sOffsetX + x, sOffsetY + y, w, h);
     if (!sClipStack->vector.empty()) {
-        auto last = sClipStack->vector.back();
+        MRect::ptr last = sClipStack->vector.back();
         clip = clip->intersects(last);
     }
 
@@ -79,28 +100,6 @@ void MContextPopClip() {
     graph->mH = clip->height();
 
     sGraphs->vector.push_back(graph);
-}
-
-define_reflectable_function(MContextPushOffset, "args:x,y")
-void MContextPushOffset(float x, float y) {
-    auto current = MPoint::from(sOffsetX, sOffsetY);
-    sOffsetStack->vector.push_back(current);
-    
-    sOffsetX += x;
-    sOffsetY += y;
-}
-
-define_reflectable_function(MContextPopOffset)
-void MContextPopOffset() {
-    auto last = MPoint::zero();
-
-    if (!sOffsetStack->vector.empty()) {
-        last = sOffsetStack->vector.back();
-        sOffsetStack->vector.pop_back();
-    }
-
-    sOffsetX = last->x();
-    sOffsetY = last->y();
 }
 
 define_reflectable_function(MContextDrawTriangle, "args:x0,y0,x1,y1,x2,y2")
