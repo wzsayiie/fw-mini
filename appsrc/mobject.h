@@ -8,7 +8,10 @@ declare_reflectable_class(MObject)
 class MObject : public reflect::extends<MObject, reflect::injectable> {
 };
 
-template<class Class, class Super> struct MExtends : reflect::extends<Class, Super> {
+template<class Class, class Super> class MExtends : public reflect::extends<Class, Super> {
+public:
+    using   reflect::extends<Class, Super>::extends;
+    typedef MExtends<Class, Super> base;
 };
 
 #define m_class(Class, Super)                       \

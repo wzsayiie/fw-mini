@@ -30,13 +30,17 @@ private:
     int _ref_count = 1;
 };
 
-template<class Class, class Super> struct extends : dash::extends<Class, Super> {
+template<class Class, class Super> class extends : public dash::extends<Class, Super> {
 public:
     template<class... Args> static std::shared_ptr<Class> create(Args... args) {
         return std::shared_ptr<Class>(new Class(args...), [](Class *a) {
             return a->release();
         });
     }
+
+public:
+    using   dash::extends<Class, Super>::extends;
+    typedef extends<Class, Super> base;
     
 public:
     symbol class_symbol() const override {
