@@ -29,8 +29,9 @@ static void PaintTriangle(Gdiplus::Graphics *pen, MTriangleGraph *graph)
 
 static void PaintImage(Gdiplus::Graphics *pen, MImageGraph *graph)
 {
-    MWin32ImageImpl *impl = (MWin32ImageImpl *)graph->image()->impl().get();
-    Gdiplus::Image *image = impl->mReal.get();
+    MImageImpl::ptr impl  = graph->image()->impl();
+    auto            wImpl = std::static_pointer_cast<MWin32ImageImpl>(impl);
+    Gdiplus::Image *image = wImpl->mReal.get();
 
     Gdiplus::RectF rect(
         graph->pixelX(), graph->pixelY(),
