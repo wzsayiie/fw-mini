@@ -114,8 +114,26 @@ define_reflectable_class_function(CViewController, findResponder, "args:x,y,fit"
 CResponder::ptr CViewController::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
     implement_injectable_function((CResponder::ptr), fit)
     
+    //invisible controller does not respond any events.
+    if (view()->frame()->none()) {
+        return nullptr;
+    }
+    if (!view()->visible()) {
+        return nullptr;
+    }
+    //controller does not respond events outside it.
+    MRect::ptr ownBounds = view()->bounds();
+    if (pt && !ownBounds->contains(pt)) {
+        return nullptr;
+    }
+    
     //firstly find in the child controllers.
     for (auto &it : mChildControllers->vector) {
+        //ignore out-of-bounds child controllers.
+        if (it->view()->frame()->intersects(ownBounds)->none()) {
+            continue;
+        }
+
         MPoint::ptr off = it->view()->frame()->origin();
         MPoint::ptr npt = pt->sub(off);
         
@@ -151,14 +169,14 @@ define_reflectable_class_function(CViewController, canRespondTouch, "args:pt")
 bool CViewController::canRespondTouch(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
-    return view()->bounds()->contains(pt);
+    return true;
 }
 
 define_reflectable_class_function(CViewController, canRespondMouseMove, "args:pt")
 bool CViewController::canRespondMouseMove(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
-    return view()->bounds()->contains(pt);
+    return true;
 }
 
 define_reflectable_class_function(CViewController, canRespondWriting, "args:pt")
@@ -179,7 +197,7 @@ define_reflectable_class_function(CViewController, canRespondWheel, "args:pt")
 bool CViewController::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
-    return view()->bounds()->contains(pt);
+    return true;
 }
 
 define_reflectable_class_function(CViewController, loadView)

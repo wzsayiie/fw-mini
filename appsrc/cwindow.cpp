@@ -127,9 +127,10 @@ void CWindow::onMouseWheel(float delta) {
 }
 
 void CWindow::onKey(MKey key) {
-    CResponder::ptr responder = rootViewController()->findResponder(MPoint::zero(),
+    //NOTE: finding with a null "pt" means that mouse position is ignored.
+    CResponder::ptr responder = rootViewController()->findResponder(nullptr,
         CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &) {
-            return obj->canRespondKey(MPoint::zero());
+            return obj->canRespondKey(nullptr);
         })
     );
     
@@ -139,9 +140,9 @@ void CWindow::onKey(MKey key) {
 }
 
 void CWindow::onWrite(const std::string &text, bool enter)  {
-    CResponder::ptr responder = rootViewController()->findResponder(MPoint::zero(),
+    CResponder::ptr responder = rootViewController()->findResponder(nullptr,
         CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &) {
-            return obj->canRespondWriting(MPoint::zero());
+            return obj->canRespondWriting(nullptr);
         })
     );
     

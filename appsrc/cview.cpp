@@ -128,11 +128,28 @@ define_reflectable_class_function(CView, findResponder, "args:x,y,fit")
 CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
     implement_injectable_function((CResponder::ptr), fit, pt)
     
+    //invisible view does not respond any events.
+    if (!mFrame || mFrame->none()) {
+        return nullptr;
+    }
+    if (!mVisible) {
+        return nullptr;
+    }
+    //view does not respond events outside it.
+    MRect::ptr ownBounds = bounds();
+    if (pt && !ownBounds->contains(pt)) {
+        return nullptr;
+    }
+
     //find in subviews.
     for (auto &it : mSubviews->vector) {
         //NOTE: if it is the root view of a view controller, ignore it.
         //this avoids duplicate lookups.
         if (it->viewController()) {
+            continue;
+        }
+        //ignore out-of-bounds subviews.
+        if (it->frame()->intersects(ownBounds)->none()) {
             continue;
         }
         
@@ -173,35 +190,26 @@ define_reflectable_class_function(CView, canRespondTouch, "args:pt")
 bool CView::canRespondTouch(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
-    if (mTouchable) {
-        return bounds()->contains(pt);
-    }
-    return false;
+    return mTouchable;
 }
 
 define_reflectable_class_function(CView, canRespondMouseMove, "args:pt")
 bool CView::canRespondMouseMove(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
-    if (mAcceptMouseMove) {
-        return bounds()->contains(pt);
-    }
-    return false;
+    return mAcceptMouseMove;
 }
 
 define_reflectable_class_function(CView, canRespondWheel, "args:pt")
 bool CView::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
 
-    if (mAcceptWheel) {
-        return bounds()->contains(pt);
-    }
-    return false;
+    return mAcceptWheel;
 }
 
 define_reflectable_class_function(CView, draw)
 void CView::draw() {
-    if (!mFrame || mFrame->width() <= 0 || mFrame->height() <= 0) {
+    if (!mFrame || mFrame->none()) {
         return;
     }
     if (!mVisible) {
@@ -219,10 +227,10 @@ void CView::draw() {
         onDrawBackground(width, height);
         onDraw(width, height);
 
-        MRect::ptr space = bounds();
+        MRect::ptr ownBounds = bounds();
         for (auto &it : mSubviews->vector) {
-            //NOTE: if subview exceeds the bounds of its superview, no longer draw it.
-            if (it->frame()->intersects(space)->none()) {
+            //NOTE: ignore out-of-bounds subviews.
+            if (it->frame()->intersects(ownBounds)->none()) {
                 continue;
             }
 
