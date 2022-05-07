@@ -218,9 +218,17 @@ void CView::draw() {
     {
         onDrawBackground(width, height);
         onDraw(width, height);
+
+        MRect::ptr space = bounds();
         for (auto &it : mSubviews->vector) {
+            //NOTE: if subview exceeds the bounds of its superview, no longer draw it.
+            if (it->frame()->intersects(space)->none()) {
+                continue;
+            }
+
             it->draw();
         }
+        
         onDrawForeground(width, height);
     }
     MContextPopClip  ();
