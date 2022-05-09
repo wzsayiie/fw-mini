@@ -12,7 +12,9 @@ public:
 public:
     float x();
     float y();
-    
+
+    bool equal(const MPoint::ptr &that);
+
     MPoint::ptr add(const MPoint::ptr &that);
     MPoint::ptr sub(const MPoint::ptr &that);
 
@@ -32,6 +34,8 @@ public:
     float width ();
     float height();
     bool  none  ();
+
+    bool equal(const MSize::ptr &that);
 
 private:
     float mWidth  = 0;
@@ -53,6 +57,8 @@ public:
     MPoint::ptr origin();
     MSize::ptr  size  ();
     bool        none  ();
+
+    bool equal(const MRect::ptr &that);
 
     MRect::ptr intersects(const MRect::ptr  &rect );
     bool       contains  (const MPoint::ptr &point);

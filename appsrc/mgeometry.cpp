@@ -26,6 +26,15 @@ define_reflectable_class_function(MPoint, y)
 float MPoint::x() { return mX; }
 float MPoint::y() { return mY; }
 
+define_reflectable_class_function(MPoint, equal, "args:that")
+bool MPoint::equal(const MPoint::ptr &that) {
+    if (that) {
+        return mX == that->mX && mY == that->mY;
+    } else {
+        return !mX && !mY;
+    }
+}
+
 define_reflectable_class_function(MPoint, add, "args:that")
 MPoint::ptr MPoint::add(const MPoint::ptr &that) {
     if (that) {
@@ -73,6 +82,15 @@ bool MSize::none() {
     return mWidth <= 0 && mHeight <= 0;
 }
 
+define_reflectable_class_function(MSize, equal, "args:that")
+bool MSize::equal(const MSize::ptr &that) {
+    if (that) {
+        return mWidth == that->mWidth && mHeight == that->mHeight;
+    } else {
+        return !mWidth && !mHeight;
+    }
+}
+
 //rect:
 
 MRect::ptr MRect::from(float x, float y, float width, float height) {
@@ -114,7 +132,27 @@ bool MRect::none() {
     return mSize ? mSize->none() : true;
 }
 
-define_reflectable_class_function(MRect, intersects)
+define_reflectable_class_function(MRect, equal, "args:that")
+bool MRect::equal(const MRect::ptr &that) {
+    if (that) {
+        if (x     () != that->x     ()) { return false; }
+        if (y     () != that->y     ()) { return false; }
+        if (width () != that->width ()) { return false; }
+        if (height() != that->height()) { return false; }
+
+        return true;
+
+    } else {
+        if (x     () != 0) { return false; }
+        if (y     () != 0) { return false; }
+        if (width () != 0) { return false; }
+        if (height() != 0) { return false; }
+
+        return true;
+    }
+}
+
+define_reflectable_class_function(MRect, intersects, "args:rect")
 MRect::ptr MRect::intersects(const MRect::ptr &rect) {
     if (none() || !rect || rect->none()) {
         return MRect::zero();
@@ -132,7 +170,7 @@ MRect::ptr MRect::intersects(const MRect::ptr &rect) {
     }
 }
 
-define_reflectable_class_function(MRect, contains)
+define_reflectable_class_function(MRect, contains, "args:point")
 bool MRect::contains(const MPoint::ptr &point) {
     if (none() || !point) {
         return false;
