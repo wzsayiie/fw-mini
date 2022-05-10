@@ -48,6 +48,7 @@ private:
     void sendScrolling();
     void reduceScollingSender();
 
+    void onLayoutSubviews(float width, float height) override;
     void onDrawForeground(float width, float height) override;
 
     void onTouchBegin(float x, float y) override;
@@ -60,7 +61,8 @@ private:
     CView::ptr mContentView;
 
     MPoint::ptr mLastContentOrigin;
-    int mScrollingSenders = 0;
+    bool mScrollingBegan   = false;
+    int  mScrollingSenders = 0;
 
     float mContentTouchX = 0;
     float mContentTouchY = 0;

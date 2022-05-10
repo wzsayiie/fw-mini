@@ -123,10 +123,6 @@ MSize::ptr CScrollView::contentSize() {
 
 void CScrollView::increaseScollingSender() {
     mScrollingSenders += 1;
-
-    if (mScrollingSenders == 1) {
-        delegate()->scrollingBegin();
-    }
 }
 
 void CScrollView::sendScrolling() {
@@ -140,15 +136,27 @@ void CScrollView::sendScrolling() {
     }
 
     mLastContentOrigin = contentOrigin;
-    delegate()->scrolling();
+    if (!mScrollingBegan) {
+        mScrollingBegan = true;
+        delegate()->scrollingBegin();
+    } else {
+        delegate()->scrolling();
+    }
 }
 
 void CScrollView::reduceScollingSender() {
     mScrollingSenders -= 1;
 
-    if (mScrollingSenders == 0) {
+    if (mScrollingSenders == 0 && mScrollingBegan) {
         delegate()->scrollingEnd();
+        mScrollingBegan = false;
     }
+}
+
+void CScrollView::onLayoutSubviews(float width, float height) {
+    MPoint::ptr origin = contentView()->frame()->origin();
+    MPoint::ptr offset = MPoint::zero()->sub(origin);
+    setContentOffset(offset->x(), offset->y());
 }
 
 void CScrollView::onDrawForeground(float width, float height) {
