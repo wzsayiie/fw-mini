@@ -46,6 +46,11 @@ CScrollView::CScrollView(float x, float y, float width, float height): CScrollVi
     setFrame(MRect::from(x, y, width, height));
 }
 
+define_reflectable_class_function(CScrollView, setDelegate, "args:delegate")
+void CScrollView::setDelegate(const CScrollViewDelegate::ptr &delegate) {
+    mDelegate = delegate;
+}
+
 define_reflectable_class_function(CScrollView, delegate)
 CScrollViewDelegate::ptr CScrollView::delegate() {
     if (!mDelegate) {

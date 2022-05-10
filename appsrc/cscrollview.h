@@ -33,6 +33,7 @@ public:
     CScrollView(float x, float y, float width, float height);
 
 public:
+    void setDelegate(const CScrollViewDelegate::ptr &delegate);
     CScrollViewDelegate::ptr delegate();
 
     void addContentSubview(const CView::ptr &subview);
