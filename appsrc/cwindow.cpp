@@ -131,14 +131,27 @@ void CWindow::onMouseWheel(float delta) {
 
 void CWindow::onKey(MKey key) {
     CResponder::ptr responder = CResponder::focusResponder();
-    if (responder) {
-        responder->onKey(key);
+    if (!responder) {
+        return;
     }
+
+    //NOTE: finding with a null "pt" means that mouse position is ignored.
+    if (!responder->canRespondKey(nullptr)) {
+        return;
+    }
+
+    responder->onKey(key);
 }
 
 void CWindow::onWrite(const std::string &text, bool enter)  {
     CResponder::ptr responder = CResponder::focusResponder();
-    if (responder) {
-        responder->onWrite(text, enter);
+    if (!responder) {
+        return;
     }
+
+    if (!responder->canRespondWriting(nullptr)) {
+        return;
+    }
+    
+    responder->onWrite(text, enter);
 }
