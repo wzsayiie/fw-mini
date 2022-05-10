@@ -49,13 +49,13 @@ private:
     void sendScrolling();
     void reduceScollingSender();
 
-    void onLayoutSubviews(float width, float height) override;
-    void onDrawForeground(float width, float height) override;
-
     void onTouchBegin(float x, float y) override;
     void onTouchMove (float x, float y) override;
     void onTouchEnd  (float x, float y) override;
     void onWheel     (float delta)      override;
+
+    void onLayoutSubviews(float width, float height) override;
+    void onDrawForeground(float width, float height) override;
 
 private:
     CScrollViewDelegate::ptr mDelegate;

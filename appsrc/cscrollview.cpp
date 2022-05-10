@@ -34,9 +34,6 @@ inline float range(float min, float value, float max) {
 
 //scroll view:
 
-const int   IndicatorRGBA  = MColor::LightGrayRGBA & 0xFFffFF80;
-const float IndicatorWidth = 4;
-
 CScrollView::CScrollView() {
     setAcceptWheel(true);
     setTouchable(true);
@@ -158,41 +155,6 @@ void CScrollView::reduceScollingSender() {
     }
 }
 
-void CScrollView::onLayoutSubviews(float width, float height) {
-    MPoint::ptr origin = contentView()->frame()->origin();
-    MPoint::ptr offset = MPoint::zero()->sub(origin);
-    setContentOffset(offset->x(), offset->y());
-}
-
-void CScrollView::onDrawForeground(float width, float height) {
-    float contentHeight = contentSize()->height();
-    float contentWidth  = contentSize()->width ();
-
-    if (contentHeight > height) {
-        float offsetY = contentOffset()->y();
-
-        float ix = width - IndicatorWidth;
-        float iw = IndicatorWidth;
-        float iy = offsetY / contentHeight * height;
-        float ih = height  / contentHeight * height;
-
-        MContextSelectRGBA(IndicatorRGBA);
-        MContextDrawRect(ix, iy, iw, ih);
-    }
-
-    if (contentWidth > width) {
-        float offsetX = contentOffset()->x();
-
-        float iy = height - IndicatorWidth;
-        float ih = IndicatorWidth;
-        float ix = offsetX / contentWidth * width;
-        float iw = width   / contentWidth * width;
-
-        MContextSelectRGBA(IndicatorRGBA);
-        MContextDrawRect(ix, iy, iw, ih);
-    }
-}
-
 void CScrollView::onTouchBegin(float x, float y) {
     mContentTouchX = x - contentView()->frame()->x();
     mContentTouchY = y - contentView()->frame()->y();
@@ -228,4 +190,42 @@ void CScrollView::onWheel(float delta) {
     else if (contentWidth  > ownWidth ) { contentX += delta; }
 
     setContentOffset(-contentX, -contentY);
+}
+
+void CScrollView::onLayoutSubviews(float width, float height) {
+    MPoint::ptr origin = contentView()->frame()->origin();
+    MPoint::ptr offset = MPoint::zero()->sub(origin);
+    setContentOffset(offset->x(), offset->y());
+}
+
+const int   IndicatorRGBA  = MColor::LightGrayRGBA & 0xFFffFF80;
+const float IndicatorWidth = 4;
+
+void CScrollView::onDrawForeground(float width, float height) {
+    float contentHeight = contentSize()->height();
+    float contentWidth  = contentSize()->width ();
+
+    if (contentHeight > height) {
+        float offsetY = contentOffset()->y();
+
+        float ix = width - IndicatorWidth;
+        float iw = IndicatorWidth;
+        float iy = offsetY / contentHeight * height;
+        float ih = height  / contentHeight * height;
+
+        MContextSelectRGBA(IndicatorRGBA);
+        MContextDrawRect(ix, iy, iw, ih);
+    }
+
+    if (contentWidth > width) {
+        float offsetX = contentOffset()->x();
+
+        float iy = height - IndicatorWidth;
+        float ih = IndicatorWidth;
+        float ix = offsetX / contentWidth * width;
+        float iw = width   / contentWidth * width;
+
+        MContextSelectRGBA(IndicatorRGBA);
+        MContextDrawRect(ix, iy, iw, ih);
+    }
 }
