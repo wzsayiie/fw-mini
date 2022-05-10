@@ -2,6 +2,13 @@
 
 CResponder *CResponder::sFocusResponder = nullptr;
 
+CResponder::ptr CResponder::focusResponder() {
+    if (sFocusResponder) {
+        return sFocusResponder->shared();
+    }
+    return nullptr;
+}
+
 CResponder::~CResponder() {
     if (this == sFocusResponder) {
         sFocusResponder = nullptr;
@@ -49,16 +56,16 @@ MPoint::ptr CResponder::responseOffset() {
 }
 
 define_reflectable_class_function(CResponder, canRespondTouch    , "args:pt")
-define_reflectable_class_function(CResponder, canRespondWriting  , "args:pt")
-define_reflectable_class_function(CResponder, canRespondKey      , "args:pt")
 define_reflectable_class_function(CResponder, canRespondMouseMove, "args:pt")
 define_reflectable_class_function(CResponder, canRespondWheel    , "args:pt")
+define_reflectable_class_function(CResponder, canRespondKey      , "args:pt")
+define_reflectable_class_function(CResponder, canRespondWriting  , "args:pt")
 
 bool CResponder::canRespondTouch    (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
-bool CResponder::canRespondWriting  (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
-bool CResponder::canRespondKey      (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
 bool CResponder::canRespondMouseMove(const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
 bool CResponder::canRespondWheel    (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
+bool CResponder::canRespondKey      (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
+bool CResponder::canRespondWriting  (const MPoint::ptr &pt) { implement_injectable_function((bool), pt) return false; }
 
 define_reflectable_class_function(CResponder, onBecomeFocusResponder)
 define_reflectable_class_function(CResponder, onResignFocusResponder)
@@ -80,9 +87,9 @@ void CResponder::onMouseEnter(float x, float y) { implement_injectable_function(
 void CResponder::onMouseMove (float x, float y) { implement_injectable_function((void), x, y) }
 void CResponder::onMouseExit (float x, float y) { implement_injectable_function((void), x, y) }
 
-define_reflectable_class_function(CResponder, onWrite, "args:string,enter")
-void CResponder::onWrite(const std::string &string, bool enter) {
-    implement_injectable_function((void), string, enter)
+define_reflectable_class_function(CResponder, onWheel, "args:delta")
+void CResponder::onWheel(float delta) {
+    implement_injectable_function((void), delta)
 }
 
 define_reflectable_class_function(CResponder, onKey, "args:key")
@@ -90,7 +97,7 @@ void CResponder::onKey(MKey key) {
     implement_injectable_function((void), (int)key)
 }
 
-define_reflectable_class_function(CResponder, onWheel, "args:delta")
-void CResponder::onWheel(float delta) {
-    implement_injectable_function((void), delta)
+define_reflectable_class_function(CResponder, onWrite, "args:string,enter")
+void CResponder::onWrite(const std::string &string, bool enter) {
+    implement_injectable_function((void), string, enter)
 }

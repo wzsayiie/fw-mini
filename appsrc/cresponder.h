@@ -23,9 +23,9 @@ public:
     
     virtual bool canRespondTouch    (const MPoint::ptr &pt);
     virtual bool canRespondMouseMove(const MPoint::ptr &pt);
-    virtual bool canRespondWriting  (const MPoint::ptr &pt);
-    virtual bool canRespondKey      (const MPoint::ptr &pt);
     virtual bool canRespondWheel    (const MPoint::ptr &pt);
+    virtual bool canRespondKey      (const MPoint::ptr &pt);
+    virtual bool canRespondWriting  (const MPoint::ptr &pt);
     
 protected: public:
     virtual void onBecomeFocusResponder();
@@ -37,9 +37,9 @@ protected: public:
     virtual void onMouseEnter(float x, float y);
     virtual void onMouseMove (float x, float y);
     virtual void onMouseExit (float x, float y);
-    virtual void onWrite     (const std::string &string, bool enter);
-    virtual void onKey       (MKey key);
     virtual void onWheel     (float delta);
+    virtual void onKey       (MKey key);
+    virtual void onWrite     (const std::string &string, bool enter);
     
 private:
     static CResponder *sFocusResponder;

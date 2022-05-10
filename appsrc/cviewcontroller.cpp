@@ -179,8 +179,8 @@ bool CViewController::canRespondMouseMove(const MPoint::ptr &pt) {
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondWriting, "args:pt")
-bool CViewController::canRespondWriting(const MPoint::ptr &pt) {
+define_reflectable_class_function(CViewController, canRespondWheel, "args:pt")
+bool CViewController::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
     return true;
@@ -193,8 +193,8 @@ bool CViewController::canRespondKey(const MPoint::ptr &pt) {
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondWheel, "args:pt")
-bool CViewController::canRespondWheel(const MPoint::ptr &pt) {
+define_reflectable_class_function(CViewController, canRespondWriting, "args:pt")
+bool CViewController::canRespondWriting(const MPoint::ptr &pt) {
     implement_injectable_function((bool), pt)
     
     return true;

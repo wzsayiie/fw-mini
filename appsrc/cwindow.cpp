@@ -54,19 +54,22 @@ void CWindow::onTouchBegin(float x, float y) {
     );
     
     if (mTouchingResponder) {
-        MPoint::ptr off = mTouchingResponder->responseOffset();
-        float nx = x - off->x();
-        float ny = y - off->y();
+        MPoint::ptr offset = mTouchingResponder->responseOffset();
+        float nx = x - offset->x();
+        float ny = y - offset->y();
 
         mTouchingResponder->onTouchBegin(nx, ny);
+
+        //NOTE: set touching responder as the focus.
+        mTouchingResponder->becomeFocusResponder();
     }
 }
 
 void CWindow::onTouchMove(float x, float y) {
     if (mTouchingResponder) {
-        MPoint::ptr off = mTouchingResponder->responseOffset();
-        float nx = x - off->x();
-        float ny = y - off->y();
+        MPoint::ptr offset = mTouchingResponder->responseOffset();
+        float nx = x - offset->x();
+        float ny = y - offset->y();
 
         mTouchingResponder->onTouchMove(nx, ny);
     }
@@ -74,9 +77,9 @@ void CWindow::onTouchMove(float x, float y) {
 
 void CWindow::onTouchEnd(float x, float y) {
     if (mTouchingResponder) {
-        MPoint::ptr off = mTouchingResponder->responseOffset();
-        float nx = x - off->x();
-        float ny = y - off->y();
+        MPoint::ptr offset = mTouchingResponder->responseOffset();
+        float nx = x - offset->x();
+        float ny = y - offset->y();
 
         mTouchingResponder->onTouchEnd(nx, ny);
         mTouchingResponder = nullptr;
@@ -92,18 +95,18 @@ void CWindow::onMouseMove(float x, float y) {
     
     //exit last responder.
     if (mMouseMovingResponder && mMouseMovingResponder != responder) {
-        MPoint::ptr off = mMouseMovingResponder->responseOffset();
-        float nx = x - off->x();
-        float ny = y - off->y();
+        MPoint::ptr offset = mMouseMovingResponder->responseOffset();
+        float nx = x - offset->x();
+        float ny = y - offset->y();
 
         mMouseMovingResponder->onMouseExit(nx, ny);
     }
     
     //process new responder.
     if (responder) {
-        MPoint::ptr off = responder->responseOffset();
-        float nx = x - off->x();
-        float ny = y - off->y();
+        MPoint::ptr offset = responder->responseOffset();
+        float nx = x - offset->x();
+        float ny = y - offset->y();
 
         if (responder != mMouseMovingResponder) {
             responder->onMouseEnter(nx, ny);
@@ -127,25 +130,14 @@ void CWindow::onMouseWheel(float delta) {
 }
 
 void CWindow::onKey(MKey key) {
-    //NOTE: finding with a null "pt" means that mouse position is ignored.
-    CResponder::ptr responder = rootViewController()->findResponder(nullptr,
-        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &) {
-            return obj->canRespondKey(nullptr);
-        })
-    );
-    
+    CResponder::ptr responder = CResponder::focusResponder();
     if (responder) {
         responder->onKey(key);
     }
 }
 
 void CWindow::onWrite(const std::string &text, bool enter)  {
-    CResponder::ptr responder = rootViewController()->findResponder(nullptr,
-        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &) {
-            return obj->canRespondWriting(nullptr);
-        })
-    );
-    
+    CResponder::ptr responder = CResponder::focusResponder();
     if (responder) {
         responder->onWrite(text, enter);
     }
