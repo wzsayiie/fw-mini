@@ -32,6 +32,9 @@ inline float range(float min, float value, float max) {
     return value < min ? min : (max < value ? max : value);
 }
 
+const int   IndicatorRGBA  = MColor::LightGrayRGBA & 0xFFffFF80;
+const float IndicatorWidth = 4;
+
 //scroll view:
 
 CScrollView::CScrollView() {
@@ -197,9 +200,6 @@ void CScrollView::onLayoutSubviews(float width, float height) {
     MPoint::ptr offset = MPoint::zero()->sub(origin);
     setContentOffset(offset->x(), offset->y());
 }
-
-const int   IndicatorRGBA  = MColor::LightGrayRGBA & 0xFFffFF80;
-const float IndicatorWidth = 4;
 
 void CScrollView::onDrawForeground(float width, float height) {
     float contentHeight = contentSize()->height();

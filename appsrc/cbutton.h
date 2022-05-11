@@ -16,13 +16,13 @@ public:
     MFunction<void ()>::ptr clickTarget();
 
 private:
-    void onLayoutSubviews(float width, float height) override;
-    void onDrawForeground(float width, float height) override;
-
     void onMouseEnter(float x, float y) override;
     void onMouseExit (float x, float y) override;
     void onTouchBegin(float x, float y) override;
     void onTouchEnd  (float x, float y) override;
+
+    void onLayoutSubviews(float width, float height) override;
+    void onDrawForeground(float width, float height) override;
 
 private:
     CLabel::ptr mTitleLabel;

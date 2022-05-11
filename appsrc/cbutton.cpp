@@ -33,6 +33,18 @@ MFunction<void ()>::ptr CButton::clickTarget() {
     return mClickTarget;
 }
 
+void CButton::onMouseEnter(float x, float y) { mPointed = true ; }
+void CButton::onMouseExit (float x, float y) { mPointed = false; }
+void CButton::onTouchBegin(float x, float y) { mTouched = true ; }
+
+void CButton::onTouchEnd(float x, float y) {
+    mTouched = false;
+
+    if (mClickTarget && bounds()->contains(MPoint::from(x, y))) {
+        mClickTarget->call();
+    }
+}
+
 void CButton::onLayoutSubviews(float width, float height) {
     titleLabel()->setFrame(MRect::from(0, 0, width, height));
 }
@@ -44,17 +56,5 @@ void CButton::onDrawForeground(float width, float height) {
     } else if (mPointed) {
         MContextSelectRGBA(PointedForegroundRGBA);
         MContextDrawRect(0, 0, width, height);
-    }
-}
-
-void CButton::onMouseEnter(float x, float y) { mPointed = true ; }
-void CButton::onMouseExit (float x, float y) { mPointed = false; }
-void CButton::onTouchBegin(float x, float y) { mTouched = true ; }
-
-void CButton::onTouchEnd(float x, float y) {
-    mTouched = false;
-
-    if (mClickTarget && bounds()->contains(MPoint::from(x, y))) {
-        mClickTarget->call();
     }
 }
