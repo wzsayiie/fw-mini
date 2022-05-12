@@ -8,4 +8,21 @@ public:
 
 public:
     double GetSecondsTick();
+
+    void loop  (double interval, const MFunction<void ()>::ptr &task);
+    void delay (double waiting , const MFunction<void ()>::ptr &task);
+    void cancel(const MFunction<void ()>::ptr &task);
+
+private:
+    void update();
+
+private:
+    struct TaskSetting {
+        bool   onlyOnce = true;
+        double nextTick = 0;
+        double interval = 0;
+    };
+
+private:
+    std::map<MFunction<void ()>::ptr, TaskSetting> mTasks;
 };
