@@ -2,7 +2,7 @@
 
 void MMACBundle::install() {
     auto obj = MMACBundle::create();
-    setSharedObject(obj);
+    setInstance(obj);
 }
 
 MVector<uint8_t>::ptr MMACBundle::loadAsset(const std::string &path) {

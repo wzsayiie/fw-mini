@@ -22,8 +22,8 @@ struct PathNormalizer {
 
 //file manager:
 
-define_reflectable_class_function(MFileManager, sharedObject)
-MFileManager *MFileManager::sharedObject() {
+define_reflectable_class_function(MFileManager, instance)
+MFileManager *MFileManager::instance() {
     static MFileManager::ptr obj = MFileManager::create();
     return obj.get();
 }
@@ -34,7 +34,7 @@ MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
         return nullptr;
     }
 
-    MVector<uint8_t>::ptr bytes = MBundle::sharedObject()->loadAsset(m_normal_path path);
+    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
     if (!bytes || bytes->vector.empty()) {
         return nullptr;
     }
@@ -61,7 +61,7 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
         return "";
     }
 
-    MVector<uint8_t>::ptr bytes = MBundle::sharedObject()->loadAsset(m_normal_path path);
+    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
     if (!bytes || bytes->vector.empty()) {
         return "";
     }
@@ -147,7 +147,7 @@ void MFileManager::removePath(const std::string &path) {
 define_reflectable_class_function(MFileManager, documentDirectory)
 std::string MFileManager::documentDirectory() {
     if (mDocumentDirectory.empty()) {
-        mDocumentDirectory = m_normal_path MBundle::sharedObject()->documentDirectory();
+        mDocumentDirectory = m_normal_path MBundle::instance()->documentDirectory();
     }
     return mDocumentDirectory;
 }
@@ -155,7 +155,7 @@ std::string MFileManager::documentDirectory() {
 define_reflectable_class_function(MFileManager, temporaryDirectory)
 std::string MFileManager::temporaryDirectory() {
     if (mTemporaryDirectory.empty()) {
-        mTemporaryDirectory = m_normal_path MBundle::sharedObject()->temporaryDirectory();
+        mTemporaryDirectory = m_normal_path MBundle::instance()->temporaryDirectory();
     }
     return mTemporaryDirectory;
 }
@@ -165,19 +165,19 @@ std::string MFileManager::temporaryDirectory() {
 define_reflectable_class_const(MBundle, PrivateDirectoryName)
 define_reflectable_class_const(MBundle, BundleDirectoryName )
 
-MBundle::ptr MBundle::sSharedObject;
+MBundle::ptr MBundle::sInstance;
 
-define_reflectable_class_function(MBundle, setSharedObject, "args:bundle")
-void MBundle::setSharedObject(const MBundle::ptr &obj) {
-    sSharedObject = obj;
+define_reflectable_class_function(MBundle, setInstance, "args:bundle")
+void MBundle::setInstance(const MBundle::ptr &obj) {
+    sInstance = obj;
 }
 
-define_reflectable_class_function(MBundle, sharedObject)
-MBundle *MBundle::sharedObject() {
-    if (!sSharedObject) {
-        sSharedObject = MBundle::create();
+define_reflectable_class_function(MBundle, instance)
+MBundle *MBundle::instance() {
+    if (!sInstance) {
+        sInstance = MBundle::create();
     }
-    return sSharedObject.get();
+    return sInstance.get();
 }
 
 define_reflectable_class_function(MBundle, loadAsset, "args:path")

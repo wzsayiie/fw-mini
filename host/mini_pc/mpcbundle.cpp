@@ -10,7 +10,7 @@
 
 void MPCBundle::install() {
     auto obj = MPCBundle::create();
-    setSharedObject(obj);
+    setInstance(obj);
 }
 
 MVector<uint8_t>::ptr MPCBundle::loadAsset(const std::string &path) {

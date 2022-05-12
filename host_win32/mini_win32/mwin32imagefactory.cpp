@@ -3,7 +3,7 @@
 void MWin32ImageFactory::install()
 {
     auto obj = MWin32ImageFactory::create();
-    setSharedObject(obj);
+    setInstance(obj);
 }
 
 MImageImpl::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData)

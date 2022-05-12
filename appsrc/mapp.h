@@ -9,7 +9,7 @@ public:
     static constexpr const float UpdateEverySeconds = 0.1f;
 
 public:
-    static MApp *sharedObject();
+    static MApp *instance();
 
 public:
     M_HOST_CALL_FUNCTION void launch();

@@ -6,7 +6,7 @@
 
 m_class(MFileManager, MObject) {
 public:
-    static MFileManager *sharedObject();
+    static MFileManager *instance();
 
 public:
     //data read and write:
@@ -45,8 +45,8 @@ public:
     static constexpr const char *const BundleDirectoryName  = "mini.bundle";
     
 public:
-    M_HOST_CALL_FUNCTION static void setSharedObject(const MBundle::ptr &obj);
-    static MBundle *sharedObject();
+    M_HOST_CALL_FUNCTION static void setInstance(const MBundle::ptr &obj);
+    static MBundle *instance();
 
 public:
     virtual MVector<uint8_t>::ptr loadAsset(const std::string &path);
@@ -55,5 +55,5 @@ public:
     virtual std::string temporaryDirectory();
 
 private:
-    static MBundle::ptr sSharedObject;
+    static MBundle::ptr sInstance;
 };

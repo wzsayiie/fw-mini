@@ -4,7 +4,7 @@
 
 m_class(MScheduler, MObject) {
 public:
-    static MScheduler *sharedObject();
+    static MScheduler *instance();
 
 public:
     double GetSecondsTick();

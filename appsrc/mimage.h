@@ -43,8 +43,8 @@ private:
 M_HOST_IMPLEMENT_CLASS
 m_class(MImageFactory, MObject) {
 public:
-    M_HOST_CALL_FUNCTION static void setSharedObject(const MImageFactory::ptr &obj);
-    static MImageFactory *sharedObject();
+    M_HOST_CALL_FUNCTION static void setInstance(const MImageFactory::ptr &obj);
+    static MImageFactory *instance();
 
 public:
     //image from file format data.
@@ -61,5 +61,5 @@ public:
     virtual MSize::ptr pixelSize(const MImageImpl::ptr &impl);
 
 private:
-    static MImageFactory::ptr sSharedObject;
+    static MImageFactory::ptr sInstance;
 };

@@ -163,7 +163,7 @@ static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     UpdateEditFrameWithSpace((int)clientSize.cx, (int)clientSize.cy);
 
     //application events:
-    MApp::sharedObject()->launch();
+    MApp::instance()->launch();
 
     SetTimer(wnd, AppUpdateTimerId, (UINT)(1000 * MApp::UpdateEverySeconds), nullptr);
 
@@ -204,7 +204,7 @@ static void OnTimer(HWND wnd, WPARAM wParam, LPARAM lParam)
     auto timerId = (UINT_PTR)wParam;
     if (timerId == AppUpdateTimerId)
     {
-        MApp::sharedObject()->update();
+        MApp::instance()->update();
     }
     else if (timerId == WindowUpdateTimerId)
     {

@@ -116,7 +116,7 @@ void CTextField::onBecomeFocusResponder() {
     increaseEditingSender();
 
     MWindow::mainWindow()->setWritingEnabled(true, mText);
-    mCursorBeginTick = MScheduler::sharedObject()->GetSecondsTick();
+    mCursorBeginTick = MScheduler::instance()->GetSecondsTick();
 }
 
 void CTextField::onResignFocusResponder() {
@@ -144,7 +144,7 @@ void CTextField::onDraw(float width, float height) {
 
     //draw cursor.
     if (mCursorBeginTick) {
-        double current  = MScheduler::sharedObject()->GetSecondsTick();
+        double current  = MScheduler::instance()->GetSecondsTick();
         double duration = current - mCursorBeginTick;
         auto   gapCount = (int64_t)(duration * 1000) / (int64_t)(CursorInterval * 1000);
 

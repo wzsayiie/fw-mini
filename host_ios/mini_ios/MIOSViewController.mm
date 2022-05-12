@@ -25,7 +25,7 @@ const CGFloat TextFieldBottom =  20;
 
 - (MApp *)app {
     if (!_app) {
-        _app = MApp::sharedObject();
+        _app = MApp::instance();
     }
     return _app;
 }

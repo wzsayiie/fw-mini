@@ -22,7 +22,7 @@ static CGContextRef CreateBitmapContext(void *bytes, int width, int height) {
 
 void MMACImageFactory::install() {
     auto obj = MMACImageFactory::create();
-    setSharedObject(obj);
+    setInstance(obj);
 }
 
 MImageImpl::ptr MMACImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {

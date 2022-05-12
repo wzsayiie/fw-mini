@@ -4,8 +4,8 @@
 
 define_reflectable_class_const(MApp, UpdateEverySeconds)
 
-define_reflectable_class_function(MApp, sharedObject)
-MApp *MApp::sharedObject() {
+define_reflectable_class_function(MApp, instance)
+MApp *MApp::instance() {
     static auto obj = MApp::create();
     return obj.get();
 }
@@ -50,5 +50,5 @@ void MApp::removeListener(const MFunction<void ()>::ptr &listener) {
 
 _MAppLaunchRegistrar::_MAppLaunchRegistrar(void (*fcn)()) noexcept {
     auto func = MFunction<void ()>::create(fcn);
-    MApp::sharedObject()->addLaunchListener(func);
+    MApp::instance()->addLaunchListener(func);
 }

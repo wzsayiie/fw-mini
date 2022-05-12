@@ -5,7 +5,7 @@
 int main() {
     MPCBundle::install();
 
-    MApp *app = MApp::sharedObject();
+    MApp *app = MApp::instance();
     app->launch();
 
     auto interval = (useconds_t)(MApp::UpdateEverySeconds * 1000 * 1000);
