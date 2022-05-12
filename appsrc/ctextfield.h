@@ -7,7 +7,6 @@
 class CTextField;
 c_class(CTextFieldDelegate, CObject) {
 public:
-
     void setEditingBeginTarget(const MFunction<void ()>::ptr &target);
     void setTextChangeTarget  (const MFunction<void ()>::ptr &target);
     void setEditingEndTarget  (const MFunction<void ()>::ptr &target);
@@ -76,5 +75,5 @@ private:
     bool        mLastEntered     = false;
     int         mEditingSenders  = 0;
     bool        mEditingBegan    = false;
-    float       mCursorBeginTick = 0;
+    double      mCursorBeginTick = 0;
 };

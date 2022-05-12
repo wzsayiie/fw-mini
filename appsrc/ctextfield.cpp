@@ -1,5 +1,4 @@
 #include "ctextfield.h"
-#include <ctime>
 
 //text field delegate:
 
@@ -28,10 +27,6 @@ void CTextFieldDelegate::textChange  () { if (mTextChangeTarget  ) { mTextChange
 void CTextFieldDelegate::editingEnd  () { if (mEditingEndTarget  ) { mEditingEndTarget  ->call(); } }
 
 //assist:
-
-inline float GetNowTick() {
-    return (float)clock() / CLOCKS_PER_SEC;
-}
 
 const float CursorHeight   = 4.0f;
 const float CursorInterval = 0.6f;
@@ -121,7 +116,7 @@ void CTextField::onBecomeFocusResponder() {
     increaseEditingSender();
 
     MWindow::mainWindow()->setWritingEnabled(true, mText);
-    mCursorBeginTick = GetNowTick();
+    mCursorBeginTick = MScheduler::sharedObject()->GetSecondsTick();
 }
 
 void CTextField::onResignFocusResponder() {
@@ -149,8 +144,9 @@ void CTextField::onDraw(float width, float height) {
 
     //draw cursor.
     if (mCursorBeginTick) {
-        float duration = GetNowTick() - mCursorBeginTick;
-        int   gapCount = (int)(duration * 1000) / (int)(CursorInterval * 1000);
+        double current  = MScheduler::sharedObject()->GetSecondsTick();
+        double duration = current - mCursorBeginTick;
+        auto   gapCount = (int64_t)(duration * 1000) / (int64_t)(CursorInterval * 1000);
 
         if (gapCount % 2) {
             MContextSelectRGBA(mTextColor->rgba());

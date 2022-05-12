@@ -9,4 +9,5 @@
 #include "mimage.h"
 #include "mobject.h"
 #include "mprint.h"
+#include "mscheduler.h"
 #include "mwindow.h"
