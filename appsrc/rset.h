@@ -11,32 +11,40 @@ template<> struct type_name<class base_set> {
 
 class base_set : public extends<base_set, object> {
 public:
-    virtual void insert(const any &value) = 0;
-    virtual void erase (const any &value) = 0;
+    virtual void _insert(const any &v) = 0;
+    virtual void _erase (const any &v) = 0;
     
-    virtual bool has(const any &value) const = 0;
-    virtual int size() const = 0;
+    virtual bool _has (const any &v) const = 0;
+    virtual int  _size()             const = 0;
+    
+    virtual void _begin() = 0;
+    virtual bool _on   () = 0;
+    virtual void _next () = 0;
+    virtual any  _value() = 0;
 };
 
-template<class Value> class set : public extends<set<Value>, base_set> {
+template<class Value> class set
+    : public extends<set<Value>, base_set>
+    , public std::set<Value>
+{
 public:
-    std::set<Value> set;
-
-    void insert(const any &value) override {
-        this->set.insert((Value)value);
+    template<class... Args> set(Args... args): std::set<Value>(args...) {
     }
+    
+public:
+    void _insert(const any &v) override { this->insert((Value)v); }
+    void _erase (const any &v) override { this->erase ((Value)v); }
 
-    void erase(const any &value) override {
-        this->set.erase((Value)value);
-    }
-
-    bool has(const any &value) const override {
-        return this->set.find((Value)value) != this->set.end();
-    }
-
-    int size() const override {
-        return (int)this->set.size();
-    }
+    bool _has (const any &v) const override { return this->find((Value)v) != this->end(); }
+    int  _size()             const override { return (int)this->size();                   }
+    
+    void _begin() override { _it = this->begin();       }
+    bool _on   () override { return _it != this->end(); }
+    void _next () override { ++_it;                     }
+    any  _value() override { return *_it;               }
+    
+private:
+    typename std::set<Value>::iterator _it;
 };
 
 } //end reflect.

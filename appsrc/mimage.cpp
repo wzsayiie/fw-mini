@@ -22,7 +22,7 @@ MImage::ptr MImage::fromFile(const std::string &path) {
 
 define_reflectable_class_function(MImage, fromFFData, "args:ffData")
 MImage::ptr MImage::fromFFData(const MVector<uint8_t>::ptr &ffData) {
-    if (!ffData || ffData->vector.empty()) {
+    if (!ffData || ffData->empty()) {
         return nullptr;
     }
 
@@ -38,11 +38,11 @@ MImage::ptr MImage::fromFFData(const MVector<uint8_t>::ptr &ffData) {
 
 define_reflectable_class_function(MImage, fromBitmap, "args:bitmap,width,height")
 MImage::ptr MImage::fromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height) {
-    if (!bitmap || bitmap->vector.empty()) {
+    if (!bitmap || bitmap->empty()) {
         return nullptr;
     }
 
-    if (width <= 0 || (int)bitmap->vector.size() != width * height * 4) {
+    if (width <= 0 || (int)bitmap->size() != width * height * 4) {
         return nullptr;
     }
 

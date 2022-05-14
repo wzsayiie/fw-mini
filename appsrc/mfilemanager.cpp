@@ -35,7 +35,7 @@ MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
     }
 
     MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
-    if (!bytes || bytes->vector.empty()) {
+    if (!bytes || bytes->empty()) {
         return nullptr;
     }
 
@@ -48,11 +48,11 @@ MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
     
     std::string nPath = m_normal_path path;
     dash::read_file(nPath.c_str(), [&](int size) {
-        bytes->vector.resize((size_t)size);
-        return bytes->vector.data();
+        bytes->resize((size_t)size);
+        return bytes->data();
     });
 
-    return bytes->vector.empty() ? nullptr : bytes;
+    return bytes->empty() ? nullptr : bytes;
 }
 
 define_reflectable_class_function(MFileManager, u8stringFromBundle, "args:path")
@@ -62,12 +62,12 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
     }
 
     MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
-    if (!bytes || bytes->vector.empty()) {
+    if (!bytes || bytes->empty()) {
         return "";
     }
 
-    auto bgn = (char *)bytes->vector.data();
-    auto end = (char *)bytes->vector.data() + bytes->vector.size();
+    auto bgn = (char *)bytes->data();
+    auto end = (char *)bytes->data() + bytes->size();
     return std::string(bgn, end);
 }
 
@@ -88,7 +88,7 @@ define_reflectable_class_function(MFileManager, writeBytesToFile, "args:bytes,pa
 void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const std::string &path) {
     std::string nPath = m_normal_path path;
     if (bytes) {
-        dash::write_file(nPath.c_str(), bytes->vector.data(), (int)bytes->vector.size());
+        dash::write_file(nPath.c_str(), bytes->data(), (int)bytes->size());
     } else {
         //clear the file.
         dash::write_file(nPath.c_str(), nullptr, 0);
@@ -108,7 +108,7 @@ MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &p
     std::filesystem::directory_iterator iterator(m_normal_path path);
     for (auto &entry : iterator) {
         std::string item = entry.path().string();
-        contents->vector.push_back(m_normal_path item);
+        contents->push_back(m_normal_path item);
     }
 
     return contents;

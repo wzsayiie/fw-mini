@@ -41,8 +41,8 @@ MVector<uint8_t>::ptr MPCBundle::loadAsset(const std::string &path) {
 
     auto asset = MVector<uint8_t>::create();
     dash::read_file(assetPath.string().c_str(), [&](int size) {
-        asset->vector.resize((size_t)size);
-        return asset->vector.data();
+        asset->resize((size_t)size);
+        return asset->data();
     });
     return asset;
 }

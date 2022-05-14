@@ -22,7 +22,7 @@ MVector<uint8_t>::ptr MMACBundle::loadAsset(const std::string &path) {
     NSData   *data = [NSData dataWithContentsOfFile:file];
     
     auto content = MVector<uint8_t>::create();
-    content->vector.insert(content->vector.end(), (uint8_t *)data.bytes, (uint8_t *)data.bytes + data.length);
+    content->insert(content->end(), (uint8_t *)data.bytes, (uint8_t *)data.bytes + data.length);
     return content;
 }
 

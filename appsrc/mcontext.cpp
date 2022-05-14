@@ -42,7 +42,7 @@ void MContextSelectVAlign   (MVAlign align) { sVAlign    = align; }
 define_reflectable_function(MContextPushOffset, "args:x,y")
 void MContextPushOffset(float x, float y) {
     auto current = MPoint::from(sOffsetX, sOffsetY);
-    sOffsetStack->vector.push_back(current);
+    sOffsetStack->push_back(current);
     
     sOffsetX += x;
     sOffsetY += y;
@@ -52,9 +52,9 @@ define_reflectable_function(MContextPopOffset)
 void MContextPopOffset() {
     auto last = MPoint::zero();
 
-    if (!sOffsetStack->vector.empty()) {
-        last = sOffsetStack->vector.back();
-        sOffsetStack->vector.pop_back();
+    if (!sOffsetStack->empty()) {
+        last = sOffsetStack->back();
+        sOffsetStack->pop_back();
     }
 
     sOffsetX = last->x();
@@ -65,12 +65,12 @@ define_reflectable_function(MContextPushClip, "args:x,y,w,h")
 void MContextPushClip(float x, float y, float w, float h) {
     //push the clip:
     auto clip = MRect::from(sOffsetX + x, sOffsetY + y, w, h);
-    if (!sClipStack->vector.empty()) {
-        MRect::ptr last = sClipStack->vector.back();
+    if (!sClipStack->empty()) {
+        MRect::ptr last = sClipStack->back();
         clip = clip->intersects(last);
     }
 
-    sClipStack->vector.push_back(clip);
+    sClipStack->push_back(clip);
 
     //create the graph:
     auto graph = MClipGraph::create();
@@ -79,18 +79,18 @@ void MContextPushClip(float x, float y, float w, float h) {
     graph->mW = clip->width ();
     graph->mH = clip->height();
 
-    sGraphs->vector.push_back(graph);
+    sGraphs->push_back(graph);
 }
 
 define_reflectable_function(MContextPopClip)
 void MContextPopClip() {
-    if (sClipStack->vector.empty()) {
+    if (sClipStack->empty()) {
         return;
     }
 
     //pop the clip.
-    MRect::ptr clip = sClipStack->vector.back();
-    sClipStack->vector.pop_back();
+    MRect::ptr clip = sClipStack->back();
+    sClipStack->pop_back();
 
     //create the graph:
     auto graph = MClipGraph::create();
@@ -99,7 +99,7 @@ void MContextPopClip() {
     graph->mW = clip->width ();
     graph->mH = clip->height();
 
-    sGraphs->vector.push_back(graph);
+    sGraphs->push_back(graph);
 }
 
 define_reflectable_function(MContextDrawTriangle, "args:x0,y0,x1,y1,x2,y2")
@@ -121,7 +121,7 @@ void MContextDrawTriangle(float x0, float y0, float x1, float y1, float x2, floa
     graph->mX2   = sOffsetX + x2;
     graph->mY2   = sOffsetY + y2;
 
-    sGraphs->vector.push_back(graph);
+    sGraphs->push_back(graph);
 }
 
 define_reflectable_function(MContextDrawRect, "args:x,y,w,h")
@@ -166,8 +166,8 @@ void MContextDrawRect(float x, float y, float w, float h) {
     bcd->mX2 = dx;
     bcd->mY2 = dy;
 
-    sGraphs->vector.push_back(abc);
-    sGraphs->vector.push_back(bcd);
+    sGraphs->push_back(abc);
+    sGraphs->push_back(bcd);
 }
 
 define_reflectable_function(MContextDrawEllipse, "args:x,y,w,h")
@@ -206,7 +206,7 @@ void MContextDrawImage(float x, float y, float w, float h) {
     graph->mW     = w;
     graph->mH     = h;
 
-    sGraphs->vector.push_back(graph);
+    sGraphs->push_back(graph);
 }
 
 define_reflectable_function(MContextDrawText, "args:x,y,w,h")
@@ -235,7 +235,7 @@ void MContextDrawText(float x, float y, float w, float h) {
     graph->mW        = w;
     graph->mH        = h;
 
-    sGraphs->vector.push_back(graph);
+    sGraphs->push_back(graph);
 }
 
 //graphs:
@@ -353,7 +353,7 @@ MVector<MGraph::ptr> *MContextGetGraphs() {
 }
 
 void MContextReset() {
-    sGraphs->vector.clear();
+    sGraphs->clear();
 
     sImage = nullptr;
     sText  = "";

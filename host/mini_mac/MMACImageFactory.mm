@@ -26,7 +26,7 @@ void MMACImageFactory::install() {
 }
 
 MImageImpl::ptr MMACImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {
-    NSData   *data = [NSData dataWithBytes:ffData->vector.data() length:ffData->vector.size()];
+    NSData   *data = [NSData dataWithBytes:ffData->data() length:ffData->size()];
     _NSImage *real = [[_NSImage alloc] initWithData:data];
     
     if (real) {
@@ -39,15 +39,15 @@ MImageImpl::ptr MMACImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &f
 
 MImageImpl::ptr MMACImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
     auto pixels = MVector<uint8_t>::create(); {
-        pixels->vector.resize(width * height * 4);
+        pixels->resize(width * height * 4);
         
-        auto src = (MColorRGBA *)bitmap->vector.data();
-        auto dst = (MColorABGR *)pixels->vector.data();
+        auto src = (MColorRGBA *)bitmap->data();
+        auto dst = (MColorABGR *)pixels->data();
         MColorTransform(src, dst, width * height);
     }
     
     _NSImage *real = nil; {
-        CGContextRef context = CreateBitmapContext(pixels->vector.data(), width, height);
+        CGContextRef context = CreateBitmapContext(pixels->data(), width, height);
         CGImageRef   cgImage = CGBitmapContextCreateImage(context);
 
     #if TARGET_OS_OSX
@@ -88,7 +88,7 @@ MVector<uint8_t>::ptr MMACImageFactory::ffDataFromImage(const MImageImpl::ptr &i
 
     if (data) {
         auto ffData = MVector<uint8_t>::create();
-        ffData->vector.insert(ffData->vector.end(), (uint8_t *)data.bytes, (uint8_t *)data.bytes + data.length);
+        ffData->insert(ffData->end(), (uint8_t *)data.bytes, (uint8_t *)data.bytes + data.length);
         return ffData;
     }
     return nil;
@@ -102,10 +102,10 @@ MVector<uint8_t>::ptr MMACImageFactory::bitmapFromImage(const MImageImpl::ptr &i
     auto height = (int)real.size.height;
 
     auto bitmap = MVector<uint8_t>::create();
-    bitmap->vector.resize(width * height * 4);
+    bitmap->resize(width * height * 4);
 
     //draw image on the bitmap context:
-    CGContextRef context = CreateBitmapContext(bitmap->vector.data(), width, height);
+    CGContextRef context = CreateBitmapContext(bitmap->data(), width, height);
     
 #if TARGET_OS_OSX
     NSGraphicsContext.currentContext = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
@@ -118,8 +118,8 @@ MVector<uint8_t>::ptr MMACImageFactory::bitmapFromImage(const MImageImpl::ptr &i
     CGContextRelease(context);
 
     //transform color format.
-    auto src = (MColorABGR *)bitmap->vector.data();
-    auto dst = (MColorRGBA *)bitmap->vector.data();
+    auto src = (MColorABGR *)bitmap->data();
+    auto dst = (MColorRGBA *)bitmap->data();
     MColorTransform(src, dst, width * height);
 
     return bitmap;

@@ -9,12 +9,12 @@ void MWin32ImageFactory::install()
 MImageImpl::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData)
 {
     //copy the memory data:
-    HGLOBAL memory = GlobalAlloc(GMEM_FIXED, (SIZE_T)ffData->vector.size());
+    HGLOBAL memory = GlobalAlloc(GMEM_FIXED, (SIZE_T)ffData->size());
     dash_defer { GlobalFree(memory); };
 
     if (void *bytes = GlobalLock(memory))
     {
-        memcpy(bytes, ffData->vector.data(), ffData->vector.size());
+        memcpy(bytes, ffData->data(), ffData->size());
         GlobalUnlock(memory);
     }
     else
@@ -46,7 +46,7 @@ MImageImpl::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::ptr 
 MImageImpl::ptr MWin32ImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height)
 {
     auto real   = new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB);
-    auto pixels = (MColorRGBA *)bitmap->vector.data();
+    auto pixels = (MColorRGBA *)bitmap->data();
 
     for (int y = 0; y < height; ++y)
     {
@@ -107,11 +107,11 @@ MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MImageImpl::ptr 
 
     //copy the data:
     auto ffData = MVector<uint8_t>::create();
-    ffData->vector.resize(size);
+    ffData->resize(size);
 
     if (void *bytes = GlobalLock(memory))
     {
-        memcpy(ffData->vector.data(), bytes, size);
+        memcpy(ffData->data(), bytes, size);
         GlobalUnlock(bytes);
 
         return ffData;
@@ -135,9 +135,9 @@ MVector<uint8_t>::ptr MWin32ImageFactory::bitmapFromImage(const MImageImpl::ptr 
 
     //copy bitmap bytes:
     auto bytes = MVector<uint8_t>::create();
-    bytes->vector.resize((size_t)(width * height * 4));
+    bytes->resize((size_t)(width * height * 4));
 
-    auto pixels = (MColorRGBA *)bytes->vector.data();
+    auto pixels = (MColorRGBA *)bytes->data();
     for (UINT x = 0; x < width; ++x)
     {
         for (UINT y = 0; y < height; ++y)

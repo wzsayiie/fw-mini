@@ -25,7 +25,7 @@ void CViewController::makeViewAppear() {
     
     mViewAppeared = true;
     onViewAppear();
-    for (auto &it : mChildControllers->vector) {
+    for (auto &it : *mChildControllers) {
         it->makeViewAppear();
     }
 }
@@ -36,7 +36,7 @@ void CViewController::makeViewDisappear() {
         return;
     }
     
-    for (auto &it : mChildControllers->vector) {
+    for (auto &it : *mChildControllers) {
         it->makeViewDisappear();
     }
     mViewAppeared = false;
@@ -57,13 +57,13 @@ void CViewController::addChildController(const CViewController::ptr &childContro
     
     //remove from old parent.
     if (childController->mParentController) {
-        auto &brothers = childController->mParentController->mChildControllers->vector;
-        brothers.erase(std::remove(brothers.begin(), brothers.end(), childController));
+        auto &brothers = childController->mParentController->mChildControllers;
+        brothers->erase(std::remove(brothers->begin(), brothers->end(), childController));
     }
     //add to new parent:
     view()->addSubview(childController->view());
     
-    mChildControllers->vector.push_back(childController);
+    mChildControllers->push_back(childController);
     childController->mParentController = this;
     
     //adapter appear status.
@@ -81,8 +81,8 @@ void CViewController::removeFromParentController() {
     }
     
     //remove from the parent:
-    auto &brothers = mParentController->mChildControllers->vector;
-    brothers.erase(std::remove(brothers.begin(), brothers.end(), shared()));
+    auto &brothers = mParentController->mChildControllers;
+    brothers->erase(std::remove(brothers->begin(), brothers->end(), shared()));
     mParentController = nullptr;
     
     view()->removeFromSuperview();
@@ -128,7 +128,7 @@ CResponder::ptr CViewController::findResponder(const MPoint::ptr &pt, const CRes
     }
     
     //firstly find in the child controllers.
-    for (auto &it : mChildControllers->vector) {
+    for (auto &it : *mChildControllers) {
         //ignore out-of-bounds child controllers.
         if (it->view()->frame()->intersects(ownBounds)->none()) {
             continue;

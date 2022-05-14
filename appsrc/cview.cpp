@@ -90,11 +90,11 @@ void CView::addSubview(const CView::ptr &subview) {
     
     //remove from old superview.
     if (subview->mSuperview) {
-        auto &brothers = subview->mSuperview->mSubviews->vector;
-        brothers.erase(std::remove(brothers.begin(), brothers.end(), subview));
+        auto &brothers = subview->mSuperview->mSubviews;
+        brothers->erase(std::remove(brothers->begin(), brothers->end(), subview));
     }
     //add to new superview.
-    mSubviews->vector.push_back(subview);
+    mSubviews->push_back(subview);
     subview->mSuperview = this;
     
     //layout.
@@ -108,8 +108,8 @@ void CView::removeFromSuperview() {
         return;
     }
     
-    auto &brothers = mSuperview->mSubviews->vector;
-    brothers.erase(std::remove(brothers.begin(), brothers.end(), shared()));
+    auto &brothers = mSuperview->mSubviews;
+    brothers->erase(std::remove(brothers->begin(), brothers->end(), shared()));
     
     mSuperview = nullptr;
 }
@@ -142,7 +142,7 @@ CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDete
     }
 
     //find in subviews.
-    for (auto &it : mSubviews->vector) {
+    for (auto &it : *mSubviews) {
         //NOTE: if it is the root view of a view controller, ignore it.
         //this avoids duplicate lookups.
         if (it->viewController()) {
@@ -228,7 +228,7 @@ void CView::draw() {
         onDraw(width, height);
 
         MRect::ptr ownBounds = bounds();
-        for (auto &it : mSubviews->vector) {
+        for (auto &it : *mSubviews) {
             //NOTE: ignore out-of-bounds subviews.
             if (it->frame()->intersects(ownBounds)->none()) {
                 continue;

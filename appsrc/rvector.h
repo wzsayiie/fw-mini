@@ -11,49 +11,35 @@ template<> struct type_name<class base_vector> {
 
 class base_vector : public extends<base_vector, object> {
 public:
-    virtual void insert(int index, const any &value) = 0;
-    virtual void erase (int index) = 0;
+    virtual void _insert   (int i, const any &v) = 0;
+    virtual void _erase    (int i)               = 0;
+    virtual void _push_back(const any &v)        = 0;
+    virtual void _pop_back ()                    = 0;
     
-    virtual void push_back(const any &value) = 0;
-    virtual void pop_back () = 0;
-    
-    virtual any at(int index) const = 0;
-    virtual any front() const = 0;
-    virtual any back () const = 0;
-    
-    virtual int size() const = 0;
+    virtual int _size ()      const = 0;
+    virtual any _at   (int i) const = 0;
+    virtual any _front()      const = 0;
+    virtual any _back ()      const = 0;
 };
 
-template<class Value> class vector : public extends<vector<Value>, base_vector> {
+template<class Value> class vector
+    : public extends<vector<Value>, base_vector>
+    , public std::vector<Value>
+{
 public:
-    std::vector<Value> vector;
-    
-    void insert(int index, const any &value) override {
-        this->vector.insert(this->vector.begin() + index, (Value)value);
+    template<class... Args> vector(Args...args): std::vector<Value>(args...) {
     }
+
+public:
+    void _insert   (int i, const any &v) override { this->insert   (this->begin() + i, (Value)v); }
+    void _erase    (int i)               override { this->erase    (this->begin() + i);           }
+    void _push_back(const any &v)        override { this->push_back(v);                           }
+    void _pop_back ()                    override { this->pop_back ();                            }
     
-    void erase(int index) override {
-        this->vector.erase(this->vector.begin() + index);
-    }
-    
-    void push_back(const any &value) override {
-        this->vector.push_back(value);
-    }
-    
-    void pop_back() override {
-        this->vector.pop_back();
-    }
-    
-    any at(int index) const override {
-        return this->vector.at(index);
-    }
-    
-    any front() const override { return this->vector.front(); }
-    any back () const override { return this->vector.back (); }
-    
-    int size() const override {
-        return (int)this->vector.size();
-    }
+    int _size ()      const override { return (int)this->size(); }
+    any _at   (int i) const override { return this->at(i);       }
+    any _front()      const override { return this->front();     }
+    any _back ()      const override { return this->back();      }
 };
 
 } //end reflect.
