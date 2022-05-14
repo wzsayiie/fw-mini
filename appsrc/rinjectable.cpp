@@ -13,9 +13,9 @@ void function_table::insert(const char *name, const base_function::ptr &func) {
     }
 }
 
-void function_table::append(const function_table::ptr &that) {
-    if (that) {
-        _functions.insert(that->_functions.begin(), that->_functions.end());
+void function_table::append(const function_table::ptr &table) {
+    if (table) {
+        _functions.insert(table->_functions.begin(), table->_functions.end());
     }
 }
 
@@ -53,12 +53,16 @@ void inject(const char *class_name, const function_table::ptr &table) {
 //injectable:
 
 base_function::ptr injectable::find_injected(const char *name) {
-    auto it = s_tables->find(class_symbol());
+    auto it = s_tables->find(_cls_sym ? _cls_sym : class_symbol());
     if (it == s_tables->end()) {
         return nullptr;
     }
 
     return it->second->find(name);
+}
+
+void injectable::set_class_symbol(const symbol &sym) {
+    _cls_sym = sym;
 }
 
 } //end reflect.
