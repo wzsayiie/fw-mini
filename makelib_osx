@@ -20,7 +20,10 @@ _inc="\
     -Ihost/mini_mac"
 
 _src="\
-    appsrc/*.cpp \
+    appsrc/c*.cpp \
+    appsrc/d*.cpp \
+    appsrc/m*.cpp \
+    appsrc/r*.cpp \
     host_osx/mini_osx/*.mm \
     host/mini_mac/*.mm"
 
@@ -32,6 +35,7 @@ function build() {
     rm    -f $ddir/$_out
 
     clang++ \
+        -install_name $_out \
         -o $ddir/$_out \
         -target $plat \
         $_flg \

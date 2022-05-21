@@ -19,7 +19,10 @@ set _inc= ^
     /I"host\mini_pc"
 
 set _src= ^
-    appsrc\*.cpp ^
+    appsrc\c*.cpp ^
+    appsrc\d*.cpp ^
+    appsrc\m*.cpp ^
+    appsrc\r*.cpp ^
     host_win32\mini_win32\*.cpp ^
     host\mini_pc\*.cpp
 

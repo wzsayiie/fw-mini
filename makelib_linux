@@ -20,7 +20,10 @@ _inc="\
     -Ihost/mini_pc"
 
 _src="\
-    appsrc/*.cpp \
+    appsrc/c*.cpp \
+    appsrc/d*.cpp \
+    appsrc/m*.cpp \
+    appsrc/r*.cpp \
     host_linux/mini_linux/*.cpp \
     host/mini_pc/*.cpp"
 
