@@ -1,6 +1,5 @@
 #pragma once
 
-#include "dash.h"
 #include "rsymbol.h"
 
 namespace reflect {
@@ -9,7 +8,7 @@ template<> struct type_name<class object> {
     static constexpr const char *const name = "object";
 };
 
-class object : public dash::extends<object, dash::object> {
+class dash_exportable object : public dash::extends<object, dash::object> {
 public:
     static object::ptr create() {
         return object::ptr(new object, [](object *a) {

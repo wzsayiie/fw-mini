@@ -1,5 +1,4 @@
 #include "dprint.h"
-#include "denviron.h"
 
 #if DASH_OS_ANDROID
     #include <android/log.h>

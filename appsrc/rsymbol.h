@@ -1,10 +1,12 @@
 #pragma once
 
+#include "dash.h"
+
 namespace reflect {
 
 //symbol:
 
-class symbol {
+class dash_exportable symbol {
 public:
     static symbol make(const char *str);
     static symbol find(const char *str);

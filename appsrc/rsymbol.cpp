@@ -1,5 +1,4 @@
 #include "rsymbol.h"
-#include "dash.h"
 
 namespace reflect {
 

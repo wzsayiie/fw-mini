@@ -1,10 +1,11 @@
 #pragma once
 
 #include <sstream>
+#include "dexport.h"
 
 namespace dash {
 
-void print_string(const char *str);
+dash_exportable void print_string(const char *str);
 
 template<class Last>
 void print_with_stream(std::stringstream &stream, Last last) {

@@ -104,11 +104,11 @@ struct class_meta : super_meta {
     std::vector<const_meta *>         const_seq   ;
 };
 
-void commit_meta(type_meta *meta);
+dash_exportable void commit_meta(type_meta *meta);
 
 //query:
 
-const type_meta *find_type(const char *name);
-const std::vector<type_meta *> &all_types();
+dash_exportable const type_meta *find_type(const char *name);
+dash_exportable const std::vector<type_meta *> &all_types();
 
 } //end reflect.

@@ -385,7 +385,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
     }
 }
 
-extern "C" __declspec(dllexport) void MAppMain()
+extern "C" dash_exportable void MAppMain()
 {
     HINSTANCE instance = GetModuleHandleW(nullptr);
 

@@ -14,9 +14,9 @@ public:
     typedef MExtends<Class, Super> base;
 };
 
-#define m_class(Class, Super)                       \
-/**/    declare_reflectable_class(Class)            \
-/**/    class Class : public MExtends<Class, Super>
+#define m_class(Class, Super)               \
+/**/    declare_reflectable_class(Class)    \
+/**/    class dash_exportable Class : public MExtends<Class, Super>
 
 //builtin types:
 

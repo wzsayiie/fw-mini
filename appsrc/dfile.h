@@ -1,10 +1,11 @@
 #pragma once
 
 #include <functional>
+#include "dexport.h"
 
 namespace dash {
 
-void read_file (const char *path, const std::function<void *(int size)> &buffer);
-void write_file(const char *path, const void *bytes, int size);
+dash_exportable void read_file (const char *path, const std::function<void *(int size)> &buffer);
+dash_exportable void write_file(const char *path, const void *bytes, int size);
 
 } //end dash.

@@ -4,7 +4,7 @@
 
 namespace reflect {
 
-class any {
+class dash_exportable any {
 public:
     any();
     any(nullptr_t);
