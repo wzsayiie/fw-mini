@@ -5,17 +5,36 @@ void MMACBundle::install() {
     setInstance(obj);
 }
 
+static NSString *GetAssetBundlePath() {
+    NSString *mainBundle = NSBundle.mainBundle.bundlePath;
+    
+#if TARGET_OS_OSX
+    //the asset bundle in a app bundle.
+    NSString *assetBundle = [NSString stringWithFormat:@"%@/Contents/Resources/%s", mainBundle, MBundle::BundleDirectoryName];
+    if ([NSFileManager.defaultManager fileExistsAtPath:assetBundle]) {
+        return assetBundle;
+    }
+    
+    //in the project directory.
+    NSRange projectName = [mainBundle rangeOfString:@"fw-mini"];
+    if (projectName.location != NSNotFound) {
+        NSString *projectDirectory = [mainBundle substringToIndex:NSMaxRange(projectName)];
+        return [NSString stringWithFormat:@"%@/appres/%s", projectDirectory, MBundle::BundleDirectoryName];
+    }
+    
+    //in the same path as the executable.
+    return [NSString stringWithFormat:@"%@/%s", mainBundle, MBundle::BundleDirectoryName];
+    
+#elif TARGET_OS_IOS
+    return [NSString stringWithFormat:@"%@/%s", mainBundle, MBundle::BundleDirectoryName];
+    
+#endif
+}
+
 MVector<uint8_t>::ptr MMACBundle::loadAsset(const std::string &path) {
     if (!mBundle) {
-        NSString *appBundlePath = NSBundle.mainBundle.bundlePath;
-        
-    #if TARGET_OS_OSX
-        NSString *resBundlePath = [NSString stringWithFormat:@"%@/Contents/Resources/%s", appBundlePath, MBundle::BundleDirectoryName];
-    #elif TARGET_OS_IOS
-        NSString *resBundlePath = [NSString stringWithFormat:@"%@/%s", appBundlePath, MBundle::BundleDirectoryName];
-    #endif
-        
-        mBundle = [NSBundle bundleWithPath:resBundlePath];
+        NSString *bundlePath = GetAssetBundlePath();
+        mBundle = [NSBundle bundleWithPath:bundlePath];
     }
     
     NSString *file = [mBundle pathForResource:@(path.c_str()) ofType:nil];
