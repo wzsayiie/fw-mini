@@ -68,7 +68,7 @@
 
 #pragma mark - main
 
-extern "C" void MOSXAppMain() {
+extern "C" void MAppMain() {
     Class clazz = NSClassFromString(@"MOSXAppDelegate");
     id<NSApplicationDelegate> delegate = [[clazz alloc] init];
     
@@ -81,5 +81,5 @@ extern "C" void MOSXAppMain() {
 }
 
 int main() {
-    MOSXAppMain();
+    MAppMain();
 }
