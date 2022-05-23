@@ -31,6 +31,6 @@ private:
 /**/    static _MAppLaunchRegistrar _unused_##fcn(fcn); \
 /**/    void fcn()
 
-struct _MAppLaunchRegistrar {
+struct dash_exportable _MAppLaunchRegistrar {
     _MAppLaunchRegistrar(void (*fcn)()) noexcept;
 };

@@ -9,7 +9,7 @@ template<> struct type_name<class base_vector> {
     static constexpr const char *const name = "base_vector";
 };
 
-class base_vector : public extends<base_vector, object> {
+class dash_exportable base_vector : public extends<base_vector, object> {
 public:
     virtual void _insert   (int i, const any &v) = 0;
     virtual void _erase    (int i)               = 0;

@@ -9,7 +9,7 @@ template<> struct type_name<class base_map> {
     static constexpr const char *const name = "base_map";
 };
 
-class base_map : public extends<base_map, object> {
+class dash_exportable base_map : public extends<base_map, object> {
 public:
     virtual void _insert(const any &k, const any &v) = 0;
     virtual void _erase (const any &k)               = 0;

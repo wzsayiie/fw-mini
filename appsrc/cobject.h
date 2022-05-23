@@ -3,10 +3,10 @@
 #include "minikit.h"
 
 declare_reflectable_class(CObject)
-class CObject : public MExtends<CObject, MObject> {
+class dash_exportable CObject : public MExtends<CObject, MObject> {
 };
 
-template<class Class, class Super> class CExtends : public MExtends<Class, Super> {
+template<class Class, class Super> class dash_exportable CExtends : public MExtends<Class, Super> {
 public:
     using   MExtends<Class, Super>::MExtends;
     typedef CExtends<Class, Super> base;
