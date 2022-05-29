@@ -28,10 +28,10 @@
     MVector<MGraph::ptr> *graphs = MContextGetGraphs();
     for (auto &graph : *graphs) {
         switch (graph->type()) {
-            case MGraphType::Clip    : [self drawClip    :(MClipGraph     *)graph.get() withContext: context viewHeight:viewHeight]; break;
-            case MGraphType::Triangle: [self drawTriangle:(MTriangleGraph *)graph.get() withContext: context viewHeight:viewHeight]; break;
-            case MGraphType::Image   : [self drawImage   :(MImageGraph    *)graph.get() withContext: context viewHeight:viewHeight]; break;
-            case MGraphType::Text    : [self drawText    :(MTextGraph     *)graph.get() withContext: context viewHeight:viewHeight]; break;
+            case MGraphType::Clip   : [self drawClip   :(MClipGraph    *)graph.get() withContext: context viewHeight:viewHeight]; break;
+            case MGraphType::Polygon: [self drawPolygon:(MPolygonGraph *)graph.get() withContext: context viewHeight:viewHeight]; break;
+            case MGraphType::Image  : [self drawImage  :(MImageGraph   *)graph.get() withContext: context viewHeight:viewHeight]; break;
+            case MGraphType::Text   : [self drawText   :(MTextGraph    *)graph.get() withContext: context viewHeight:viewHeight]; break;
         }
     }
     
@@ -53,7 +53,7 @@
     CGContextClipToRect(context, CGRectMake(x, y, w, h));
 }
 
-- (void)drawTriangle:(MTriangleGraph *)graph withContext:(CGContextRef)context viewHeight:(CGFloat)viewHeight {
+- (void)drawPolygon:(MPolygonGraph *)graph withContext:(CGContextRef)context viewHeight:(CGFloat)viewHeight {
     //set the color:
     MColorRGBA rgba = { graph->rgba() };
         
@@ -65,24 +65,23 @@
     CGContextSetRGBFillColor  (context, red, green, blue, alpha);
     CGContextSetRGBStrokeColor(context, red, green, blue, alpha);
     
-    //connect the vertices:
-    CGFloat x0 = graph->pixelX0();
-    CGFloat x1 = graph->pixelX1();
-    CGFloat x2 = graph->pixelX2();
-#if TARGET_OS_OSX
-    CGFloat y0 = viewHeight - graph->pixelY0();
-    CGFloat y1 = viewHeight - graph->pixelY1();
-    CGFloat y2 = viewHeight - graph->pixelY2();
-#elif TARGET_OS_IOS
-    CGFloat y0 = graph->pixelY0();
-    CGFloat y1 = graph->pixelY1();
-    CGFloat y2 = graph->pixelY2();
-#endif
-    
-    CGContextMoveToPoint   (context, x0, y0);
-    CGContextAddLineToPoint(context, x1, y1);
-    CGContextAddLineToPoint(context, x2, y2);
+    //connect the points:
+    int points = graph->points();
+    for (int index = 0; index < points; ++index) {
+        CGFloat x = graph->pixelX(index);
+    #if TARGET_OS_OSX
+        CGFloat y = viewHeight - graph->pixelY(index);
+    #elif TARGET_OS_IOS
+        CGFloat y = graph->pixelY(index);
+    #endif
         
+        if (index == 0) {
+            CGContextMoveToPoint(context, x, y);
+        } else {
+            CGContextAddLineToPoint(context, x, y);
+        }
+    }
+    
     //draw.
     CGContextDrawPath(context, kCGPathFillStroke);
 }

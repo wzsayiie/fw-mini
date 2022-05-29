@@ -18,7 +18,10 @@ void MContextPopOffset ();
 void MContextPushClip  (float x, float y, float w, float h);
 void MContextPopClip   ();
 
-void MContextDrawTriangle  (float x0, float y0, float x1, float y1, float x2, float y2);
+void MContextMoveToPoint(float x, float y);
+void MContextAddToPoint (float x, float y);
+void MContextDrawPolygon();
+
 void MContextDrawRect      (float x , float y , float w , float h );
 void MContextDrawEllipse   (float x , float y , float w , float h );
 void MContextDrawFlatLine  (float x0, float y0, float x1, float y1);
@@ -31,10 +34,10 @@ void MContextDrawText      (float x , float y , float w , float h );
 
 declare_reflectable_enum(MGraphType)
 enum class MGraphType {
-    Clip     = 1,
-    Triangle = 2,
-    Image    = 3,
-    Text     = 4,
+    Clip    = 1,
+    Polygon = 2,
+    Image   = 3,
+    Text    = 4,
 };
 
 m_class(MGraph, MObject) {
@@ -60,28 +63,21 @@ public:
     float mH = 0;
 };
 
-//triangle graph:
+//polygon graph:
 
-m_class(MTriangleGraph, MGraph) {
+m_class(MPolygonGraph, MGraph) {
 public:
     MGraphType type() override;
 
-    int   rgba   ();
-    float pixelX0();
-    float pixelY0();
-    float pixelX1();
-    float pixelY1();
-    float pixelX2();
-    float pixelY2();
+    int   points();
+    float pixelX(int index);
+    float pixelY(int index);
+    int   rgba  ();
 
 public:
-    int   mRGBA = 0;
-    float mX0   = 0;
-    float mY0   = 0;
-    float mX1   = 0;
-    float mY1   = 0;
-    float mX2   = 0;
-    float mY2   = 0;
+    std::vector<float> mXs;
+    std::vector<float> mYs;
+    int mRGBA = 0;
 };
 
 //image graph:

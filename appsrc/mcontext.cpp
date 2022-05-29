@@ -14,11 +14,14 @@ static float sOffsetY = 0;
 
 static dash::lazy<MImage::ptr> sImage;
 static dash::lazy<std::string> sText;
+
 static MColorRGBA sRGBA      = {0};
 static float      sLineWidth = 0;
 static float      sFontSize  = 0;
 static MHAlign    sHAlign    = MHAlign::Center;
 static MVAlign    sVAlign    = MVAlign::Middle;
+
+static dash::lazy<MPolygonGraph::ptr> sPolygon;
 
 //draw function:
 
@@ -102,26 +105,32 @@ void MContextPopClip() {
     sGraphs->push_back(graph);
 }
 
-define_reflectable_function(MContextDrawTriangle, "args:x0,y0,x1,y1,x2,y2")
-void MContextDrawTriangle(float x0, float y0, float x1, float y1, float x2, float y2) {
-    if (sRGBA.alpha == 0) {
+define_reflectable_function(MContextMoveToPoint, "args:x,y")
+void MContextMoveToPoint(float x, float y) {
+    sPolygon = MPolygonGraph::create();
+    sPolygon->mXs.push_back(sOffsetX + x);
+    sPolygon->mYs.push_back(sOffsetY + y);
+}
+
+define_reflectable_function(MContextAddToPoint, "args:x,y")
+void MContextAddToPoint(float x, float y) {
+    if (sPolygon) {
+        sPolygon->mXs.push_back(sOffsetX + x);
+        sPolygon->mYs.push_back(sOffsetY + y);
+    }
+}
+
+define_reflectable_function(MContextDrawPolygon)
+void MContextDrawPolygon() {
+    if (!sPolygon) {
         return;
     }
-
-    if (x0 == x1 && y0 == y1) { return; }
-    if (x0 == x2 && y0 == y2) { return; }
-    if (x1 == x2 && y1 == y2) { return; }
-
-    auto graph = MTriangleGraph::create();
-    graph->mRGBA = sRGBA.rgba;
-    graph->mX0   = sOffsetX + x0;
-    graph->mY0   = sOffsetY + y0;
-    graph->mX1   = sOffsetX + x1;
-    graph->mY1   = sOffsetY + y1;
-    graph->mX2   = sOffsetX + x2;
-    graph->mY2   = sOffsetY + y2;
-
-    sGraphs->push_back(graph);
+    
+    if (sPolygon->points() >= 3 && sRGBA.alpha != 0) {
+        sPolygon->mRGBA = sRGBA.rgba;
+        sGraphs->push_back((MPolygonGraph::ptr)sPolygon);
+    }
+    sPolygon = nullptr;
 }
 
 define_reflectable_function(MContextDrawRect, "args:x,y,w,h")
@@ -132,42 +141,12 @@ void MContextDrawRect(float x, float y, float w, float h) {
     if (w <= 0 || h <= 0) {
         return;
     }
-
-    //  a - b
-    //  |  /|
-    //  | / |
-    //  |/  |
-    //  c - d
-    float ax = sOffsetX + x;
-    float ay = sOffsetY + y;
-    float bx = sOffsetX + x + w;
-    float by = sOffsetY + y;
-    float cx = sOffsetX + x;
-    float cy = sOffsetY + y + h;
-    float dx = sOffsetX + x + w;
-    float dy = sOffsetY + y + h;
-
-    auto abc = MTriangleGraph::create();
-    auto bcd = MTriangleGraph::create();
-    abc->mRGBA = sRGBA.rgba;
-    bcd->mRGBA = sRGBA.rgba;
-
-    abc->mX0 = ax;
-    abc->mY0 = ay;
-    abc->mX1 = bx;
-    abc->mY1 = by;
-    abc->mX2 = cx;
-    abc->mY2 = cy;
-
-    bcd->mX0 = bx;
-    bcd->mY0 = by;
-    bcd->mX1 = cx;
-    bcd->mY1 = cy;
-    bcd->mX2 = dx;
-    bcd->mY2 = dy;
-
-    sGraphs->push_back(abc);
-    sGraphs->push_back(bcd);
+    
+    MContextMoveToPoint(x    , y    );
+    MContextAddToPoint (x + w, y    );
+    MContextAddToPoint (x + w, y + h);
+    MContextAddToPoint (x    , y + h);
+    MContextDrawPolygon();
 }
 
 define_reflectable_function(MContextDrawEllipse, "args:x,y,w,h")
@@ -240,10 +219,10 @@ void MContextDrawText(float x, float y, float w, float h) {
 
 //graphs:
 
-define_reflectable_enum_const(MGraphType, Clip    )
-define_reflectable_enum_const(MGraphType, Triangle)
-define_reflectable_enum_const(MGraphType, Image   )
-define_reflectable_enum_const(MGraphType, Text    )
+define_reflectable_enum_const(MGraphType, Clip   )
+define_reflectable_enum_const(MGraphType, Polygon)
+define_reflectable_enum_const(MGraphType, Image  )
+define_reflectable_enum_const(MGraphType, Text   )
 
 //clip graph:
 
@@ -263,29 +242,23 @@ float MClipGraph::pixelY() { return m_px_from_pt mY; }
 float MClipGraph::pixelW() { return m_px_from_pt mW; }
 float MClipGraph::pixelH() { return m_px_from_pt mH; }
 
-//triangle graph:
+//polygon graph:
 
-define_reflectable_class_function(MTriangleGraph, type)
-MGraphType MTriangleGraph::type() {
+define_reflectable_class_function(MPolygonGraph, type)
+MGraphType MPolygonGraph::type() {
     implement_injectable_function((MGraphType)(int))
-    return MGraphType::Triangle;
+    return MGraphType::Polygon;
 }
 
-define_reflectable_class_function(MTriangleGraph, rgba   )
-define_reflectable_class_function(MTriangleGraph, pixelX0)
-define_reflectable_class_function(MTriangleGraph, pixelY0)
-define_reflectable_class_function(MTriangleGraph, pixelX1)
-define_reflectable_class_function(MTriangleGraph, pixelY1)
-define_reflectable_class_function(MTriangleGraph, pixelX2)
-define_reflectable_class_function(MTriangleGraph, pixelY2)
+define_reflectable_class_function(MPolygonGraph, points)
+define_reflectable_class_function(MPolygonGraph, pixelX, "args:index")
+define_reflectable_class_function(MPolygonGraph, pixelY, "args:index")
+define_reflectable_class_function(MPolygonGraph, rgba  )
 
-int   MTriangleGraph::rgba   () { return mRGBA           ; }
-float MTriangleGraph::pixelX0() { return m_px_from_pt mX0; }
-float MTriangleGraph::pixelY0() { return m_px_from_pt mY0; }
-float MTriangleGraph::pixelX1() { return m_px_from_pt mX1; }
-float MTriangleGraph::pixelY1() { return m_px_from_pt mY1; }
-float MTriangleGraph::pixelX2() { return m_px_from_pt mX2; }
-float MTriangleGraph::pixelY2() { return m_px_from_pt mY2; }
+int   MPolygonGraph::points()      { return (int)mXs.size()    ; }
+float MPolygonGraph::pixelX(int i) { return m_px_from_pt mXs[i]; }
+float MPolygonGraph::pixelY(int i) { return m_px_from_pt mYs[i]; }
+int   MPolygonGraph::rgba  ()      { return mRGBA              ; }
 
 //image graph:
 
