@@ -4,7 +4,14 @@
 
 namespace reflect {
 
-//type:
+//variable:
+
+struct variable {
+    symbol type ;
+    any    value;
+};
+
+//type categories:
 
 enum class type_category {
     is_void    ,    //void.
@@ -16,14 +23,12 @@ enum class type_category {
     is_double  ,    //double.
     is_string  ,    //std::string.
     
+    is_function,    //reflect::function<ret (args...)>.
     is_vector  ,    //reflect::vector<value>.
     is_map     ,    //reflect::map<key, value>.
     is_set     ,    //reflect::set<value>.
 
-    is_function,    //reflect::function<ret (args...)>.
-    is_class   ,    //reflect::object (exclude function, map, set and vector).
-
-    is_const   ,    //"int" or "const char *" constant.
+    is_class   ,    //reflect::object (exclude function, vector, map and set).
     is_enum    ,    //"int" enumeration.
 };
 
@@ -37,78 +42,58 @@ enum class type_qualifier {
     shared      ,   //std::shared_ptr<value>.
 };
 
-//meta:
-//
-//  +-- type
-//  |   +-- const
-//  |   +-- enum
-//  |   +-- super
-//  |   |   +-- vector
-//  |   |   +-- map
-//  |   |   +-- set
-//  |   |   +-- function
-//  |   |   +-- class
-//
+//metas:
 
-struct type_meta {
-    type_category type = type_category::is_void;
-    symbol        sym  ;
+struct type_meta : dash::virtual_object {
+    type_category category;
 };
 
-struct const_meta : type_meta {
-    symbol        belong_class ;
-    symbol        belong_enum  ;
-    type_category value_type   = type_category::is_void;
-    const char   *string_value = nullptr;
-    double        double_value = 0;
-    int64_t       int64_value  = 0;
+struct function_meta : type_meta {
+    std::vector<type_qualifier> arg_qualifiers ;
+    std::vector<symbol>         arg_types      ;
+    type_qualifier              ret_qualifier  ;
+    symbol                      ret_type       ;
 };
 
-struct enum_meta : type_meta {
-    std::map<symbol, const_meta *> value_map;
-    std::vector<const_meta *>      value_seq;
-};
-
-struct super_meta : type_meta {
-    object::ptr (*create)() = nullptr;
-};
-
-struct vector_map : super_meta {
+struct vector_meta : type_meta {
     symbol val_type;
 };
 
-struct map_meta : super_meta {
+struct map_meta : type_meta {
     symbol key_type;
     symbol val_type;
 };
 
-struct set_meta : super_meta {
+struct set_meta : type_meta {
     symbol val_type;
 };
 
-struct function_meta : super_meta {
-    symbol                      belong_class   ;
-    bool                        is_static      = false;
-    std::vector<type_qualifier> arg_qualifiers ;
-    std::vector<symbol *>       arg_types      ;
-    type_qualifier              ret_qualifier  = type_qualifier::value;
-    symbol                      ret_type       ;
-    base_function::ptr          function       ;
-    const char *                annotation     = nullptr;
+struct class_meta : type_meta {
+    std::map<std::string, variable> cls_variables;
+    std::map<std::string, variable> cls_functions;
+    std::map<std::string, variable> obj_functions;
 };
 
-struct class_meta : super_meta {
-    std::map<symbol, function_meta *> function_map;
-    std::vector<function_meta *>      function_seq;
-    std::map<symbol, const_meta *>    const_map   ;
-    std::vector<const_meta *>         const_seq   ;
+struct enum_meta : type_meta {
+    std::map<std::string, variable> values;
 };
 
-dash_exportable void commit_meta(type_meta *meta);
+//storage:
 
-//query:
+void commit_type_meta(const symbol &sym, type_meta *meta);
 
-dash_exportable const type_meta *find_type(const char *name);
-dash_exportable const std::vector<type_meta *> &all_types();
+void commit_variable       (/* global scope */ const std::string &name, const variable &value);
+void commit_function       (/* global scope */ const std::string &name, const variable &value);
+void commit_class_variable (const symbol &cls, const std::string &name, const variable &value);
+void commit_class_function (const symbol &cls, const std::string &name, const variable &value);
+void commit_object_function(const symbol &cls, const std::string &name, const variable &value);
+void commit_enum_value     (const symbol &enu, const std::string &name, const variable &value);
+
+dash_exportable const type_meta *query_type_meta(const symbol &sym);
+
+dash_exportable const std::map<std::string, variable> *variables();
+dash_exportable const std::map<std::string, variable> *functions();
+dash_exportable const std::map<std::string, variable> *classes  ();
+dash_exportable const std::map<std::string, variable> *enums    ();
 
 } //end reflect.
