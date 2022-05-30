@@ -23,10 +23,8 @@
 /**/        static constexpr const char *const name = #Name;        \
 /**/    };
 
-#define define_reflectable_class_function(Class, Function, ...)     \
-/**/    static reflect::committor _unused_##Class##_##Function(     \
-/**/        #Class, #Function, &Class::Function, ##__VA_ARGS__      \
-/**/    );
+#define define_reflectable_const(Const)                             \
+/**/    static reflect::committor _unused_##Const(#Const, Const);   \
 
 #define define_reflectable_function(Function, ...)                  \
 /**/    static reflect::committor _unused_##Function(               \
@@ -35,16 +33,26 @@
 
 #define define_reflectable_class_const(Class, Const)                \
 /**/    static reflect::committor _unused_##Class##_##Const(        \
-/**/        #Class, #Const, Class::Const                            \
+/**/        reflect::type_symbol<Class>::value(),                   \
+/**/        #Const,                                                 \
+/**/        Class::Const                                            \
+/**/    );
+
+#define define_reflectable_class_function(Class, Function, ...)     \
+/**/    static reflect::committor _unused_##Class##_##Function(     \
+/**/        reflect::type_symbol<Class>::value(),                   \
+/**/        #Function,                                              \
+/**/        &Class::Function,                                       \
+/**/        ##__VA_ARGS__                                           \
 /**/    );
 
 #define define_reflectable_enum_const(Enum, Const)                  \
 /**/    static reflect::committor _unused_##Enum##_##Const(         \
-/**/        0, #Enum, #Const, (int)Enum::Const                      \
+/**/        0,                                                      \
+/**/        reflect::type_symbol<Enum>::value(),                    \
+/**/        #Const,                                                 \
+/**/        (int)Enum::Const                                        \
 /**/    );
-
-#define define_reflectable_const(Const)                             \
-/**/    static reflect::committor _unused_##Const(#Const, Const);   \
 
 #define implement_injectable_function(Ret, ...)                     \
 /**/    if (auto f = find_injected(__func__)) {                     \
@@ -55,50 +63,118 @@
 namespace reflect {
 
 struct committor {
-    //class instance function.
-    template<class Ret, class Class, class... Args> committor(
-        const char *class_name, const char *fcn_name, Ret (Class::*fcn)(Args...), const char *note = nullptr) noexcept
-    {
+    //global constant:
+    committor(const char *name, const char *value) noexcept {
+        auto type = type_symbol<std::string>::value();
+        commit_type_meta(type, type_category::is_string);
+        commit_variable(name, type, std::string(value));
     }
 
-    //class static function.
-    template<class Ret, class... Args> committor(
-        const char *class_name, const char *fcn_name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
-    {
+    committor(const char *name, double value) noexcept {
+        auto type = type_symbol<double>::value();
+        commit_type_meta(type, type_category::is_double);
+        commit_variable(name, type, value);
+    }
+
+    committor(const char *name, float value) noexcept {
+        auto type = type_symbol<float>::value();
+        commit_type_meta(type, type_category::is_float);
+        commit_variable(name, type, value);
+    }
+
+    committor(const char *name, int64_t value) noexcept {
+        auto type = type_symbol<int64_t>::value();
+        commit_type_meta(type, type_category::is_int64);
+        commit_variable(name, type, value);
+    }
+
+    committor(const char *name, int value) noexcept {
+        auto type = type_symbol<int>::value();
+        commit_type_meta(type, type_category::is_int);
+        commit_variable(name, type, value);
     }
 
     //global function.
     template<class Ret, class... Args> committor(
-        const char *fcn_name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
+        const char *name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
     {
+        auto type = symbol::make(name);
+        commit_type_meta(type, type_category::is_function);
+        commit_function(name, type, 0);
     }
 
-    //class constant member.
-    committor(const char *class_name, const char *value_name, const char *value) noexcept {
-    }
-    committor(const char *class_name, const char *value_name, double value) noexcept {
-    }
-    committor(const char *class_name, const char *value_name, float value) noexcept {
-    }
-    committor(const char *class_name, const char *value_name, int64_t value) noexcept {
-    }
-    committor(const char *class_name, const char *value_name, int value) noexcept {
+    //class static constant:
+    committor(const symbol &cls, const char *name, const char *value) noexcept {
+        commit_type_meta(cls, type_category::is_class);
+        commit_class(cls.str(), cls);
+
+        auto type = type_symbol<std::string>::value();
+        commit_type_meta(type, type_category::is_string);
+        commit_variable(name, type, std::string(value));
     }
 
-    //enumeration member.
-    committor(int, const char *enum_name, const char *value_name, int64_t value) noexcept {
+    committor(const symbol &cls, const char *name, double value) noexcept {
+        commit_type_meta(cls, type_category::is_class);
+        commit_class(cls.str(), cls);
+
+        auto type = type_symbol<double>::value();
+        commit_type_meta(type, type_category::is_double);
+        commit_variable(name, type, value);
     }
 
-    //global constant.
-    committor(const char *name, const char *value) noexcept {
+    committor(const symbol &cls, const char *name, float value) noexcept {
+        commit_type_meta(cls, type_category::is_class);
+        commit_class(cls.str(), cls);
+
+        auto type = type_symbol<float>::value();
+        commit_type_meta(type, type_category::is_float);
+        commit_variable(name, type, value);
     }
-    committor(const char *name, double value) noexcept {
+
+    committor(const symbol &cls, const char *name, int64_t value) noexcept {
+        commit_type_meta(cls, type_category::is_class);
+        commit_class(cls.str(), cls);
+
+        auto type = type_symbol<int64_t>::value();
+        commit_type_meta(type, type_category::is_int64);
+        commit_variable(name, type, value);
     }
-    committor(const char *name, float value) noexcept {
+
+    committor(const symbol &cls, const char *name, int value) noexcept {
+        commit_type_meta(cls, type_category::is_class);
+        commit_class(cls.str(), cls);
+
+        auto type = type_symbol<int>::value();
+        commit_type_meta(type, type_category::is_int);
+        commit_variable(name, type, value);
     }
-    committor(const char *name, int64_t value) noexcept {
+
+    //class static function.
+    template<class Ret, class... Args> committor(
+        const symbol &cls, const char *name, Ret (*fcn)(Args...),
+        const char *note = nullptr) noexcept
+    {
+        commit_type_meta(cls, type_category::is_class);
+        commit_class(cls.str(), cls);
     }
-    committor(const char *name, int value) noexcept {
+
+    //class instance function.
+    template<class Ret, class Class, class... Args> committor(
+        const symbol &cls, const char *name, Ret (Class::*fcn)(Args...),
+        const char *note = nullptr) noexcept
+    {
+        commit_type_meta(cls, type_category::is_class);
+        commit_class(cls.str(), cls);
+    }
+
+    //enumeration value.
+    committor(int, const symbol &enu, const char *name, int value) noexcept {
+        commit_type_meta(enu, type_category::is_enum);
+        commit_enum(enu.str(), enu);
+
+        auto type = type_symbol<int>::value();
+        commit_type_meta(type, type_category::is_int);
+        commit_enum_value(enu, name, type, value);
     }
 };
 

@@ -53,6 +53,7 @@ struct function_meta : type_meta {
     std::vector<symbol>         arg_types      ;
     type_qualifier              ret_qualifier  ;
     symbol                      ret_type       ;
+    std::string                 annotation     ;
 };
 
 struct vector_meta : type_meta {
@@ -80,15 +81,18 @@ struct enum_meta : type_meta {
 
 //storage:
 
-void commit_type_meta(const symbol &sym, type_meta *meta);
+type_meta *commit_type_meta(const symbol &sym, type_category category);
 
-void commit_variable       (/* global scope */ const std::string &name, const variable &value);
-void commit_function       (/* global scope */ const std::string &name, const variable &value);
-void commit_class_variable (const symbol &cls, const std::string &name, const variable &value);
-void commit_class_function (const symbol &cls, const std::string &name, const variable &value);
-void commit_object_function(const symbol &cls, const std::string &name, const variable &value);
-void commit_enum_value     (const symbol &enu, const std::string &name, const variable &value);
+void commit_variable       (/* global scope */ const std::string &name, const symbol &type, const any &value);
+void commit_function       (/* global scope */ const std::string &name, const symbol &type, const any &value);
+void commit_class          (/* global scope */ const std::string &name, const symbol &type);
+void commit_enum           (/* global scope */ const std::string &name, const symbol &type);
+void commit_class_variable (const symbol &cls, const std::string &name, const symbol &type, const any &value);
+void commit_class_function (const symbol &cls, const std::string &name, const symbol &type, const any &value);
+void commit_object_function(const symbol &cls, const std::string &name, const symbol &type, const any &value);
+void commit_enum_value     (const symbol &enu, const std::string &name, const symbol &type, const any &value);
 
+dash_exportable const type_meta *query_type_meta(const symbol &sym, type_category category);
 dash_exportable const type_meta *query_type_meta(const symbol &sym);
 
 dash_exportable const std::map<std::string, variable> *variables();
