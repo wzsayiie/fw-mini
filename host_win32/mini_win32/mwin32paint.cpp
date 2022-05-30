@@ -12,19 +12,23 @@ static void PaintClip(Gdiplus::Graphics *pen, MClipGraph *graph)
     pen->SetClip(rect, Gdiplus::CombineMode::CombineModeReplace);
 }
 
-static void PaintTriangle(Gdiplus::Graphics *pen, MTriangleGraph *graph)
+static void PaintPolygon(Gdiplus::Graphics *pen, MPolygonGraph *graph)
 {
     MColorRGBA rgba = { graph->rgba() };
     Gdiplus::Color color(rgba.alpha, rgba.red, rgba.green, rgba.blue);
     Gdiplus::SolidBrush brush(color);
 
-    Gdiplus::PointF vertices[] = {
-        { graph->pixelX0(), graph->pixelY0() },
-        { graph->pixelX1(), graph->pixelY1() },
-        { graph->pixelX2(), graph->pixelY2() },
-    };
+    std::vector<Gdiplus::PointF> vertices;
+    int points = graph->points();
+    for (int index = 0; index < points; ++index)
+    {
+        float x = graph->pixelX(index);
+        float y = graph->pixelY(index);
 
-    pen->FillPolygon(&brush, vertices, 3);
+        vertices.push_back(Gdiplus::PointF(x, y));
+    }
+
+    pen->FillPolygon(&brush, vertices.data(), points);
 }
 
 static void PaintImage(Gdiplus::Graphics *pen, MImageGraph *graph)
@@ -91,10 +95,10 @@ void MWin32Paint(HDC dc)
     {
         switch (graph->type())
         {
-        case MGraphType::Clip    : PaintClip    (&pen, (MClipGraph     *)graph.get()); break;
-        case MGraphType::Triangle: PaintTriangle(&pen, (MTriangleGraph *)graph.get()); break;
-        case MGraphType::Image   : PaintImage   (&pen, (MImageGraph    *)graph.get()); break;
-        case MGraphType::Text    : PaintText    (&pen, (MTextGraph     *)graph.get()); break;
+        case MGraphType::Clip   : PaintClip   (&pen, (MClipGraph    *)graph.get()); break;
+        case MGraphType::Polygon: PaintPolygon(&pen, (MPolygonGraph *)graph.get()); break;
+        case MGraphType::Image  : PaintImage  (&pen, (MImageGraph   *)graph.get()); break;
+        case MGraphType::Text   : PaintText   (&pen, (MTextGraph    *)graph.get()); break;
         }
     }
 }
