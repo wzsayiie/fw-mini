@@ -4,8 +4,17 @@
 
 namespace reflect {
 
-static bool is_string(char *ptr) {
-    return isprint(ptr[0]) && (isprint(ptr[1]) || !ptr[1]);
+static bool is_string(char *str) {
+    if (!isprint(str[0])) {
+        return false;
+    }
+    for (int i = 1; i < 8 && str[i]; ++i) {
+        if (!isprint(str[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 static void concatenate(std::stringstream &stream, char **ids) {
