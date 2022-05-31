@@ -5,8 +5,12 @@
 
 namespace reflect {
 
-template<> struct type_name<class base_map> {
-    static constexpr const char *const name = "base_map";
+//base map:
+
+class base_map;
+
+template<> struct type_ids<base_map> {
+    static constexpr const void *ids[] = { "base_map", nullptr };
 };
 
 class dash_exportable base_map : public extends<base_map, object> {
@@ -22,6 +26,16 @@ public:
     virtual void _next () = 0;
     virtual any  _key  () = 0;
     virtual any  _value() = 0;
+};
+
+//map:
+
+template<class, class> class map;
+
+template<class Key, class Value> struct type_ids<map<Key, Value>> {
+    static constexpr const void *ids[] = {
+        "map<", type_ids<Key>::ids, ",", type_ids<Value>::ids, ">", nullptr
+    };
 };
 
 template<class Key, class Value> class map

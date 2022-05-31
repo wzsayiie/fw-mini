@@ -5,8 +5,12 @@
 
 namespace reflect {
 
-template<> struct type_name<class base_vector> {
-    static constexpr const char *const name = "base_vector";
+//base vector:
+
+class base_vector;
+
+template<> struct type_ids<base_vector> {
+    static constexpr const void *ids[] = { "base_vector", nullptr };
 };
 
 class dash_exportable base_vector : public extends<base_vector, object> {
@@ -20,6 +24,16 @@ public:
     virtual any _at   (int i) const = 0;
     virtual any _front()      const = 0;
     virtual any _back ()      const = 0;
+};
+
+//vector:
+
+template<class> class vector;
+
+template<class Value> struct type_ids<vector<Value>> {
+    static constexpr const void *ids[] = {
+        "vector<", type_ids<Value>::ids, ">", nullptr
+    };
 };
 
 template<class Value> class vector

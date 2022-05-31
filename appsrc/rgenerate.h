@@ -6,21 +6,16 @@
 //in the namespace that includes the template (although msvc and clang have not this limitation).
 //so 'declare_reflectable_xx' only can be used in the global scope.
 
-#define declare_reflectable_special(...)                            \
-/**/    template<> struct reflect::type_name<__VA_ARGS__> {         \
-/**/        static constexpr const char *const name = #__VA_ARGS__; \
-/**/    };
-
 #define declare_reflectable_class(Name)                             \
 /**/    class Name;                                                 \
-/**/    template<> struct reflect::type_name<Name> {                \
-/**/        static constexpr const char *const name = #Name;        \
+/**/    template<> struct reflect::type_ids<Name> {                 \
+/**/        static constexpr const void *ids[] = { #Name, nullptr };\
 /**/    };
 
 #define declare_reflectable_enum(Name)                              \
 /**/    enum class Name;                                            \
-/**/    template<> struct reflect::type_name<Name> {                \
-/**/        static constexpr const char *const name = #Name;        \
+/**/    template<> struct reflect::type_ids<Name> {                 \
+/**/        static constexpr const void *ids[] = { #Name, nullptr };\
 /**/    };
 
 #define define_reflectable_const(Const)                             \

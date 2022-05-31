@@ -2,9 +2,6 @@
 
 #include "cresponder.h"
 
-class CView;
-declare_reflectable_special(MVector<std::shared_ptr<CView>>)
-
 c_class(CView, CResponder) {
 public:
     CView();

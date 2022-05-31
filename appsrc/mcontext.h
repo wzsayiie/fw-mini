@@ -134,7 +134,5 @@ public:
 
 //host functions:
 
-declare_reflectable_special(MVector<MGraph::ptr>)
-
 M_HOST_CALL_FUNCTION MVector<MGraph::ptr> *MContextGetGraphs();
 M_HOST_CALL_FUNCTION void MContextReset();

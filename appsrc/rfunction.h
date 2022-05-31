@@ -67,10 +67,12 @@ template<int Index, class Ret, class... Args> struct caller<Index, Index, Ret (A
     }
 };
 
-//base_function:
+//base function:
 
-template<> struct type_name<class base_function> {
-    static constexpr const char *const name = "base_function";
+class base_function;
+
+template<> struct type_ids<base_function> {
+    static constexpr const void *ids[] = { "base_function", nullptr };
 };
 
 class dash_exportable base_function : public extends<base_function, object> {
@@ -84,6 +86,19 @@ protected:
 //function:
 
 template<class> class function;
+
+template<class Ret, class... Args> struct type_ids<function<Ret (Args...)>> {
+    static constexpr const void *ids[] = {
+        "function<", type_ids<Ret>::ids, "(", arg_types_ids<void (Args...)>::ids, ")>", nullptr
+    };
+};
+
+template<class Ret> struct type_ids<function<Ret ()>> {
+    static constexpr const void *ids[] = {
+        "function<", type_ids<Ret>::ids, "()>", nullptr
+    };
+};
+
 template<class Ret, class... Args> class function<Ret (Args...)>
     : public extends<function<Ret (Args...)>, base_function>
 {

@@ -4,9 +4,13 @@
 #include "robject.h"
 
 namespace reflect {
+    
+//base set:
 
-template<> struct type_name<class base_set> {
-    static constexpr const char *const name = "base_set";
+class base_set;
+
+template<> struct type_ids<base_set> {
+    static constexpr const void *ids[] = { "base_set", nullptr };
 };
 
 class dash_exportable base_set : public extends<base_set, object> {
@@ -21,6 +25,16 @@ public:
     virtual bool _on   () = 0;
     virtual void _next () = 0;
     virtual any  _value() = 0;
+};
+
+//set:
+
+template<class> class set;
+
+template<class Value> struct type_ids<set<Value>> {
+    static constexpr const void *ids[] = {
+        "set<", type_ids<Value>, ">", nullptr
+    };
 };
 
 template<class Value> class set

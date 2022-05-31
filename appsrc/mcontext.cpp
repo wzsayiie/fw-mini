@@ -4,9 +4,6 @@
 
 static dash::lazy<MVector<MGraph::ptr>> sGraphs;
 
-declare_reflectable_special(MVector<MRect ::ptr>)
-declare_reflectable_special(MVector<MPoint::ptr>)
-
 static dash::lazy<MVector<MRect ::ptr>> sClipStack;
 static dash::lazy<MVector<MPoint::ptr>> sOffsetStack;
 static float sOffsetX = 0;

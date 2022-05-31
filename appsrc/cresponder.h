@@ -3,7 +3,6 @@
 #include "cobject.h"
 
 class CResponder;
-declare_reflectable_special(MFunction<bool (const std::shared_ptr<CResponder> &, const MPoint::ptr &)>)
 using CResponderDetector =  MFunction<bool (const std::shared_ptr<CResponder> &, const MPoint::ptr &)>;
 
 c_class(CResponder, CObject) {

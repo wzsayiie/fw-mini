@@ -4,8 +4,8 @@
 
 namespace reflect {
 
-template<> struct type_name<class object> {
-    static constexpr const char *const name = "object";
+template<> struct type_ids<class object> {
+    static constexpr const void *ids[] = { "object", nullptr };
 };
 
 class dash_exportable object : public dash::extends<object, dash::object> {

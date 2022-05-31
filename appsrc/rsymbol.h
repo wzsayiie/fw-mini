@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dash.h"
+#include "rtypename.h"
 
 namespace reflect {
 
@@ -34,11 +34,9 @@ private:
 
 //type symbol:
 
-template<class> struct type_name;
-
 template<class Type> struct type_symbol {
     static symbol value() {
-        static symbol sym(type_name<Type>::name);
+        static symbol sym(type_name<Type>::name());
         return sym;
     }
 };

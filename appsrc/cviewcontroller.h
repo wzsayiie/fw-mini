@@ -2,9 +2,6 @@
 
 #include "cview.h"
 
-class CViewController;
-declare_reflectable_special(MVector<std::shared_ptr<CViewController>>)
-
 c_class(CViewController, CResponder) {
 public:
     CViewController();
