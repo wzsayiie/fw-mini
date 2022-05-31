@@ -1,33 +1,26 @@
 #include "rtypename.h"
-#include <cctype>
 #include <sstream>
+#include <cstring>
 
 namespace reflect {
 
-static bool is_string(char *str) {
-    if (!isprint(str[0])) {
-        return false;
-    }
-    for (int i = 1; i < 8 && str[i]; ++i) {
-        if (!isprint(str[i])) {
-            return false;
-        }
-    }
+static void concatenate(std::stringstream &stream, void **ids) {
+    bool escaped = false;
+    for (void **ptr = ids; *ptr; ++ptr) {
+        if (strcmp((char *)*ptr, type_ids_esc) == 0) {
+            escaped = true;
 
-    return true;
-}
+        } else if (escaped) {
+            concatenate(stream, (void **)*ptr);
+            escaped = false;
 
-static void concatenate(std::stringstream &stream, char **ids) {
-    for (char **ptr = ids; *ptr; ++ptr) {
-        if (!is_string(*ptr)) {
-            concatenate(stream, (char **)*ptr);
         } else {
-            stream << *ptr;
+            stream << (char *)*ptr;
         }
     }
 }
 
-std::string make_type_name(char **ids) {
+std::string make_type_name(void **ids) {
     std::stringstream stream;
     concatenate(stream, ids);
     return stream.str();

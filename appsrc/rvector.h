@@ -32,7 +32,7 @@ template<class> class vector;
 
 template<class Value> struct type_ids<vector<Value>> {
     static constexpr const void *ids[] = {
-        "vector<", type_ids<Value>::ids, ">", nullptr
+        "vector<", type_ids_esc, type_ids<Value>::ids, ">", nullptr
     };
 };
 

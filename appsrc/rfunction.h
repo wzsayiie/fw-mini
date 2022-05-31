@@ -89,13 +89,18 @@ template<class> class function;
 
 template<class Ret, class... Args> struct type_ids<function<Ret (Args...)>> {
     static constexpr const void *ids[] = {
-        "function<", type_ids<Ret>::ids, "(", arg_types_ids<void (Args...)>::ids, ")>", nullptr
+        "function<",
+        type_ids_esc, type_ids<Ret>::ids,
+        "(",
+        type_ids_esc, arg_types_ids<void (Args...)>::ids,
+        ")>",
+        nullptr
     };
 };
 
 template<class Ret> struct type_ids<function<Ret ()>> {
     static constexpr const void *ids[] = {
-        "function<", type_ids<Ret>::ids, "()>", nullptr
+        "function<", type_ids_esc, type_ids<Ret>::ids, "()>", nullptr
     };
 };
 

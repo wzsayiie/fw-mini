@@ -34,7 +34,12 @@ template<class, class> class map;
 
 template<class Key, class Value> struct type_ids<map<Key, Value>> {
     static constexpr const void *ids[] = {
-        "map<", type_ids<Key>::ids, ",", type_ids<Value>::ids, ">", nullptr
+        "map<",
+        type_ids_esc, type_ids<Key>::ids,
+        ",",
+        type_ids_esc, type_ids<Value>::ids,
+        ">",
+        nullptr
     };
 };
 

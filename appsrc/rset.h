@@ -33,7 +33,7 @@ template<class> class set;
 
 template<class Value> struct type_ids<set<Value>> {
     static constexpr const void *ids[] = {
-        "set<", type_ids<Value>, ">", nullptr
+        "set<", type_ids_esc, type_ids<Value>::ids, ">", nullptr
     };
 };
 
