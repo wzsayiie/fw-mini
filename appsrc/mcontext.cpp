@@ -225,7 +225,7 @@ define_reflectable_enum_const(MGraphType, Text   )
 
 define_reflectable_class_function(MClipGraph, type)
 MGraphType MClipGraph::type() {
-    implement_injectable_function((MGraphType))
+    implement_injectable_function(MGraphType)
     return MGraphType::Clip;
 }
 
@@ -243,7 +243,7 @@ float MClipGraph::pixelH() { return m_px_from_pt mH; }
 
 define_reflectable_class_function(MPolygonGraph, type)
 MGraphType MPolygonGraph::type() {
-    implement_injectable_function((MGraphType))
+    implement_injectable_function(MGraphType)
     return MGraphType::Polygon;
 }
 
@@ -261,7 +261,7 @@ int   MPolygonGraph::rgba  ()      { return mRGBA              ; }
 
 define_reflectable_class_function(MImageGraph, type)
 MGraphType MImageGraph::type() {
-    implement_injectable_function((MGraphType))
+    implement_injectable_function(MGraphType)
     return MGraphType::Image;
 }
 
@@ -284,7 +284,7 @@ float MImageGraph::pixelH() { return m_px_from_pt mH; }
 
 define_reflectable_class_function(MTextGraph, type)
 MGraphType MTextGraph::type() {
-    implement_injectable_function((MGraphType))
+    implement_injectable_function(MGraphType)
     return MGraphType::Text;
 }
 

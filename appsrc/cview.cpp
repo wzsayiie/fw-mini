@@ -126,7 +126,7 @@ CView *CView::superview() {
 
 define_reflectable_class_function(CView, findResponder, "args:x,y,fit")
 CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
-    implement_injectable_function((CResponder::ptr), fit, pt)
+    implement_injectable_function(CResponder::ptr, fit, pt)
     
     //invisible view does not respond any events.
     if (!mFrame || mFrame->none()) {
@@ -173,7 +173,7 @@ CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDete
 
 define_reflectable_class_function(CView, responseOffset)
 MPoint::ptr CView::responseOffset() {
-    implement_injectable_function((MPoint::ptr))
+    implement_injectable_function(MPoint::ptr)
     
     float x = frame()->x();
     float y = frame()->y();
@@ -188,21 +188,21 @@ MPoint::ptr CView::responseOffset() {
 
 define_reflectable_class_function(CView, canRespondTouch, "args:pt")
 bool CView::canRespondTouch(const MPoint::ptr &pt) {
-    implement_injectable_function((bool), pt)
+    implement_injectable_function(bool, pt)
     
     return mTouchable;
 }
 
 define_reflectable_class_function(CView, canRespondMouseMove, "args:pt")
 bool CView::canRespondMouseMove(const MPoint::ptr &pt) {
-    implement_injectable_function((bool), pt)
+    implement_injectable_function(bool, pt)
     
     return mAcceptMouseMove;
 }
 
 define_reflectable_class_function(CView, canRespondWheel, "args:pt")
 bool CView::canRespondWheel(const MPoint::ptr &pt) {
-    implement_injectable_function((bool), pt)
+    implement_injectable_function(bool, pt)
 
     return mAcceptWheel;
 }
@@ -245,12 +245,12 @@ void CView::draw() {
 
 define_reflectable_class_function(CView, onLayoutSubviews, "args:width,height")
 void CView::onLayoutSubviews(float width, float height) {
-    implement_injectable_function((void), width, height)
+    implement_injectable_function(void, width, height)
 }
 
 define_reflectable_class_function(CView, onDrawBackground, "args:width,height")
 void CView::onDrawBackground(float width, float height) {
-    implement_injectable_function((void), width, height)
+    implement_injectable_function(void, width, height)
     
     if (mBackgroundColor && !mBackgroundColor->none()) {
         MContextSelectRGBA(mBackgroundColor->rgba());
@@ -260,10 +260,10 @@ void CView::onDrawBackground(float width, float height) {
 
 define_reflectable_class_function(CView, onDraw, "args:width,height")
 void CView::onDraw(float width, float height) {
-    implement_injectable_function((void), width, height)
+    implement_injectable_function(void, width, height)
 }
 
 define_reflectable_class_function(CView, onDrawForeground, "args:width,height")
 void CView::onDrawForeground(float width, float height) {
-    implement_injectable_function((void), width, height)
+    implement_injectable_function(void, width, height)
 }

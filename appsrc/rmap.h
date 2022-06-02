@@ -17,8 +17,9 @@ public:
     virtual void _insert(const any &k, const any &v) = 0;
     virtual void _erase (const any &k)               = 0;
     
-    virtual bool _has (const any &k) const = 0;
-    virtual int  _size()             const = 0;
+    virtual bool _has(const any &k) const = 0;
+
+    virtual int _size() const = 0;
     
     virtual void _begin() = 0;
     virtual bool _on   () = 0;
@@ -51,11 +52,20 @@ public:
     }
     
 public:
-    void _insert(const any &k, const any &v) override { this->insert({ (Key)k, (Value)v }); }
-    void _erase (const any &k)               override { this->erase ((Key)k);               }
+    void _insert(const any &k, const any &v) override {
+        this->insert({ query<Key>::from(k), query<Value>::from(v) });
+    }
+    void _erase(const any &k) override {
+        this->erase(query<Key>::from(k));
+    }
     
-    bool _has (const any &k) const override { return this->find((Key)k) != this->end(); }
-    int  _size()             const override { return (int)this->size();                 }
+    bool _has(const any &k) const override {
+        return this->find(query<Key>::from(k)) != this->end();
+    }
+
+    int _size() const override {
+        return (int)this->size();
+    }
     
     void _begin() override { _it = this->begin();       }
     bool _on   () override { return _it != this->end(); }

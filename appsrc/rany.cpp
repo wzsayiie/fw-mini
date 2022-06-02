@@ -69,24 +69,18 @@ double any::as_double() const {
     }
 }
 
-const std::string &any::as_const_string() const { return _string      ; }
-std::string        any::as_string      () const { return _string      ; }
-const object      *any::as_const_ptr   () const { return _object.get(); }
-object            *any::as_ptr         () const { return _object.get(); }
-const object::ptr &any::as_const_shared() const { return _object      ; }
-object::ptr        any::as_shared      () const { return _object      ; }
+std::string any::as_string       () const { return _string      ; }
+object *    any::as_object_ptr   () const { return _object.get(); }
+object::ptr any::as_object_shared() const { return _object      ; }
 
-any::operator bool               () const { return as_bool        (); }
-any::operator uint8_t            () const { return as_byte        (); }
-any::operator int                () const { return as_int         (); }
-any::operator int64_t            () const { return as_int64       (); }
-any::operator float              () const { return as_float       (); }
-any::operator double             () const { return as_double      (); }
-any::operator const std::string &() const { return as_const_string(); }
-any::operator std::string        () const { return as_string      (); }
-any::operator const object      *() const { return as_const_ptr   (); }
-any::operator object            *() const { return as_ptr         (); }
-any::operator const object::ptr &() const { return as_const_shared(); }
-any::operator object::ptr        () const { return as_shared      (); }
+any::operator bool       () const { return as_bool         (); }
+any::operator uint8_t    () const { return as_byte         (); }
+any::operator int        () const { return as_int          (); }
+any::operator int64_t    () const { return as_int64        (); }
+any::operator float      () const { return as_float        (); }
+any::operator double     () const { return as_double       (); }
+any::operator std::string() const { return as_string       (); }
+any::operator object *   () const { return as_object_ptr   (); }
+any::operator object::ptr() const { return as_object_shared(); }
 
 } //end reflect.

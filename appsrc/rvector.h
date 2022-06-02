@@ -14,10 +14,11 @@ template<> struct type_ids<base_vector> {
 
 class dash_exportable base_vector : public extends<base_vector, object> {
 public:
-    virtual void _insert   (int i, const any &v) = 0;
-    virtual void _erase    (int i)               = 0;
-    virtual void _push_back(const any &v)        = 0;
-    virtual void _pop_back ()                    = 0;
+    virtual void _insert(int i, const any &v) = 0;
+    virtual void _erase (int i)               = 0;
+
+    virtual void _push_back(const any &v) = 0;
+    virtual void _pop_back ()             = 0;
     
     virtual int _size ()      const = 0;
     virtual any _at   (int i) const = 0;
@@ -44,10 +45,19 @@ public:
     }
 
 public:
-    void _insert   (int i, const any &v) override { this->insert   (this->begin() + i, (Value)v); }
-    void _erase    (int i)               override { this->erase    (this->begin() + i);           }
-    void _push_back(const any &v)        override { this->push_back((Value)v);                    }
-    void _pop_back ()                    override { this->pop_back ();                            }
+    void _insert(int i, const any &v) override {
+        this->insert(this->begin() + i, query<Value>::from(v));
+    }
+    void _erase(int i) override {
+        this->erase(this->begin() + i);
+    }
+
+    void _push_back(const any &v) override {
+        this->push_back(query<Value>::from(v));
+    }
+    void _pop_back() override {
+        this->pop_back();
+    }
     
     int _size ()      const override { return (int)this->size(); }
     any _at   (int i) const override { return this->at(i);       }

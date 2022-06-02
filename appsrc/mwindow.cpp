@@ -194,37 +194,37 @@ define_reflectable_class_function(MWindow, onLoad)
 define_reflectable_class_function(MWindow, onShow)
 define_reflectable_class_function(MWindow, onHide)
 
-void MWindow::onLoad() { implement_injectable_function((void)) }
-void MWindow::onShow() { implement_injectable_function((void)) }
-void MWindow::onHide() { implement_injectable_function((void)) }
+void MWindow::onLoad() { implement_injectable_function(void) }
+void MWindow::onShow() { implement_injectable_function(void) }
+void MWindow::onHide() { implement_injectable_function(void) }
 
 define_reflectable_class_function(MWindow, onResize, "args:width,height")
 define_reflectable_class_function(MWindow, onDraw  , "args:width,height")
 
-void MWindow::onResize(float width, float height) { implement_injectable_function((void), width, height) }
-void MWindow::onDraw  (float width, float height) { implement_injectable_function((void), width, height) }
+void MWindow::onResize(float width, float height) { implement_injectable_function(void, width, height) }
+void MWindow::onDraw  (float width, float height) { implement_injectable_function(void, width, height) }
 
 define_reflectable_class_function(MWindow, onTouchBegin, "args:x,y")
 define_reflectable_class_function(MWindow, onTouchMove , "args:x,y")
 define_reflectable_class_function(MWindow, onTouchEnd  , "args:x,y")
 define_reflectable_class_function(MWindow, onMouseMove , "args:x,y")
 
-void MWindow::onTouchBegin(float x, float y) { implement_injectable_function((void), x, y) }
-void MWindow::onTouchMove (float x, float y) { implement_injectable_function((void), x, y) }
-void MWindow::onTouchEnd  (float x, float y) { implement_injectable_function((void), x, y) }
-void MWindow::onMouseMove (float x, float y) { implement_injectable_function((void), x, y) }
+void MWindow::onTouchBegin(float x, float y) { implement_injectable_function(void, x, y) }
+void MWindow::onTouchMove (float x, float y) { implement_injectable_function(void, x, y) }
+void MWindow::onTouchEnd  (float x, float y) { implement_injectable_function(void, x, y) }
+void MWindow::onMouseMove (float x, float y) { implement_injectable_function(void, x, y) }
 
 define_reflectable_class_function(MWindow, onMouseWheel, "args:delta")
 void MWindow::onMouseWheel(float delta) {
-    implement_injectable_function((void), delta)
+    implement_injectable_function(void, delta)
 }
 
 define_reflectable_class_function(MWindow, onKey, "args:key")
 void MWindow::onKey(MKey key) {
-    implement_injectable_function((void), key)
+    implement_injectable_function(void, key)
 }
 
 define_reflectable_class_function(MWindow, onWrite, "args:text,enter")
 void MWindow::onWrite(const std::string &text, bool enter) {
-    implement_injectable_function((void), text, enter)
+    implement_injectable_function(void, text, enter)
 }

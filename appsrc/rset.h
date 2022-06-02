@@ -17,8 +17,9 @@ public:
     virtual void _insert(const any &v) = 0;
     virtual void _erase (const any &v) = 0;
     
-    virtual bool _has (const any &v) const = 0;
-    virtual int  _size()             const = 0;
+    virtual bool _has(const any &v) const = 0;
+
+    virtual int _size() const = 0;
     
     virtual void _begin() = 0;
     virtual bool _on   () = 0;
@@ -45,11 +46,20 @@ public:
     }
     
 public:
-    void _insert(const any &v) override { this->insert((Value)v); }
-    void _erase (const any &v) override { this->erase ((Value)v); }
+    void _insert(const any &v) override {
+        this->insert(query<Value>::from(v));
+    }
+    void _erase(const any &v) override {
+        this->erase(query<Value>::from(v));
+    }
 
-    bool _has (const any &v) const override { return this->find((Value)v) != this->end(); }
-    int  _size()             const override { return (int)this->size();                   }
+    bool _has(const any &v) const override {
+        return this->find(query<Value>::from(v)) != this->end();
+    }
+    
+    int _size() const override {
+        return (int)this->size();
+    }
     
     void _begin() override { _it = this->begin();       }
     bool _on   () override { return _it != this->end(); }

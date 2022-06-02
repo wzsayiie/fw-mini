@@ -182,18 +182,18 @@ MBundle *MBundle::instance() {
 
 define_reflectable_class_function(MBundle, loadAsset, "args:path")
 MVector<uint8_t>::ptr MBundle::loadAsset(const std::string &path) {
-    implement_injectable_function((MVector<uint8_t>::ptr), path);
+    implement_injectable_function(MVector<uint8_t>::ptr, path);
     return nullptr;
 }
 
 define_reflectable_class_function(MBundle, documentDirectory)
 std::string MBundle::documentDirectory() {
-    implement_injectable_function((std::string))
+    implement_injectable_function(std::string)
     return "";
 }
 
 define_reflectable_class_function(MBundle, temporaryDirectory)
 std::string MBundle::temporaryDirectory() {
-    implement_injectable_function((std::string))
+    implement_injectable_function(std::string)
     return "";
 }

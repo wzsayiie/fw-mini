@@ -51,7 +51,8 @@
 
 #define implement_injectable_function(Ret, ...)                     \
 /**/    if (auto f = find_injected(__func__)) {                     \
-/**/        return Ret f->call_with_args({ this, ##__VA_ARGS__ });  \
+/**/        auto r = f->call_with_args({ this, ##__VA_ARGS__ });    \
+/**/        return reflect::query<Ret>::from(r);                    \
 /**/    }
 
 namespace reflect {
