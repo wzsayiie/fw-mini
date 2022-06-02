@@ -101,7 +101,7 @@ CViewController *CViewController::parentController() {
     return mParentController;
 }
 
-define_reflectable_class_function(CViewController, view)
+define_reflectable_class_function(CViewController, view, "type:get")
 CView::ptr CViewController::view() {
     if (!mView) {
         mView = loadView();

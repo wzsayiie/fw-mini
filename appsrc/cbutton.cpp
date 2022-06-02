@@ -3,7 +3,7 @@
 const int PointedForegroundRGBA = MColor::LightGrayRGBA & 0xFFffFF80;
 const int TouchedForegroundRGBA = MColor::GrayRGBA      & 0xFFffFF80;
 
-define_reflectable_class_function(CButton, titleLabel)
+define_reflectable_class_function(CButton, titleLabel, "type:get")
 CLabel::ptr CButton::titleLabel() {
     if (!mTitleLabel) {
         mTitleLabel = CLabel::create();
@@ -13,7 +13,7 @@ CLabel::ptr CButton::titleLabel() {
     return mTitleLabel;
 }
 
-define_reflectable_class_function(CButton, setTitle, "args:title")
+define_reflectable_class_function(CButton, setTitle, "type:set;args:title")
 void CButton::setTitle(const std::string &title) {
     titleLabel()->setText(title);
 }
@@ -23,12 +23,12 @@ std::string CButton::title() {
     return titleLabel()->text();
 }
 
-define_reflectable_class_function(CButton, setClickTarget, "args:target")
+define_reflectable_class_function(CButton, setClickTarget, "type:set;args:target")
 void CButton::setClickTarget(const MFunction<void ()>::ptr &target) {
     mClickTarget = target;
 }
 
-define_reflectable_class_function(CButton, clickTarget)
+define_reflectable_class_function(CButton, clickTarget, "type:get")
 MFunction<void ()>::ptr CButton::clickTarget() {
     return mClickTarget;
 }

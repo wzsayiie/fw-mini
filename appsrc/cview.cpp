@@ -9,12 +9,12 @@ CView::CView(float x, float y, float width, float height) {
     mFrame = MRect::from(x, y, width, height);
 }
 
-define_reflectable_class_function(CView, setViewController, "args:controller")
+define_reflectable_class_function(CView, setViewController, "type:set;args:controller")
 void CView::setViewController(CObject *controller) {
     mViewController = controller;
 }
 
-define_reflectable_class_function(CView, setFrame, "args:frame")
+define_reflectable_class_function(CView, setFrame, "type:set;args:frame")
 void CView::setFrame(const MRect::ptr &frame) {
     float oldWidth  = mFrame ? mFrame->width () : 0;
     float oldHeight = mFrame ? mFrame->height() : 0;
@@ -30,46 +30,46 @@ void CView::setFrame(const MRect::ptr &frame) {
     }
 }
 
-define_reflectable_class_function(CView, setBackgroundColor, "args:color")
+define_reflectable_class_function(CView, setBackgroundColor, "type:set;args:color")
 void CView::setBackgroundColor(const MColor::ptr &color) {
     mBackgroundColor = color;
 }
 
-define_reflectable_class_function(CView, setVisible        , "args:visible"  )
-define_reflectable_class_function(CView, setTouchable      , "args:touchable")
-define_reflectable_class_function(CView, setAcceptMouseMove, "args:accept"   )
-define_reflectable_class_function(CView, setAcceptWheel    , "args:accept"   )
+define_reflectable_class_function(CView, setVisible        , "type:set;args:visible"  )
+define_reflectable_class_function(CView, setTouchable      , "type:set;args:touchable")
+define_reflectable_class_function(CView, setAcceptMouseMove, "type:set;args:accept"   )
+define_reflectable_class_function(CView, setAcceptWheel    , "type:set;args:accept"   )
 
 void CView::setVisible        (bool visible  ) { mVisible         = visible  ; }
 void CView::setTouchable      (bool touchable) { mTouchable       = touchable; }
 void CView::setAcceptMouseMove(bool accept   ) { mAcceptMouseMove = accept   ; }
 void CView::setAcceptWheel    (bool accept   ) { mAcceptWheel     = accept   ; }
 
-define_reflectable_class_function(CView, viewController)
+define_reflectable_class_function(CView, viewController, "type:get")
 CObject *CView::viewController() {
     return mViewController;
 }
 
-define_reflectable_class_function(CView, frame)
+define_reflectable_class_function(CView, frame, "type:get")
 MRect::ptr CView::frame() {
     return mFrame ? mFrame : MRect::zero();
 }
 
-define_reflectable_class_function(CView, bounds)
+define_reflectable_class_function(CView, bounds, "type:get")
 MRect::ptr CView::bounds() {
     MRect::ptr rect = frame();
     return MRect::from(0, 0, rect->width(), rect->height());
 }
 
-define_reflectable_class_function(CView, backgroundColor)
+define_reflectable_class_function(CView, backgroundColor, "type:get")
 MColor::ptr CView::backgroundColor() {
     return mBackgroundColor ? mBackgroundColor : MColor::clearColor();
 }
 
-define_reflectable_class_function(CView, visible        )
-define_reflectable_class_function(CView, touchable      )
-define_reflectable_class_function(CView, acceptMouseMove)
-define_reflectable_class_function(CView, acceptWheel    )
+define_reflectable_class_function(CView, visible        , "type:get")
+define_reflectable_class_function(CView, touchable      , "type:get")
+define_reflectable_class_function(CView, acceptMouseMove, "type:get")
+define_reflectable_class_function(CView, acceptWheel    , "type:get")
 
 bool CView::visible        () { return mVisible        ; }
 bool CView::touchable      () { return mTouchable      ; }

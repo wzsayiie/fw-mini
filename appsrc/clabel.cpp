@@ -1,10 +1,10 @@
 #include "clabel.h"
 
-define_reflectable_class_function(CLabel, setText     , "args:text" )
-define_reflectable_class_function(CLabel, setTextColor, "args:color")
-define_reflectable_class_function(CLabel, setFontSize , "args:size" )
-define_reflectable_class_function(CLabel, setHAlign   , "args:align")
-define_reflectable_class_function(CLabel, setVAlign   , "args:align")
+define_reflectable_class_function(CLabel, setText     , "type:set;args:text" )
+define_reflectable_class_function(CLabel, setTextColor, "type:set;args:color")
+define_reflectable_class_function(CLabel, setFontSize , "type:set;args:size" )
+define_reflectable_class_function(CLabel, setHAlign   , "type:set;args:align")
+define_reflectable_class_function(CLabel, setVAlign   , "type:set;args:align")
 
 void CLabel::setText     (const std::string &text ) { mText      = text ; }
 void CLabel::setTextColor(const MColor::ptr &color) { mTextColor = color; }
@@ -12,11 +12,11 @@ void CLabel::setFontSize (float              size ) { mFontSize  = size ; }
 void CLabel::setHAlign   (MHAlign            align) { mHAlign    = align; }
 void CLabel::setVAlign   (MVAlign            align) { mVAlign    = align; }
 
-define_reflectable_class_function(CLabel, text     )
-define_reflectable_class_function(CLabel, textColor)
-define_reflectable_class_function(CLabel, fontSize )
-define_reflectable_class_function(CLabel, hAlign   )
-define_reflectable_class_function(CLabel, vAlign   )
+define_reflectable_class_function(CLabel, text     , "type:get")
+define_reflectable_class_function(CLabel, textColor, "type:get")
+define_reflectable_class_function(CLabel, fontSize , "type:get")
+define_reflectable_class_function(CLabel, hAlign   , "type:get")
+define_reflectable_class_function(CLabel, vAlign   , "type:get")
 
 std::string CLabel::text     () { return mText    ; }
 MColor::ptr CLabel::textColor() { return mTextColor ? mTextColor : MColor::clearColor(); }

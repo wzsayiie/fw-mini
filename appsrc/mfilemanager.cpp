@@ -22,7 +22,7 @@ struct PathNormalizer {
 
 //file manager:
 
-define_reflectable_class_function(MFileManager, instance)
+define_reflectable_class_function(MFileManager, instance, "type:get")
 MFileManager *MFileManager::instance() {
     static MFileManager::ptr obj = MFileManager::create();
     return obj.get();
@@ -144,7 +144,7 @@ void MFileManager::removePath(const std::string &path) {
     }
 }
 
-define_reflectable_class_function(MFileManager, documentDirectory)
+define_reflectable_class_function(MFileManager, documentDirectory, "type:get")
 std::string MFileManager::documentDirectory() {
     if (mDocumentDirectory.empty()) {
         mDocumentDirectory = m_normal_path MBundle::instance()->documentDirectory();
@@ -152,7 +152,7 @@ std::string MFileManager::documentDirectory() {
     return mDocumentDirectory;
 }
 
-define_reflectable_class_function(MFileManager, temporaryDirectory)
+define_reflectable_class_function(MFileManager, temporaryDirectory, "type:get")
 std::string MFileManager::temporaryDirectory() {
     if (mTemporaryDirectory.empty()) {
         mTemporaryDirectory = m_normal_path MBundle::instance()->temporaryDirectory();
@@ -167,12 +167,12 @@ define_reflectable_class_const(MBundle, BundleDirectoryName )
 
 MBundle::ptr MBundle::sInstance;
 
-define_reflectable_class_function(MBundle, setInstance, "args:bundle")
+define_reflectable_class_function(MBundle, setInstance, "type:set;args:bundle")
 void MBundle::setInstance(const MBundle::ptr &obj) {
     sInstance = obj;
 }
 
-define_reflectable_class_function(MBundle, instance)
+define_reflectable_class_function(MBundle, instance, "type:get")
 MBundle *MBundle::instance() {
     if (!sInstance) {
         sInstance = MBundle::create();
@@ -186,13 +186,13 @@ MVector<uint8_t>::ptr MBundle::loadAsset(const std::string &path) {
     return nullptr;
 }
 
-define_reflectable_class_function(MBundle, documentDirectory)
+define_reflectable_class_function(MBundle, documentDirectory, "type:get")
 std::string MBundle::documentDirectory() {
     implement_injectable_function(std::string)
     return "";
 }
 
-define_reflectable_class_function(MBundle, temporaryDirectory)
+define_reflectable_class_function(MBundle, temporaryDirectory, "type:get")
 std::string MBundle::temporaryDirectory() {
     implement_injectable_function(std::string)
     return "";

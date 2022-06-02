@@ -78,7 +78,7 @@ MVector<uint8_t>::ptr MImage::copyBitmap() {
     return nullptr;
 }
 
-define_reflectable_class_function(MImage, pixelSize)
+define_reflectable_class_function(MImage, pixelSize, "type:get")
 MSize::ptr MImage::pixelSize() {
     if (mImpl) {
         return MImageFactory::instance()->pixelSize(mImpl);
@@ -86,7 +86,7 @@ MSize::ptr MImage::pixelSize() {
     return MSize::zero();
 }
 
-define_reflectable_class_function(MImage, impl)
+define_reflectable_class_function(MImage, impl, "type:get")
 MImageImpl::ptr MImage::impl() {
     return mImpl;
 }
@@ -95,12 +95,12 @@ MImageImpl::ptr MImage::impl() {
 
 MImageFactory::ptr MImageFactory::sInstance;
 
-define_reflectable_class_function(MImageFactory, setInstance, "args:obj")
+define_reflectable_class_function(MImageFactory, setInstance, "type:set;args:obj")
 void MImageFactory::setInstance(const MImageFactory::ptr &obj) {
     sInstance = obj;
 }
 
-define_reflectable_class_function(MImageFactory, instance)
+define_reflectable_class_function(MImageFactory, instance, "type:get")
 MImageFactory *MImageFactory::instance() {
     if (!sInstance) {
         sInstance = MImageFactory::create();

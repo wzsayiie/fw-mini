@@ -1,11 +1,11 @@
 #include "cimageview.h"
 
-define_reflectable_class_function(CImageView, setImage, "args:image")
+define_reflectable_class_function(CImageView, setImage, "type:set;args:image")
 void CImageView::setImage(const MImage::ptr &image) {
     mImage = image;
 }
 
-define_reflectable_class_function(CImageView, image)
+define_reflectable_class_function(CImageView, image, "type:get")
 MImage::ptr CImageView::image() {
     return mImage;
 }

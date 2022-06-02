@@ -2,7 +2,7 @@
 #include <chrono>
 #include "mapp.h"
 
-define_reflectable_class_function(MScheduler, instance)
+define_reflectable_class_function(MScheduler, instance, "type:get")
 MScheduler *MScheduler::instance() {
     static MScheduler::ptr obj;
     if (!obj) {

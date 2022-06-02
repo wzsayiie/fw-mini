@@ -22,7 +22,7 @@ define_reflectable_class_const(MWindow, TitleName)
 
 MWindow::ptr MWindow::sMainWindow;
 
-define_reflectable_class_function(MWindow, setMainWindow, "args:window")
+define_reflectable_class_function(MWindow, setMainWindow, "type:set;args:window")
 void MWindow::setMainWindow(const MWindow::ptr &window) {
     //NOTE: a window has its own state and lifecycle, only can be assigned once.
     if (!sMainWindow) {
@@ -30,7 +30,7 @@ void MWindow::setMainWindow(const MWindow::ptr &window) {
     }
 }
 
-define_reflectable_class_function(MWindow, mainWindow)
+define_reflectable_class_function(MWindow, mainWindow, "type:get")
 MWindow *MWindow::mainWindow() {
     if (!sMainWindow) {
         sMainWindow = MWindow::create();
@@ -145,22 +145,22 @@ std::string MWindow::checkWritingRawText() {
     return mWritingRawText;
 }
 
-define_reflectable_class_function(MWindow, loaded)
+define_reflectable_class_function(MWindow, loaded, "type:get")
 bool MWindow::loaded() {
     return mLoaded;
 }
 
-define_reflectable_class_function(MWindow, shown)
+define_reflectable_class_function(MWindow, shown, "type:get")
 bool MWindow::shown() {
     return mShown;
 }
 
-define_reflectable_class_function(MWindow, size)
+define_reflectable_class_function(MWindow, size, "type:get")
 MSize::ptr MWindow::size() {
     return mSize ? mSize : MSize::zero();
 }
 
-define_reflectable_class_function(MWindow, mousePosition)
+define_reflectable_class_function(MWindow, mousePosition, "type:get")
 MPoint::ptr MWindow::mousePosition() {
     return mMousePosition ? mMousePosition : MPoint::zero();
 }

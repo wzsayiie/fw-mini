@@ -223,16 +223,16 @@ define_reflectable_enum_const(MGraphType, Text   )
 
 //clip graph:
 
-define_reflectable_class_function(MClipGraph, type)
+define_reflectable_class_function(MClipGraph, type, "type:get")
 MGraphType MClipGraph::type() {
     implement_injectable_function(MGraphType)
     return MGraphType::Clip;
 }
 
-define_reflectable_class_function(MClipGraph, pixelX)
-define_reflectable_class_function(MClipGraph, pixelY)
-define_reflectable_class_function(MClipGraph, pixelW)
-define_reflectable_class_function(MClipGraph, pixelH)
+define_reflectable_class_function(MClipGraph, pixelX, "type:get")
+define_reflectable_class_function(MClipGraph, pixelY, "type:get")
+define_reflectable_class_function(MClipGraph, pixelW, "type:get")
+define_reflectable_class_function(MClipGraph, pixelH, "type:get")
 
 float MClipGraph::pixelX() { return m_px_from_pt mX; }
 float MClipGraph::pixelY() { return m_px_from_pt mY; }
@@ -241,16 +241,16 @@ float MClipGraph::pixelH() { return m_px_from_pt mH; }
 
 //polygon graph:
 
-define_reflectable_class_function(MPolygonGraph, type)
+define_reflectable_class_function(MPolygonGraph, type, "type:get")
 MGraphType MPolygonGraph::type() {
     implement_injectable_function(MGraphType)
     return MGraphType::Polygon;
 }
 
-define_reflectable_class_function(MPolygonGraph, points)
+define_reflectable_class_function(MPolygonGraph, points, "type:get"  )
 define_reflectable_class_function(MPolygonGraph, pixelX, "args:index")
 define_reflectable_class_function(MPolygonGraph, pixelY, "args:index")
-define_reflectable_class_function(MPolygonGraph, rgba  )
+define_reflectable_class_function(MPolygonGraph, rgba  , "type:get"  )
 
 int   MPolygonGraph::points()      { return (int)mXs.size()    ; }
 float MPolygonGraph::pixelX(int i) { return m_px_from_pt mXs[i]; }
@@ -259,21 +259,21 @@ int   MPolygonGraph::rgba  ()      { return mRGBA              ; }
 
 //image graph:
 
-define_reflectable_class_function(MImageGraph, type)
+define_reflectable_class_function(MImageGraph, type, "type:get")
 MGraphType MImageGraph::type() {
     implement_injectable_function(MGraphType)
     return MGraphType::Image;
 }
 
-define_reflectable_class_function(MImageGraph, image)
+define_reflectable_class_function(MImageGraph, image, "type:get")
 MImage::ptr MImageGraph::image() {
     return mImage;
 }
 
-define_reflectable_class_function(MImageGraph, pixelX)
-define_reflectable_class_function(MImageGraph, pixelY)
-define_reflectable_class_function(MImageGraph, pixelW)
-define_reflectable_class_function(MImageGraph, pixelH)
+define_reflectable_class_function(MImageGraph, pixelX, "type:get")
+define_reflectable_class_function(MImageGraph, pixelY, "type:get")
+define_reflectable_class_function(MImageGraph, pixelW, "type:get")
+define_reflectable_class_function(MImageGraph, pixelH, "type:get")
 
 float MImageGraph::pixelX() { return m_px_from_pt mX; }
 float MImageGraph::pixelY() { return m_px_from_pt mY; }
@@ -282,34 +282,34 @@ float MImageGraph::pixelH() { return m_px_from_pt mH; }
 
 //text graph:
 
-define_reflectable_class_function(MTextGraph, type)
+define_reflectable_class_function(MTextGraph, type, "type:get")
 MGraphType MTextGraph::type() {
     implement_injectable_function(MGraphType)
     return MGraphType::Text;
 }
 
-define_reflectable_class_function(MTextGraph, text)
+define_reflectable_class_function(MTextGraph, text, "type:get")
 std::string MTextGraph::text() {
     return mText;
 }
 
-define_reflectable_class_function(MTextGraph, pixelFontSize)
+define_reflectable_class_function(MTextGraph, pixelFontSize, "type:get")
 float MTextGraph::pixelFontSize() {
     return m_px_from_pt mFontSize;
 }
 
-define_reflectable_class_function(MTextGraph, rgba  )
-define_reflectable_class_function(MTextGraph, hAlign)
-define_reflectable_class_function(MTextGraph, vAlign)
+define_reflectable_class_function(MTextGraph, rgba  , "type:get")
+define_reflectable_class_function(MTextGraph, hAlign, "type:get")
+define_reflectable_class_function(MTextGraph, vAlign, "type:get")
 
 int     MTextGraph::rgba  () { return mRGBA  ; }
 MHAlign MTextGraph::hAlign() { return mHAlign; }
 MVAlign MTextGraph::vAlign() { return mVAlign; }
 
-define_reflectable_class_function(MTextGraph, pixelX)
-define_reflectable_class_function(MTextGraph, pixelY)
-define_reflectable_class_function(MTextGraph, pixelW)
-define_reflectable_class_function(MTextGraph, pixelH)
+define_reflectable_class_function(MTextGraph, pixelX, "type:get")
+define_reflectable_class_function(MTextGraph, pixelY, "type:get")
+define_reflectable_class_function(MTextGraph, pixelW, "type:get")
+define_reflectable_class_function(MTextGraph, pixelH, "type:get")
 
 float MTextGraph::pixelX() { return m_px_from_pt mX; }
 float MTextGraph::pixelY() { return m_px_from_pt mY; }

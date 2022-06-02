@@ -2,17 +2,17 @@
 
 //text field delegate:
 
-define_reflectable_class_function(CTextFieldDelegate, setEditingBeginTarget, "args:delegate")
-define_reflectable_class_function(CTextFieldDelegate, setTextChangeTarget  , "args:delegate")
-define_reflectable_class_function(CTextFieldDelegate, setEditingEndTarget  , "args:delegate")
+define_reflectable_class_function(CTextFieldDelegate, setEditingBeginTarget, "type:set;args:delegate")
+define_reflectable_class_function(CTextFieldDelegate, setTextChangeTarget  , "type:set;args:delegate")
+define_reflectable_class_function(CTextFieldDelegate, setEditingEndTarget  , "type:set;args:delegate")
 
 void CTextFieldDelegate::setEditingBeginTarget(const MFunction<void ()>::ptr &target) { mEditingBeginTarget = target; }
 void CTextFieldDelegate::setTextChangeTarget  (const MFunction<void ()>::ptr &target) { mTextChangeTarget   = target; }
 void CTextFieldDelegate::setEditingEndTarget  (const MFunction<void ()>::ptr &target) { mEditingEndTarget   = target; }
 
-define_reflectable_class_function(CTextFieldDelegate, editingBeginTarget)
-define_reflectable_class_function(CTextFieldDelegate, textChangeTarget  )
-define_reflectable_class_function(CTextFieldDelegate, editingEndTarget  )
+define_reflectable_class_function(CTextFieldDelegate, editingBeginTarget, "type:get")
+define_reflectable_class_function(CTextFieldDelegate, textChangeTarget  , "type:get")
+define_reflectable_class_function(CTextFieldDelegate, editingEndTarget  , "type:get")
 
 MFunction<void ()>::ptr CTextFieldDelegate::editingBeginTarget() { return mEditingBeginTarget; }
 MFunction<void ()>::ptr CTextFieldDelegate::textChangeTarget  () { return mTextChangeTarget  ; }
@@ -33,12 +33,12 @@ const float CursorInterval = 0.6f;
 
 //text field:
 
-define_reflectable_class_function(CTextField, setDelegate, "args:delegate")
+define_reflectable_class_function(CTextField, setDelegate, "type:set;args:delegate")
 void CTextField::setDelegate(const CTextFieldDelegate::ptr &delegate) {
     mDelegate = delegate;
 }
 
-define_reflectable_class_function(CTextField, delegate)
+define_reflectable_class_function(CTextField, delegate, "type:get")
 CTextFieldDelegate::ptr CTextField::delegate() {
     if (!mDelegate) {
         mDelegate = CTextFieldDelegate::create();
@@ -46,7 +46,7 @@ CTextFieldDelegate::ptr CTextField::delegate() {
     return mDelegate;
 }
 
-define_reflectable_class_function(CTextField, setText, "args:text")
+define_reflectable_class_function(CTextField, setText, "type:set;args:text")
 void CTextField::setText(const std::string &text) {
     mText = text;
 
@@ -55,22 +55,22 @@ void CTextField::setText(const std::string &text) {
     reduceEditingSender();
 }
 
-define_reflectable_class_function(CTextField, setTextColor, "args:color")
-define_reflectable_class_function(CTextField, setFontSize , "args:size" )
-define_reflectable_class_function(CTextField, setHAlign   , "args:align")
-define_reflectable_class_function(CTextField, setVAlign   , "args:align")
+define_reflectable_class_function(CTextField, setTextColor, "type:set;args:color")
+define_reflectable_class_function(CTextField, setFontSize , "type:set;args:size" )
+define_reflectable_class_function(CTextField, setHAlign   , "type:set;args:align")
+define_reflectable_class_function(CTextField, setVAlign   , "type:set;args:align")
 
 void CTextField::setTextColor(const MColor::ptr &color) { mTextColor = color; }
 void CTextField::setFontSize (float              size ) { mFontSize  = size ; }
 void CTextField::setHAlign   (MHAlign            align) { mHAlign    = align; }
 void CTextField::setVAlign   (MVAlign            align) { mVAlign    = align; }
 
-define_reflectable_class_function(CTextField, text     )
-define_reflectable_class_function(CTextField, entered  )
-define_reflectable_class_function(CTextField, textColor)
-define_reflectable_class_function(CTextField, fontSize )
-define_reflectable_class_function(CTextField, hAlign   )
-define_reflectable_class_function(CTextField, vAlign   )
+define_reflectable_class_function(CTextField, text     , "type:get")
+define_reflectable_class_function(CTextField, entered  , "type:get")
+define_reflectable_class_function(CTextField, textColor, "type:get")
+define_reflectable_class_function(CTextField, fontSize , "type:get")
+define_reflectable_class_function(CTextField, hAlign   , "type:get")
+define_reflectable_class_function(CTextField, vAlign   , "type:get")
 
 std::string CTextField::text     () { return mText     ; }
 bool        CTextField::entered  () { return mEntered  ; }
