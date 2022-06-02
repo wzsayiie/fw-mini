@@ -46,14 +46,14 @@ public:
 
 public:
     void _insert(int i, const any &v) override {
-        this->insert(this->begin() + i, query<Value>::from(v));
+        this->insert(this->begin() + i, take<Value>::from(v));
     }
     void _erase(int i) override {
         this->erase(this->begin() + i);
     }
 
     void _push_back(const any &v) override {
-        this->push_back(query<Value>::from(v));
+        this->push_back(take<Value>::from(v));
     }
     void _pop_back() override {
         this->pop_back();

@@ -96,49 +96,49 @@ private:
 //NOTE: for template instantiation, specify an explicit conversion target type avoids ambiguity.
 
 //if is a integer constant.
-template<class Type> struct query {
+template<class Type> struct take {
     static Type from(const any &a) {
         return (Type)a.as_int();
     }
 };
 
 //if is a object ptr.
-template<class Type> struct query<Type *> {
+template<class Type> struct take<Type *> {
     static Type *from(const any &a) {
         return (Type *)a.as_object_ptr();
     }
 };
 
 //if is a object shared ptr.
-template<class Type> struct query<const std::shared_ptr<Type> &> {
+template<class Type> struct take<const std::shared_ptr<Type> &> {
     static std::shared_ptr<Type> from(const any &a) {
         return std::dynamic_pointer_cast<Type>(a.as_object_shared());
     }
 };
-template<class Type> struct query<std::shared_ptr<Type>> {
+template<class Type> struct take<std::shared_ptr<Type>> {
     static std::shared_ptr<Type> from(const any &a) {
         return std::dynamic_pointer_cast<Type>(a.as_object_shared());
     }
 };
 
 //if is a string.
-template<> struct query<const std::string &> {
+template<> struct take<const std::string &> {
     static std::string from(const any &a) {
         return a.as_string();
     }
 };
-template<> struct query<std::string> {
+template<> struct take<std::string> {
     static std::string from(const any &a) {
         return a.as_string();
     }
 };
 
-template<> struct query<void   > { static void    from(const any &a) { } };
-template<> struct query<bool   > { static bool    from(const any &a) { return a.as_bool  (); } };
-template<> struct query<uint8_t> { static uint8_t from(const any &a) { return a.as_byte  (); } };
-template<> struct query<int    > { static int     from(const any &a) { return a.as_int   (); } };
-template<> struct query<int64_t> { static int64_t from(const any &a) { return a.as_int64 (); } };
-template<> struct query<float  > { static float   from(const any &a) { return a.as_float (); } };
-template<> struct query<double > { static double  from(const any &a) { return a.as_double(); } };
+template<> struct take<void   > { static void    from(const any &a) { } };
+template<> struct take<bool   > { static bool    from(const any &a) { return a.as_bool  (); } };
+template<> struct take<uint8_t> { static uint8_t from(const any &a) { return a.as_byte  (); } };
+template<> struct take<int    > { static int     from(const any &a) { return a.as_int   (); } };
+template<> struct take<int64_t> { static int64_t from(const any &a) { return a.as_int64 (); } };
+template<> struct take<float  > { static float   from(const any &a) { return a.as_float (); } };
+template<> struct take<double > { static double  from(const any &a) { return a.as_double(); } };
 
 } //end reflect.

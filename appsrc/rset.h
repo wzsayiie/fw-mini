@@ -47,14 +47,14 @@ public:
     
 public:
     void _insert(const any &v) override {
-        this->insert(query<Value>::from(v));
+        this->insert(take<Value>::from(v));
     }
     void _erase(const any &v) override {
-        this->erase(query<Value>::from(v));
+        this->erase(take<Value>::from(v));
     }
 
     bool _has(const any &v) const override {
-        return this->find(query<Value>::from(v)) != this->end();
+        return this->find(take<Value>::from(v)) != this->end();
     }
     
     int _size() const override {
