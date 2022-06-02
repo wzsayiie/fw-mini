@@ -20,7 +20,14 @@ any::any(const std::string &value) {
     _string = value;
 }
 
-any::any(const dash::object::ptr &value) {
+any::any(object *value) {
+    _type = data_type::is_object;
+    if (value) {
+        _object = value->shared();
+    }
+}
+
+any::any(const object::ptr &value) {
     _type = data_type::is_object;
     _object = value;
 }
@@ -29,13 +36,8 @@ bool any::as_bool() const {
     return !!as_int64() || !_string.empty() || (bool)_object;
 }
 
-uint8_t any::as_byte() const {
-    return (uint8_t)as_int64();
-}
-
-int any::as_int() const {
-    return (int)as_int64();
-}
+uint8_t any::as_byte() const { return (uint8_t)as_int64(); }
+int     any::as_int () const { return (int    )as_int64(); }
 
 int64_t any::as_int64() const {
     switch (_type) {
@@ -67,22 +69,24 @@ double any::as_double() const {
     }
 }
 
-const std::string &any::as_string() const {
-    return _string;
-}
+const std::string &any::as_const_string() const { return _string      ; }
+std::string        any::as_string      () const { return _string      ; }
+const object      *any::as_const_ptr   () const { return _object.get(); }
+object            *any::as_ptr         () const { return _object.get(); }
+const object::ptr &any::as_const_shared() const { return _object      ; }
+object::ptr        any::as_shared      () const { return _object      ; }
 
-const dash::object::ptr &any::as_object() const {
-    return _object;
-}
-
-any::operator bool   () const { return as_bool  (); }
-any::operator uint8_t() const { return as_byte  (); }
-any::operator int    () const { return as_int   (); }
-any::operator int64_t() const { return as_int64 (); }
-any::operator float  () const { return as_float (); }
-any::operator double () const { return as_double(); }
-
-any::operator const std::string       &() const { return as_string(); }
-any::operator const dash::object::ptr &() const { return as_object(); }
+any::operator bool               () const { return as_bool        (); }
+any::operator uint8_t            () const { return as_byte        (); }
+any::operator int                () const { return as_int         (); }
+any::operator int64_t            () const { return as_int64       (); }
+any::operator float              () const { return as_float       (); }
+any::operator double             () const { return as_double      (); }
+any::operator const std::string &() const { return as_const_string(); }
+any::operator std::string        () const { return as_string      (); }
+any::operator const object      *() const { return as_const_ptr   (); }
+any::operator object            *() const { return as_ptr         (); }
+any::operator const object::ptr &() const { return as_const_shared(); }
+any::operator object::ptr        () const { return as_shared      (); }
 
 } //end reflect.

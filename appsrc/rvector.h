@@ -1,7 +1,6 @@
 #pragma once
 
 #include "rany.h"
-#include "robject.h"
 
 namespace reflect {
 
@@ -47,7 +46,7 @@ public:
 public:
     void _insert   (int i, const any &v) override { this->insert   (this->begin() + i, (Value)v); }
     void _erase    (int i)               override { this->erase    (this->begin() + i);           }
-    void _push_back(const any &v)        override { this->push_back(v);                           }
+    void _push_back(const any &v)        override { this->push_back((Value)v);                    }
     void _pop_back ()                    override { this->pop_back ();                            }
     
     int _size ()      const override { return (int)this->size(); }

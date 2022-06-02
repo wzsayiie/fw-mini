@@ -221,7 +221,7 @@ void MWindow::onMouseWheel(float delta) {
 
 define_reflectable_class_function(MWindow, onKey, "args:key")
 void MWindow::onKey(MKey key) {
-    implement_injectable_function((void), (int)key)
+    implement_injectable_function((void), key)
 }
 
 define_reflectable_class_function(MWindow, onWrite, "args:text,enter")

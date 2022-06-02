@@ -94,7 +94,7 @@ void CResponder::onWheel(float delta) {
 
 define_reflectable_class_function(CResponder, onKey, "args:key")
 void CResponder::onKey(MKey key) {
-    implement_injectable_function((void), (int)key)
+    implement_injectable_function((void), key)
 }
 
 define_reflectable_class_function(CResponder, onWrite, "args:string,enter")

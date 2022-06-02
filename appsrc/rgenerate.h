@@ -51,8 +51,7 @@
 
 #define implement_injectable_function(Ret, ...)                     \
 /**/    if (auto f = find_injected(__func__)) {                     \
-/**/        auto self = shared();                                   \
-/**/        return Ret f->call_with_args({ self, ##__VA_ARGS__ });  \
+/**/        return Ret f->call_with_args({ this, ##__VA_ARGS__ });  \
 /**/    }
 
 namespace reflect {
