@@ -6,45 +6,45 @@ namespace reflect {
 
 //type ids escape.
 
-constexpr const char *const type_ids_esc = "$ESC";
+constexpr const char *const typeids_esc = "$ESC";
 
 //type ids:
 
-template<class> struct type_ids;
+template<class> struct typeids_of;
 
-template<class Type> struct type_ids<const Type *> {
-    static constexpr const void *ids[] = {
-        "const ", type_ids_esc, type_ids<Type>::ids, "*", nullptr
+template<class Type> struct typeids_of<const Type *> {
+    static constexpr const void *value[] = {
+        "const ", typeids_esc, typeids_of<Type>::value, "*", nullptr
     };
 };
 
-template<class Type> struct type_ids<Type *> {
-    static constexpr const void *ids[] = {
-        type_ids_esc, type_ids<Type>::ids, "*", nullptr
+template<class Type> struct typeids_of<Type *> {
+    static constexpr const void *value[] = {
+        typeids_esc, typeids_of<Type>::value, "*", nullptr
     };
 };
 
-template<class Type> struct type_ids<const Type &> {
-    static constexpr const void *ids[] = {
-        "const ", type_ids_esc, type_ids<Type>::ids, "&", nullptr
+template<class Type> struct typeids_of<const Type &> {
+    static constexpr const void *value[] = {
+        "const ", typeids_esc, typeids_of<Type>::value, "&", nullptr
     };
 };
 
-template<class Type> struct type_ids<Type &> {
-    static constexpr const void *ids[] = {
-        type_ids_esc, type_ids<Type>::ids, "&", nullptr
+template<class Type> struct typeids_of<Type &> {
+    static constexpr const void *value[] = {
+        typeids_esc, typeids_of<Type>::value, "&", nullptr
     };
 };
 
-template<class Type> struct type_ids<const std::shared_ptr<Type> &> {
-    static constexpr const void *ids[] = {
-        "const std::shared_ptr<", type_ids_esc, type_ids<Type>::ids, ">&", nullptr
+template<class Type> struct typeids_of<const std::shared_ptr<Type> &> {
+    static constexpr const void *value[] = {
+        "const std::shared_ptr<", typeids_esc, typeids_of<Type>::value, ">&", nullptr
     };
 };
 
-template<class Type> struct type_ids<std::shared_ptr<Type>> {
-    static constexpr const void *ids[] = {
-        "std::shared_ptr<", type_ids_esc, type_ids<Type>::ids, ">", nullptr
+template<class Type> struct typeids_of<std::shared_ptr<Type>> {
+    static constexpr const void *value[] = {
+        "std::shared_ptr<", typeids_esc, typeids_of<Type>::value, ">", nullptr
     };
 };
 
@@ -53,38 +53,38 @@ template<class Type> struct type_ids<std::shared_ptr<Type>> {
 template<class> struct arg_types_ids;
 
 template<class Type> struct arg_types_ids<void (Type)> {
-    static constexpr const void *ids[] = {
-        type_ids_esc, type_ids<Type>::ids, nullptr
+    static constexpr const void *value[] = {
+        typeids_esc, typeids_of<Type>::value, nullptr
     };
 };
 
 template<class First, class... Rest> struct arg_types_ids<void (First, Rest...)> {
-    static constexpr const void *ids[] = {
-        type_ids_esc, type_ids<First>::ids,
+    static constexpr const void *value[] = {
+        typeids_esc, typeids_of<First>::value,
         ",",
-        type_ids_esc, arg_types_ids<void (Rest...)>::ids,
+        typeids_esc, arg_types_ids<void (Rest...)>::value,
         nullptr
     };
 };
 
 //builtin types:
 
-template<> struct type_ids<void       > { static constexpr const void *ids[] = { "void"  , nullptr }; };
-template<> struct type_ids<bool       > { static constexpr const void *ids[] = { "bool"  , nullptr }; };
-template<> struct type_ids<uint8_t    > { static constexpr const void *ids[] = { "byte"  , nullptr }; };
-template<> struct type_ids<int        > { static constexpr const void *ids[] = { "int"   , nullptr }; };
-template<> struct type_ids<int64_t    > { static constexpr const void *ids[] = { "int64" , nullptr }; };
-template<> struct type_ids<float      > { static constexpr const void *ids[] = { "float" , nullptr }; };
-template<> struct type_ids<double     > { static constexpr const void *ids[] = { "double", nullptr }; };
-template<> struct type_ids<std::string> { static constexpr const void *ids[] = { "string", nullptr }; };
+template<> struct typeids_of<void       > { static constexpr const void *value[] = { "void"  , nullptr }; };
+template<> struct typeids_of<bool       > { static constexpr const void *value[] = { "bool"  , nullptr }; };
+template<> struct typeids_of<uint8_t    > { static constexpr const void *value[] = { "byte"  , nullptr }; };
+template<> struct typeids_of<int        > { static constexpr const void *value[] = { "int"   , nullptr }; };
+template<> struct typeids_of<int64_t    > { static constexpr const void *value[] = { "int64" , nullptr }; };
+template<> struct typeids_of<float      > { static constexpr const void *value[] = { "float" , nullptr }; };
+template<> struct typeids_of<double     > { static constexpr const void *value[] = { "double", nullptr }; };
+template<> struct typeids_of<std::string> { static constexpr const void *value[] = { "string", nullptr }; };
 
 //type name:
 
-dash_exportable std::string make_type_name(void **ids);
+dash_exportable std::string make_typename(void **ids);
 
-template<class Type> struct type_name {
-    static const char *name() {
-        static std::string nm = make_type_name((void **)type_ids<Type>::ids);
+template<class Type> struct typename_of {
+    static const char *value() {
+        static std::string nm = make_typename((void **)typeids_of<Type>::value);
         return nm.c_str();
     }
 };

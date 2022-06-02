@@ -9,23 +9,23 @@ static dash::lazy<std::map<std::string, variable>> _functions;
 static dash::lazy<std::map<std::string, variable>> _classes  ;
 static dash::lazy<std::map<std::string, variable>> _enums    ;
 
-type_meta *commit_type_meta(const symbol &sym, type_category category) {
+type_meta *commit_type_meta(const symbol &sym, category cate) {
     if (_type_metas->find(sym) != _type_metas->end()) {
         return nullptr;
     }
 
     type_meta *meta;
-    switch (category) {
-        case type_category::is_function: meta = new function_meta(); break;
-        case type_category::is_vector  : meta = new vector_meta  (); break;
-        case type_category::is_map     : meta = new map_meta     (); break;
-        case type_category::is_set     : meta = new set_meta     (); break;
-        case type_category::is_class   : meta = new class_meta   (); break;
-        case type_category::is_enum    : meta = new enum_meta    (); break;
+    switch (cate) {
+        case category::is_function: meta = new function_meta(); break;
+        case category::is_vector  : meta = new vector_meta  (); break;
+        case category::is_map     : meta = new map_meta     (); break;
+        case category::is_set     : meta = new set_meta     (); break;
+        case category::is_class   : meta = new class_meta   (); break;
+        case category::is_enum    : meta = new enum_meta    (); break;
         default /* basic simple type */: meta = new type_meta    (); break;
     }
 
-    meta->category = category;
+    meta->cate = cate;
     (*_type_metas)[sym] = meta;
     return meta;
 }
@@ -51,7 +51,7 @@ void commit_enum(const std::string &name, const symbol &type) {
 }
 
 void commit_class_variable(const symbol &cls, const std::string &name, const symbol &type, const any &value) {
-    auto meta = (class_meta *)query_type_meta(cls, type_category::is_class);
+    auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
         variable var = { type, value };
         meta->cls_variables[name] = var;
@@ -59,7 +59,7 @@ void commit_class_variable(const symbol &cls, const std::string &name, const sym
 }
 
 void commit_class_function(const symbol &cls, const std::string &name, const symbol &type, const any &value) {
-    auto meta = (class_meta *)query_type_meta(cls, type_category::is_class);
+    auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
         variable var = { type, value };
         meta->cls_functions[name] = var;
@@ -67,7 +67,7 @@ void commit_class_function(const symbol &cls, const std::string &name, const sym
 }
 
 void commit_object_function(const symbol &cls, const std::string &name, const symbol &type, const any &value) {
-    auto meta = (class_meta *)query_type_meta(cls, type_category::is_class);
+    auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
         variable var = { type, value };
         meta->obj_functions[name] = var;
@@ -75,16 +75,16 @@ void commit_object_function(const symbol &cls, const std::string &name, const sy
 }
 
 void commit_enum_value(const symbol &enu, const std::string &name, const symbol &type, const any &value) {
-    auto meta = (enum_meta *)query_type_meta(enu, type_category::is_enum);
+    auto meta = (enum_meta *)query_type_meta(enu, category::is_enum);
     if (meta) {
         variable var = { type, value };
         meta->values[name] = var;
     }
 }
 
-const type_meta *query_type_meta(const symbol &sym, type_category category) {
+const type_meta *query_type_meta(const symbol &sym, category cate) {
     const type_meta *meta = query_type_meta(sym);
-    if (meta && meta->category == category) {
+    if (meta && meta->cate == cate) {
         return meta;
     }
 

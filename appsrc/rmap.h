@@ -8,8 +8,8 @@ namespace reflect {
 
 class base_map;
 
-template<> struct type_ids<base_map> {
-    static constexpr const void *ids[] = { "base_map", nullptr };
+template<> struct typeids_of<base_map> {
+    static constexpr const void *value[] = { "base_map", nullptr };
 };
 
 class dash_exportable base_map : public extends<base_map, object> {
@@ -32,12 +32,12 @@ public:
 
 template<class, class> class map;
 
-template<class Key, class Value> struct type_ids<map<Key, Value>> {
-    static constexpr const void *ids[] = {
+template<class Key, class Value> struct typeids_of<map<Key, Value>> {
+    static constexpr const void *value[] = {
         "map<",
-        type_ids_esc, type_ids<Key>::ids,
+        typeids_esc, typeids_of<Key>::value,
         ",",
-        type_ids_esc, type_ids<Value>::ids,
+        typeids_esc, typeids_of<Value>::value,
         ">",
         nullptr
     };

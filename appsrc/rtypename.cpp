@@ -7,7 +7,7 @@ namespace reflect {
 static void concatenate(std::stringstream &stream, void **ids) {
     bool escaped = false;
     for (void **ptr = ids; *ptr; ++ptr) {
-        if (strcmp((char *)*ptr, type_ids_esc) == 0) {
+        if (strcmp((char *)*ptr, typeids_esc) == 0) {
             escaped = true;
 
         } else if (escaped) {
@@ -20,7 +20,7 @@ static void concatenate(std::stringstream &stream, void **ids) {
     }
 }
 
-std::string make_type_name(void **ids) {
+std::string make_typename(void **ids) {
     std::stringstream stream;
     concatenate(stream, ids);
     return stream.str();

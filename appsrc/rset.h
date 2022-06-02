@@ -8,8 +8,8 @@ namespace reflect {
 
 class base_set;
 
-template<> struct type_ids<base_set> {
-    static constexpr const void *ids[] = { "base_set", nullptr };
+template<> struct typeids_of<base_set> {
+    static constexpr const void *value[] = { "base_set", nullptr };
 };
 
 class dash_exportable base_set : public extends<base_set, object> {
@@ -31,9 +31,9 @@ public:
 
 template<class> class set;
 
-template<class Value> struct type_ids<set<Value>> {
-    static constexpr const void *ids[] = {
-        "set<", type_ids_esc, type_ids<Value>::ids, ">", nullptr
+template<class Value> struct typeids_of<set<Value>> {
+    static constexpr const void *value[] = {
+        "set<", typeids_esc, typeids_of<Value>::value, ">", nullptr
     };
 };
 

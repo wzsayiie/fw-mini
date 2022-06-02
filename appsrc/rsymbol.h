@@ -34,9 +34,9 @@ private:
 
 //type symbol:
 
-template<class Type> struct type_symbol {
+template<class Type> struct symbol_of {
     static symbol value() {
-        static symbol sym(type_name<Type>::name());
+        static symbol sym(typename_of<Type>::value());
         return sym;
     }
 };

@@ -3,7 +3,7 @@
 namespace reflect {
 
 symbol object::class_symbol() const {
-    return type_symbol<object>::value();
+    return symbol_of<object>::value();
 }
 
 object::ptr object::shared() {

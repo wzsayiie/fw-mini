@@ -21,8 +21,8 @@ dash_exportable void inject(const char *class_name, const function_table::ptr &t
 
 //injectable:
 
-template<> struct type_ids<class injectable> {
-    static constexpr const void *ids[] = { "injectable", nullptr };
+template<> struct typeids_of<class injectable> {
+    static constexpr const void *value[] = { "injectable", nullptr };
 };
 
 class dash_exportable injectable : public extends<injectable, object> {

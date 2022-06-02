@@ -8,8 +8,8 @@ namespace reflect {
 
 class base_vector;
 
-template<> struct type_ids<base_vector> {
-    static constexpr const void *ids[] = { "base_vector", nullptr };
+template<> struct typeids_of<base_vector> {
+    static constexpr const void *value[] = { "base_vector", nullptr };
 };
 
 class dash_exportable base_vector : public extends<base_vector, object> {
@@ -30,9 +30,9 @@ public:
 
 template<class> class vector;
 
-template<class Value> struct type_ids<vector<Value>> {
-    static constexpr const void *ids[] = {
-        "vector<", type_ids_esc, type_ids<Value>::ids, ">", nullptr
+template<class Value> struct typeids_of<vector<Value>> {
+    static constexpr const void *value[] = {
+        "vector<", typeids_esc, typeids_of<Value>::value, ">", nullptr
     };
 };
 

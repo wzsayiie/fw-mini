@@ -4,8 +4,8 @@
 
 namespace reflect {
 
-template<> struct type_ids<class object> {
-    static constexpr const void *ids[] = { "object", nullptr };
+template<> struct typeids_of<class object> {
+    static constexpr const void *value[] = { "object", nullptr };
 };
 
 class dash_exportable object : public dash::extends<object, dash::object> {
@@ -43,7 +43,7 @@ public:
     
 public:
     symbol class_symbol() const override {
-        return type_symbol<Class>::value();
+        return symbol_of<Class>::value();
     }
     
     std::shared_ptr<Class> shared() {

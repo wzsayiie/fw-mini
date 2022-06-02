@@ -8,14 +8,14 @@
 
 #define declare_reflectable_class(Name)                             \
 /**/    class Name;                                                 \
-/**/    template<> struct reflect::type_ids<Name> {                 \
-/**/        static constexpr const void *ids[] = { #Name, nullptr };\
+/**/    template<> struct reflect::typeids_of<Name> {               \
+/**/        static constexpr const void *value[] = {#Name, nullptr};\
 /**/    };
 
 #define declare_reflectable_enum(Name)                              \
 /**/    enum class Name;                                            \
-/**/    template<> struct reflect::type_ids<Name> {                 \
-/**/        static constexpr const void *ids[] = { #Name, nullptr };\
+/**/    template<> struct reflect::typeids_of<Name> {               \
+/**/        static constexpr const void *value[] = {#Name, nullptr};\
 /**/    };
 
 #define define_reflectable_const(Const)                             \
@@ -28,14 +28,14 @@
 
 #define define_reflectable_class_const(Class, Const)                \
 /**/    static reflect::committor _unused_##Class##_##Const(        \
-/**/        reflect::type_symbol<Class>::value(),                   \
+/**/        reflect::symbol_of<Class>::value(),                     \
 /**/        #Const,                                                 \
 /**/        Class::Const                                            \
 /**/    );
 
 #define define_reflectable_class_function(Class, Function, ...)     \
 /**/    static reflect::committor _unused_##Class##_##Function(     \
-/**/        reflect::type_symbol<Class>::value(),                   \
+/**/        reflect::symbol_of<Class>::value(),                     \
 /**/        #Function,                                              \
 /**/        &Class::Function,                                       \
 /**/        ##__VA_ARGS__                                           \
@@ -44,7 +44,7 @@
 #define define_reflectable_enum_const(Enum, Const)                  \
 /**/    static reflect::committor _unused_##Enum##_##Const(         \
 /**/        0,                                                      \
-/**/        reflect::type_symbol<Enum>::value(),                    \
+/**/        reflect::symbol_of<Enum>::value(),                      \
 /**/        #Const,                                                 \
 /**/        (int)Enum::Const                                        \
 /**/    );
@@ -57,100 +57,74 @@
 
 namespace reflect {
 
-struct committor {
+//qualifier:
+
+template<class Type> struct qualifier_of                                { static const auto value = qualifier::value       ; };
+template<class Type> struct qualifier_of<const Type *                 > { static const auto value = qualifier::const_ptr   ; };
+template<class Type> struct qualifier_of<Type *                       > { static const auto value = qualifier::ptr         ; };
+template<class Type> struct qualifier_of<const Type &                 > { static const auto value = qualifier::const_ref   ; };
+template<class Type> struct qualifier_of<Type &                       > { static const auto value = qualifier::ref         ; };
+template<class Type> struct qualifier_of<const std::shared_ptr<Type> &> { static const auto value = qualifier::const_shared; };
+template<class Type> struct qualifier_of<std::shared_ptr<Type>        > { static const auto value = qualifier::shared      ; };
+
+//arguments appender:
+
+template<class> struct arg_appender;
+
+template<class First, class... Rest> struct arg_appender<void (First, Rest...)> {
+    static void append(function_meta *meta) {
+    }
+};
+
+template<> struct arg_appender<void ()> {
+    static void append(function_meta *meta) {
+    }
+};
+
+//committor:
+
+class committor {
+public:
     //global constant:
-    committor(const char *name, const char *value) noexcept {
-        auto type = type_symbol<std::string>::value();
-        commit_type_meta(type, type_category::is_string);
-        commit_variable(name, type, std::string(value));
-    }
-
-    committor(const char *name, double value) noexcept {
-        auto type = type_symbol<double>::value();
-        commit_type_meta(type, type_category::is_double);
-        commit_variable(name, type, value);
-    }
-
-    committor(const char *name, float value) noexcept {
-        auto type = type_symbol<float>::value();
-        commit_type_meta(type, type_category::is_float);
-        commit_variable(name, type, value);
-    }
-
-    committor(const char *name, int64_t value) noexcept {
-        auto type = type_symbol<int64_t>::value();
-        commit_type_meta(type, type_category::is_int64);
-        commit_variable(name, type, value);
-    }
-
-    committor(const char *name, int value) noexcept {
-        auto type = type_symbol<int>::value();
-        commit_type_meta(type, type_category::is_int);
-        commit_variable(name, type, value);
-    }
+    committor(const char *n, std::string &v) noexcept { c_v(n, v, category::is_string); }
+    committor(const char *n, double       v) noexcept { c_v(n, v, category::is_double); }
+    committor(const char *n, float        v) noexcept { c_v(n, v, category::is_float ); }
+    committor(const char *n, int64_t      v) noexcept { c_v(n, v, category::is_int64 ); }
+    committor(const char *n, int          v) noexcept { c_v(n, v, category::is_int   ); }
 
     //global function.
     template<class Ret, class... Args> committor(
         const char *name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
     {
-        auto type = symbol::make(name);
-        commit_type_meta(type, type_category::is_function);
-        commit_function(name, type, 0);
+        auto fcn_type = symbol_of<function<Ret (Args...)>>::value();
+        c_fm<Ret, Args...>(fcn_type, note);
+
+        commit_function(name, fcn_type, function<Ret (Args...)>::create([=](Args... args) {
+            return fcn(args...);
+        }));
     }
 
     //class static constant:
-    committor(const symbol &cls, const char *name, const char *value) noexcept {
-        commit_type_meta(cls, type_category::is_class);
-        commit_class(cls.str(), cls);
-
-        auto type = type_symbol<std::string>::value();
-        commit_type_meta(type, type_category::is_string);
-        commit_variable(name, type, std::string(value));
-    }
-
-    committor(const symbol &cls, const char *name, double value) noexcept {
-        commit_type_meta(cls, type_category::is_class);
-        commit_class(cls.str(), cls);
-
-        auto type = type_symbol<double>::value();
-        commit_type_meta(type, type_category::is_double);
-        commit_variable(name, type, value);
-    }
-
-    committor(const symbol &cls, const char *name, float value) noexcept {
-        commit_type_meta(cls, type_category::is_class);
-        commit_class(cls.str(), cls);
-
-        auto type = type_symbol<float>::value();
-        commit_type_meta(type, type_category::is_float);
-        commit_variable(name, type, value);
-    }
-
-    committor(const symbol &cls, const char *name, int64_t value) noexcept {
-        commit_type_meta(cls, type_category::is_class);
-        commit_class(cls.str(), cls);
-
-        auto type = type_symbol<int64_t>::value();
-        commit_type_meta(type, type_category::is_int64);
-        commit_variable(name, type, value);
-    }
-
-    committor(const symbol &cls, const char *name, int value) noexcept {
-        commit_type_meta(cls, type_category::is_class);
-        commit_class(cls.str(), cls);
-
-        auto type = type_symbol<int>::value();
-        commit_type_meta(type, type_category::is_int);
-        commit_variable(name, type, value);
-    }
+    committor(const symbol &c, const char *n, const std::string &v) noexcept { c_cv(c, n, v, category::is_string); }
+    committor(const symbol &c, const char *n, double             v) noexcept { c_cv(c, n, v, category::is_double); }
+    committor(const symbol &c, const char *n, float              v) noexcept { c_cv(c, n, v, category::is_float ); }
+    committor(const symbol &c, const char *n, int64_t            v) noexcept { c_cv(c, n, v, category::is_int64 ); }
+    committor(const symbol &c, const char *n, int                v) noexcept { c_cv(c, n, v, category::is_int   ); }
 
     //class static function.
     template<class Ret, class... Args> committor(
         const symbol &cls, const char *name, Ret (*fcn)(Args...),
         const char *note = nullptr) noexcept
     {
-        commit_type_meta(cls, type_category::is_class);
+        commit_type_meta(cls, category::is_class);
         commit_class(cls.str(), cls);
+
+        auto fcn_type = symbol_of<function<Ret (Args...)>>::value();
+        c_fm<Ret, Args...>(fcn_type, note);
+
+        commit_class_function(cls, name, fcn_type, function<Ret (Args...)>::create([=](Args... args) {
+            return fcn(args...);
+        }));
     }
 
     //class instance function.
@@ -158,18 +132,54 @@ struct committor {
         const symbol &cls, const char *name, Ret (Class::*fcn)(Args...),
         const char *note = nullptr) noexcept
     {
-        commit_type_meta(cls, type_category::is_class);
+        commit_type_meta(cls, category::is_class);
         commit_class(cls.str(), cls);
+
+        auto fcn_type = symbol_of<function<Ret (const std::shared_ptr<Class> &, Args...)>>::value();
+        c_fm<Ret, Args...>(fcn_type, note);
+
+        commit_class_function(cls, name, fcn_type, function<Ret (const std::shared_ptr<Class> &, Args...)>::create(
+            [=](const std::shared_ptr<Class> &self, Args... args) {
+                return (self.get()->*fcn)(args...);
+            }
+        ));
     }
 
     //enumeration value.
     committor(int, const symbol &enu, const char *name, int value) noexcept {
-        commit_type_meta(enu, type_category::is_enum);
+        commit_type_meta(enu, category::is_enum);
         commit_enum(enu.str(), enu);
 
-        auto type = type_symbol<int>::value();
-        commit_type_meta(type, type_category::is_int);
-        commit_enum_value(enu, name, type, value);
+        auto value_type = symbol_of<int>::value();
+        commit_type_meta(value_type, category::is_int);
+        commit_enum_value(enu, name, value_type, value);
+    }
+
+private:
+    template<class Type> void c_v(
+        const char *name, const Type &value, category cate)
+    {
+        auto value_type = symbol_of<Type>::value();
+        commit_type_meta(value_type, cate);
+        commit_variable(name, value_type, value);
+    }
+
+    template<class Type> void c_cv(
+        const symbol &cls, const char *name, const Type &value, category cate)
+    {
+        commit_type_meta(cls, category::is_class);
+        commit_class(cls.str(), cls);
+
+        auto value_type = symbol_of<Type>::value();
+        commit_type_meta(value_type, cate);
+        commit_class_variable(cls, name, value_type, value);
+    }
+
+    template<class Ret, class... Args> void c_fm(const symbol &sym, const char *note) {
+        auto meta = (function_meta *)commit_type_meta(sym, category::is_function);
+        if (!meta) {
+            return;
+        }
     }
 };
 
