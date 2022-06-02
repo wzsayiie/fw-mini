@@ -59,13 +59,13 @@ namespace reflect {
 
 //qualifier:
 
-template<class Type> struct qualifier_of                                { static const auto value = qualifier::value       ; };
-template<class Type> struct qualifier_of<const Type *                 > { static const auto value = qualifier::const_ptr   ; };
-template<class Type> struct qualifier_of<Type *                       > { static const auto value = qualifier::ptr         ; };
-template<class Type> struct qualifier_of<const Type &                 > { static const auto value = qualifier::const_ref   ; };
-template<class Type> struct qualifier_of<Type &                       > { static const auto value = qualifier::ref         ; };
-template<class Type> struct qualifier_of<const std::shared_ptr<Type> &> { static const auto value = qualifier::const_shared; };
-template<class Type> struct qualifier_of<std::shared_ptr<Type>        > { static const auto value = qualifier::shared      ; };
+template<class Type> struct qualifier_of                                { static constexpr const auto value = qualifier::value       ; };
+template<class Type> struct qualifier_of<const Type *                 > { static constexpr const auto value = qualifier::const_ptr   ; };
+template<class Type> struct qualifier_of<Type *                       > { static constexpr const auto value = qualifier::ptr         ; };
+template<class Type> struct qualifier_of<const Type &                 > { static constexpr const auto value = qualifier::const_ref   ; };
+template<class Type> struct qualifier_of<Type &                       > { static constexpr const auto value = qualifier::ref         ; };
+template<class Type> struct qualifier_of<const std::shared_ptr<Type> &> { static constexpr const auto value = qualifier::const_shared; };
+template<class Type> struct qualifier_of<std::shared_ptr<Type>        > { static constexpr const auto value = qualifier::shared      ; };
 
 //arguments appender:
 
@@ -73,6 +73,10 @@ template<class> struct arg_appender;
 
 template<class First, class... Rest> struct arg_appender<void (First, Rest...)> {
     static void append(function_meta *meta) {
+        meta->arg_quals.push_back(qualifier_of<First>::value);
+        meta->arg_types.push_back(symbol_of<First>::value());
+
+        arg_appender<void (Rest...)>::append(meta);
     }
 };
 
@@ -96,9 +100,11 @@ public:
     template<class Ret, class... Args> committor(
         const char *name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
     {
+        //type.
         auto fcn_type = symbol_of<function<Ret (Args...)>>::value();
         c_fm<Ret, Args...>(fcn_type, note);
 
+        //value.
         commit_function(name, fcn_type, function<Ret (Args...)>::create([=](Args... args) {
             return fcn(args...);
         }));
@@ -116,12 +122,17 @@ public:
         const symbol &cls, const char *name, Ret (*fcn)(Args...),
         const char *note = nullptr) noexcept
     {
+        //class type.
         commit_type_meta(cls, category::is_class);
+
+        //class value.
         commit_class(cls.str(), cls);
 
+        //function type.
         auto fcn_type = symbol_of<function<Ret (Args...)>>::value();
         c_fm<Ret, Args...>(fcn_type, note);
 
+        //function value.
         commit_class_function(cls, name, fcn_type, function<Ret (Args...)>::create([=](Args... args) {
             return fcn(args...);
         }));
@@ -132,12 +143,17 @@ public:
         const symbol &cls, const char *name, Ret (Class::*fcn)(Args...),
         const char *note = nullptr) noexcept
     {
+        //class type.
         commit_type_meta(cls, category::is_class);
+
+        //class value.
         commit_class(cls.str(), cls);
 
+        //function type.
         auto fcn_type = symbol_of<function<Ret (const std::shared_ptr<Class> &, Args...)>>::value();
         c_fm<Ret, Args...>(fcn_type, note);
 
+        //function value.
         commit_class_function(cls, name, fcn_type, function<Ret (const std::shared_ptr<Class> &, Args...)>::create(
             [=](const std::shared_ptr<Class> &self, Args... args) {
                 return (self.get()->*fcn)(args...);
@@ -147,11 +163,17 @@ public:
 
     //enumeration value.
     committor(int, const symbol &enu, const char *name, int value) noexcept {
+        //enum type.
         commit_type_meta(enu, category::is_enum);
+
+        //enum value.
         commit_enum(enu.str(), enu);
 
+        //member type.
         auto value_type = symbol_of<int>::value();
         commit_type_meta(value_type, category::is_int);
+
+        //member value.
         commit_enum_value(enu, name, value_type, value);
     }
 
@@ -159,19 +181,28 @@ private:
     template<class Type> void c_v(
         const char *name, const Type &value, category cate)
     {
+        //type.
         auto value_type = symbol_of<Type>::value();
         commit_type_meta(value_type, cate);
+
+        //value.
         commit_variable(name, value_type, value);
     }
 
     template<class Type> void c_cv(
         const symbol &cls, const char *name, const Type &value, category cate)
     {
+        //class type.
         commit_type_meta(cls, category::is_class);
+
+        //class value.
         commit_class(cls.str(), cls);
 
+        //member type.
         auto value_type = symbol_of<Type>::value();
         commit_type_meta(value_type, cate);
+
+        //member value.
         commit_class_variable(cls, name, value_type, value);
     }
 
@@ -180,6 +211,16 @@ private:
         if (!meta) {
             return;
         }
+
+        //arguments.
+        arg_appender<void (Args...)>::append(meta);
+
+        //returning.
+        meta->ret_qual = qualifier_of<Ret>::value;
+        meta->ret_type = symbol_of<Ret>::value();
+        
+        //note.
+        meta->note = note ? note : "";
     }
 };
 
