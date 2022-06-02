@@ -121,13 +121,24 @@ template<class Type> struct query<std::shared_ptr<Type>> {
     }
 };
 
-template<> struct query<void       > { static void        from(const any &a) { } };
-template<> struct query<bool       > { static bool        from(const any &a) { return a.as_bool  (); } };
-template<> struct query<uint8_t    > { static uint8_t     from(const any &a) { return a.as_byte  (); } };
-template<> struct query<int        > { static int         from(const any &a) { return a.as_int   (); } };
-template<> struct query<int64_t    > { static int64_t     from(const any &a) { return a.as_int64 (); } };
-template<> struct query<float      > { static float       from(const any &a) { return a.as_float (); } };
-template<> struct query<double     > { static double      from(const any &a) { return a.as_double(); } };
-template<> struct query<std::string> { static std::string from(const any &a) { return a.as_string(); } };
+//if is a string.
+template<> struct query<const std::string &> {
+    static std::string from(const any &a) {
+        return a.as_string();
+    }
+};
+template<> struct query<std::string> {
+    static std::string from(const any &a) {
+        return a.as_string();
+    }
+};
+
+template<> struct query<void   > { static void    from(const any &a) { } };
+template<> struct query<bool   > { static bool    from(const any &a) { return a.as_bool  (); } };
+template<> struct query<uint8_t> { static uint8_t from(const any &a) { return a.as_byte  (); } };
+template<> struct query<int    > { static int     from(const any &a) { return a.as_int   (); } };
+template<> struct query<int64_t> { static int64_t from(const any &a) { return a.as_int64 (); } };
+template<> struct query<float  > { static float   from(const any &a) { return a.as_float (); } };
+template<> struct query<double > { static double  from(const any &a) { return a.as_double(); } };
 
 } //end reflect.

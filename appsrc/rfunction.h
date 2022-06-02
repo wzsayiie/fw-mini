@@ -55,8 +55,9 @@ template<int, int, class> struct caller;
 
 template<int Index, int End, class Ret, class... Args> struct caller<Index, End, Ret (Args...)> {
     template<class... Unfold> static void call(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
-        auto value = (typename type_at<Index, void (Args...)>::type)get_argument(Index);
-        caller<Index + 1, End, Ret (Args...)>::call(fcn, unfold..., value);
+        auto arg = get_argument(Index);
+        auto val = query<typename type_at<Index, void (Args...)>::type>::from(arg);
+        caller<Index + 1, End, Ret (Args...)>::call(fcn, unfold..., val);
     }
 };
 
