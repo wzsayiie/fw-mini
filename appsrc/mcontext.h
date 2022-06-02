@@ -32,8 +32,7 @@ void MContextDrawText      (float x , float y , float w , float h );
 
 //graphs:
 
-declare_reflectable_enum(MGraphType)
-enum class MGraphType {
+m_enum(MGraphType) {
     Clip    = 1,
     Polygon = 2,
     Image   = 3,

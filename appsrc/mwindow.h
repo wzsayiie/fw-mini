@@ -4,8 +4,7 @@
 
 //key:
 
-declare_reflectable_enum(MKey)
-enum class MKey {
+m_enum(MKey) {
     Back  = 0x08,
     Enter = 0x0D,
     Space = 0x20,

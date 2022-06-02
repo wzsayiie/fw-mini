@@ -5,8 +5,7 @@
 
 //file format:
 
-declare_reflectable_enum(MImageFileFormat)
-enum class MImageFileFormat {
+m_enum(MImageFileFormat) {
     JPEG = 1,
     PNG  = 2,
 };

@@ -15,15 +15,13 @@ struct _MPixelFromPointCaster { float operator<<(float pt); };
 
 //alignment:
 
-declare_reflectable_enum(MHAlign)
-enum class MHAlign {
+m_enum(MHAlign) {
     Left   = 1,
     Center = 2,
     Right  = 3,
 };
 
-declare_reflectable_enum(MVAlign)
-enum class MVAlign {
+m_enum(MVAlign) {
     Top    = 1,
     Middle = 2,
     Bottom = 3,

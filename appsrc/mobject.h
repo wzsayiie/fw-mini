@@ -14,9 +14,15 @@ public:
     typedef MExtends<Class, Super> base;
 };
 
+//definition:
+
 #define m_class(Class, Super)               \
 /**/    declare_reflectable_class(Class)    \
 /**/    class dash_exportable Class : public MExtends<Class, Super>
+
+#define m_enum(Enum)                    \
+/**/    declare_reflectable_enum(Enum)  \
+/**/    enum class Enum
 
 //builtin types:
 
@@ -26,8 +32,6 @@ template<class V> using MVector   = reflect::vector<V>;
 template<class V> using MSet      = reflect::set<V>;
 template<class F> using MFunction = reflect::function<F>;
 
-//macro:
-
-//flag for needing host to implement and call.
+//host implementation flags.
 #define M_HOST_IMPLEMENT_CLASS
 #define M_HOST_CALL_FUNCTION
