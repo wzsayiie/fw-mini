@@ -154,7 +154,7 @@ public:
         c_fm<Ret, Args...>(fcn_type, note);
 
         //function value.
-        commit_class_function(cls, name, fcn_type, function<Ret (const std::shared_ptr<Class> &, Args...)>::create(
+        commit_object_function(cls, name, fcn_type, function<Ret (const std::shared_ptr<Class> &, Args...)>::create(
             [=](const std::shared_ptr<Class> &self, Args... args) {
                 return (self.get()->*fcn)(args...);
             }
