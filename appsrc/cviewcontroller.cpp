@@ -101,7 +101,7 @@ CViewController *CViewController::parentController() {
     return mParentController;
 }
 
-define_reflectable_class_function(CViewController, view, "type:get")
+define_reflectable_class_function(CViewController, view, "getter")
 CView::ptr CViewController::view() {
     if (!mView) {
         mView = loadView();
@@ -110,7 +110,7 @@ CView::ptr CViewController::view() {
     return mView;
 }
 
-define_reflectable_class_function(CViewController, findResponder, "args:x,y,fit")
+define_reflectable_class_function(CViewController, findResponder, "virtual;args:x,y,fit")
 CResponder::ptr CViewController::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
     implement_injectable_function(CResponder::ptr, fit)
     
@@ -158,57 +158,57 @@ CResponder::ptr CViewController::findResponder(const MPoint::ptr &pt, const CRes
     return nullptr;
 }
 
-define_reflectable_class_function(CView, responseOffset)
+define_reflectable_class_function(CView, responseOffset, "virtual")
 MPoint::ptr CViewController::responseOffset()  {
     implement_injectable_function(MPoint::ptr)
     
     return view()->responseOffset();
 }
 
-define_reflectable_class_function(CViewController, canRespondTouch, "args:pt")
+define_reflectable_class_function(CViewController, canRespondTouch, "virtual;args:pt")
 bool CViewController::canRespondTouch(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondMouseMove, "args:pt")
+define_reflectable_class_function(CViewController, canRespondMouseMove, "virtual;args:pt")
 bool CViewController::canRespondMouseMove(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondWheel, "args:pt")
+define_reflectable_class_function(CViewController, canRespondWheel, "virtual;args:pt")
 bool CViewController::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondKey, "args:pt")
+define_reflectable_class_function(CViewController, canRespondKey, "virtual;args:pt")
 bool CViewController::canRespondKey(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return true;
 }
 
-define_reflectable_class_function(CViewController, canRespondWriting, "args:pt")
+define_reflectable_class_function(CViewController, canRespondWriting, "virtual;args:pt")
 bool CViewController::canRespondWriting(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return true;
 }
 
-define_reflectable_class_function(CViewController, loadView)
+define_reflectable_class_function(CViewController, loadView, "virtual")
 CView::ptr CViewController::loadView() {
     implement_injectable_function(CView::ptr)
     return CView::create();
 }
 
-define_reflectable_class_function(CViewController, onViewLoad     )
-define_reflectable_class_function(CViewController, onViewAppear   )
-define_reflectable_class_function(CViewController, onViewDisappear)
+define_reflectable_class_function(CViewController, onViewLoad     , "virtual")
+define_reflectable_class_function(CViewController, onViewAppear   , "virtual")
+define_reflectable_class_function(CViewController, onViewDisappear, "virtual")
 
 void CViewController::onViewLoad     () { implement_injectable_function(void) }
 void CViewController::onViewAppear   () { implement_injectable_function(void) }

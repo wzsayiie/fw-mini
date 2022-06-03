@@ -50,21 +50,21 @@ define_reflectable_class_const(MColor, PurpleRGBA   )
 define_reflectable_class_const(MColor, BrownRGBA    )
 define_reflectable_class_const(MColor, ClearRGBA    )
 
-define_reflectable_class_function(MColor, blackColor    , "type:get")
-define_reflectable_class_function(MColor, darkGrayColor , "type:get")
-define_reflectable_class_function(MColor, grayColor     , "type:get")
-define_reflectable_class_function(MColor, lightGrayColor, "type:get")
-define_reflectable_class_function(MColor, whiteColor    , "type:get")
-define_reflectable_class_function(MColor, redColor      , "type:get")
-define_reflectable_class_function(MColor, greenColor    , "type:get")
-define_reflectable_class_function(MColor, blueColor     , "type:get")
-define_reflectable_class_function(MColor, cyanColor     , "type:get")
-define_reflectable_class_function(MColor, yellowColor   , "type:get")
-define_reflectable_class_function(MColor, magentaColor  , "type:get")
-define_reflectable_class_function(MColor, orangeColor   , "type:get")
-define_reflectable_class_function(MColor, purpleColor   , "type:get")
-define_reflectable_class_function(MColor, brownColor    , "type:get")
-define_reflectable_class_function(MColor, clearColor    , "type:get")
+define_reflectable_class_function(MColor, blackColor    , "getter")
+define_reflectable_class_function(MColor, darkGrayColor , "getter")
+define_reflectable_class_function(MColor, grayColor     , "getter")
+define_reflectable_class_function(MColor, lightGrayColor, "getter")
+define_reflectable_class_function(MColor, whiteColor    , "getter")
+define_reflectable_class_function(MColor, redColor      , "getter")
+define_reflectable_class_function(MColor, greenColor    , "getter")
+define_reflectable_class_function(MColor, blueColor     , "getter")
+define_reflectable_class_function(MColor, cyanColor     , "getter")
+define_reflectable_class_function(MColor, yellowColor   , "getter")
+define_reflectable_class_function(MColor, magentaColor  , "getter")
+define_reflectable_class_function(MColor, orangeColor   , "getter")
+define_reflectable_class_function(MColor, purpleColor   , "getter")
+define_reflectable_class_function(MColor, brownColor    , "getter")
+define_reflectable_class_function(MColor, clearColor    , "getter")
 
 const MColor::ptr &MColor::blackColor    () { static auto a = MColor::fromRGBA(BlackRGBA    ); return a; }
 const MColor::ptr &MColor::darkGrayColor () { static auto a = MColor::fromRGBA(DarkGrayRGBA ); return a; }
@@ -99,32 +99,32 @@ MColor::ptr MColor::fromRGBA(int rgba) {
     return obj;
 }
 
-define_reflectable_class_function(MColor, redCom  , "type:get")
-define_reflectable_class_function(MColor, greenCom, "type:get")
-define_reflectable_class_function(MColor, blueCom , "type:get")
-define_reflectable_class_function(MColor, alphaCom, "type:get")
+define_reflectable_class_function(MColor, redCom  , "getter")
+define_reflectable_class_function(MColor, greenCom, "getter")
+define_reflectable_class_function(MColor, blueCom , "getter")
+define_reflectable_class_function(MColor, alphaCom, "getter")
 
 float MColor::redCom  () { return mRGBA.red   / 255.f; }
 float MColor::greenCom() { return mRGBA.green / 255.f; }
 float MColor::blueCom () { return mRGBA.blue  / 255.f; }
 float MColor::alphaCom() { return mRGBA.alpha / 255.f; }
 
-define_reflectable_class_function(MColor, rgba, "type:get")
+define_reflectable_class_function(MColor, rgba, "getter")
 int MColor::rgba() {
     return mRGBA.rgba;
 }
 
-define_reflectable_class_function(MColor, opaque, "type:get")
+define_reflectable_class_function(MColor, opaque, "getter")
 bool MColor::opaque() {
     return mRGBA.alpha == 255;
 }
 
-define_reflectable_class_function(MColor, translucent, "type:get")
+define_reflectable_class_function(MColor, translucent, "getter")
 bool MColor::translucent() {
     return 0 < mRGBA.alpha && mRGBA.alpha < 255;
 }
 
-define_reflectable_class_function(MColor, none, "type:get")
+define_reflectable_class_function(MColor, none, "getter")
 bool MColor::none() {
     return mRGBA.alpha == 0;
 }

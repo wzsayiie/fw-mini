@@ -78,7 +78,7 @@ MVector<uint8_t>::ptr MImage::copyBitmap() {
     return nullptr;
 }
 
-define_reflectable_class_function(MImage, pixelSize, "type:get")
+define_reflectable_class_function(MImage, pixelSize, "getter")
 MSize::ptr MImage::pixelSize() {
     if (mImpl) {
         return MImageFactory::instance()->pixelSize(mImpl);
@@ -86,7 +86,7 @@ MSize::ptr MImage::pixelSize() {
     return MSize::zero();
 }
 
-define_reflectable_class_function(MImage, impl, "type:get")
+define_reflectable_class_function(MImage, impl, "getter")
 MImageImpl::ptr MImage::impl() {
     return mImpl;
 }
@@ -95,12 +95,12 @@ MImageImpl::ptr MImage::impl() {
 
 MImageFactory::ptr MImageFactory::sInstance;
 
-define_reflectable_class_function(MImageFactory, setInstance, "type:set;args:obj")
+define_reflectable_class_function(MImageFactory, setInstance, "setter;args:obj")
 void MImageFactory::setInstance(const MImageFactory::ptr &obj) {
     sInstance = obj;
 }
 
-define_reflectable_class_function(MImageFactory, instance, "type:get")
+define_reflectable_class_function(MImageFactory, instance, "getter")
 MImageFactory *MImageFactory::instance() {
     if (!sInstance) {
         sInstance = MImageFactory::create();
@@ -108,31 +108,31 @@ MImageFactory *MImageFactory::instance() {
     return sInstance.get();
 }
 
-define_reflectable_class_function(MImageFactory, imageFromFFData, "args:ffData")
+define_reflectable_class_function(MImageFactory, imageFromFFData, "virtual;args:ffData")
 MImageImpl::ptr MImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {
     implement_injectable_function(MImageImpl::ptr, ffData)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, imageFromBitmap, "args:bitmap,width,height")
+define_reflectable_class_function(MImageFactory, imageFromBitmap, "virtual;args:bitmap,width,height")
 MImageImpl::ptr MImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
     implement_injectable_function(MImageImpl::ptr, bitmap, width, height)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, ffDataFromImage, "args:image,format")
+define_reflectable_class_function(MImageFactory, ffDataFromImage, "virtual;args:image,format")
 MVector<uint8_t>::ptr MImageFactory::ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format) {
     implement_injectable_function(MVector<uint8_t>::ptr, impl, format)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, bitmapFromImage, "args:image")
+define_reflectable_class_function(MImageFactory, bitmapFromImage, "virtual;args:image")
 MVector<uint8_t>::ptr MImageFactory::bitmapFromImage(const MImageImpl::ptr &impl) {
     implement_injectable_function(MVector<uint8_t>::ptr, impl)
     return nullptr;
 }
 
-define_reflectable_class_function(MImageFactory, pixelSize, "args:image")
+define_reflectable_class_function(MImageFactory, pixelSize, "virtual;args:image")
 MSize::ptr MImageFactory::pixelSize(const MImageImpl::ptr &impl) {
     implement_injectable_function(MSize::ptr)
     return MSize::zero();

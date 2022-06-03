@@ -2,17 +2,17 @@
 
 //scroll view delegate:
 
-define_reflectable_class_function(CScrollViewDelegate, setScrollingBeginTarget, "type:set;args:target")
-define_reflectable_class_function(CScrollViewDelegate, setScrollingTarget     , "type:set;args:target")
-define_reflectable_class_function(CScrollViewDelegate, setScrollingEndTarget  , "type:set;args:target")
+define_reflectable_class_function(CScrollViewDelegate, setScrollingBeginTarget, "setter;args:target")
+define_reflectable_class_function(CScrollViewDelegate, setScrollingTarget     , "setter;args:target")
+define_reflectable_class_function(CScrollViewDelegate, setScrollingEndTarget  , "setter;args:target")
 
 void CScrollViewDelegate::setScrollingBeginTarget(const MFunction<void ()>::ptr &target) { mScrollingBeginTarget = target; }
 void CScrollViewDelegate::setScrollingTarget     (const MFunction<void ()>::ptr &target) { mScrollingTarget      = target; }
 void CScrollViewDelegate::setScrollingEndTarget  (const MFunction<void ()>::ptr &target) { mScrollingEndTarget   = target; }
 
-define_reflectable_class_function(CScrollViewDelegate, scrollingBeginTarget, "type:get")
-define_reflectable_class_function(CScrollViewDelegate, scrollingTarget     , "type:get")
-define_reflectable_class_function(CScrollViewDelegate, scrollingEndTarget  , "type:get")
+define_reflectable_class_function(CScrollViewDelegate, scrollingBeginTarget, "getter")
+define_reflectable_class_function(CScrollViewDelegate, scrollingTarget     , "getter")
+define_reflectable_class_function(CScrollViewDelegate, scrollingEndTarget  , "getter")
 
 MFunction<void ()>::ptr CScrollViewDelegate::scrollingBeginTarget() { return mScrollingBeginTarget; }
 MFunction<void ()>::ptr CScrollViewDelegate::scrollingTarget     () { return mScrollingTarget     ; }
@@ -46,12 +46,12 @@ CScrollView::CScrollView(float x, float y, float width, float height): CScrollVi
     setFrame(MRect::from(x, y, width, height));
 }
 
-define_reflectable_class_function(CScrollView, setDelegate, "type:set;args:delegate")
+define_reflectable_class_function(CScrollView, setDelegate, "setter;args:delegate")
 void CScrollView::setDelegate(const CScrollViewDelegate::ptr &delegate) {
     mDelegate = delegate;
 }
 
-define_reflectable_class_function(CScrollView, delegate, "type:get")
+define_reflectable_class_function(CScrollView, delegate, "getter")
 CScrollViewDelegate::ptr CScrollView::delegate() {
     if (!mDelegate) {
         mDelegate = CScrollViewDelegate::create();
@@ -106,7 +106,7 @@ void CScrollView::setContentSize(float width, float height) {
     reduceScollingSender();
 }
 
-define_reflectable_class_function(CScrollView, contentView, "type:get")
+define_reflectable_class_function(CScrollView, contentView, "getter")
 CView::ptr CScrollView::contentView() {
     if (!mContentView) {
         mContentView = CView::create();
@@ -115,13 +115,13 @@ CView::ptr CScrollView::contentView() {
     return mContentView;
 }
 
-define_reflectable_class_function(CScrollView, contentOffset, "type:get")
+define_reflectable_class_function(CScrollView, contentOffset, "getter")
 MPoint::ptr CScrollView::contentOffset() {
     MPoint::ptr origin = contentView()->frame()->origin();
     return MPoint::zero()->sub(origin);
 }
 
-define_reflectable_class_function(CScrollView, contentSize, "type:get")
+define_reflectable_class_function(CScrollView, contentSize, "getter")
 MSize::ptr CScrollView::contentSize() {
     return contentView()->frame()->size();
 }

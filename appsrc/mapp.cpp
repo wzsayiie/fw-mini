@@ -4,7 +4,7 @@
 
 define_reflectable_class_const(MApp, UpdateEverySeconds)
 
-define_reflectable_class_function(MApp, instance, "type:get")
+define_reflectable_class_function(MApp, instance, "getter")
 MApp *MApp::instance() {
     static auto obj = MApp::create();
     return obj.get();

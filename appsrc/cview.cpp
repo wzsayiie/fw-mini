@@ -9,12 +9,12 @@ CView::CView(float x, float y, float width, float height) {
     mFrame = MRect::from(x, y, width, height);
 }
 
-define_reflectable_class_function(CView, setViewController, "type:set;args:controller")
+define_reflectable_class_function(CView, setViewController, "setter;args:controller")
 void CView::setViewController(CObject *controller) {
     mViewController = controller;
 }
 
-define_reflectable_class_function(CView, setFrame, "type:set;args:frame")
+define_reflectable_class_function(CView, setFrame, "setter;args:frame")
 void CView::setFrame(const MRect::ptr &frame) {
     float oldWidth  = mFrame ? mFrame->width () : 0;
     float oldHeight = mFrame ? mFrame->height() : 0;
@@ -30,46 +30,46 @@ void CView::setFrame(const MRect::ptr &frame) {
     }
 }
 
-define_reflectable_class_function(CView, setBackgroundColor, "type:set;args:color")
+define_reflectable_class_function(CView, setBackgroundColor, "setter;args:color")
 void CView::setBackgroundColor(const MColor::ptr &color) {
     mBackgroundColor = color;
 }
 
-define_reflectable_class_function(CView, setVisible        , "type:set;args:visible"  )
-define_reflectable_class_function(CView, setTouchable      , "type:set;args:touchable")
-define_reflectable_class_function(CView, setAcceptMouseMove, "type:set;args:accept"   )
-define_reflectable_class_function(CView, setAcceptWheel    , "type:set;args:accept"   )
+define_reflectable_class_function(CView, setVisible        , "setter;args:visible"  )
+define_reflectable_class_function(CView, setTouchable      , "setter;args:touchable")
+define_reflectable_class_function(CView, setAcceptMouseMove, "setter;args:accept"   )
+define_reflectable_class_function(CView, setAcceptWheel    , "setter;args:accept"   )
 
 void CView::setVisible        (bool visible  ) { mVisible         = visible  ; }
 void CView::setTouchable      (bool touchable) { mTouchable       = touchable; }
 void CView::setAcceptMouseMove(bool accept   ) { mAcceptMouseMove = accept   ; }
 void CView::setAcceptWheel    (bool accept   ) { mAcceptWheel     = accept   ; }
 
-define_reflectable_class_function(CView, viewController, "type:get")
+define_reflectable_class_function(CView, viewController, "getter")
 CObject *CView::viewController() {
     return mViewController;
 }
 
-define_reflectable_class_function(CView, frame, "type:get")
+define_reflectable_class_function(CView, frame, "getter")
 MRect::ptr CView::frame() {
     return mFrame ? mFrame : MRect::zero();
 }
 
-define_reflectable_class_function(CView, bounds, "type:get")
+define_reflectable_class_function(CView, bounds, "getter")
 MRect::ptr CView::bounds() {
     MRect::ptr rect = frame();
     return MRect::from(0, 0, rect->width(), rect->height());
 }
 
-define_reflectable_class_function(CView, backgroundColor, "type:get")
+define_reflectable_class_function(CView, backgroundColor, "getter")
 MColor::ptr CView::backgroundColor() {
     return mBackgroundColor ? mBackgroundColor : MColor::clearColor();
 }
 
-define_reflectable_class_function(CView, visible        , "type:get")
-define_reflectable_class_function(CView, touchable      , "type:get")
-define_reflectable_class_function(CView, acceptMouseMove, "type:get")
-define_reflectable_class_function(CView, acceptWheel    , "type:get")
+define_reflectable_class_function(CView, visible        , "getter")
+define_reflectable_class_function(CView, touchable      , "getter")
+define_reflectable_class_function(CView, acceptMouseMove, "getter")
+define_reflectable_class_function(CView, acceptWheel    , "getter")
 
 bool CView::visible        () { return mVisible        ; }
 bool CView::touchable      () { return mTouchable      ; }
@@ -124,7 +124,7 @@ CView *CView::superview() {
     return mSuperview;
 }
 
-define_reflectable_class_function(CView, findResponder, "args:x,y,fit")
+define_reflectable_class_function(CView, findResponder, "virtual;args:x,y,fit")
 CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
     implement_injectable_function(CResponder::ptr, fit, pt)
     
@@ -171,7 +171,7 @@ CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDete
     return nullptr;
 }
 
-define_reflectable_class_function(CView, responseOffset)
+define_reflectable_class_function(CView, responseOffset, "virtual")
 MPoint::ptr CView::responseOffset() {
     implement_injectable_function(MPoint::ptr)
     
@@ -186,21 +186,21 @@ MPoint::ptr CView::responseOffset() {
     return MPoint::from(x, y);
 }
 
-define_reflectable_class_function(CView, canRespondTouch, "args:pt")
+define_reflectable_class_function(CView, canRespondTouch, "virtual;args:pt")
 bool CView::canRespondTouch(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return mTouchable;
 }
 
-define_reflectable_class_function(CView, canRespondMouseMove, "args:pt")
+define_reflectable_class_function(CView, canRespondMouseMove, "virtual;args:pt")
 bool CView::canRespondMouseMove(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return mAcceptMouseMove;
 }
 
-define_reflectable_class_function(CView, canRespondWheel, "args:pt")
+define_reflectable_class_function(CView, canRespondWheel, "virtual;args:pt")
 bool CView::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
 
@@ -243,12 +243,12 @@ void CView::draw() {
     MContextPopOffset();
 }
 
-define_reflectable_class_function(CView, onLayoutSubviews, "args:width,height")
+define_reflectable_class_function(CView, onLayoutSubviews, "virtual;args:width,height")
 void CView::onLayoutSubviews(float width, float height) {
     implement_injectable_function(void, width, height)
 }
 
-define_reflectable_class_function(CView, onDrawBackground, "args:width,height")
+define_reflectable_class_function(CView, onDrawBackground, "virtual;args:width,height")
 void CView::onDrawBackground(float width, float height) {
     implement_injectable_function(void, width, height)
     
@@ -258,12 +258,12 @@ void CView::onDrawBackground(float width, float height) {
     }
 }
 
-define_reflectable_class_function(CView, onDraw, "args:width,height")
+define_reflectable_class_function(CView, onDraw, "virtual;args:width,height")
 void CView::onDraw(float width, float height) {
     implement_injectable_function(void, width, height)
 }
 
-define_reflectable_class_function(CView, onDrawForeground, "args:width,height")
+define_reflectable_class_function(CView, onDrawForeground, "virtual;args:width,height")
 void CView::onDrawForeground(float width, float height) {
     implement_injectable_function(void, width, height)
 }

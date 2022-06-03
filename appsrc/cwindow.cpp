@@ -1,11 +1,11 @@
 #include "cwindow.h"
 
-define_reflectable_class_function(CWindow, setRootViewController, "type:set;args:viewController")
+define_reflectable_class_function(CWindow, setRootViewController, "setter;args:viewController")
 void CWindow::setRootViewController(const CViewController::ptr &viewController) {
     mRootViewController = viewController;
 }
 
-define_reflectable_class_function(CWindow, rootViewController, "type:get")
+define_reflectable_class_function(CWindow, rootViewController, "getter")
 CViewController::ptr CWindow::rootViewController() {
     if (!mRootViewController) {
         mRootViewController = CViewController::create();

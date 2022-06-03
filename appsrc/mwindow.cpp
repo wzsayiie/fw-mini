@@ -22,7 +22,7 @@ define_reflectable_class_const(MWindow, TitleName)
 
 MWindow::ptr MWindow::sMainWindow;
 
-define_reflectable_class_function(MWindow, setMainWindow, "type:set;args:window")
+define_reflectable_class_function(MWindow, setMainWindow, "setter;args:window")
 void MWindow::setMainWindow(const MWindow::ptr &window) {
     //NOTE: a window has its own state and lifecycle, only can be assigned once.
     if (!sMainWindow) {
@@ -30,7 +30,7 @@ void MWindow::setMainWindow(const MWindow::ptr &window) {
     }
 }
 
-define_reflectable_class_function(MWindow, mainWindow, "type:get")
+define_reflectable_class_function(MWindow, mainWindow, "getter")
 MWindow *MWindow::mainWindow() {
     if (!sMainWindow) {
         sMainWindow = MWindow::create();
@@ -145,22 +145,22 @@ std::string MWindow::checkWritingRawText() {
     return mWritingRawText;
 }
 
-define_reflectable_class_function(MWindow, loaded, "type:get")
+define_reflectable_class_function(MWindow, loaded, "getter")
 bool MWindow::loaded() {
     return mLoaded;
 }
 
-define_reflectable_class_function(MWindow, shown, "type:get")
+define_reflectable_class_function(MWindow, shown, "getter")
 bool MWindow::shown() {
     return mShown;
 }
 
-define_reflectable_class_function(MWindow, size, "type:get")
+define_reflectable_class_function(MWindow, size, "getter")
 MSize::ptr MWindow::size() {
     return mSize ? mSize : MSize::zero();
 }
 
-define_reflectable_class_function(MWindow, mousePosition, "type:get")
+define_reflectable_class_function(MWindow, mousePosition, "getter")
 MPoint::ptr MWindow::mousePosition() {
     return mMousePosition ? mMousePosition : MPoint::zero();
 }
@@ -190,41 +190,41 @@ bool MWindow::writingEnabled() {
     return mWritingEnabled;
 }
 
-define_reflectable_class_function(MWindow, onLoad)
-define_reflectable_class_function(MWindow, onShow)
-define_reflectable_class_function(MWindow, onHide)
+define_reflectable_class_function(MWindow, onLoad, "virtual")
+define_reflectable_class_function(MWindow, onShow, "virtual")
+define_reflectable_class_function(MWindow, onHide, "virtual")
 
 void MWindow::onLoad() { implement_injectable_function(void) }
 void MWindow::onShow() { implement_injectable_function(void) }
 void MWindow::onHide() { implement_injectable_function(void) }
 
-define_reflectable_class_function(MWindow, onResize, "args:width,height")
-define_reflectable_class_function(MWindow, onDraw  , "args:width,height")
+define_reflectable_class_function(MWindow, onResize, "virtual;args:width,height")
+define_reflectable_class_function(MWindow, onDraw  , "virtual;args:width,height")
 
 void MWindow::onResize(float width, float height) { implement_injectable_function(void, width, height) }
 void MWindow::onDraw  (float width, float height) { implement_injectable_function(void, width, height) }
 
-define_reflectable_class_function(MWindow, onTouchBegin, "args:x,y")
-define_reflectable_class_function(MWindow, onTouchMove , "args:x,y")
-define_reflectable_class_function(MWindow, onTouchEnd  , "args:x,y")
-define_reflectable_class_function(MWindow, onMouseMove , "args:x,y")
+define_reflectable_class_function(MWindow, onTouchBegin, "virtual;args:x,y")
+define_reflectable_class_function(MWindow, onTouchMove , "virtual;args:x,y")
+define_reflectable_class_function(MWindow, onTouchEnd  , "virtual;args:x,y")
+define_reflectable_class_function(MWindow, onMouseMove , "virtual;args:x,y")
 
 void MWindow::onTouchBegin(float x, float y) { implement_injectable_function(void, x, y) }
 void MWindow::onTouchMove (float x, float y) { implement_injectable_function(void, x, y) }
 void MWindow::onTouchEnd  (float x, float y) { implement_injectable_function(void, x, y) }
 void MWindow::onMouseMove (float x, float y) { implement_injectable_function(void, x, y) }
 
-define_reflectable_class_function(MWindow, onMouseWheel, "args:delta")
+define_reflectable_class_function(MWindow, onMouseWheel, "virtual;args:delta")
 void MWindow::onMouseWheel(float delta) {
     implement_injectable_function(void, delta)
 }
 
-define_reflectable_class_function(MWindow, onKey, "args:key")
+define_reflectable_class_function(MWindow, onKey, "virtual;args:key")
 void MWindow::onKey(MKey key) {
     implement_injectable_function(void, key)
 }
 
-define_reflectable_class_function(MWindow, onWrite, "args:text,enter")
+define_reflectable_class_function(MWindow, onWrite, "virtual;args:text,enter")
 void MWindow::onWrite(const std::string &text, bool enter) {
     implement_injectable_function(void, text, enter)
 }

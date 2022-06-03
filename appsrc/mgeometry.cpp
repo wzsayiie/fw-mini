@@ -16,14 +16,14 @@ MPoint::ptr MPoint::from(float x, float y) {
     }
 }
 
-define_reflectable_class_function(MPoint, zero, "type:get")
+define_reflectable_class_function(MPoint, zero, "getter")
 MPoint::ptr MPoint::zero() {
     static auto obj = MPoint::create();
     return obj;
 }
 
-define_reflectable_class_function(MPoint, x, "type:get")
-define_reflectable_class_function(MPoint, y, "type:get")
+define_reflectable_class_function(MPoint, x, "getter")
+define_reflectable_class_function(MPoint, y, "getter")
 
 float MPoint::x() { return mX; }
 float MPoint::y() { return mY; }
@@ -69,19 +69,19 @@ MSize::ptr MSize::from(float width, float height) {
     }
 }
 
-define_reflectable_class_function(MSize, zero, "type:get")
+define_reflectable_class_function(MSize, zero, "getter")
 MSize::ptr MSize::zero() {
     static auto obj = MSize::create();
     return obj;
 }
 
-define_reflectable_class_function(MSize, width , "type:get")
-define_reflectable_class_function(MSize, height, "type:get")
+define_reflectable_class_function(MSize, width , "getter")
+define_reflectable_class_function(MSize, height, "getter")
 
 float MSize::width () { return mWidth ; }
 float MSize::height() { return mHeight; }
 
-define_reflectable_class_function(MSize, none, "type:get")
+define_reflectable_class_function(MSize, none, "getter")
 bool MSize::none() {
     return mWidth <= 0 && mHeight <= 0;
 }
@@ -111,29 +111,29 @@ MRect::ptr MRect::from(float x, float y, float width, float height) {
     }
 }
 
-define_reflectable_class_function(MRect, zero, "type:get")
+define_reflectable_class_function(MRect, zero, "getter")
 MRect::ptr MRect::zero() {
     static auto obj = MRect::create();
     return obj;
 }
 
-define_reflectable_class_function(MRect, x     , "type:get")
-define_reflectable_class_function(MRect, y     , "type:get")
-define_reflectable_class_function(MRect, width , "type:get")
-define_reflectable_class_function(MRect, height, "type:get")
+define_reflectable_class_function(MRect, x     , "getter")
+define_reflectable_class_function(MRect, y     , "getter")
+define_reflectable_class_function(MRect, width , "getter")
+define_reflectable_class_function(MRect, height, "getter")
 
 float MRect::x     () { return mOrigin ? mOrigin->x   () : 0.f; }
 float MRect::y     () { return mOrigin ? mOrigin->y   () : 0.f; }
 float MRect::width () { return mSize   ? mSize->width () : 0.f; }
 float MRect::height() { return mSize   ? mSize->height() : 0.f; }
 
-define_reflectable_class_function(MRect, origin, "type:get")
-define_reflectable_class_function(MRect, size  , "type:get")
+define_reflectable_class_function(MRect, origin, "getter")
+define_reflectable_class_function(MRect, size  , "getter")
 
 MPoint::ptr MRect::origin() { return mOrigin ? mOrigin : MPoint::zero(); }
 MSize::ptr  MRect::size  () { return mSize   ? mSize   : MSize ::zero(); }
 
-define_reflectable_class_function(MRect, none, "type:get")
+define_reflectable_class_function(MRect, none, "getter")
 bool MRect::none() {
     return mSize ? mSize->none() : true;
 }
