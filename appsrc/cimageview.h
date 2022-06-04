@@ -4,7 +4,7 @@
 
 c_class(CImageView, CView) {
 public:
-    using base::base;
+    using upper::upper;
 
 public:
     void setImage(const MImage::ptr &image);

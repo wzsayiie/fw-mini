@@ -28,14 +28,14 @@ public:
 template<class Class, class Super> class dash_exportable extends : public Super {
 public:
     typedef std::shared_ptr<Class> ptr;
+    
+    typedef extends<Class, Super> upper;
+    typedef Super                 base ;
 
+public:
     template<class... Args> static ptr create(Args... args) {
         return std::make_shared<Class>(args...);
     }
-
-public:
-    using   Super::Super;
-    typedef extends<Class, Super> base;
 };
 
 } //end dash.

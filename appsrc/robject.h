@@ -31,15 +31,14 @@ private:
 
 template<class Class, class Super> class dash_exportable extends : public dash::extends<Class, Super> {
 public:
+    typedef extends<Class, Super> upper;
+    
+public:
     template<class... Args> static std::shared_ptr<Class> create(Args... args) {
         return std::shared_ptr<Class>(new Class(args...), [](Class *a) {
             return a->release();
         });
     }
-
-public:
-    using   dash::extends<Class, Super>::extends;
-    typedef extends<Class, Super> base;
     
 public:
     symbol class_symbol() const override {

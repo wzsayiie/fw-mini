@@ -29,7 +29,7 @@ private:
 
 c_class(CTextField, CControl) {
 public:
-    using base::base;
+    using upper::upper;
 
 public:
     void setDelegate(const CTextFieldDelegate::ptr &delegate);

@@ -8,8 +8,7 @@ class dash_exportable CObject : public MExtends<CObject, MObject> {
 
 template<class Class, class Super> class dash_exportable CExtends : public MExtends<Class, Super> {
 public:
-    using   MExtends<Class, Super>::MExtends;
-    typedef CExtends<Class, Super> base;
+    typedef CExtends<Class, Super> upper;
 };
 
 #define c_class(Class, Super)               \
