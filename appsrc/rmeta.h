@@ -4,14 +4,7 @@
 
 namespace reflect {
 
-//variable:
-
-struct variable {
-    symbol type ;
-    any    value;
-};
-
-//type categories:
+//type categories and qualifiers:
 
 enum class category {
     is_void    ,    //void.
@@ -42,6 +35,25 @@ enum class qualifier {
     shared      ,   //std::shared_ptr<value>.
 };
 
+#define _Q_V(VALUE) static constexpr const qualifier value = VALUE
+
+template<class  > struct qualifier_of                             { _Q_V(qualifier::value       ); };
+template<class T> struct qualifier_of<const T *                 > { _Q_V(qualifier::const_ptr   ); };
+template<class T> struct qualifier_of<T *                       > { _Q_V(qualifier::ptr         ); };
+template<class T> struct qualifier_of<const T &                 > { _Q_V(qualifier::const_ref   ); };
+template<class T> struct qualifier_of<T &                       > { _Q_V(qualifier::ref         ); };
+template<class T> struct qualifier_of<const std::shared_ptr<T> &> { _Q_V(qualifier::const_shared); };
+template<class T> struct qualifier_of<std::shared_ptr<T> &      > { _Q_V(qualifier::shared      ); };
+
+#undef  _Q_V
+
+//variable:
+
+struct variable {
+    symbol type ;
+    any    value;
+};
+
 //metas:
 
 struct type_meta : dash::virtual_object {
@@ -57,19 +69,21 @@ struct function_meta : type_meta {
 };
 
 struct vector_meta : type_meta {
-    symbol val_type;
+    symbol value_type;
 };
 
 struct map_meta : type_meta {
-    symbol key_type;
-    symbol val_type;
+    symbol key_type  ;
+    symbol value_type;
 };
 
 struct set_meta : type_meta {
-    symbol val_type;
+    symbol value_type;
 };
 
 struct class_meta : type_meta {
+    symbol base_type;
+    
     std::map<std::string, variable> cls_variables;
     std::map<std::string, variable> cls_functions;
     std::map<std::string, variable> obj_functions;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "rany.h"
+#include "rextraction.h"
 #include "rfunction.h"
 #include "rgenerate.h"
 #include "rinjectable.h"

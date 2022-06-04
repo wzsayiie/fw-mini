@@ -9,11 +9,7 @@ static dash::lazy<std::map<std::string, variable>> _functions;
 static dash::lazy<std::map<std::string, variable>> _classes  ;
 static dash::lazy<std::map<std::string, variable>> _enums    ;
 
-type_meta *commit_type_meta(const symbol &sym, category cate) {
-    if (_type_metas->find(sym) != _type_metas->end()) {
-        return nullptr;
-    }
-
+static type_meta *set_type_meta(const symbol &sym, category cate) {
     type_meta *meta;
     switch (cate) {
         case category::is_function: meta = new function_meta(); break;
@@ -22,12 +18,19 @@ type_meta *commit_type_meta(const symbol &sym, category cate) {
         case category::is_set     : meta = new set_meta     (); break;
         case category::is_class   : meta = new class_meta   (); break;
         case category::is_enum    : meta = new enum_meta    (); break;
-        default /* basic simple type */: meta = new type_meta    (); break;
+        default /* basic type */  : meta = new type_meta    (); break;
     }
 
     meta->cate = cate;
     (*_type_metas)[sym] = meta;
     return meta;
+}
+
+type_meta *commit_type_meta(const symbol &sym, category cate) {
+    if (!query_type_meta(sym)) {
+        return set_type_meta(sym, cate);
+    }
+    return nullptr;
 }
 
 void commit_variable(const std::string &name, const symbol &type, const any &value) {
@@ -92,11 +95,24 @@ const type_meta *query_type_meta(const symbol &sym, category cate) {
 }
 
 const type_meta *query_type_meta(const symbol &sym) {
+    static bool to_initialize = true;
+    if (to_initialize) {
+        set_type_meta(symbol_of<void       >::value(), category::is_void  );
+        set_type_meta(symbol_of<bool       >::value(), category::is_bool  );
+        set_type_meta(symbol_of<uint8_t    >::value(), category::is_byte  );
+        set_type_meta(symbol_of<int        >::value(), category::is_int   );
+        set_type_meta(symbol_of<int64_t    >::value(), category::is_int64 );
+        set_type_meta(symbol_of<float      >::value(), category::is_float );
+        set_type_meta(symbol_of<double     >::value(), category::is_double);
+        set_type_meta(symbol_of<std::string>::value(), category::is_string);
+        
+        to_initialize = false;
+    }
+    
     auto it = _type_metas->find(sym);
     if (it != _type_metas->end()) {
         return it->second;
     }
-
     return nullptr;
 }
 
