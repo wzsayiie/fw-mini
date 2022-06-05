@@ -1,5 +1,6 @@
 #pragma once
 
+#include <type_traits>
 #include "rmap.h"
 #include "rmeta.h"
 #include "rset.h"
@@ -10,6 +11,8 @@ namespace reflect {
 //enum:
 
 template<class Enum> struct extract {
+    static_assert(std::is_enum<Enum>::value);
+    
     static symbol commit() {
         symbol type = symbol_of<Enum>::value();
         commit_type_meta(type, category::is_enum);
@@ -29,15 +32,55 @@ template<> struct extract<double             > { static symbol commit() { return
 template<> struct extract<std::string        > { static symbol commit() { return symbol_of<std::string>::value(); } };
 template<> struct extract<const std::string &> { static symbol commit() { return symbol_of<std::string>::value(); } };
 
+//class base:
+
+template<class Class> struct base_of {
+    typedef std::shared_ptr<typename Class::base> type;
+};
+
+template<> struct base_of<reflect::object> {
+    typedef void type;
+};
+
+//class creator:
+
+template<class Class, bool Abstract> struct creator_of;
+
+template<class Class> struct creator_of<Class, false> {
+    static object::ptr value() {
+        return function<object::ptr ()>::create([]() {
+            return Class::create();
+        });
+    }
+};
+
+template<class Class> struct creator_of<Class, true> {
+    static object::ptr value() {
+        return nullptr;
+    }
+};
+
 //class:
 
 template<class Class> struct extract<const std::shared_ptr<Class> &> {
+    static_assert(std::is_class<Class>::value);
+    
+    static symbol commit() {
+        return extract<Class *>::commit();
+    }
+};
+
+template<class Class> struct extract<std::shared_ptr<Class>> {
+    static_assert(std::is_class<Class>::value);
+    
     static symbol commit() {
         return extract<Class *>::commit();
     }
 };
 
 template<class Class> struct extract<Class *> {
+    static_assert(std::is_class<Class>::value);
+    
     static symbol commit() {
         auto type = symbol_of<Class>::value();
         auto meta = (class_meta *)commit_type_meta(type, category::is_class);
@@ -46,22 +89,26 @@ template<class Class> struct extract<Class *> {
         }
         
         //base class.
-        meta->base_type = extract<typename Class::base>::commit();
+        meta->base_type = extract<typename base_of<Class>::type>::commit();
+        
+        //if abstract.
+        constexpr bool abstract = std::is_abstract<Class>::value;
+        meta->abstract = abstract;
 
         //add static create function.
-        variable constructor; {
+        if (!abstract) {
+            variable constructor;
             constructor.type  = extract<typename function<object::ptr ()>::ptr>::commit();
-            constructor.value = function<object::ptr ()>::create([]() {
-                return Class::create();
-            });
+            constructor.value = creator_of<Class, abstract>::value();
+            
+            meta->cls_functions["create"] = constructor;
         }
-        meta->cls_functions["create"] = constructor;
 
         return type;
     }
 };
 
-//function:
+//function arguments:
 
 template<class> struct arg_appender;
 
@@ -78,6 +125,8 @@ template<> struct arg_appender<void ()> {
     static void append(function_meta *) {
     }
 };
+
+//function:
 
 template<class Ret, class... Args> struct extract<const std::shared_ptr<function<Ret (Args...)>> &> {
     static symbol commit(const char *note = nullptr) {

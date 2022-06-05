@@ -80,7 +80,7 @@ public:
     template<class Ret, class Class, class... Args> generator(
         Class *, const char *name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
     {
-        symbol cls_type = extract<Class>::commit();
+        symbol cls_type = extract<typename Class::ptr>::commit();
         symbol fcn_type = extract<typename function<Ret (Args...)>::ptr>::commit(note);
         
         commit_class_function(cls_type, name, fcn_type, function<Ret (Args...)>::create(
@@ -94,7 +94,7 @@ public:
     template<class Ret, class Class, class... Args> generator(
         Class *, const char *name, Ret (Class::*fcn)(Args...), const char *note = nullptr) noexcept
     {
-        symbol cls_type = extract<Class>::commit();
+        symbol cls_type = extract<typename Class::ptr>::commit();
         symbol fcn_type = extract<typename function<Ret (const typename Class::ptr &, Args...)>::ptr>::commit(note);
         
         commit_object_function(cls_type, name, fcn_type, function<Ret (const typename Class::ptr &, Args...)>::create(
@@ -115,7 +115,7 @@ public:
     
 private:
     template<class Class, class Value> void cls_var(const char *name, const any &value) {
-        symbol cls_type = extract<Class>::commit();
+        symbol cls_type = extract<typename Class::ptr>::commit();
         symbol val_type = symbol_of<Value>::value();
 
         commit_class(cls_type.str(), cls_type);
