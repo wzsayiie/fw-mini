@@ -35,7 +35,7 @@ enum class qualifier {
     shared      ,   //std::shared_ptr<value>.
 };
 
-#define _Q_V(VALUE) static constexpr const qualifier value = VALUE
+#define _Q_V(VALUE) static constexpr qualifier value = VALUE
 
 template<class  > struct qualifier_of                             { _Q_V(qualifier::value       ); };
 template<class T> struct qualifier_of<const T *                 > { _Q_V(qualifier::const_ptr   ); };
@@ -83,6 +83,7 @@ struct set_meta : type_meta {
 
 struct class_meta : type_meta {
     symbol base_type;
+    bool   abstract ;
     
     std::map<std::string, variable> cls_variables;
     std::map<std::string, variable> cls_functions;

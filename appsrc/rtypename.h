@@ -6,7 +6,7 @@ namespace reflect {
 
 //type ids escape.
 
-constexpr const char *const typeids_esc = "$ESC";
+constexpr const char *typeids_esc = "$ESC";
 
 //type ids:
 

@@ -6,7 +6,7 @@
 
 m_class(MApp, MObject) {
 public:
-    static constexpr const float UpdateEverySeconds = 0.1f;
+    static constexpr float UpdateEverySeconds = 0.1f;
 
 public:
     static MApp *instance();

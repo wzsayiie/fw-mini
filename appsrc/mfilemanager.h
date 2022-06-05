@@ -41,8 +41,8 @@ private:
 M_HOST_IMPLEMENT_CLASS
 m_class(MBundle, MObject) {
 public:
-    static constexpr const char *const PrivateDirectoryName = "mini";
-    static constexpr const char *const BundleDirectoryName  = "mini.bundle";
+    static constexpr const char *PrivateDirectoryName = "mini";
+    static constexpr const char *BundleDirectoryName  = "mini.bundle";
     
 public:
     M_HOST_CALL_FUNCTION static void setInstance(const MBundle::ptr &obj);
