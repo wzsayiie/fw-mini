@@ -20,6 +20,7 @@ class dash_exportable object : public virtual_object {
 public:
     typedef std::shared_ptr<object> ptr;
 
+public:
     static ptr create() {
         return std::make_shared<object>();
     }
