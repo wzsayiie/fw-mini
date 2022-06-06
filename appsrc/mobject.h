@@ -25,11 +25,12 @@ public:
 
 //builtin types:
 
-template<class K, class V> using MMap = reflect::map<K, V>;
+template<class F>          using MFunction = reflect::function<F>;
+template<class V>          using MVector   = reflect::vector<V>;
+template<class K, class V> using MMap      = reflect::map<K, V>;
+template<class V>          using MSet      = reflect::set<V>;
 
-template<class V> using MVector   = reflect::vector<V>;
-template<class V> using MSet      = reflect::set<V>;
-template<class F> using MFunction = reflect::function<F>;
+using MBaseFunction = reflect::base_function;
 
 //host flags:
 
