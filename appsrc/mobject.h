@@ -31,6 +31,6 @@ template<class V> using MVector   = reflect::vector<V>;
 template<class V> using MSet      = reflect::set<V>;
 template<class F> using MFunction = reflect::function<F>;
 
-//host implementation flags.
-#define M_HOST_IMPLEMENT_CLASS
-#define M_HOST_CALL_FUNCTION
+//host flags:
+
+#define M_HOST_NEED_CALL

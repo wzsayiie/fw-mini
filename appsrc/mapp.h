@@ -12,8 +12,8 @@ public:
     static MApp *instance();
 
 public:
-    M_HOST_CALL_FUNCTION void launch();
-    M_HOST_CALL_FUNCTION void update();
+    M_HOST_NEED_CALL void launch();
+    M_HOST_NEED_CALL void update();
 
     void addLaunchListener(const MFunction<void ()>::ptr &listener);
     void addUpdateListener(const MFunction<void ()>::ptr &listener);

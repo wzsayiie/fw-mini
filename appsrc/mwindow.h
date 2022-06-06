@@ -32,26 +32,26 @@ public:
     static MWindow *mainWindow();
 
 public:
-    M_HOST_CALL_FUNCTION void load();
-    M_HOST_CALL_FUNCTION void show();
-    M_HOST_CALL_FUNCTION void hide();
+    M_HOST_NEED_CALL void load();
+    M_HOST_NEED_CALL void show();
+    M_HOST_NEED_CALL void hide();
 
-    M_HOST_CALL_FUNCTION void resizePixel(float pixelW, float pixelH);
-    M_HOST_CALL_FUNCTION void draw();
+    M_HOST_NEED_CALL void resizePixel(float pixelW, float pixelH);
+    M_HOST_NEED_CALL void draw();
 
-    M_HOST_CALL_FUNCTION void touchBeginPixel(float pixelX, float pixelY);
-    M_HOST_CALL_FUNCTION void touchMovePixel (float pixelX, float pixelY);
-    M_HOST_CALL_FUNCTION void touchEndPixel  (float pixelX, float pixelY);
-    M_HOST_CALL_FUNCTION void mouseMovePixel (float pixelX, float pixelY);
+    M_HOST_NEED_CALL void touchBeginPixel(float pixelX, float pixelY);
+    M_HOST_NEED_CALL void touchMovePixel (float pixelX, float pixelY);
+    M_HOST_NEED_CALL void touchEndPixel  (float pixelX, float pixelY);
+    M_HOST_NEED_CALL void mouseMovePixel (float pixelX, float pixelY);
     
-    M_HOST_CALL_FUNCTION void mouseWheel(float delta);
-    M_HOST_CALL_FUNCTION void key(MKey key);
-    M_HOST_CALL_FUNCTION void write(const std::string &text, bool enter);
+    M_HOST_NEED_CALL void mouseWheel(float delta);
+    M_HOST_NEED_CALL void key(MKey key);
+    M_HOST_NEED_CALL void write(const std::string &text, bool enter);
 
     //text box control.
-    M_HOST_CALL_FUNCTION bool        checkWritingUpdated();
-    M_HOST_CALL_FUNCTION bool        checkWritingEnabled();
-    M_HOST_CALL_FUNCTION std::string checkWritingRawText();
+    M_HOST_NEED_CALL bool        checkWritingUpdated();
+    M_HOST_NEED_CALL bool        checkWritingEnabled();
+    M_HOST_NEED_CALL std::string checkWritingRawText();
 
     bool        loaded();
     bool        shown();

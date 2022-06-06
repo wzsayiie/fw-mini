@@ -12,7 +12,6 @@ m_enum(MImageFileFormat) {
 
 //image:
 
-M_HOST_IMPLEMENT_CLASS
 m_class(MImageImpl, MObject) {
 };
 
@@ -39,10 +38,9 @@ private:
 
 //image factory:
 
-M_HOST_IMPLEMENT_CLASS
 m_class(MImageFactory, MObject) {
 public:
-    M_HOST_CALL_FUNCTION static void setInstance(const MImageFactory::ptr &obj);
+    M_HOST_NEED_CALL static void setInstance(const MImageFactory::ptr &obj);
     static MImageFactory *instance();
 
 public:
