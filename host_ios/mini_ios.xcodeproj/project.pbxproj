@@ -16,8 +16,9 @@
 		CE1FC5C5280C54CC005215EC /* MMACBundle.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5BF280C54CC005215EC /* MMACBundle.mm */; };
 		CE1FC5C6280C54CC005215EC /* MMACImageFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5C0280C54CC005215EC /* MMACImageFactory.mm */; };
 		CE1FC5C7280C54CC005215EC /* MMACDrawView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5C3280C54CC005215EC /* MMACDrawView.mm */; };
-		CEDE116E26DB8E0E0098D3C8 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE116D26DB8E0E0098D3C8 /* UIKit.framework */; };
-		CEDE117226DB8E1E0098D3C8 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEDE117126DB8E1E0098D3C8 /* CoreGraphics.framework */; };
+		CE307072284E3EF9007C8FEB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE307071284E3EF9007C8FEB /* UIKit.framework */; };
+		CE307074284E3F03007C8FEB /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE307073284E3F03007C8FEB /* JavaScriptCore.framework */; };
+		CE307076284E3F0B007C8FEB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE307075284E3F0B007C8FEB /* CoreGraphics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,8 +37,9 @@
 		CE1FC5C2280C54CC005215EC /* MMACBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACBundle.h; sourceTree = "<group>"; };
 		CE1FC5C3280C54CC005215EC /* MMACDrawView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACDrawView.mm; sourceTree = "<group>"; };
 		CE1FC5C4280C54CC005215EC /* MMACDrawView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACDrawView.h; sourceTree = "<group>"; };
-		CEDE116D26DB8E0E0098D3C8 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		CEDE117126DB8E1E0098D3C8 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		CE307071284E3EF9007C8FEB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		CE307073284E3F03007C8FEB /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		CE307075284E3F0B007C8FEB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,8 +47,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEDE117226DB8E1E0098D3C8 /* CoreGraphics.framework in Frameworks */,
-				CEDE116E26DB8E0E0098D3C8 /* UIKit.framework in Frameworks */,
+				CE307076284E3F0B007C8FEB /* CoreGraphics.framework in Frameworks */,
+				CE307074284E3F03007C8FEB /* JavaScriptCore.framework in Frameworks */,
+				CE307072284E3EF9007C8FEB /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,7 +61,7 @@
 			children = (
 				CE107D732674C4B900823730 /* appres */,
 				CE107D692674C42C00823730 /* appsrc */,
-				CEDE116C26DB8E0E0098D3C8 /* frameworks */,
+				CE307070284E3EF9007C8FEB /* frameworks */,
 				CE107D472674C11300823730 /* mini_ios */,
 				CEFC4AA127EF61C00082461A /* mini_mac */,
 				CE107D462674C11300823730 /* products */,
@@ -104,11 +107,12 @@
 			path = ../appres;
 			sourceTree = "<group>";
 		};
-		CEDE116C26DB8E0E0098D3C8 /* frameworks */ = {
+		CE307070284E3EF9007C8FEB /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CEDE117126DB8E1E0098D3C8 /* CoreGraphics.framework */,
-				CEDE116D26DB8E0E0098D3C8 /* UIKit.framework */,
+				CE307075284E3F0B007C8FEB /* CoreGraphics.framework */,
+				CE307073284E3F03007C8FEB /* JavaScriptCore.framework */,
+				CE307071284E3EF9007C8FEB /* UIKit.framework */,
 			);
 			name = frameworks;
 			sourceTree = "<group>";

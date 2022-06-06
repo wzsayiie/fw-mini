@@ -15,7 +15,8 @@
 		CE1FC5BC280C5438005215EC /* MMACDrawView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5B6280C5438005215EC /* MMACDrawView.mm */; };
 		CE1FC5BD280C5438005215EC /* MMACBundle.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5B7280C5438005215EC /* MMACBundle.mm */; };
 		CE1FC5BE280C5438005215EC /* MMACImageFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5BB280C5438005215EC /* MMACImageFactory.mm */; };
-		CE58B28027F99230004720AD /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE58B27F27F99230004720AD /* AppKit.framework */; };
+		CE30706D284E3EA0007C8FEB /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE30706C284E3EA0007C8FEB /* JavaScriptCore.framework */; };
+		CE30706F284E3EA9007C8FEB /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE30706E284E3EA9007C8FEB /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,7 +35,8 @@
 		CE1FC5B9280C5438005215EC /* MMACImageFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACImageFactory.h; sourceTree = "<group>"; };
 		CE1FC5BA280C5438005215EC /* MMACBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACBundle.h; sourceTree = "<group>"; };
 		CE1FC5BB280C5438005215EC /* MMACImageFactory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACImageFactory.mm; sourceTree = "<group>"; };
-		CE58B27F27F99230004720AD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		CE30706C284E3EA0007C8FEB /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		CE30706E284E3EA9007C8FEB /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,7 +44,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE58B28027F99230004720AD /* AppKit.framework in Frameworks */,
+				CE30706F284E3EA9007C8FEB /* AppKit.framework in Frameworks */,
+				CE30706D284E3EA0007C8FEB /* JavaScriptCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,7 +57,7 @@
 			children = (
 				CE107D9F2674C77C00823730 /* appres */,
 				CE107DA12674C77C00823730 /* appsrc */,
-				CE58B27E27F99230004720AD /* frameworks */,
+				CE30706B284E3EA0007C8FEB /* frameworks */,
 				CECBCBB727EF1B8000F15C6D /* mini_mac */,
 				CE107D812674C5E900823730 /* mini_osx */,
 				CE107D802674C5E900823730 /* products */,
@@ -100,10 +103,11 @@
 			path = ../appsrc;
 			sourceTree = "<group>";
 		};
-		CE58B27E27F99230004720AD /* frameworks */ = {
+		CE30706B284E3EA0007C8FEB /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CE58B27F27F99230004720AD /* AppKit.framework */,
+				CE30706E284E3EA9007C8FEB /* AppKit.framework */,
+				CE30706C284E3EA0007C8FEB /* JavaScriptCore.framework */,
 			);
 			name = frameworks;
 			sourceTree = "<group>";
