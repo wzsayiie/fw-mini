@@ -26,6 +26,6 @@ void MJsVM::registerFunction(const std::string &name, const MBaseFunction::ptr &
 }
 
 define_reflectable_class_function(MJsVM, evaluate, "args:name,script")
-void MJsVM::evaluate(const std::string &name, const std::string script) {
+void MJsVM::evaluate(const std::string &name, const std::string &script) {
     implement_injectable_function(void, name, script)
 }
