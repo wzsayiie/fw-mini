@@ -23,6 +23,7 @@
     <ClCompile Include="..\..\host\mini_pc\mpcbundle.cpp" />
     <ClCompile Include="mwin32gdiplus.cpp" />
     <ClCompile Include="mwin32imagefactory.cpp" />
+    <ClCompile Include="mwin32jsrt.cpp" />
     <ClCompile Include="mwin32main.cpp" />
     <ClCompile Include="mwin32paint.cpp" />
   </ItemGroup>
@@ -30,6 +31,7 @@
     <ClInclude Include="..\..\host\mini_pc\mpcbundle.h" />
     <ClInclude Include="mwin32gdiplus.h" />
     <ClInclude Include="mwin32imagefactory.h" />
+    <ClInclude Include="mwin32jsrt.h" />
     <ClInclude Include="mwin32paint.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

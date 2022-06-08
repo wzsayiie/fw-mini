@@ -30,6 +30,9 @@
     <ClCompile Include="mwin32paint.cpp">
       <Filter>mini_win32</Filter>
     </ClCompile>
+    <ClCompile Include="mwin32jsrt.cpp">
+      <Filter>mini_win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\host\mini_pc\mpcbundle.h">
@@ -42,6 +45,9 @@
       <Filter>mini_win32</Filter>
     </ClInclude>
     <ClInclude Include="mwin32paint.h">
+      <Filter>mini_win32</Filter>
+    </ClInclude>
+    <ClInclude Include="mwin32jsrt.h">
       <Filter>mini_win32</Filter>
     </ClInclude>
   </ItemGroup>
