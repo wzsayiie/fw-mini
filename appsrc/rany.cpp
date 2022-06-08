@@ -15,8 +15,13 @@ any::any(int64_t value) { _type = data_type::is_int64 ; _word.as_int64  = value;
 any::any(float   value) { _type = data_type::is_float ; _word.as_float  = value; }
 any::any(double  value) { _type = data_type::is_double; _word.as_double = value; }
 
+any::any(const char *value) {
+    _type   = data_type::is_string;
+    _string = value ? value : "";
+}
+
 any::any(const std::string &value) {
-    _type = data_type::is_string;
+    _type   = data_type::is_string;
     _string = value;
 }
 
@@ -28,7 +33,7 @@ any::any(object *value) {
 }
 
 any::any(const object::ptr &value) {
-    _type = data_type::is_object;
+    _type   = data_type::is_object;
     _object = value;
 }
 
@@ -69,18 +74,20 @@ double any::as_double() const {
     }
 }
 
-std::string any::as_string       () const { return _string      ; }
-object *    any::as_object_ptr   () const { return _object.get(); }
-object::ptr any::as_object_shared() const { return _object      ; }
+const char *any::as_chars        () const { return _string.c_str(); }
+std::string any::as_string       () const { return _string        ; }
+object *    any::as_object_ptr   () const { return _object.get()  ; }
+object::ptr any::as_object_shared() const { return _object        ; }
 
-any::operator bool       () const { return as_bool         (); }
-any::operator uint8_t    () const { return as_byte         (); }
-any::operator int        () const { return as_int          (); }
-any::operator int64_t    () const { return as_int64        (); }
-any::operator float      () const { return as_float        (); }
-any::operator double     () const { return as_double       (); }
-any::operator std::string() const { return as_string       (); }
-any::operator object *   () const { return as_object_ptr   (); }
-any::operator object::ptr() const { return as_object_shared(); }
+any::operator bool        () const { return as_bool         (); }
+any::operator uint8_t     () const { return as_byte         (); }
+any::operator int         () const { return as_int          (); }
+any::operator int64_t     () const { return as_int64        (); }
+any::operator float       () const { return as_float        (); }
+any::operator double      () const { return as_double       (); }
+any::operator const char *() const { return as_chars        (); }
+any::operator std::string () const { return as_string       (); }
+any::operator object *    () const { return as_object_ptr   (); }
+any::operator object::ptr () const { return as_object_shared(); }
 
 } //end reflect.

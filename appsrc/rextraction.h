@@ -1,6 +1,5 @@
 #pragma once
 
-#include <type_traits>
 #include "rmap.h"
 #include "rmeta.h"
 #include "rset.h"
@@ -52,12 +51,6 @@ template<> struct arg_appender<void ()> {
 
 //function:
 
-template<class Ret, class... Args> struct extract<const std::shared_ptr<function<Ret (Args...)>> &> {
-    static symbol commit(const char *note = nullptr) {
-        return extract<typename function<Ret (Args...)>::ptr>::commit(note);
-    }
-};
-
 template<class Ret, class... Args> struct extract<std::shared_ptr<function<Ret (Args...)>>> {
     static symbol commit(const char *note = nullptr) {
         auto type = symbol_of<function<Ret (Args...)>>::value();
@@ -80,13 +73,13 @@ template<class Ret, class... Args> struct extract<std::shared_ptr<function<Ret (
     }
 };
 
-//vector:
-
-template<class Value> struct extract<const std::shared_ptr<vector<Value>> &> {
-    static symbol commit() {
-        return extract<typename vector<Value>::ptr>::commit();
+template<class Ret, class... Args> struct extract<const std::shared_ptr<function<Ret (Args...)>> &> {
+    static symbol commit(const char *note = nullptr) {
+        return extract<typename function<Ret (Args...)>::ptr>::commit(note);
     }
 };
+
+//vector:
 
 template<class Value> struct extract<std::shared_ptr<vector<Value>>> {
     static symbol commit() {
@@ -101,13 +94,13 @@ template<class Value> struct extract<std::shared_ptr<vector<Value>>> {
     }
 };
 
-//map:
-
-template<class Key, class Value> struct extract<const std::shared_ptr<map<Key, Value>> &> {
+template<class Value> struct extract<const std::shared_ptr<vector<Value>> &> {
     static symbol commit() {
-        return extract<typename map<Key, Value>::ptr>::commit();
+        return extract<typename vector<Value>::ptr>::commit();
     }
 };
+
+//map:
 
 template<class Key, class Value> struct extract<std::shared_ptr<map<Key, Value>>> {
     static symbol commit() {
@@ -123,13 +116,13 @@ template<class Key, class Value> struct extract<std::shared_ptr<map<Key, Value>>
     }
 };
 
-//set:
-
-template<class Value> struct extract<const std::shared_ptr<set<Value>> &> {
+template<class Key, class Value> struct extract<const std::shared_ptr<map<Key, Value>> &> {
     static symbol commit() {
-        return extract<typename set<Value>::ptr>::commit();
+        return extract<typename map<Key, Value>::ptr>::commit();
     }
 };
+
+//set:
 
 template<class Value> struct extract<std::shared_ptr<set<Value>>> {
     static symbol commit() {
@@ -141,6 +134,12 @@ template<class Value> struct extract<std::shared_ptr<set<Value>>> {
         
         meta->value_type = extract<Value>::commit();
         return type;
+    }
+};
+
+template<class Value> struct extract<const std::shared_ptr<set<Value>> &> {
+    static symbol commit() {
+        return extract<typename set<Value>::ptr>::commit();
     }
 };
 
@@ -174,22 +173,6 @@ template<class Class> struct creator_of<Class, true> {
 
 //class:
 
-template<class Class> struct extract<const std::shared_ptr<Class> &> {
-    static_assert(std::is_class<Class>::value);
-    
-    static symbol commit() {
-        return extract<Class *>::commit();
-    }
-};
-
-template<class Class> struct extract<std::shared_ptr<Class>> {
-    static_assert(std::is_class<Class>::value);
-    
-    static symbol commit() {
-        return extract<Class *>::commit();
-    }
-};
-
 template<class Class> struct extract<Class *> {
     static_assert(std::is_class<Class>::value);
     
@@ -217,6 +200,18 @@ template<class Class> struct extract<Class *> {
         }
 
         return type;
+    }
+};
+
+template<class Class> struct extract<const std::shared_ptr<Class> &> {
+    static symbol commit() {
+        return extract<Class *>::commit();
+    }
+};
+
+template<class Class> struct extract<std::shared_ptr<Class>> {
+    static symbol commit() {
+        return extract<Class *>::commit();
     }
 };
 

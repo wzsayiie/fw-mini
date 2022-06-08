@@ -1,5 +1,6 @@
 #pragma once
 
+#include <type_traits>
 #include "robject.h"
 
 namespace reflect {
@@ -17,21 +18,27 @@ public:
     any(int64_t            value);
     any(float              value);
     any(double             value);
+    any(const char        *value);
     any(const std::string &value);
     any(object            *value);
     any(const object::ptr &value);
 
     //if is a object ptr.
-    template<class Type> any(Type *value)
-        : any((object *)value) {}
+    template<class Type> any(Type *value): any((object *)value) {
+        static_assert(std::is_base_of<object, Type>::value);
+    }
 
     //if is a object shared ptr.
     template<class Type> any(const std::shared_ptr<Type> &value)
-        : any(std::static_pointer_cast<object>(value)) {}
+        : any(std::static_pointer_cast<object>(value))
+    {
+        static_assert(std::is_base_of<object, Type>::value);
+    }
 
-    //if is a integer constants.
-    template<class Type> any(Type value)
-        : any((int)value) {}
+    //if is a enum value.
+    template<class Type> any(Type value): any((int)value) {
+        static_assert(std::is_enum<Type>::value);
+    }
     
     bool        as_bool         () const;
     uint8_t     as_byte         () const;
@@ -39,32 +46,37 @@ public:
     int64_t     as_int64        () const;
     float       as_float        () const;
     double      as_double       () const;
+    const char *as_chars        () const;
     std::string as_string       () const;
     object *    as_object_ptr   () const;
     object::ptr as_object_shared() const;
 
-    operator bool       () const;
-    operator uint8_t    () const;
-    operator int        () const;
-    operator int64_t    () const;
-    operator float      () const;
-    operator double     () const;
-    operator std::string() const;
-    operator object *   () const;
-    operator object::ptr() const;
+    operator bool        () const;
+    operator uint8_t     () const;
+    operator int         () const;
+    operator int64_t     () const;
+    operator float       () const;
+    operator double      () const;
+    operator const char *() const;
+    operator std::string () const;
+    operator object *    () const;
+    operator object::ptr () const;
 
     //if a object ptr.
     template<class Type> operator Type *() const {
+        static_assert(std::is_base_of<object, Type>::value);
         return (Type *)as_object_ptr();
     }
 
     //if a object shared ptr.
     template<class Type> operator std::shared_ptr<Type>() const {
+        static_assert(std::is_base_of<object, Type>::value);
         return std::dynamic_pointer_cast<Type>(as_object_shared());
     }
 
-    //if a integer constants.
+    //if a enum value.
     template<class Type> operator Type() const {
+        static_assert(std::is_enum<Type>::value);
         return (Type)as_int();
     }
     
@@ -95,9 +107,10 @@ private:
 //query:
 //NOTE: for template instantiation, specify an explicit conversion target type avoids ambiguity.
 
-//if is a integer constant.
+//if is a enum value.
 template<class Type> struct take {
     static Type from(const any &a) {
+        static_assert(std::is_enum<Type>::value);
         return (Type)a.as_int();
     }
 };
@@ -105,31 +118,33 @@ template<class Type> struct take {
 //if is a object ptr.
 template<class Type> struct take<Type *> {
     static Type *from(const any &a) {
+        static_assert(std::is_base_of<object, Type>::value);
         return (Type *)a.as_object_ptr();
     }
 };
 
 //if is a object shared ptr.
-template<class Type> struct take<const std::shared_ptr<Type> &> {
+template<class Type> struct take<std::shared_ptr<Type>> {
     static std::shared_ptr<Type> from(const any &a) {
+        static_assert(std::is_base_of<object, Type>::value);
         return std::dynamic_pointer_cast<Type>(a.as_object_shared());
     }
 };
-template<class Type> struct take<std::shared_ptr<Type>> {
+template<class Type> struct take<const std::shared_ptr<Type> &> {
     static std::shared_ptr<Type> from(const any &a) {
-        return std::dynamic_pointer_cast<Type>(a.as_object_shared());
+        return take<std::shared_ptr<Type>>::from(a);
     }
 };
 
 //if is a string.
-template<> struct take<const std::string &> {
+template<> struct take<std::string> {
     static std::string from(const any &a) {
         return a.as_string();
     }
 };
-template<> struct take<std::string> {
+template<> struct take<const std::string &> {
     static std::string from(const any &a) {
-        return a.as_string();
+        return take<std::string>::from(a);
     }
 };
 
