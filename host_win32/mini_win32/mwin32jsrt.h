@@ -21,7 +21,7 @@ public:
 private:
     MBaseFunction::ptr mExceptionListener;
 
-    JsRuntimeHandle mRuntime;
-    JsContextRef    mContext;
-    JsSourceContext mSource ;
+    JsRuntimeHandle mRuntime = JS_INVALID_RUNTIME_HANDLE;
+    JsContextRef    mContext = JS_INVALID_REFERENCE;
+    JsSourceContext mCodeId  = 0;
 };

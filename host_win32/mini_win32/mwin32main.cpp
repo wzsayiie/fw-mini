@@ -6,6 +6,7 @@
 #include "mencode.h"
 #include "mpcbundle.h"
 #include "mwin32imagefactory.h"
+#include "mwin32jsrt.h"
 #include "mwin32paint.h"
 #include "mwindow.h"
 
@@ -157,6 +158,7 @@ static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     MWin32GdiplusStartup();
     MPCBundle::install();
     MWin32ImageFactory::install();
+    MWin32JsVM::install();
 
     //create edit.
     CreateEditWithParent(wnd);

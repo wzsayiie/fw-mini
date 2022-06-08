@@ -38,13 +38,8 @@ MWin32JsVM::MWin32JsVM()
 
 MWin32JsVM::~MWin32JsVM()
 {
-    JsSetCurrentContext(nullptr);
     JsRelease(mContext, nullptr);
     JsDisposeRuntime(mRuntime);
-
-    mRuntime = JS_INVALID_RUNTIME_HANDLE;
-    mContext = JS_INVALID_REFERENCE;
-    mSource  = 0;
 }
 
 void MWin32JsVM::setExceptionListener(const MBaseFunction::ptr &listener)
@@ -58,13 +53,13 @@ void MWin32JsVM::registerFunction(const std::string &name, const MBaseFunction::
 
 void MWin32JsVM::evaluate(const std::string &name, const std::string &script)
 {
-    std::u16string u16name     = MU16StringFromU8(name  .c_str());
-    std::u16string u16script   = MU16StringFromU8(script.c_str());
-    const wchar_t *nameChars   = (const wchar_t *)u16name  .c_str();
-    const wchar_t *scriptChars = (const wchar_t *)u16script.c_str();
+    std::u16string u16name   = MU16StringFromU8(name  .c_str());
+    std::u16string u16script = MU16StringFromU8(script.c_str());
+    const wchar_t *c16name   = (const wchar_t *)u16name  .c_str();
+    const wchar_t *c16script = (const wchar_t *)u16script.c_str();
 
     JsValueRef  result = JS_INVALID_REFERENCE;
-    JsErrorCode error  = JsRunScript(scriptChars, ++mSource, nameChars, &result);
+    JsErrorCode error  = JsRunScript(c16script, ++mCodeId, c16name, &result);
 
     if (error == JsNoError)
     {
@@ -78,12 +73,11 @@ void MWin32JsVM::evaluate(const std::string &name, const std::string &script)
     JsValueRef exception = JS_INVALID_REFERENCE;
     JsGetAndClearException(&exception);
 
-    std::wstring message = L"JavaScript Exception\n";
-    AppendExceptionInfo(&message, L"Type ", exception, L"name"   );
-    AppendExceptionInfo(&message, L"Cause", exception, L"message");
-    AppendExceptionInfo(&message, L"File ", exception, L"url"    );
-    AppendExceptionInfo(&message, L"Line ", exception, L"line"   );
-    AppendExceptionInfo(&message, L"Stack", exception, L"stack"  );
+    std::wstring u16message = L"JavaScript Exception\n";
+    AppendExceptionInfo(&u16message, L"Type ", exception, L"name"   );
+    AppendExceptionInfo(&u16message, L"Cause", exception, L"message");
+    AppendExceptionInfo(&u16message, L"Stack", exception, L"stack"  );
 
-    mExceptionListener->call_with_args({ (const char16_t *)message.c_str() });
+    std::string message = MU8StringFromU16((const char16_t *)u16message.c_str());
+    mExceptionListener->call_with_args({ message });
 }
