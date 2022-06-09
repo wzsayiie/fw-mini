@@ -52,11 +52,11 @@ namespace reflect {
 class generator {
 public:
     //global constant:
-    generator(const char *n, std::string &v) noexcept { commit_variable(n, symbol_of<std::string>::value(), v); }
-    generator(const char *n, double       v) noexcept { commit_variable(n, symbol_of<double     >::value(), v); }
-    generator(const char *n, float        v) noexcept { commit_variable(n, symbol_of<float      >::value(), v); }
-    generator(const char *n, int64_t      v) noexcept { commit_variable(n, symbol_of<int64_t    >::value(), v); }
-    generator(const char *n, int          v) noexcept { commit_variable(n, symbol_of<int        >::value(), v); }
+    generator(const char *n, const char *v) noexcept { commit_variable(n, symbol_of<std::string>::value(), v); }
+    generator(const char *n, double      v) noexcept { commit_variable(n, symbol_of<double     >::value(), v); }
+    generator(const char *n, float       v) noexcept { commit_variable(n, symbol_of<float      >::value(), v); }
+    generator(const char *n, int64_t     v) noexcept { commit_variable(n, symbol_of<int64_t    >::value(), v); }
+    generator(const char *n, int         v) noexcept { commit_variable(n, symbol_of<int        >::value(), v); }
 
     //global function.
     template<class Ret, class... Args> generator(
@@ -70,11 +70,11 @@ public:
     }
 
     //class static constant:
-    template<class C> generator(C *, const char *n, const std::string &v) noexcept { cls_var<C, std::string>(n, v); }
-    template<class C> generator(C *, const char *n, double             v) noexcept { cls_var<C, double     >(n, v); }
-    template<class C> generator(C *, const char *n, float              v) noexcept { cls_var<C, float      >(n, v); }
-    template<class C> generator(C *, const char *n, int64_t            v) noexcept { cls_var<C, int64_t    >(n, v); }
-    template<class C> generator(C *, const char *n, int                v) noexcept { cls_var<C, int        >(n, v); }
+    template<class C> generator(C *, const char *n, const char *v) noexcept { cls_var<C, std::string>(n, v); }
+    template<class C> generator(C *, const char *n, double      v) noexcept { cls_var<C, double     >(n, v); }
+    template<class C> generator(C *, const char *n, float       v) noexcept { cls_var<C, float      >(n, v); }
+    template<class C> generator(C *, const char *n, int64_t     v) noexcept { cls_var<C, int64_t    >(n, v); }
+    template<class C> generator(C *, const char *n, int         v) noexcept { cls_var<C, int        >(n, v); }
 
     //class static function.
     template<class Ret, class Class, class... Args> generator(
