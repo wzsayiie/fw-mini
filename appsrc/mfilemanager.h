@@ -43,7 +43,7 @@ const char *const MAppBundleDirectory  = "mini.bundle";
 
 m_class(MVirtualBundle, MObject) {
 public:
-    M_HOST_NEED_CALL static void setInstance(const MVirtualBundle::ptr &obj);
+    M_HOST_CALL static void setInstance(const MVirtualBundle::ptr &obj);
     static MVirtualBundle *instance();
 
 public:

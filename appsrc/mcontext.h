@@ -133,5 +133,5 @@ public:
 
 //host functions:
 
-M_HOST_NEED_CALL MVector<MGraph::ptr> *MContextGetGraphs();
-M_HOST_NEED_CALL void MContextReset();
+M_HOST_CALL MVector<MGraph::ptr> *MContextGetGraphs();
+M_HOST_CALL void MContextReset();

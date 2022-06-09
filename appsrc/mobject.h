@@ -34,4 +34,5 @@ using MBaseFunction = reflect::base_function;
 
 //host flags:
 
-#define M_HOST_NEED_CALL
+#define M_HOST_CALL
+#define M_HOST_IMPL

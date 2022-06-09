@@ -40,7 +40,7 @@ private:
 
 m_class(MVirtualImageFactory, MObject) {
 public:
-    M_HOST_NEED_CALL static void setInstance(const MVirtualImageFactory::ptr &obj);
+    M_HOST_CALL static void setInstance(const MVirtualImageFactory::ptr &obj);
     static MVirtualImageFactory *instance();
 
 public:
