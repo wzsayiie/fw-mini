@@ -22,18 +22,12 @@ MImage::ptr MImage::fromFile(const std::string &path) {
 
 define_reflectable_class_function(MImage, fromFFData, "args:ffData")
 MImage::ptr MImage::fromFFData(const MVector<uint8_t>::ptr &ffData) {
-    if (ffData && !ffData->emplace_back()) {
-        return MImageFactory::instance()->decodeFFData(ffData);
-    }
-    return nullptr;
+    return MImageFactory::instance()->decodeFFData(ffData);
 }
 
 define_reflectable_class_function(MImage, fromBitmap, "args:bitmap,width,height")
 MImage::ptr MImage::fromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height) {
-    if (bitmap && !bitmap->empty()) {
-        return MImageFactory::instance()->decodeBitmap(bitmap, width, height);
-    }
-    return nullptr;
+    return MImageFactory::instance()->decodeBitmap(bitmap, width, height);
 }
 
 define_reflectable_class_function(MImage, writeFile, "args:path,format")
@@ -84,7 +78,7 @@ MImage::ptr MImageFactory::decodeFFData(const MVector<uint8_t>::ptr &ffData) {
 
 define_reflectable_class_function(MImageFactory, decodeBitmap, "args:bitmap,width,height")
 MImage::ptr MImageFactory::decodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
-    if (bitmap && width > 0 && (int)bitmap->size() == width * height) {
+    if (bitmap && width > 0 && (int)bitmap->size() == width * height * 4) {
         return onDecodeBitmap(bitmap, width, height);
     }
     return nullptr;
