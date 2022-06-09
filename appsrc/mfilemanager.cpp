@@ -34,7 +34,7 @@ MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
         return nullptr;
     }
 
-    MVector<uint8_t>::ptr bytes = MVirtualBundle::instance()->loadAsset(m_normal_path path);
+    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
     if (!bytes || bytes->empty()) {
         return nullptr;
     }
@@ -61,7 +61,7 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
         return "";
     }
 
-    MVector<uint8_t>::ptr bytes = MVirtualBundle::instance()->loadAsset(m_normal_path path);
+    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
     if (!bytes || bytes->empty()) {
         return "";
     }
@@ -144,43 +144,50 @@ void MFileManager::removePath(const std::string &path) {
     }
 }
 
-define_reflectable_class_function(MFileManager, documentDirectory, "getter")
-std::string MFileManager::documentDirectory() {
-    if (mDocumentDirectory.empty()) {
-        mDocumentDirectory = m_normal_path MVirtualBundle::instance()->documentDirectory();
-    }
-    return mDocumentDirectory;
-}
-
-define_reflectable_class_function(MFileManager, temporaryDirectory, "getter")
-std::string MFileManager::temporaryDirectory() {
-    if (mTemporaryDirectory.empty()) {
-        mTemporaryDirectory = m_normal_path MVirtualBundle::instance()->temporaryDirectory();
-    }
-    return mTemporaryDirectory;
-}
-
 //bundle:
 
-define_reflectable_const(MAppPrivateDirectory)
-define_reflectable_const(MAppBundleDirectory )
+define_reflectable_class_const(MBundle, PrivateDirectoryName)
+define_reflectable_class_const(MBundle, BundleDirectoryName )
 
-MVirtualBundle::ptr MVirtualBundle::sInstance;
+MBundle::ptr MBundle::sInstance;
 
-void MVirtualBundle::setInstance(const MVirtualBundle::ptr &obj) {
+define_reflectable_class_function(MBundle, setInstance, "setter;args:obj")
+void MBundle::setInstance(const MBundle::ptr &obj) {
     sInstance = obj;
 }
 
-MVirtualBundle *MVirtualBundle::instance() {
+define_reflectable_class_function(MBundle, instance, "getter")
+MBundle *MBundle::instance() {
     if (!sInstance) {
-        sInstance = MVirtualBundle::create();
+        sInstance = MBundle::create();
     }
     return sInstance.get();
 }
 
-MVector<uint8_t>::ptr MVirtualBundle::loadAsset(const std::string &path) {
+define_reflectable_class_function(MBundle, loadAsset, "args:path")
+MVector<uint8_t>::ptr MBundle::loadAsset(const std::string &path) {
+    if (!path.empty()) {
+        return onLoadAsset(path);
+    }
     return nullptr;
 }
 
-std::string MVirtualBundle::documentDirectory () { return ""; }
-std::string MVirtualBundle::temporaryDirectory() { return ""; }
+define_reflectable_class_function(MBundle, bundleDirectory   , "getter")
+define_reflectable_class_function(MBundle, documentDirectory , "getter")
+define_reflectable_class_function(MBundle, temporaryDirectory, "getter")
+
+#define _D(var, getter) if (var.empty()) { var = getter(); } return var;
+
+std::string MBundle::bundleDirectory   () { _D(mBundleDirectory   , onGetBundleDirectory   ) }
+std::string MBundle::documentDirectory () { _D(mDocumentDirectory , onGetDocumentDirectory ) }
+std::string MBundle::temporaryDirectory() { _D(mTemporaryDirectory, onGetTemporaryDirectory) }
+
+#undef  _D
+
+MVector<uint8_t>::ptr MBundle::onLoadAsset(const std::string &path) {
+    return nullptr;
+}
+
+std::string MBundle::onGetBundleDirectory   () { return ""; }
+std::string MBundle::onGetDocumentDirectory () { return ""; }
+std::string MBundle::onGetTemporaryDirectory() { return ""; }

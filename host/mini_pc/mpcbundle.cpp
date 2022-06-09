@@ -13,30 +13,8 @@ void MPCBundle::install() {
     setInstance(obj);
 }
 
-MVector<uint8_t>::ptr MPCBundle::loadAsset(const std::string &path) {
-    if (mBundeDirectory.empty()) {
-    #if DASH_OS_WIN32
-        GetModuleFileNameW(nullptr, dash::buffer<WCHAR>(), (DWORD)dash::buffer_size<WCHAR>());
-        std::filesystem::path exePath = dash::buffer<char16_t>();
-
-    #elif DASH_OS_LINUX
-        readlink("/proc/self/exe", dash::buffer<char>(), (size_t)dash::buffer_size<char>());
-        std::filesystem::path exePath = dash::buffer<char>();
-    #endif
-
-        for (auto &it : exePath.parent_path()) {
-            mBundeDirectory.append(it.string());
-
-            //NOTE: if the executable is in the project, use the resources from the project.
-            if (it == "fw-mini") {
-                mBundeDirectory.append("appres");
-                break;
-            }
-        }
-        mBundeDirectory.append(MAppBundleDirectory);
-    }
-
-    std::filesystem::path assetPath = mBundeDirectory;
+MVector<uint8_t>::ptr MPCBundle::onLoadAsset(const std::string &path) {
+    std::filesystem::path assetPath = bundleDirectory();
     assetPath.append(path);
 
     auto asset = MVector<uint8_t>::create();
@@ -47,7 +25,32 @@ MVector<uint8_t>::ptr MPCBundle::loadAsset(const std::string &path) {
     return asset;
 }
 
-std::string MPCBundle::documentDirectory() {
+std::string MPCBundle::onGetBundleDirectory() {
+#if DASH_OS_WIN32
+    GetModuleFileNameW(nullptr, dash::buffer<WCHAR>(), (DWORD)dash::buffer_size<WCHAR>());
+    std::filesystem::path exePath = dash::buffer<char16_t>();
+
+#elif DASH_OS_LINUX
+    readlink("/proc/self/exe", dash::buffer<char>(), (size_t)dash::buffer_size<char>());
+    std::filesystem::path exePath = dash::buffer<char>();
+#endif
+
+    std::filesystem::path directory;
+    for (auto &it : exePath.parent_path()) {
+        directory.append(it.string());
+
+        //NOTE: if the executable is in the project, use the resources from the project.
+        if (it == "fw-mini") {
+            directory.append("appres");
+            break;
+        }
+    }
+    directory.append(MBundle::BundleDirectoryName);
+
+    return directory.string();
+}
+
+std::string MPCBundle::onGetDocumentDirectory() {
 #if DASH_OS_WIN32
     SHGetFolderPathW(nullptr, CSIDL_PERSONAL, nullptr, 0, dash::buffer<WCHAR>());
     std::filesystem::path directory = dash::buffer<char16_t>();
@@ -57,13 +60,13 @@ std::string MPCBundle::documentDirectory() {
     std::filesystem::path directory = pw->pw_dir;
 #endif
 
-    directory.append(MAppPrivateDirectory);
+    directory.append(MBundle::PrivateDirectoryName);
     std::filesystem::create_directory(directory);
 
     return directory.string();
 }
 
-std::string MPCBundle::temporaryDirectory() {
+std::string MPCBundle::onGetTemporaryDirectory() {
 #if DASH_OS_WIN32
     GetTempPathW((DWORD)dash::buffer_size<WCHAR>(), dash::buffer<WCHAR>());
     std::wstring shortPath = dash::buffer<WCHAR>();
@@ -75,7 +78,7 @@ std::string MPCBundle::temporaryDirectory() {
     std::filesystem::path directory = std::filesystem::temp_directory_path();
 #endif
 
-    directory.append(MAppPrivateDirectory);
+    directory.append(MBundle::PrivateDirectoryName);
     std::filesystem::create_directory(directory);
 
     return directory.string();

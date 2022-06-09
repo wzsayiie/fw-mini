@@ -13,7 +13,7 @@ public:
     MWin32JsVM();
     ~MWin32JsVM();
 
-public:
+protected:
     void onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) override;
     void onEvaluate(const std::string &name, const std::string &script) override;
 
