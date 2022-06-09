@@ -9,6 +9,10 @@ class dash_exportable CObject : public MExtends<CObject, MObject> {
 template<class Class, class Super> class dash_exportable CExtends : public MExtends<Class, Super> {
 public:
     typedef CExtends<Class, Super> upper;
+
+public:
+    using _middle = MExtends<Class, Super>;
+    using _middle::_middle;
 };
 
 #define centui_class(Class, Super)          \

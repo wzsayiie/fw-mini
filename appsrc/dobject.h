@@ -37,6 +37,9 @@ public:
     template<class... Args> static ptr create(Args... args) {
         return std::make_shared<Class>(args...);
     }
+
+public:
+    using Super::Super;
 };
 
 } //end dash.

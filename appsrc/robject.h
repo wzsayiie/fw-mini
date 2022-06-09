@@ -39,6 +39,10 @@ public:
             return a->release();
         });
     }
+
+public:
+    using _middle = dash::extends<Class, Super>;
+    using _middle::_middle;
     
 public:
     symbol class_symbol() const override {

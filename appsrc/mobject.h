@@ -11,6 +11,10 @@ class dash_exportable MObject : public reflect::extends<MObject, reflect::inject
 template<class Class, class Super> class dash_exportable MExtends : public reflect::extends<Class, Super> {
 public:
     typedef MExtends<Class, Super> upper;
+
+public:
+    using _middle = reflect::extends<Class, Super>;
+    using _middle::_middle;
 };
 
 //definition:
