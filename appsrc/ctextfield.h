@@ -4,8 +4,7 @@
 
 //text field delegate:
 
-class CTextField;
-c_class(CTextFieldDelegate, CObject) {
+centui_class(CTextFieldDelegate, CObject) {
 public:
     void setEditingBeginTarget(const MFunction<void ()>::ptr &target);
     void setTextChangeTarget  (const MFunction<void ()>::ptr &target);
@@ -27,7 +26,7 @@ private:
 
 //text field:
 
-c_class(CTextField, CControl) {
+centui_class(CTextField, CControl) {
 public:
     using upper::upper;
 

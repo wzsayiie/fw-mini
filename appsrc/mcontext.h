@@ -32,21 +32,21 @@ void MContextDrawText      (float x , float y , float w , float h );
 
 //graphs:
 
-m_enum(MGraphType) {
+minikit_enum(MGraphType) {
     Clip    = 1,
     Polygon = 2,
     Image   = 3,
     Text    = 4,
 };
 
-m_class(MGraph, MObject) {
+minikit_class(MGraph, MObject) {
 public:
     virtual MGraphType type() = 0;
 };
 
 //clip graph:
 
-m_class(MClipGraph, MGraph) {
+minikit_class(MClipGraph, MGraph) {
 public:
     MGraphType type() override;
 
@@ -64,7 +64,7 @@ public:
 
 //polygon graph:
 
-m_class(MPolygonGraph, MGraph) {
+minikit_class(MPolygonGraph, MGraph) {
 public:
     MGraphType type() override;
 
@@ -81,7 +81,7 @@ public:
 
 //image graph:
 
-m_class(MImageGraph, MGraph) {
+minikit_class(MImageGraph, MGraph) {
 public:
     MGraphType type() override;
 
@@ -103,7 +103,7 @@ public:
 
 //text graph:
 
-m_class(MTextGraph, MGraph) {
+minikit_class(MTextGraph, MGraph) {
 public:
     MGraphType type() override;
 
@@ -133,5 +133,5 @@ public:
 
 //host functions:
 
-M_HOST_CALL MVector<MGraph::ptr> *MContextGetGraphs();
-M_HOST_CALL void MContextReset();
+MINIKIT_HOST_CALL MVector<MGraph::ptr> *MContextGetGraphs();
+MINIKIT_HOST_CALL void MContextReset();

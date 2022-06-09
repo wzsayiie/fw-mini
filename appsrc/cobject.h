@@ -11,10 +11,10 @@ public:
     typedef CExtends<Class, Super> upper;
 };
 
-#define c_class(Class, Super)               \
+#define centui_class(Class, Super)          \
 /**/    declare_reflectable_class(Class)    \
 /**/    class dash_exportable Class : public CExtends<Class, Super>
 
-#define c_enum(Enum)                    \
+#define centui_enum(Enum)               \
 /**/    declare_reflectable_enum(Enum)  \
 /**/    enum class Enum

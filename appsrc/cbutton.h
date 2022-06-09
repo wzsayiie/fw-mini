@@ -3,7 +3,7 @@
 #include "ccontrol.h"
 #include "clabel.h"
 
-c_class(CButton, CControl) {
+centui_class(CButton, CControl) {
 public:
     using upper::upper;
 

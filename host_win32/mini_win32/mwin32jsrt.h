@@ -5,7 +5,7 @@
 #define USE_EDGEMODE_JSRT
 #include <jsrt.h>
 
-m_class(MWin32JsVM, MJsVM) {
+minikit_class(MWin32JsVM, MJsVM) {
 public:
     static void install();
 

@@ -15,11 +15,11 @@ public:
 
 //definition:
 
-#define m_class(Class, Super)               \
+#define minikit_class(Class, Super)         \
 /**/    declare_reflectable_class(Class)    \
 /**/    class dash_exportable Class : public MExtends<Class, Super>
 
-#define m_enum(Enum)                    \
+#define minikit_enum(Enum)              \
 /**/    declare_reflectable_enum(Enum)  \
 /**/    enum class Enum
 
@@ -34,5 +34,5 @@ using MBaseFunction = reflect::base_function;
 
 //host flags:
 
-#define M_HOST_CALL
-#define M_HOST_IMPL
+#define MINIKIT_HOST_CALL
+#define MINIKIT_HOST_IMPL

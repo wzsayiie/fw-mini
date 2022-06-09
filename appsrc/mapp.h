@@ -4,7 +4,7 @@
 
 //app:
 
-m_class(MApp, MObject) {
+minikit_class(MApp, MObject) {
 public:
     static constexpr float UpdateEverySeconds = 0.1f;
 
@@ -12,8 +12,8 @@ public:
     static MApp *instance();
 
 public:
-    M_HOST_CALL void launch();
-    M_HOST_CALL void update();
+    MINIKIT_HOST_CALL void launch();
+    MINIKIT_HOST_CALL void update();
 
     void addLaunchListener(const MFunction<void ()>::ptr &listener);
     void addUpdateListener(const MFunction<void ()>::ptr &listener);

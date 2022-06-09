@@ -4,8 +4,7 @@
 
 //scroll view delegate:
 
-class CScrollView;
-c_class(CScrollViewDelegate, CObject) {
+centui_class(CScrollViewDelegate, CObject) {
 public:
     void setScrollingBeginTarget(const MFunction<void ()>::ptr &target);
     void setScrollingTarget     (const MFunction<void ()>::ptr &target);
@@ -27,7 +26,7 @@ private:
 
 //scroll view:
 
-c_class(CScrollView, CView) {
+centui_class(CScrollView, CView) {
 public:
     CScrollView();
     CScrollView(float x, float y, float width, float height);

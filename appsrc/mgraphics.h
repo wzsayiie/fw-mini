@@ -4,7 +4,7 @@
 
 //pixel scale:
 
-M_HOST_CALL void MSetPixelScale(float scale);
+MINIKIT_HOST_CALL void MSetPixelScale(float scale);
 float MGetPixelScale();
 
 #define m_pt_from_px _MPointFromPixelCaster()<<
@@ -15,13 +15,13 @@ struct _MPixelFromPointCaster { float operator<<(float pt); };
 
 //alignment:
 
-m_enum(MHAlign) {
+minikit_enum(MHAlign) {
     Left   = 1,
     Center = 2,
     Right  = 3,
 };
 
-m_enum(MVAlign) {
+minikit_enum(MVAlign) {
     Top    = 1,
     Middle = 2,
     Bottom = 3,
@@ -78,7 +78,7 @@ template<class Src, class Dst> void MColorTransform(Src *src, Dst *dst, int coun
 template<class T> void MColorTransform(T *src, T *dst, int count) {
 }
 
-m_class(MColor, MObject) {
+minikit_class(MColor, MObject) {
 public:
     static const int BlackRGBA     = 0x000000ff;
     static const int DarkGrayRGBA  = 0x404040ff;

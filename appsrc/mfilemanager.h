@@ -4,7 +4,7 @@
 
 //file manager:
 
-m_class(MFileManager, MObject) {
+minikit_class(MFileManager, MObject) {
 public:
     static MFileManager *instance();
 
@@ -30,13 +30,13 @@ public:
 
 //bundle:
 
-m_class(MBundle, MObject) {
+minikit_class(MBundle, MObject) {
 public:
     static constexpr const char *PrivateDirectoryName = "mini";
     static constexpr const char *BundleDirectoryName  = "mini.bundle";
 
 public:
-    M_HOST_CALL static void setInstance(const MBundle::ptr &obj);
+    MINIKIT_HOST_CALL static void setInstance(const MBundle::ptr &obj);
     static MBundle *instance();
 
 public:
@@ -47,11 +47,11 @@ public:
     std::string temporaryDirectory();
 
 protected:
-    M_HOST_IMPL virtual MVector<uint8_t>::ptr onLoadAsset(const std::string &path);
+    MINIKIT_HOST_IMPL virtual MVector<uint8_t>::ptr onLoadAsset(const std::string &path);
 
-    M_HOST_IMPL virtual std::string onGetBundleDirectory   ();
-    M_HOST_IMPL virtual std::string onGetDocumentDirectory ();
-    M_HOST_IMPL virtual std::string onGetTemporaryDirectory();
+    MINIKIT_HOST_IMPL virtual std::string onGetBundleDirectory   ();
+    MINIKIT_HOST_IMPL virtual std::string onGetDocumentDirectory ();
+    MINIKIT_HOST_IMPL virtual std::string onGetTemporaryDirectory();
 
 private:
     static MBundle::ptr sInstance;

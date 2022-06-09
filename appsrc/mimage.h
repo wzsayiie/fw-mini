@@ -5,17 +5,17 @@
 
 //file format:
 
-m_enum(MImageFileFormat) {
+minikit_enum(MImageFileFormat) {
     JPEG = 1,
     PNG  = 2,
 };
 
 //image:
 
-m_class(MVirtualImage, MObject) {
+minikit_class(MVirtualImage, MObject) {
 };
 
-m_class(MImage, MObject) {
+minikit_class(MImage, MObject) {
 public:
     static MImage::ptr fromBundle(const std::string &path);
     static MImage::ptr fromFile  (const std::string &path);
@@ -38,9 +38,9 @@ private:
 
 //image factory:
 
-m_class(MVirtualImageFactory, MObject) {
+minikit_class(MVirtualImageFactory, MObject) {
 public:
-    M_HOST_CALL static void setInstance(const MVirtualImageFactory::ptr &obj);
+    MINIKIT_HOST_CALL static void setInstance(const MVirtualImageFactory::ptr &obj);
     static MVirtualImageFactory *instance();
 
 public:

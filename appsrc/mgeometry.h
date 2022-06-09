@@ -4,7 +4,7 @@
 
 //point:
 
-m_class(MPoint, MObject) {
+minikit_class(MPoint, MObject) {
 public:
     static MPoint::ptr from(float x, float y);
     static MPoint::ptr zero();
@@ -25,7 +25,7 @@ private:
 
 //size:
 
-m_class(MSize, MObject) {
+minikit_class(MSize, MObject) {
 public:
     static MSize::ptr from(float width, float height);
     static MSize::ptr zero();
@@ -44,7 +44,7 @@ private:
 
 //rect:
 
-m_class(MRect, MObject) {
+minikit_class(MRect, MObject) {
 public:
     static MRect::ptr from(float x, float y, float width, float height);
     static MRect::ptr zero();

@@ -5,7 +5,7 @@
 class CResponder;
 using CResponderDetector =  MFunction<bool (const std::shared_ptr<CResponder> &, const MPoint::ptr &)>;
 
-c_class(CResponder, CObject) {
+centui_class(CResponder, CObject) {
 public:
     static CResponder::ptr focusResponder();
     

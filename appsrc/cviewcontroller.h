@@ -2,7 +2,7 @@
 
 #include "cview.h"
 
-c_class(CViewController, CResponder) {
+centui_class(CViewController, CResponder) {
 public:
     CViewController();
     
