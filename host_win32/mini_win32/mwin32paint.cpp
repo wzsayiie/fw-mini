@@ -33,9 +33,9 @@ static void PaintPolygon(Gdiplus::Graphics *pen, MPolygonGraph *graph)
 
 static void PaintImage(Gdiplus::Graphics *pen, MImageGraph *graph)
 {
-    MImageImpl::ptr impl  = graph->image()->impl();
-    auto            wImpl = std::static_pointer_cast<MWin32ImageImpl>(impl);
-    Gdiplus::Image *image = wImpl->mReal.get();
+    MVirtualImage::ptr real  = graph->image()->real();
+    MWin32Image::ptr   wReal = std::static_pointer_cast<MWin32Image>(real);
+    Gdiplus::Image    *image = wReal->mGdiImage.get();
 
     Gdiplus::RectF rect(
         graph->pixelX(), graph->pixelY(),

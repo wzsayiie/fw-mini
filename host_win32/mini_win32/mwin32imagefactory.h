@@ -3,21 +3,21 @@
 #include "mimage.h"
 #include "mwin32gdiplus.h"
 
-m_class(MWin32ImageImpl, MImageImpl) {
+m_class(MWin32Image, MVirtualImage) {
 public:
-    std::shared_ptr<Gdiplus::Image> mReal;
+    std::shared_ptr<Gdiplus::Image> mGdiImage;
 };
 
-m_class(MWin32ImageFactory, MImageFactory) {
+m_class(MWin32ImageFactory, MVirtualImageFactory) {
 public:
     static void install();
     
 public:
-    MImageImpl::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData) override;
-    MImageImpl::ptr imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) override;
+    MVirtualImage::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData) override;
+    MVirtualImage::ptr imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) override;
 
-    MVector<uint8_t>::ptr ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format) override;
-    MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr &impl) override;
+    MVector<uint8_t>::ptr ffDataFromImage(const MVirtualImage::ptr &real, MImageFileFormat format) override;
+    MVector<uint8_t>::ptr bitmapFromImage(const MVirtualImage::ptr &real) override;
 
-    MSize::ptr pixelSize(const MImageImpl::ptr &impl) override;
+    MSize::ptr pixelSize(const MVirtualImage::ptr &real) override;
 };

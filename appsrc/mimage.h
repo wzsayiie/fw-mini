@@ -12,7 +12,7 @@ m_enum(MImageFileFormat) {
 
 //image:
 
-m_class(MImageImpl, MObject) {
+m_class(MVirtualImage, MObject) {
 };
 
 m_class(MImage, MObject) {
@@ -30,33 +30,28 @@ public:
 
     MSize::ptr pixelSize();
 
-    MImageImpl::ptr impl();
+    MVirtualImage::ptr real();
 
 private:
-    MImageImpl::ptr mImpl;
+    MVirtualImage::ptr mReal;
 };
 
 //image factory:
 
-m_class(MImageFactory, MObject) {
+m_class(MVirtualImageFactory, MObject) {
 public:
-    M_HOST_NEED_CALL static void setInstance(const MImageFactory::ptr &obj);
-    static MImageFactory *instance();
+    M_HOST_NEED_CALL static void setInstance(const MVirtualImageFactory::ptr &obj);
+    static MVirtualImageFactory *instance();
 
 public:
-    //image from file format data.
-    virtual MImageImpl::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData);
-    //image from rgba 32-bit depth bitmap.
-    virtual MImageImpl::ptr imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height);
+    virtual MVirtualImage::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData);
+    virtual MVirtualImage::ptr imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height);
 
-    //file format data from image.
-    virtual MVector<uint8_t>::ptr ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format);
-    //rgba 32-bit depth bitmap from image.
-    virtual MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr &impl);
+    virtual MVector<uint8_t>::ptr ffDataFromImage(const MVirtualImage::ptr &real, MImageFileFormat format);
+    virtual MVector<uint8_t>::ptr bitmapFromImage(const MVirtualImage::ptr &real);
 
-    //image pixel size.
-    virtual MSize::ptr pixelSize(const MImageImpl::ptr &impl);
+    virtual MSize::ptr pixelSize(const MVirtualImage::ptr &real);
 
 private:
-    static MImageFactory::ptr sInstance;
+    static MVirtualImageFactory::ptr sInstance;
 };

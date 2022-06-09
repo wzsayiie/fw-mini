@@ -2,10 +2,24 @@
 
 #include "mobject.h"
 
+//js vm:
+
 m_class(MJsVM, MObject) {
 public:
-    M_HOST_NEED_CALL static void setInstance(const MJsVM::ptr &obj);
     static MJsVM *instance();
+
+public:
+    void setExceptionListener(const MBaseFunction::ptr &listener);
+    void registerFunction(const std::string &name, const MBaseFunction::ptr &func);
+    void evaluate(const std::string &name, const std::string &script);
+};
+
+//virtual js vm:
+
+m_class(MVirtualJsVM, MObject) {
+public:
+    M_HOST_NEED_CALL static void setInstance(const MVirtualJsVM::ptr &obj);
+    static MVirtualJsVM *instance();
 
 public:
     virtual void setExceptionListener(const MBaseFunction::ptr &listener);
@@ -13,5 +27,5 @@ public:
     virtual void evaluate(const std::string &name, const std::string &script);
 
 private:
-    static MJsVM::ptr sInstance;
+    static MVirtualJsVM::ptr sInstance;
 };

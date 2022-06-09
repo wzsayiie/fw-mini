@@ -33,7 +33,7 @@ MVector<uint8_t>::ptr MPCBundle::loadAsset(const std::string &path) {
                 break;
             }
         }
-        mBundeDirectory.append(MBundle::BundleDirectoryName);
+        mBundeDirectory.append(MAppBundleDirectory);
     }
 
     std::filesystem::path assetPath = mBundeDirectory;
@@ -57,7 +57,7 @@ std::string MPCBundle::documentDirectory() {
     std::filesystem::path directory = pw->pw_dir;
 #endif
 
-    directory.append(MBundle::PrivateDirectoryName);
+    directory.append(MAppPrivateDirectory);
     std::filesystem::create_directory(directory);
 
     return directory.string();
@@ -75,7 +75,7 @@ std::string MPCBundle::temporaryDirectory() {
     std::filesystem::path directory = std::filesystem::temp_directory_path();
 #endif
 
-    directory.append(MBundle::PrivateDirectoryName);
+    directory.append(MAppPrivateDirectory);
     std::filesystem::create_directory(directory);
 
     return directory.string();

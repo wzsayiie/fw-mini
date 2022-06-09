@@ -1,31 +1,48 @@
 #include "mjsvm.h"
 
-MJsVM::ptr MJsVM::sInstance;
+//js vm:
 
-define_reflectable_class_function(MJsVM, setInstance, "args:obj")
-void MJsVM::setInstance(const MJsVM::ptr &obj) {
+MJsVM *MJsVM::instance() {
+    static auto obj = MJsVM::create();
+    return obj.get();
+}
+
+void MJsVM::setExceptionListener(const MBaseFunction::ptr &listener) {
+    MVirtualJsVM::instance()->setExceptionListener(listener);
+}
+
+void MJsVM::registerFunction(const std::string &name, const MBaseFunction::ptr &func) {
+    if (!name.empty() && func) {
+        MVirtualJsVM::instance()->registerFunction(name, func);
+    }
+}
+
+void MJsVM::evaluate(const std::string &name, const std::string &script) {
+    if (!name.empty() && !script.empty()) {
+        MVirtualJsVM::instance()->evaluate(name, script);
+    }
+}
+
+//virtual js vm:
+
+MVirtualJsVM::ptr MVirtualJsVM::sInstance;
+
+void MVirtualJsVM::setInstance(const MVirtualJsVM::ptr &obj) {
     sInstance = obj;
 }
 
-define_reflectable_class_function(MJsVM, instance, "getter")
-MJsVM *MJsVM::instance() {
+MVirtualJsVM *MVirtualJsVM::instance() {
     if (!sInstance) {
-        sInstance = MJsVM::create();
+        sInstance = MVirtualJsVM::create();
     }
     return sInstance.get();
 }
 
-define_reflectable_class_function(MJsVM, setExceptionListener, "args:listener")
-void MJsVM::setExceptionListener(const MBaseFunction::ptr &listener) {
-    implement_injectable_function(void, listener)
+void MVirtualJsVM::setExceptionListener(const MBaseFunction::ptr &listener) {
 }
 
-define_reflectable_class_function(MJsVM, registerFunction, "args:name,func")
-void MJsVM::registerFunction(const std::string &name, const MBaseFunction::ptr &func) {
-    implement_injectable_function(void, name, func)
+void MVirtualJsVM::registerFunction(const std::string &name, const MBaseFunction::ptr &func) {
 }
 
-define_reflectable_class_function(MJsVM, evaluate, "args:name,script")
-void MJsVM::evaluate(const std::string &name, const std::string &script) {
-    implement_injectable_function(void, name, script)
+void MVirtualJsVM::evaluate(const std::string &name, const std::string &script) {
 }

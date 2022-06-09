@@ -6,7 +6,7 @@ void MWin32ImageFactory::install()
     setInstance(obj);
 }
 
-MImageImpl::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData)
+MVirtualImage::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData)
 {
     //copy the memory data:
     HGLOBAL memory = GlobalAlloc(GMEM_FIXED, (SIZE_T)ffData->size());
@@ -33,20 +33,20 @@ MImageImpl::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::ptr 
     dash_defer { stream->Release(); };
 
     //create the image.
-    Gdiplus::Image *real = Gdiplus::Image::FromStream(stream, FALSE);
-    if (real)
+    Gdiplus::Image *gdiImage = Gdiplus::Image::FromStream(stream, FALSE);
+    if (gdiImage)
     {
-        auto impl = MWin32ImageImpl::create();
-        impl->mReal = std::shared_ptr<Gdiplus::Image>(real);
-        return impl;
+        auto real = MWin32Image::create();
+        real->mGdiImage = std::shared_ptr<Gdiplus::Image>(gdiImage);
+        return real;
     }
     return nullptr;
 }
 
-MImageImpl::ptr MWin32ImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height)
+MVirtualImage::ptr MWin32ImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height)
 {
-    auto real   = new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB);
-    auto pixels = (MColorRGBA *)bitmap->data();
+    auto gdiImage = new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB);
+    auto pixels   = (MColorRGBA *)bitmap->data();
 
     for (int y = 0; y < height; ++y)
     {
@@ -55,16 +55,16 @@ MImageImpl::ptr MWin32ImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr 
             MColorRGBA *src = pixels + width * y + x;
             Gdiplus::Color dst(src->alpha, src->red, src->green, src->blue);
 
-            real->SetPixel(x, y, dst);
+            gdiImage->SetPixel(x, y, dst);
         }
     }
 
-    auto impl = MWin32ImageImpl::create();
-    impl->mReal = std::shared_ptr<Gdiplus::Image>(real);
-    return impl;
+    auto real = MWin32Image::create();
+    real->mGdiImage = std::shared_ptr<Gdiplus::Image>(gdiImage);
+    return real;
 }
 
-MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format)
+MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MVirtualImage::ptr &real, MImageFileFormat format)
 {
     //find the encoder:
     const WCHAR *encoderId = nullptr;
@@ -92,8 +92,8 @@ MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MImageImpl::ptr 
 
     dash_defer { stream->Release(); };
 
-    Gdiplus::Image *real = std::static_pointer_cast<MWin32ImageImpl>(impl)->mReal.get();
-    real->Save(stream, &encoder);
+    Gdiplus::Image *gdiImage = std::static_pointer_cast<MWin32Image>(real)->mGdiImage.get();
+    gdiImage->Save(stream, &encoder);
 
     //get the data:
     HGLOBAL memory = nullptr;
@@ -122,16 +122,16 @@ MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MImageImpl::ptr 
     }
 }
 
-MVector<uint8_t>::ptr MWin32ImageFactory::bitmapFromImage(const MImageImpl::ptr &impl)
+MVector<uint8_t>::ptr MWin32ImageFactory::bitmapFromImage(const MVirtualImage::ptr &real)
 {
     //draw the image on a bitmap context:
-    Gdiplus::Image *real = std::static_pointer_cast<MWin32ImageImpl>(impl)->mReal.get();
-    auto width  = real->GetWidth ();
-    auto height = real->GetHeight();
+    Gdiplus::Image *gdiImage = std::static_pointer_cast<MWin32Image>(real)->mGdiImage.get();
+    auto width  = gdiImage->GetWidth ();
+    auto height = gdiImage->GetHeight();
 
     std::shared_ptr<Gdiplus::Bitmap  > bitmap  (new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB));
     std::shared_ptr<Gdiplus::Graphics> graphics(Gdiplus::Graphics::FromImage(bitmap.get()));
-    graphics->DrawImage(real, 0, 0, width, height);
+    graphics->DrawImage(gdiImage, 0, 0, width, height);
 
     //copy bitmap bytes:
     auto bytes = MVector<uint8_t>::create();
@@ -156,11 +156,11 @@ MVector<uint8_t>::ptr MWin32ImageFactory::bitmapFromImage(const MImageImpl::ptr 
     return bytes;
 }
 
-MSize::ptr MWin32ImageFactory::pixelSize(const MImageImpl::ptr &impl)
+MSize::ptr MWin32ImageFactory::pixelSize(const MVirtualImage::ptr &real)
 {
-    Gdiplus::Image *real = std::static_pointer_cast<MWin32ImageImpl>(impl)->mReal.get();
+    Gdiplus::Image *gdiImage = std::static_pointer_cast<MWin32Image>(real)->mGdiImage.get();
 
-    auto width  = (float)real->GetWidth ();
-    auto height = (float)real->GetHeight();
+    auto width  = (float)gdiImage->GetWidth ();
+    auto height = (float)gdiImage->GetHeight();
     return MSize::from(width, height);
 }

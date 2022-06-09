@@ -2,7 +2,7 @@
 
 #include "mfilemanager.h"
 
-m_class(MPCBundle, MBundle) {
+m_class(MPCBundle, MVirtualBundle) {
 public:
     static void install();
 
