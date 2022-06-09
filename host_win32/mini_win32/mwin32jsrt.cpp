@@ -42,16 +42,11 @@ MWin32JsVM::~MWin32JsVM()
     JsDisposeRuntime(mRuntime);
 }
 
-void MWin32JsVM::setExceptionListener(const MBaseFunction::ptr &listener)
-{
-    mExceptionListener = listener;
-}
-
-void MWin32JsVM::registerFunction(const std::string &name, const MBaseFunction::ptr &func)
+void MWin32JsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func)
 {
 }
 
-void MWin32JsVM::evaluate(const std::string &name, const std::string &script)
+void MWin32JsVM::onEvaluate(const std::string &name, const std::string &script)
 {
     std::u16string u16name   = MU16StringFromU8(name  .c_str());
     std::u16string u16script = MU16StringFromU8(script.c_str());
@@ -65,10 +60,6 @@ void MWin32JsVM::evaluate(const std::string &name, const std::string &script)
     {
         return;
     }
-    if (!mExceptionListener)
-    {
-        return;
-    }
 
     JsValueRef exception = JS_INVALID_REFERENCE;
     JsGetAndClearException(&exception);
@@ -79,5 +70,5 @@ void MWin32JsVM::evaluate(const std::string &name, const std::string &script)
     AppendExceptionInfo(&u16message, L"Stack", exception, L"stack"  );
 
     std::string message = MU8StringFromU16((const char16_t *)u16message.c_str());
-    mExceptionListener->call_with_args({ message });
+    onException(message);
 }
