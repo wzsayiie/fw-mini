@@ -6,7 +6,7 @@ void MWin32ImageFactory::install()
     setInstance(obj);
 }
 
-MVirtualImage::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData)
+MImage::ptr MWin32ImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData)
 {
     //copy the memory data:
     HGLOBAL memory = GlobalAlloc(GMEM_FIXED, (SIZE_T)ffData->size());
@@ -36,14 +36,14 @@ MVirtualImage::ptr MWin32ImageFactory::imageFromFFData(const MVector<uint8_t>::p
     Gdiplus::Image *gdiImage = Gdiplus::Image::FromStream(stream, FALSE);
     if (gdiImage)
     {
-        auto real = MWin32Image::create();
-        real->mGdiImage = std::shared_ptr<Gdiplus::Image>(gdiImage);
-        return real;
+        auto w32image = MWin32Image::create();
+        w32image->mGdiImage = std::shared_ptr<Gdiplus::Image>(gdiImage);
+        return w32image;
     }
     return nullptr;
 }
 
-MVirtualImage::ptr MWin32ImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height)
+MImage::ptr MWin32ImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height)
 {
     auto gdiImage = new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB);
     auto pixels   = (MColorRGBA *)bitmap->data();
@@ -59,12 +59,12 @@ MVirtualImage::ptr MWin32ImageFactory::imageFromBitmap(const MVector<uint8_t>::p
         }
     }
 
-    auto real = MWin32Image::create();
-    real->mGdiImage = std::shared_ptr<Gdiplus::Image>(gdiImage);
-    return real;
+    auto w32image = MWin32Image::create();
+    w32image->mGdiImage = std::shared_ptr<Gdiplus::Image>(gdiImage);
+    return w32image;
 }
 
-MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MVirtualImage::ptr &real, MImageFileFormat format)
+MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format)
 {
     //find the encoder:
     const WCHAR *encoderId = nullptr;
@@ -92,7 +92,8 @@ MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MVirtualImage::p
 
     dash_defer { stream->Release(); };
 
-    Gdiplus::Image *gdiImage = std::static_pointer_cast<MWin32Image>(real)->mGdiImage.get();
+    MWin32Image::ptr w32image = std::static_pointer_cast<MWin32Image>(image);
+    Gdiplus::Image  *gdiImage = w32image->mGdiImage.get();
     gdiImage->Save(stream, &encoder);
 
     //get the data:
@@ -122,10 +123,11 @@ MVector<uint8_t>::ptr MWin32ImageFactory::ffDataFromImage(const MVirtualImage::p
     }
 }
 
-MVector<uint8_t>::ptr MWin32ImageFactory::bitmapFromImage(const MVirtualImage::ptr &real)
+MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeBitmap(const MImage::ptr &image)
 {
     //draw the image on a bitmap context:
-    Gdiplus::Image *gdiImage = std::static_pointer_cast<MWin32Image>(real)->mGdiImage.get();
+    MWin32Image::ptr w32image = std::static_pointer_cast<MWin32Image>(image);
+    Gdiplus::Image  *gdiImage = w32image->mGdiImage.get();
     auto width  = gdiImage->GetWidth ();
     auto height = gdiImage->GetHeight();
 
@@ -156,9 +158,10 @@ MVector<uint8_t>::ptr MWin32ImageFactory::bitmapFromImage(const MVirtualImage::p
     return bytes;
 }
 
-MSize::ptr MWin32ImageFactory::pixelSize(const MVirtualImage::ptr &real)
+MSize::ptr MWin32ImageFactory::onGetPixelSize(const MImage::ptr &image)
 {
-    Gdiplus::Image *gdiImage = std::static_pointer_cast<MWin32Image>(real)->mGdiImage.get();
+    MWin32Image::ptr w32image = std::static_pointer_cast<MWin32Image>(image);
+    Gdiplus::Image  *gdiImage = w32image->mGdiImage.get();
 
     auto width  = (float)gdiImage->GetWidth ();
     auto height = (float)gdiImage->GetHeight();

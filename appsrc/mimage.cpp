@@ -22,38 +22,18 @@ MImage::ptr MImage::fromFile(const std::string &path) {
 
 define_reflectable_class_function(MImage, fromFFData, "args:ffData")
 MImage::ptr MImage::fromFFData(const MVector<uint8_t>::ptr &ffData) {
-    if (!ffData || ffData->empty()) {
-        return nullptr;
+    if (ffData && !ffData->emplace_back()) {
+        return MImageFactory::instance()->decodeFFData(ffData);
     }
-
-    MVirtualImage::ptr real = MVirtualImageFactory::instance()->imageFromFFData(ffData);
-    if (!real) {
-        return nullptr;
-    }
-
-    auto image = MImage::create();
-    image->mReal = real;
-    return image;
+    return nullptr;
 }
 
 define_reflectable_class_function(MImage, fromBitmap, "args:bitmap,width,height")
 MImage::ptr MImage::fromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height) {
-    if (!bitmap || bitmap->empty()) {
-        return nullptr;
+    if (bitmap && !bitmap->empty()) {
+        return MImageFactory::instance()->decodeBitmap(bitmap, width, height);
     }
-
-    if (width <= 0 || (int)bitmap->size() != width * height * 4) {
-        return nullptr;
-    }
-
-    MVirtualImage::ptr real = MVirtualImageFactory::instance()->imageFromBitmap(bitmap, width, height);
-    if (!real) {
-        return nullptr;
-    }
-
-    auto image = MImage::create();
-    image->mReal = real;
-    return image;
+    return nullptr;
 }
 
 define_reflectable_class_function(MImage, writeFile, "args:path,format")
@@ -64,68 +44,99 @@ void MImage::writeFile(const std::string &path, MImageFileFormat format) {
 
 define_reflectable_class_function(MImage, copyFFData, "args:format")
 MVector<uint8_t>::ptr MImage::copyFFData(MImageFileFormat format) {
-    if (mReal) {
-        return MVirtualImageFactory::instance()->ffDataFromImage(mReal, format);
-    }
-    return nullptr;
+    return MImageFactory::instance()->encodeFFData(shared(), format);
 }
 
 define_reflectable_class_function(MImage, copyBitmap)
 MVector<uint8_t>::ptr MImage::copyBitmap() {
-    if (mReal) {
-        return MVirtualImageFactory::instance()->bitmapFromImage(mReal);
-    }
-    return nullptr;
+    return MImageFactory::instance()->encodeBitmap(shared());
 }
 
 define_reflectable_class_function(MImage, pixelSize, "getter")
 MSize::ptr MImage::pixelSize() {
-    if (mReal) {
-        return MVirtualImageFactory::instance()->pixelSize(mReal);
-    }
-    return MSize::zero();
-}
-
-define_reflectable_class_function(MImage, real, "getter")
-MVirtualImage::ptr MImage::real() {
-    return mReal;
+    return MImageFactory::instance()->getPixelSize(shared());
 }
 
 //image factory:
 
-MVirtualImageFactory::ptr MVirtualImageFactory::sInstance;
+MImageFactory::ptr MImageFactory::sInstance;
 
-void MVirtualImageFactory::setInstance(const MVirtualImageFactory::ptr &obj) {
+define_reflectable_class_function(MImageFactory, setInstance, "setter;args:obj")
+void MImageFactory::setInstance(const MImageFactory::ptr &obj) {
     sInstance = obj;
 }
 
-MVirtualImageFactory *MVirtualImageFactory::instance() {
+define_reflectable_class_function(MImageFactory, instance, "getter")
+MImageFactory *MImageFactory::instance() {
     if (!sInstance) {
-        sInstance = MVirtualImageFactory::create();
+        sInstance = MImageFactory::create();
     }
     return sInstance.get();
 }
 
-MVirtualImage::ptr MVirtualImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {
+define_reflectable_class_function(MImageFactory, decodeFFData, "args:ffData")
+MImage::ptr MImageFactory::decodeFFData(const MVector<uint8_t>::ptr &ffData) {
+    if (ffData && !ffData->empty()) {
+        return onDecodeFFData(ffData);
+    }
     return nullptr;
 }
 
-MVirtualImage::ptr MVirtualImageFactory::imageFromBitmap(
-    const MVector<uint8_t>::ptr &bitmap, int width, int height)
-{
+define_reflectable_class_function(MImageFactory, decodeBitmap, "args:bitmap,width,height")
+MImage::ptr MImageFactory::decodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
+    if (bitmap && width > 0 && (int)bitmap->size() == width * height) {
+        return onDecodeBitmap(bitmap, width, height);
+    }
     return nullptr;
 }
 
-MVector<uint8_t>::ptr MVirtualImageFactory::ffDataFromImage(
-    const MVirtualImage::ptr &real, MImageFileFormat format)
-{
+define_reflectable_class_function(MImageFactory, encodeFFData, "args:image,format")
+MVector<uint8_t>::ptr MImageFactory::encodeFFData(const MImage::ptr &image, MImageFileFormat format) {
+    if (format != MImageFileFormat::JPEG &&
+        format != MImageFileFormat::PNG  )
+    {
+        return nullptr;
+    }
+    if (!image) {
+        return nullptr;
+    }
+
+    return onEncodeFFData(image, format);
+}
+
+define_reflectable_class_function(MImageFactory, encodeBitmap, "args:image")
+MVector<uint8_t>::ptr MImageFactory::encodeBitmap(const MImage::ptr &image) {
+    if (image) {
+        return onEncodeBitmap(image);
+    }
     return nullptr;
 }
 
-MVector<uint8_t>::ptr MVirtualImageFactory::bitmapFromImage(const MVirtualImage::ptr &real) {
-    return nullptr;
-}
-
-MSize::ptr MVirtualImageFactory::pixelSize(const MVirtualImage::ptr &real) {
+define_reflectable_class_function(MImageFactory, getPixelSize, "args:image")
+MSize::ptr MImageFactory::getPixelSize(const MImage::ptr &image) {
+    if (image) {
+        MSize::ptr size = onGetPixelSize(image);
+        return size ? size : MSize::zero();
+    }
     return MSize::zero();
+}
+
+MImage::ptr MImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData) {
+    return nullptr;
+}
+
+MImage::ptr MImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
+    return nullptr;
+}
+
+MVector<uint8_t>::ptr MImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) {
+    return nullptr;
+}
+
+MVector<uint8_t>::ptr MImageFactory::onEncodeBitmap(const MImage::ptr &image) {
+    return nullptr;
+}
+
+MSize::ptr MImageFactory::onGetPixelSize(const MImage::ptr &image) {
+    return nullptr;
 }
