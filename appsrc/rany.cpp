@@ -37,6 +37,10 @@ any::any(const object::ptr &value) {
     _object = value;
 }
 
+data_type any::preferred_type() const {
+    return _type;
+}
+
 bool any::as_bool() const {
     return !!as_int64() || !_string.empty() || (bool)_object;
 }

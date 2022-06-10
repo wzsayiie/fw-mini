@@ -7,6 +7,15 @@ namespace reflect {
 
 //any:
 
+enum class data_type {
+    is_void  ,
+    is_bool  ,
+    is_byte  , is_int   , is_int64,
+    is_float , is_double,
+    is_string,
+    is_object,
+};
+
 class dash_exportable any {
 public:
     any();
@@ -40,6 +49,7 @@ public:
         static_assert(std::is_enum<Type>::value);
     }
     
+    data_type   preferred_type  () const;
     bool        as_bool         () const;
     uint8_t     as_byte         () const;
     int         as_int          () const;
@@ -81,13 +91,6 @@ public:
     }
     
 private:
-    enum class data_type {
-        is_void  ,
-        is_bool  ,
-        is_byte  , is_int   , is_int64 ,
-        is_float , is_double,
-        is_string, is_object,
-    };
     union data_word {
         int64_t as_void  ;
         bool    as_bool  ;
@@ -98,6 +101,7 @@ private:
         double  as_double;
     };
     
+private:
     data_type _type = data_type::is_void;
     data_word _word = {0};
     std::string _string;
