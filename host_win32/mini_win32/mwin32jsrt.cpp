@@ -1,6 +1,8 @@
 #include "mwin32jsrt.h"
 #include "mencode.h"
 
+//assist:
+
 static void AppendExceptionInfo(
     std::wstring *appended, const wchar_t *desc, JsValueRef obj, const wchar_t *keyName)
 {
@@ -23,6 +25,57 @@ static void AppendExceptionInfo(
     appended->append(L"\n");
 }
 
+minikit_class(MJsFunction, MBaseFunction)
+{
+public:
+    MJsFunction(MWin32JsVM *jsVM, JsValueRef func)
+    {
+        JsAddRef(func, nullptr);
+
+        mJsVM = jsVM;
+        mFunc = func;
+    }
+
+    ~MJsFunction()
+    {
+        JsRelease(mFunc, nullptr);
+    }
+
+    void on_call() const override
+    {
+        //argument:
+        std::vector<JsValueRef> params;
+
+        //first argument is "this".
+        JsValueRef thisArg = JS_INVALID_REFERENCE;
+        JsGetUndefinedValue(&thisArg);
+        params.push_back(thisArg);
+
+        auto argc = reflect::get_arg_count();
+        for (int i = 0; i < argc; ++i)
+        {
+            reflect::any cppValue = reflect::get_arg_value(i);
+            JsValueRef jsValue = mJsVM->GetJsValue(cppValue);
+
+            params.push_back(jsValue);
+        }
+
+        //call.
+        JsValueRef retJsValue = JS_INVALID_REFERENCE;
+        JsCallFunction(mFunc, params.data(), (USHORT)params.size(), &retJsValue);
+
+        //return.
+        reflect::any retCppValue = mJsVM->GetCppValue(retJsValue);
+        reflect::return_value(retCppValue);
+    }
+
+private:
+    MWin32JsVM *mJsVM;
+    JsValueRef  mFunc;
+};
+
+//js vm:
+
 void MWin32JsVM::install()
 {
     auto obj = MWin32JsVM::create();
@@ -42,8 +95,124 @@ MWin32JsVM::~MWin32JsVM()
     JsDisposeRuntime(mRuntime);
 }
 
+JsValueRef MWin32JsVM::GetJsValue(const reflect::any &cppValue)
+{
+    switch (cppValue.preferred_type())
+    {
+        case reflect::data_type::is_object:
+        {
+            JsValueRef jsValue = JS_INVALID_REFERENCE;
+            JsCreateObject(&jsValue);
+
+            //bind js and cpp value.
+            JsSetObjectBeforeCollectCallback(jsValue, nullptr, OnCollectJsObject);
+            mObjectMap[jsValue] = cppValue;
+
+            return jsValue;
+        }
+
+        case reflect::data_type::is_string:
+        {
+            std::u16string u16s = MU16StringFromU8(cppValue.as_chars());
+            JsValueRef jsValue = JS_INVALID_REFERENCE;
+            JsPointerToString((const wchar_t *)u16s.c_str(), u16s.size(), &jsValue);
+            return jsValue;
+        }
+
+        case reflect::data_type::is_byte  :
+        case reflect::data_type::is_int   :
+        case reflect::data_type::is_int64 :
+        case reflect::data_type::is_float :
+        case reflect::data_type::is_double:
+        {
+            JsValueRef jsValue = JS_INVALID_REFERENCE;
+            JsDoubleToNumber(cppValue.as_double(), &jsValue);
+            return jsValue;
+        }
+
+        case reflect::data_type::is_bool:
+        {
+            JsValueRef jsValue = JS_INVALID_REFERENCE;
+            JsBoolToBoolean(cppValue.as_bool(), &jsValue);
+            return jsValue;
+        }
+
+        default:
+        {
+            return JS_INVALID_REFERENCE;
+        }
+    }
+}
+
+reflect::any MWin32JsVM::GetCppValue(JsValueRef jsValue)
+{
+    JsValueType jsType = JsUndefined;
+    JsGetValueType(jsValue, &jsType);
+
+    switch (jsType)
+    {
+        case JsFunction:
+        {
+            return MJsFunction::create(this, jsValue);
+        }
+
+        case JsObject:
+        {
+            auto target = mObjectMap.find(jsValue);
+            if (target != mObjectMap.end())
+            {
+                return target->second;
+            }
+            return nullptr;
+        }
+
+        case JsString:
+        {
+            const wchar_t *cppValue = nullptr;
+            size_t cppValueSize = 0;
+            JsStringToPointer(jsValue, &cppValue, &cppValueSize);
+            return MU8StringFromU16((const char16_t *)cppValue);
+        }
+        
+        case JsNumber:
+        {
+            double cppValue = 0;
+            JsNumberToDouble(jsValue, &cppValue);
+            return cppValue;
+        }
+
+        case JsBoolean:
+        {
+            bool cppValue = false;
+            JsBooleanToBool(jsValue, &cppValue);
+            return cppValue;
+        }
+
+        default:
+        {
+            return nullptr;
+        }
+    }
+}
+
 void MWin32JsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func)
 {
+    auto funcId = (int64_t)mNativeFunctions.size();
+    mNativeFunctions[funcId] = func;
+
+    //function key.
+    std::u16string u16name = MU16StringFromU8(name.c_str());
+    JsValueRef     funcKey = JS_INVALID_REFERENCE;
+    JsGetPropertyIdFromName((const wchar_t *)u16name.c_str(), &funcKey);
+
+    //function value.
+    JsValueRef funcValue = JS_INVALID_REFERENCE;
+    JsCreateFunction(OnCallNativeFunction, (void *)funcId, &funcValue);
+
+    //add to the global object.
+    JsValueRef globalObject = JS_INVALID_REFERENCE;
+    JsGetGlobalObject(&globalObject);
+    JsSetProperty(globalObject, funcKey, funcValue, true);
 }
 
 void MWin32JsVM::onEvaluate(const std::string &name, const std::string &script)
@@ -71,4 +240,32 @@ void MWin32JsVM::onEvaluate(const std::string &name, const std::string &script)
 
     std::string message = MU8StringFromU16((const char16_t *)u16message.c_str());
     onException(message);
+}
+
+JsValueRef MWin32JsVM::OnCallNativeFunction(
+    JsValueRef callee, bool isConstruct, JsValueRef *args, USHORT argc, void *custom)
+{
+    auto jsVM = (MWin32JsVM *)instance();
+
+    //function.
+    auto funcId = (int64_t)custom;
+    MBaseFunction::ptr func = jsVM->mNativeFunctions[funcId];
+
+    //argument.
+    std::vector<reflect::any> params;
+    for (USHORT i = 0; i < argc; ++i)
+    {
+        reflect::any param = jsVM->GetCppValue(args[i]);
+        params.push_back(param);
+    }
+
+    //call.
+    reflect::any returned = func->call_with_args(params);
+    return jsVM->GetJsValue(returned);
+}
+
+void MWin32JsVM::OnCollectJsObject(JsRef value, void *custom)
+{
+    auto jsVM = (MWin32JsVM *)instance();
+    jsVM->mObjectMap.erase(value);
 }

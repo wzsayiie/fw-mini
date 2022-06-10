@@ -5,7 +5,8 @@
 #define USE_EDGEMODE_JSRT
 #include <jsrt.h>
 
-minikit_class(MWin32JsVM, MJsVM) {
+minikit_class(MWin32JsVM, MJsVM)
+{
 public:
     static void install();
 
@@ -13,12 +14,25 @@ public:
     MWin32JsVM();
     ~MWin32JsVM();
 
+public:
+    JsValueRef   GetJsValue (const reflect::any &cppValue);
+    reflect::any GetCppValue(JsValueRef jsValue);
+
 protected:
     void onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) override;
     void onEvaluate(const std::string &name, const std::string &script) override;
 
 private:
+    static JsValueRef OnCallNativeFunction(
+        JsValueRef callee, bool isConstruct, JsValueRef *args, USHORT argc, void *custom);
+
+    static void OnCollectJsObject(JsRef value, void *custom);
+
+private:
     JsRuntimeHandle mRuntime = JS_INVALID_RUNTIME_HANDLE;
     JsContextRef    mContext = JS_INVALID_REFERENCE;
     JsSourceContext mCodeId  = 0;
+
+    std::map<intptr_t, MBaseFunction::ptr> mNativeFunctions;
+    std::map<JsValueRef, reflect::object::ptr> mObjectMap;
 };
