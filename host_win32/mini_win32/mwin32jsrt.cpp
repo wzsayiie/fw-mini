@@ -44,25 +44,25 @@ public:
     void on_call() const override
     {
         //argument:
-        std::vector<JsValueRef> params;
+        std::vector<JsValueRef> args;
 
         //first argument is "this".
         JsValueRef thisArg = JS_INVALID_REFERENCE;
         JsGetUndefinedValue(&thisArg);
-        params.push_back(thisArg);
+        args.push_back(thisArg);
 
-        auto argc = reflect::get_arg_count();
-        for (int i = 0; i < argc; ++i)
+        auto count = reflect::get_arg_count();
+        for (int i = 0; i < count; ++i)
         {
             reflect::any cppValue = reflect::get_arg_value(i);
             JsValueRef jsValue = mJsVM->GetJsValue(cppValue);
 
-            params.push_back(jsValue);
+            args.push_back(jsValue);
         }
 
         //call.
         JsValueRef retJsValue = JS_INVALID_REFERENCE;
-        JsCallFunction(mFunc, params.data(), (USHORT)params.size(), &retJsValue);
+        JsCallFunction(mFunc, args.data(), (USHORT)args.size(), &retJsValue);
 
         //return.
         reflect::any retCppValue = mJsVM->GetCppValue(retJsValue);
@@ -105,7 +105,7 @@ JsValueRef MWin32JsVM::GetJsValue(const reflect::any &cppValue)
             JsCreateObject(&jsValue);
 
             //bind js and cpp value.
-            JsSetObjectBeforeCollectCallback(jsValue, nullptr, OnCollectJsObject);
+            JsSetObjectBeforeCollectCallback(jsValue, nullptr, onCollectJsObject);
             mObjectMap[jsValue] = cppValue;
 
             return jsValue;
@@ -207,7 +207,7 @@ void MWin32JsVM::onRegisterFunction(const std::string &name, const MBaseFunction
 
     //function value.
     JsValueRef funcValue = JS_INVALID_REFERENCE;
-    JsCreateFunction(OnCallNativeFunction, (void *)funcId, &funcValue);
+    JsCreateFunction(onCallNativeFunction, (void *)funcId, &funcValue);
 
     //add to the global object.
     JsValueRef globalObject = JS_INVALID_REFERENCE;
@@ -242,7 +242,7 @@ void MWin32JsVM::onEvaluate(const std::string &name, const std::string &script)
     onException(message);
 }
 
-JsValueRef MWin32JsVM::OnCallNativeFunction(
+JsValueRef MWin32JsVM::onCallNativeFunction(
     JsValueRef callee, bool isConstruct, JsValueRef *args, USHORT argc, void *custom)
 {
     auto jsVM = (MWin32JsVM *)instance();
@@ -251,9 +251,11 @@ JsValueRef MWin32JsVM::OnCallNativeFunction(
     auto funcId = (int64_t)custom;
     MBaseFunction::ptr func = jsVM->mNativeFunctions[funcId];
 
-    //argument.
+    //argument:
     std::vector<reflect::any> params;
-    for (USHORT i = 0; i < argc; ++i)
+
+    //NOTE: first argument is "this".
+    for (USHORT i = 1; i < argc; ++i)
     {
         reflect::any param = jsVM->GetCppValue(args[i]);
         params.push_back(param);
@@ -264,7 +266,7 @@ JsValueRef MWin32JsVM::OnCallNativeFunction(
     return jsVM->GetJsValue(returned);
 }
 
-void MWin32JsVM::OnCollectJsObject(JsRef value, void *custom)
+void MWin32JsVM::onCollectJsObject(JsRef value, void *custom)
 {
     auto jsVM = (MWin32JsVM *)instance();
     jsVM->mObjectMap.erase(value);
