@@ -357,10 +357,13 @@ static void OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
         GetWindowTextW(sEditWnd, dash::buffer<WCHAR>(), dash::buffer_size<WCHAR>());
         std::string u8text = MU8StringFromU16(dash::buffer<char16_t>());
 
-        if (sEditEmitEnter) {
+        if (sEditEmitEnter)
+        {
             sEditEmitEnter = false;
             MWindow::mainWindow()->write(u8text, true);
-        } else {
+        }
+        else
+        {
             MWindow::mainWindow()->write(u8text, false);
         }
     }

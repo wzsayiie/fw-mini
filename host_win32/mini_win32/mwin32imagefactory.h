@@ -9,7 +9,8 @@ public:
     std::shared_ptr<Gdiplus::Image> mGdiImage;
 };
 
-minikit_class(MWin32ImageFactory, MImageFactory) {
+minikit_class(MWin32ImageFactory, MImageFactory)
+{
 public:
     static void install();
     
