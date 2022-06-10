@@ -5,8 +5,9 @@
 namespace reflect {
 
 //arguments and return value of current stack frame.
-dash_exportable any  get_argument(int index);
-dash_exportable void return_value(const any &value);
+dash_exportable int  get_arg_count();
+dash_exportable any  get_arg_value(int index);
+dash_exportable void return_value (const any &value);
 
 //function arguments count:
 
@@ -55,7 +56,7 @@ template<int, int, class> struct caller;
 
 template<int Index, int End, class Ret, class... Args> struct caller<Index, End, Ret (Args...)> {
     template<class... Unfold> static void call(const std::function<Ret (Args...)> &fcn, Unfold... unfold) {
-        auto arg = get_argument(Index);
+        auto arg = get_arg_value(Index);
         auto val = take<typename type_at<Index, void (Args...)>::type>::from(arg);
         caller<Index + 1, End, Ret (Args...)>::call(fcn, unfold..., val);
     }
