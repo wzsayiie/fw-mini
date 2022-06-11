@@ -2,6 +2,7 @@
 #import "MMACBundle.h"
 #import "MMACDrawView.h"
 #import "MMACImageFactory.h"
+#import "MMACJavaScriptCore.h"
 #import <Carbon/Carbon.h>
 
 const CGFloat ViewContentWidth  = 360;
@@ -47,6 +48,7 @@ const CGFloat TextFieldBottom   =  20;
     
     MMACBundle::install();
     MMACImageFactory::install();
+    MMACJsVM::install();
     
     //application events:
     self.app->launch();
