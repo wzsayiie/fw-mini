@@ -87,7 +87,7 @@
 }
 
 - (void)drawImage:(MImageGraph *)graph withContext:(CGContextRef)context viewHeight:(CGFloat)viewHeight {
-    _NSImage *real = std::static_pointer_cast<MMACImageImpl>(graph->image()->impl())->mReal;
+    _NSImage *nsImage = std::static_pointer_cast<MMACImage>(graph->image())->mNSImage;
     
     CGFloat w = graph->pixelW();
     CGFloat h = graph->pixelH();
@@ -98,7 +98,7 @@
     CGFloat y = graph->pixelY();
 #endif
     
-    [real drawInRect:CGRectMake(x, y, w, h)];
+    [nsImage drawInRect:CGRectMake(x, y, w, h)];
 }
 
 - (void)drawText:(MTextGraph *)graph withContext:(CGContextRef)context viewHeight:(CGFloat)viewHeight {

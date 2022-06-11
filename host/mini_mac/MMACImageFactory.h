@@ -11,21 +11,21 @@
 
 #endif
 
-m_class(MMACImageImpl, MImageImpl) {
+minikit_class(MMACImage, MImage) {
 public:
-    _NSImage *mReal = nil;
+    _NSImage *mNSImage = nil;
 };
 
-m_class(MMACImageFactory, MImageFactory) {
+minikit_class(MMACImageFactory, MImageFactory) {
 public:
     static void install();
     
 public:
-    MImageImpl::ptr imageFromFFData(const MVector<uint8_t>::ptr &ffData) override;
-    MImageImpl::ptr imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) override;
+    MImage::ptr onDecodeFFData(const MVector<uint8_t>::ptr &ffData) override;
+    MImage::ptr onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) override;
 
-    MVector<uint8_t>::ptr ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format) override;
-    MVector<uint8_t>::ptr bitmapFromImage(const MImageImpl::ptr &impl) override;
+    MVector<uint8_t>::ptr onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) override;
+    MVector<uint8_t>::ptr onEncodeBitmap(const MImage::ptr &image) override;
 
-    MSize::ptr pixelSize(const MImageImpl::ptr &impl) override;
+    MSize::ptr onGetPixelSize(const MImage::ptr &image) override;
 };

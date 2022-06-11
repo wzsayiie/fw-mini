@@ -25,19 +25,19 @@ void MMACImageFactory::install() {
     setInstance(obj);
 }
 
-MImageImpl::ptr MMACImageFactory::imageFromFFData(const MVector<uint8_t>::ptr &ffData) {
-    NSData   *data = [NSData dataWithBytes:ffData->data() length:ffData->size()];
-    _NSImage *real = [[_NSImage alloc] initWithData:data];
-    
-    if (real) {
-        auto impl = MMACImageImpl::create();
-        impl->mReal = real;
-        return impl;
+MImage::ptr MMACImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData) {
+    NSData   *nsData  = [NSData dataWithBytes:ffData->data() length:ffData->size()];
+    _NSImage *nsImage = [[_NSImage alloc] initWithData:nsData];
+    if (!nsImage) {
+        return nullptr;
     }
-    return nullptr;
+    
+    auto image = MMACImage::create();
+    image->mNSImage = nsImage;
+    return image;
 }
 
-MImageImpl::ptr MMACImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
+MImage::ptr MMACImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
     auto pixels = MVector<uint8_t>::create(); {
         pixels->resize(width * height * 4);
         
@@ -46,60 +46,60 @@ MImageImpl::ptr MMACImageFactory::imageFromBitmap(const MVector<uint8_t>::ptr &b
         MColorTransform(src, dst, width * height);
     }
     
-    _NSImage *real = nil; {
+    _NSImage *nsImage = nil; {
         CGContextRef context = CreateBitmapContext(pixels->data(), width, height);
         CGImageRef   cgImage = CGBitmapContextCreateImage(context);
 
     #if TARGET_OS_OSX
-        real = [[NSImage alloc] initWithCGImage:cgImage size:NSMakeSize(width, height)];
+        nsImage = [[NSImage alloc] initWithCGImage:cgImage size:NSMakeSize(width, height)];
     #elif TARGET_OS_IOS
-        real = [[UIImage alloc] initWithCGImage:cgImage];
+        nsImage = [[UIImage alloc] initWithCGImage:cgImage];
     #endif
 
         CGContextRelease(context);
         CGImageRelease(cgImage);
     }
 
-    auto impl = MMACImageImpl::create();
-    impl->mReal = real;
-    return impl;
+    auto image = MMACImage::create();
+    image->mNSImage = nsImage;
+    return image;
 }
 
-MVector<uint8_t>::ptr MMACImageFactory::ffDataFromImage(const MImageImpl::ptr &impl, MImageFileFormat format) {
-    _NSImage *real = std::static_pointer_cast<MMACImageImpl>(impl)->mReal;
+MVector<uint8_t>::ptr MMACImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) {
+    _NSImage *nsImage = std::static_pointer_cast<MMACImage>(image)->mNSImage;
 
-    NSData *data = nil; {
+    NSData *nsData = nil; {
     #if TARGET_OS_OSX
-        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:real.TIFFRepresentation];
-        rep.size = real.size;
+        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:nsImage.TIFFRepresentation];
+        rep.size = nsImage.size;
 
         switch (format) {
-            case MImageFileFormat::JPEG: data = [rep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{}]; break;
-            case MImageFileFormat::PNG : data = [rep representationUsingType:NSBitmapImageFileTypePNG  properties:@{}]; break;
+            case MImageFileFormat::JPEG: nsData = [rep representationUsingType:NSBitmapImageFileTypeJPEG properties:@{}]; break;
+            case MImageFileFormat::PNG : nsData = [rep representationUsingType:NSBitmapImageFileTypePNG  properties:@{}]; break;
         }
         
     #elif TARGET_OS_IOS
         switch (format) {
-            case MImageFileFormat::JPEG: data = UIImageJPEGRepresentation(real, 1); break;
-            case MImageFileFormat::PNG : data = UIImagePNGRepresentation (real   ); break;
+            case MImageFileFormat::JPEG: nsData = UIImageJPEGRepresentation(nsImage, 1); break;
+            case MImageFileFormat::PNG : nsData = UIImagePNGRepresentation (nsImage   ); break;
         }
     #endif
     }
-
-    if (data) {
-        auto ffData = MVector<uint8_t>::create();
-        ffData->insert(ffData->end(), (uint8_t *)data.bytes, (uint8_t *)data.bytes + data.length);
-        return ffData;
+    if (!nsData) {
+        return nullptr;
     }
-    return nil;
+
+    auto ffData = MVector<uint8_t>::create();
+    ffData->insert(ffData->end(), (uint8_t *)nsData.bytes, (uint8_t *)nsData.bytes + nsData.length);
+    return ffData;
 }
 
-MVector<uint8_t>::ptr MMACImageFactory::bitmapFromImage(const MImageImpl::ptr &impl) {
+MVector<uint8_t>::ptr MMACImageFactory::onEncodeBitmap(const MImage::ptr &image) {
     //new bitmap space:
-    _NSImage *real = std::static_pointer_cast<MMACImageImpl>(impl)->mReal;
+    _NSImage *nsImage = std::static_pointer_cast<MMACImage>(image)->mNSImage;
     
-    auto width  = (int)real.size.width ;
-    auto height = (int)real.size.height;
+    auto width  = (int)nsImage.size.width ;
+    auto height = (int)nsImage.size.height;
 
     auto bitmap = MVector<uint8_t>::create();
     bitmap->resize(width * height * 4);
@@ -109,10 +109,10 @@ MVector<uint8_t>::ptr MMACImageFactory::bitmapFromImage(const MImageImpl::ptr &i
     
 #if TARGET_OS_OSX
     NSGraphicsContext.currentContext = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
-    [real drawInRect:NSMakeRect(0, 0, width, height)];
+    [nsImage drawInRect:NSMakeRect(0, 0, width, height)];
     NSGraphicsContext.currentContext = nil;
 #elif TARGET_OS_IOS
-    CGContextDrawImage(context, CGRectMake(0, 0, width, height), real.CGImage);
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), nsImage.CGImage);
 #endif
     
     CGContextRelease(context);
@@ -125,7 +125,7 @@ MVector<uint8_t>::ptr MMACImageFactory::bitmapFromImage(const MImageImpl::ptr &i
     return bitmap;
 }
 
-MSize::ptr MMACImageFactory::pixelSize(const MImageImpl::ptr &impl) {
-    _NSImage *real = std::static_pointer_cast<MMACImageImpl>(impl)->mReal;
-    return MSize::from(real.size.width, real.size.height);
+MSize::ptr MMACImageFactory::onGetPixelSize(const MImage::ptr &image) {
+    _NSImage *nsImage = std::static_pointer_cast<MMACImage>(image)->mNSImage;
+    return MSize::from(nsImage.size.width, nsImage.size.height);
 }
