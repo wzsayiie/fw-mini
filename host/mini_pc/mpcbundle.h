@@ -7,9 +7,9 @@ public:
     static void install();
 
 protected:
-    MVector<uint8_t>::ptr onLoadAsset(const std::string &path) override;
+    MVector<uint8_t>::ptr onLoadResource(const std::string &path) override;
 
-    std::string onGetBundleDirectory   () override;
+    std::string onGetResBundleDirectory() override;
     std::string onGetDocumentDirectory () override;
     std::string onGetTemporaryDirectory() override;
 };

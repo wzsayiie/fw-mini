@@ -34,7 +34,7 @@ MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
         return nullptr;
     }
 
-    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
+    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadResource(m_normal_path path);
     if (!bytes || bytes->empty()) {
         return nullptr;
     }
@@ -61,7 +61,7 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
         return "";
     }
 
-    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadAsset(m_normal_path path);
+    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadResource(m_normal_path path);
     if (!bytes || bytes->empty()) {
         return "";
     }
@@ -146,8 +146,8 @@ void MFileManager::removePath(const std::string &path) {
 
 //bundle:
 
-define_reflectable_class_const(MBundle, PrivateDirectoryName)
-define_reflectable_class_const(MBundle, BundleDirectoryName )
+define_reflectable_class_const(MBundle, PrivateDirectoryName  )
+define_reflectable_class_const(MBundle, ResBundleDirectoryName)
 
 MBundle::ptr MBundle::sInstance;
 
@@ -164,30 +164,30 @@ MBundle *MBundle::instance() {
     return sInstance.get();
 }
 
-define_reflectable_class_function(MBundle, loadAsset, "args:path")
-MVector<uint8_t>::ptr MBundle::loadAsset(const std::string &path) {
+define_reflectable_class_function(MBundle, loadResource, "args:path")
+MVector<uint8_t>::ptr MBundle::loadResource(const std::string &path) {
     if (!path.empty()) {
-        return onLoadAsset(path);
+        return onLoadResource(path);
     }
     return nullptr;
 }
 
-define_reflectable_class_function(MBundle, bundleDirectory   , "getter")
+define_reflectable_class_function(MBundle, resBundleDirectory, "getter")
 define_reflectable_class_function(MBundle, documentDirectory , "getter")
 define_reflectable_class_function(MBundle, temporaryDirectory, "getter")
 
 #define _D(var, getter) if (var.empty()) { var = getter(); } return var;
 
-std::string MBundle::bundleDirectory   () { _D(mBundleDirectory   , onGetBundleDirectory   ) }
+std::string MBundle::resBundleDirectory() { _D(mResBundleDirectory, onGetResBundleDirectory) }
 std::string MBundle::documentDirectory () { _D(mDocumentDirectory , onGetDocumentDirectory ) }
 std::string MBundle::temporaryDirectory() { _D(mTemporaryDirectory, onGetTemporaryDirectory) }
 
 #undef  _D
 
-MVector<uint8_t>::ptr MBundle::onLoadAsset(const std::string &path) {
+MVector<uint8_t>::ptr MBundle::onLoadResource(const std::string &path) {
     return nullptr;
 }
 
-std::string MBundle::onGetBundleDirectory   () { return ""; }
+std::string MBundle::onGetResBundleDirectory() { return ""; }
 std::string MBundle::onGetDocumentDirectory () { return ""; }
 std::string MBundle::onGetTemporaryDirectory() { return ""; }

@@ -13,19 +13,19 @@ void MPCBundle::install() {
     setInstance(obj);
 }
 
-MVector<uint8_t>::ptr MPCBundle::onLoadAsset(const std::string &path) {
-    std::filesystem::path assetPath = bundleDirectory();
-    assetPath.append(path);
+MVector<uint8_t>::ptr MPCBundle::onLoadResource(const std::string &path) {
+    std::filesystem::path resPath = resBundleDirectory();
+    resPath.append(path);
 
-    auto asset = MVector<uint8_t>::create();
-    dash::read_file(assetPath.string().c_str(), [&](int size) {
-        asset->resize((size_t)size);
-        return asset->data();
+    auto res = MVector<uint8_t>::create();
+    dash::read_file(resPath.string().c_str(), [&](int size) {
+        res->resize((size_t)size);
+        return res->data();
     });
-    return asset;
+    return res;
 }
 
-std::string MPCBundle::onGetBundleDirectory() {
+std::string MPCBundle::onGetResBundleDirectory() {
 #if DASH_OS_WIN32
     GetModuleFileNameW(nullptr, dash::buffer<WCHAR>(), (DWORD)dash::buffer_size<WCHAR>());
     std::filesystem::path exePath = dash::buffer<char16_t>();
@@ -45,7 +45,7 @@ std::string MPCBundle::onGetBundleDirectory() {
             break;
         }
     }
-    directory.append(MBundle::BundleDirectoryName);
+    directory.append(MBundle::ResBundleDirectoryName);
 
     return directory.string();
 }
