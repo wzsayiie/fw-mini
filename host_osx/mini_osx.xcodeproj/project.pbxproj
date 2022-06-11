@@ -17,6 +17,7 @@
 		CE1FC5BE280C5438005215EC /* MMACImageFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5BB280C5438005215EC /* MMACImageFactory.mm */; };
 		CE30706D284E3EA0007C8FEB /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE30706C284E3EA0007C8FEB /* JavaScriptCore.framework */; };
 		CE30706F284E3EA9007C8FEB /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE30706E284E3EA9007C8FEB /* AppKit.framework */; };
+		CEE269352854BE050007B0C2 /* MMACJavaScriptCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE269342854BE050007B0C2 /* MMACJavaScriptCore.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,8 @@
 		CE1FC5BB280C5438005215EC /* MMACImageFactory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACImageFactory.mm; sourceTree = "<group>"; };
 		CE30706C284E3EA0007C8FEB /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		CE30706E284E3EA9007C8FEB /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		CEE269332854BE050007B0C2 /* MMACJavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACJavaScriptCore.h; sourceTree = "<group>"; };
+		CEE269342854BE050007B0C2 /* MMACJavaScriptCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACJavaScriptCore.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +124,8 @@
 				CE1FC5B6280C5438005215EC /* MMACDrawView.mm */,
 				CE1FC5B9280C5438005215EC /* MMACImageFactory.h */,
 				CE1FC5BB280C5438005215EC /* MMACImageFactory.mm */,
+				CEE269332854BE050007B0C2 /* MMACJavaScriptCore.h */,
+				CEE269342854BE050007B0C2 /* MMACJavaScriptCore.mm */,
 			);
 			name = mini_mac;
 			path = ../host/mini_mac;
@@ -199,6 +204,7 @@
 				CE107D8F2674C5EA00823730 /* MOSXAppMain.mm in Sources */,
 				CE1FC5BD280C5438005215EC /* MMACBundle.mm in Sources */,
 				CE107DA82674C77C00823730 /* README.cpp in Sources */,
+				CEE269352854BE050007B0C2 /* MMACJavaScriptCore.mm in Sources */,
 				CE1FC5BE280C5438005215EC /* MMACImageFactory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
