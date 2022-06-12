@@ -68,7 +68,7 @@ template<int Index, class Ret, class... Args> struct caller<Index, Index, Ret (A
     }
 };
 
-//base function:
+//base_function:
 
 class base_function;
 
@@ -131,5 +131,30 @@ protected:
 private:
     std::function<Ret (Args...)> _fcn;
 };
+
+//make_function:
+
+template<class Ret, class Class, class... Args>
+typename function<Ret (Args...)>::ptr make_function(Class *obj, Ret (Class::*fcn)(Args...)) {
+    if (obj && fcn) {
+        return function<Ret (Args...)>::create([=](Args... args) {
+            return (obj->*fcn)(args...);
+        });
+    }
+    return nullptr;
+}
+
+template<class Ret, class... Args>
+typename function<Ret (Args...)>::ptr make_function(Ret (*fcn)(Args...)) {
+    if (fcn) {
+        return function<Ret (Args...)>::create(fcn);
+    }
+    return nullptr;
+}
+
+template<class Type, class Fcn>
+typename function<Type>::ptr make_function(const Fcn &fcn) {
+    return function<Type>::create(fcn);
+}
 
 } //end reflect.

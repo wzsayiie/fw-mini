@@ -36,6 +36,8 @@ template<class V>          using MSet      = reflect::set<V>;
 
 using MBaseFunction = reflect::base_function;
 
+#define MF reflect::make_function
+
 //host flags:
 
 #define MINIKIT_HOST_CALL
