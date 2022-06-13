@@ -53,31 +53,39 @@ void commit_enum(const std::string &name, const symbol &type) {
     (*_enums)[name] = var;
 }
 
-void commit_class_variable(const symbol &cls, const std::string &name, const symbol &type, const any &value) {
+void commit_class_static_variable(
+    const symbol &cls, const std::string &name, const symbol &type, const any &value)
+{
     auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
         variable var = { type, value };
-        meta->cls_variables[name] = var;
+        meta->static_variables[name] = var;
     }
 }
 
-void commit_class_function(const symbol &cls, const std::string &name, const symbol &type, const any &value) {
+void commit_class_static_function(
+    const symbol &cls, const std::string &name, const symbol &type, const any &value)
+{
     auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
         variable var = { type, value };
-        meta->cls_functions[name] = var;
+        meta->static_functions[name] = var;
     }
 }
 
-void commit_object_function(const symbol &cls, const std::string &name, const symbol &type, const any &value) {
+void commit_class_inst_function(
+    const symbol &cls, const std::string &name, const symbol &type, const any &value)
+{
     auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
         variable var = { type, value };
-        meta->obj_functions[name] = var;
+        meta->inst_functions[name] = var;
     }
 }
 
-void commit_enum_value(const symbol &enu, const std::string &name, const symbol &type, const any &value) {
+void commit_enum_value(
+    const symbol &enu, const std::string &name, const symbol &type, const any &value)
+{
     auto meta = (enum_meta *)query_type_meta(enu, category::is_enum);
     if (meta) {
         variable var = { type, value };

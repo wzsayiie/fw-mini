@@ -84,7 +84,7 @@ public:
         symbol fcn_type = extract<typename function<Ret (Args...)>::ptr>::commit(note);
         
         commit_class(cls_type.str(), cls_type);
-        commit_class_function(cls_type, name, fcn_type, function<Ret (Args...)>::create(
+        commit_class_static_function(cls_type, name, fcn_type, function<Ret (Args...)>::create(
             [=](Args... args) {
                 return fcn(args...);
             }
@@ -99,7 +99,7 @@ public:
         symbol fcn_type = extract<typename function<Ret (const typename Class::ptr &, Args...)>::ptr>::commit(note);
         
         commit_class(cls_type.str(), cls_type);
-        commit_object_function(cls_type, name, fcn_type, function<Ret (const typename Class::ptr &, Args...)>::create(
+        commit_class_inst_function(cls_type, name, fcn_type, function<Ret (const typename Class::ptr &, Args...)>::create(
             [=](const typename Class::ptr &self, Args... args) {
                 return (self.get()->*fcn)(args...);
             }
@@ -121,7 +121,7 @@ private:
         symbol val_type = symbol_of<Value>::value();
 
         commit_class(cls_type.str(), cls_type);
-        commit_class_variable(cls_type, name, val_type, value);
+        commit_class_static_variable(cls_type, name, val_type, value);
     }
 };
 

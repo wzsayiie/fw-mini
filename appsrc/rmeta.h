@@ -85,9 +85,9 @@ struct class_meta : type_meta {
     symbol base_type;
     bool   abstract ;
     
-    std::map<std::string, variable> cls_variables;
-    std::map<std::string, variable> cls_functions;
-    std::map<std::string, variable> obj_functions;
+    std::map<std::string, variable> static_variables;
+    std::map<std::string, variable> static_functions;
+    std::map<std::string, variable> inst_functions;
 };
 
 struct enum_meta : type_meta {
@@ -98,14 +98,14 @@ struct enum_meta : type_meta {
 
 type_meta *commit_type_meta(const symbol &sym, category cate);
 
-void commit_variable       (/* global scope */ const std::string &name, const symbol &type, const any &value);
-void commit_function       (/* global scope */ const std::string &name, const symbol &type, const any &value);
-void commit_class          (/* global scope */ const std::string &name, const symbol &type);
-void commit_enum           (/* global scope */ const std::string &name, const symbol &type);
-void commit_class_variable (const symbol &cls, const std::string &name, const symbol &type, const any &value);
-void commit_class_function (const symbol &cls, const std::string &name, const symbol &type, const any &value);
-void commit_object_function(const symbol &cls, const std::string &name, const symbol &type, const any &value);
-void commit_enum_value     (const symbol &enu, const std::string &name, const symbol &type, const any &value);
+void commit_variable             (/* global scope */ const std::string &name, const symbol &type, const any &value);
+void commit_function             (/* global scope */ const std::string &name, const symbol &type, const any &value);
+void commit_class                (/* global scope */ const std::string &name, const symbol &type);
+void commit_enum                 (/* global scope */ const std::string &name, const symbol &type);
+void commit_class_static_variable(const symbol &cls, const std::string &name, const symbol &type, const any &value);
+void commit_class_static_function(const symbol &cls, const std::string &name, const symbol &type, const any &value);
+void commit_class_inst_function  (const symbol &cls, const std::string &name, const symbol &type, const any &value);
+void commit_enum_value           (const symbol &enu, const std::string &name, const symbol &type, const any &value);
 
 dash_exportable const std::map<symbol, type_meta *> *type_metas();
 

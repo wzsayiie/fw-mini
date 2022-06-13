@@ -196,7 +196,7 @@ template<class Class> struct extract<Class *> {
             constructor.type  = extract<typename function<object::ptr ()>::ptr>::commit();
             constructor.value = creator_of<Class, abstract>::value();
             
-            meta->cls_functions["create"] = constructor;
+            meta->static_functions["create"] = constructor;
         }
 
         return type;
