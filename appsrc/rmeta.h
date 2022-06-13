@@ -107,6 +107,8 @@ void commit_class_function (const symbol &cls, const std::string &name, const sy
 void commit_object_function(const symbol &cls, const std::string &name, const symbol &type, const any &value);
 void commit_enum_value     (const symbol &enu, const std::string &name, const symbol &type, const any &value);
 
+dash_exportable const std::map<symbol, type_meta *> *type_metas();
+
 dash_exportable const type_meta *query_type_meta(const symbol &sym, category cate);
 dash_exportable const type_meta *query_type_meta(const symbol &sym);
 

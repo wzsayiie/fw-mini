@@ -85,6 +85,10 @@ void commit_enum_value(const symbol &enu, const std::string &name, const symbol 
     }
 }
 
+const std::map<symbol, type_meta *> *type_metas() {
+    return &_type_metas;
+}
+
 const type_meta *query_type_meta(const symbol &sym, category cate) {
     const type_meta *meta = query_type_meta(sym);
     if (meta && meta->cate == cate) {
