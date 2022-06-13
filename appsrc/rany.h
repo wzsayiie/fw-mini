@@ -81,7 +81,7 @@ public:
     //if a object shared ptr.
     template<class Type> operator std::shared_ptr<Type>() const {
         static_assert(std::is_base_of<object, Type>::value);
-        return std::dynamic_pointer_cast<Type>(as_object_shared());
+        return pointer_cast_as<Type>::from(as_object_shared());
     }
 
     //if a enum value.
@@ -131,7 +131,7 @@ template<class Type> struct take<Type *> {
 template<class Type> struct take<std::shared_ptr<Type>> {
     static std::shared_ptr<Type> from(const any &a) {
         static_assert(std::is_base_of<object, Type>::value);
-        return std::dynamic_pointer_cast<Type>(a.as_object_shared());
+        return pointer_cast_as<Type>::from(a.as_object_shared());
     }
 };
 template<class Type> struct take<const std::shared_ptr<Type> &> {

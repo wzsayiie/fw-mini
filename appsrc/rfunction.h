@@ -157,4 +157,18 @@ typename function<Type>::ptr make_function(const Fcn &fcn) {
     return function<Type>::create(fcn);
 }
 
+//cast:
+
+template<class Ret, class... Args> struct pointer_cast_as<function<Ret (Args...)>> {
+    //function<...> has no additional virtual functions, can be converted to each others.
+
+    static typename function<Ret (Args...)>::ptr from(const object::ptr &obj) {
+        auto is_func = std::dynamic_pointer_cast<base_function>(obj);
+        if (is_func) {
+            return std::static_pointer_cast<function<Ret (Args...)>>(obj);
+        }
+        return nullptr;
+    }
+};
+
 } //end reflect.

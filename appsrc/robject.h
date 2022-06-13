@@ -4,6 +4,8 @@
 
 namespace reflect {
 
+//object:
+
 template<> struct typeids_of<class object> {
     static constexpr const void *value[] = { "object", nullptr };
 };
@@ -29,6 +31,8 @@ private:
     int _ref_count = 1;
 };
 
+//extends:
+
 template<class Class, class Super> class dash_exportable extends : public dash::extends<Class, Super> {
 public:
     typedef extends<Class, Super> upper;
@@ -51,6 +55,14 @@ public:
     
     std::shared_ptr<Class> shared() {
         return std::static_pointer_cast<Class>(object::shared());
+    }
+};
+
+//cast:
+
+template<class Type> struct pointer_cast_as {
+    static std::shared_ptr<Type> from(const object::ptr &obj) {
+        return std::dynamic_pointer_cast<Type>(obj);
     }
 };
 
