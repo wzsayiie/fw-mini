@@ -15,8 +15,8 @@ public:
     ~MWin32JsVM();
 
 public:
-    JsValueRef   GetJsValue (const reflect::any &cppValue);
-    reflect::any GetCppValue(JsValueRef jsValue);
+    JsValueRef   getJsValue (const reflect::any &cppValue);
+    reflect::any getCppValue(JsValueRef jsValue);
 
 protected:
     void onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) override;
