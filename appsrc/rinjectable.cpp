@@ -33,20 +33,33 @@ base_function::ptr function_table::find(const char *name) {
     return it->second;
 }
 
-void inject(const char *class_name, const function_table::ptr &table) {
-    symbol sym = symbol::make(class_name);
+static function_table::ptr injected_table_of(const char *cls_name) {
+    symbol sym = symbol::make(cls_name);
     if (!sym) {
-        return;
+        return nullptr;
     }
 
-    auto it = s_tables->find(sym);
-    if (it == s_tables->end()) {
-        auto stored = function_table::create();
-        stored->append(table);
-        s_tables->insert({ sym, stored });
+    auto found = s_tables->find(sym);
+    if (found != s_tables->end()) {
+        return found->second;
+    }
 
-    } else {
-        it->second->append(table);
+    auto creatred = function_table::create();
+    auto inserted = s_tables->insert({ sym, creatred });
+    return inserted.first->second;
+}
+
+void inject(const char *cls_name, const char *fcn_name, const base_function::ptr &func) {
+    function_table::ptr table = injected_table_of(cls_name);
+    if (table) {
+        table->insert(fcn_name, func);
+    }
+}
+
+void inject(const char *cls_name, const function_table::ptr &table) {
+    function_table::ptr present = injected_table_of(cls_name);
+    if (present) {
+        present->append(table);
     }
 }
 
@@ -54,11 +67,11 @@ void inject(const char *class_name, const function_table::ptr &table) {
 
 base_function::ptr injectable::find_injected(const char *name) {
     auto it = s_tables->find(_cls_sym ? _cls_sym : class_symbol());
-    if (it == s_tables->end()) {
-        return nullptr;
+    if (it != s_tables->end()) {
+        return it->second->find(name);
     }
 
-    return it->second->find(name);
+    return nullptr;
 }
 
 void injectable::set_class_symbol(const symbol &sym) {

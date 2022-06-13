@@ -17,7 +17,8 @@ private:
     std::map<symbol, base_function::ptr> _functions;
 };
 
-dash_exportable void inject(const char *class_name, const function_table::ptr &table);
+dash_exportable void inject(const char *cls_name, const char *fcn_name, const base_function::ptr &func);
+dash_exportable void inject(const char *cls_name, const function_table::ptr &table);
 
 //injectable:
 
