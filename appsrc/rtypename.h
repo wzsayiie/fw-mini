@@ -71,6 +71,7 @@ template<class First, class... Rest> struct arg_types_ids<void (First, Rest...)>
 
 template<> struct typeids_of<void       > { static constexpr const void *value[] = { "void"  , nullptr }; };
 template<> struct typeids_of<bool       > { static constexpr const void *value[] = { "bool"  , nullptr }; };
+template<> struct typeids_of<char       > { static constexpr const void *value[] = { "char"  , nullptr }; };
 template<> struct typeids_of<uint8_t    > { static constexpr const void *value[] = { "byte"  , nullptr }; };
 template<> struct typeids_of<int        > { static constexpr const void *value[] = { "int"   , nullptr }; };
 template<> struct typeids_of<int64_t    > { static constexpr const void *value[] = { "int64" , nullptr }; };

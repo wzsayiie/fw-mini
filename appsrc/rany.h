@@ -141,6 +141,11 @@ template<class Type> struct take<const std::shared_ptr<Type> &> {
 };
 
 //if is a string.
+template<> struct take<const char *> {
+    static const char *from(const any &a) {
+        return a.as_chars();
+    }
+};
 template<> struct take<std::string> {
     static std::string from(const any &a) {
         return a.as_string();
