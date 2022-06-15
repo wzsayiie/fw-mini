@@ -28,6 +28,7 @@ template<> struct extract<int                > { static symbol commit() { return
 template<> struct extract<int64_t            > { static symbol commit() { return symbol_of<int64_t    >::value(); } };
 template<> struct extract<float              > { static symbol commit() { return symbol_of<float      >::value(); } };
 template<> struct extract<double             > { static symbol commit() { return symbol_of<double     >::value(); } };
+template<> struct extract<const char        *> { static symbol commit() { return symbol_of<char       >::value(); } };
 template<> struct extract<std::string        > { static symbol commit() { return symbol_of<std::string>::value(); } };
 template<> struct extract<const std::string &> { static symbol commit() { return symbol_of<std::string>::value(); } };
 

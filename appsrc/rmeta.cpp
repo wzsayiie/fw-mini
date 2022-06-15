@@ -111,6 +111,7 @@ const type_meta *query_type_meta(const symbol &sym) {
     if (to_initialize) {
         set_type_meta(symbol_of<void       >::value(), category::is_void  );
         set_type_meta(symbol_of<bool       >::value(), category::is_bool  );
+        set_type_meta(symbol_of<char       >::value(), category::is_char  );
         set_type_meta(symbol_of<uint8_t    >::value(), category::is_byte  );
         set_type_meta(symbol_of<int        >::value(), category::is_int   );
         set_type_meta(symbol_of<int64_t    >::value(), category::is_int64 );

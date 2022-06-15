@@ -9,6 +9,7 @@ namespace reflect {
 enum class category {
     is_void    ,    //void.
     is_bool    ,    //bool.
+    is_char    ,    //char.
     is_byte    ,    //uint8_t.
     is_int     ,    //int.
     is_int64   ,    //int64_t.
