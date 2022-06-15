@@ -1,29 +1,56 @@
 #include "minikit.h"
 
-static void onException(const std::string &message) {
+static void MInjectFunction(
+    const char *clsName, const char *fcnName, const reflect::base_function::ptr &func)
+{
+    reflect::inject(clsName, fcnName, func);
+}
+
+static void MSetClassSymbol(const reflect::injectable::ptr &obj, const char *symName) {
+    if (obj) {
+        reflect::symbol sym = reflect::symbol::make(symName);
+        obj->set_class_symbol(sym);
+    }
+}
+
+static std::string MGetOS() {
+    if (DASH_OS_ANDROID) { return "android"; }
+    if (DASH_OS_IOS    ) { return "ios"    ; }
+    if (DASH_OS_WIN32  ) { return "window" ; }
+    if (DASH_OS_OSX    ) { return "macos"  ; }
+    if (DASH_OS_LINUX  ) { return "linux"  ; }
+    
+    return "";
+}
+
+define_reflectable_function(MInjectFunction, "args:clsName,fcnName,func")
+define_reflectable_function(MSetClassSymbol, "args:obj,symName")
+define_reflectable_function(MGetOS)
+
+static void OnException(const std::string &message) {
     MPrint(message);
 }
 
-static void registerClassFunctions(
-    MJsVM *vm, const std::string &cls_name, const std::map<std::string, reflect::variable> &funcs)
+static void EnrollClassFunctions(
+    MJsVM *vm, const std::string &clsName, const std::map<std::string, reflect::variable> &funcs)
 {
     for (auto &pair : funcs) {
         const std::string  &name = pair.first;
         const reflect::any &func = pair.second.value;
 
-        std::string full_name = cls_name + "_" + name;
-        vm->registerFunction(full_name, func);
+        std::string fullName = clsName + "_" + name;
+        vm->registerFunction(fullName, func);
     }
 }
 
-static void registerNativeFunctions(MJsVM *vm) {
+static void RegisterNativeFunctions(MJsVM *vm) {
     //class static and instance functions:
     for (auto &pair : *reflect::classes()) {
         const std::string &name = pair.first;
         auto meta = (reflect::class_meta *)reflect::query_type_meta(pair.second.type);
 
-        registerClassFunctions(vm, name, meta->static_functions);
-        registerClassFunctions(vm, name, meta->inst_functions  );
+        EnrollClassFunctions(vm, name, meta->static_functions);
+        EnrollClassFunctions(vm, name, meta->inst_functions  );
     }
 
     //global functions.
@@ -35,13 +62,7 @@ static void registerNativeFunctions(MJsVM *vm) {
     }
 }
 
-static void registerNativeMetas(MJsVM *vm) {
-}
-
-static void registerBuiltinFunctions(MJsVM *vm) {
-}
-
-static void registerBuiltinScript(MJsVM *vm) {
+static void RegisterBuiltinScript(MJsVM *vm) {
 #define JS_(text) #text
 
     const char *builtin =
@@ -59,15 +80,13 @@ static void registerBuiltinScript(MJsVM *vm) {
 }
 
 static void launch() m_app_launch(launch) {
-    //exception handle.
+    //exception process.
     MJsVM *vm = MJsVM::instance();
-    vm->setExceptionListener(MF(onException));
+    vm->setExceptionListener(MF(OnException));
     
     //set runtime environment.
-    registerNativeFunctions(vm);
-    registerNativeMetas(vm);
-    registerBuiltinFunctions(vm);
-    registerBuiltinScript(vm);
+    RegisterNativeFunctions(vm);
+    RegisterBuiltinScript(vm);
 
     //launch.
     std::string name = "bundle.js";
