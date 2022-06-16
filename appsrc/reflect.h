@@ -7,6 +7,7 @@
 #include "rinjectable.h"
 #include "rmap.h"
 #include "rmeta.h"
+#include "rmetajson.h"
 #include "robject.h"
 #include "rset.h"
 #include "rsymbol.h"

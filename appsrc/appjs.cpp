@@ -1,16 +1,20 @@
 #include "minikit.h"
 
-static void MInjectFunction(
+static void MSetObjectClassSymbol(const reflect::injectable::ptr &obj, const char *clsName) {
+    if (obj) {
+        reflect::symbol sym = reflect::symbol::make(clsName);
+        obj->set_class_symbol(sym);
+    }
+}
+
+static void MInjectClassFunction(
     const char *clsName, const char *fcnName, const reflect::base_function::ptr &func)
 {
     reflect::inject(clsName, fcnName, func);
 }
 
-static void MSetClassSymbol(const reflect::injectable::ptr &obj, const char *symName) {
-    if (obj) {
-        reflect::symbol sym = reflect::symbol::make(symName);
-        obj->set_class_symbol(sym);
-    }
+static std::string MMetaJsonDescription() {
+    return reflect::meta_json_description();
 }
 
 static std::string MGetOS() {
@@ -23,8 +27,9 @@ static std::string MGetOS() {
     return "";
 }
 
-define_reflectable_function(MInjectFunction, "args:clsName,fcnName,func")
-define_reflectable_function(MSetClassSymbol, "args:obj,symName")
+define_reflectable_function(MSetObjectClassSymbol, "args:obj,clsName")
+define_reflectable_function(MInjectClassFunction , "args:clsName,fcnName,func")
+define_reflectable_function(MMetaJsonDescription )
 define_reflectable_function(MGetOS)
 
 static void OnException(const std::string &message) {
@@ -35,30 +40,30 @@ static void EnrollClassFunctions(
     MJsVM *vm, const std::string &clsName, const std::map<std::string, reflect::variable> &funcs)
 {
     for (auto &pair : funcs) {
-        const std::string  &name = pair.first;
-        const reflect::any &func = pair.second.value;
+        const std::string  &fcnName = pair.first;
+        const reflect::any &fcnImpl = pair.second.value;
 
-        std::string fullName = clsName + "_" + name;
-        vm->registerFunction(fullName, func);
+        std::string fullName = clsName + "_" + fcnName;
+        vm->registerFunction(fullName, fcnImpl);
     }
 }
 
 static void RegisterNativeFunctions(MJsVM *vm) {
     //class static and instance functions:
     for (auto &pair : *reflect::classes()) {
-        const std::string &name = pair.first;
-        auto meta = (reflect::class_meta *)reflect::query_type_meta(pair.second.type);
+        const std::string &clsName = pair.first;
+        auto clsMeta = (reflect::class_meta *)reflect::query_type_meta(pair.second.type);
 
-        EnrollClassFunctions(vm, name, meta->static_functions);
-        EnrollClassFunctions(vm, name, meta->inst_functions  );
+        EnrollClassFunctions(vm, clsName, clsMeta->static_functions);
+        EnrollClassFunctions(vm, clsName, clsMeta->inst_functions  );
     }
 
     //global functions.
     for (auto &pair : *reflect::functions()) {
-        const std::string  &name = pair.first;
-        const reflect::any &func = pair.second.value;
+        const std::string  &fcnName = pair.first;
+        const reflect::any &fcnImpl = pair.second.value;
 
-        vm->registerFunction(name, func);
+        vm->registerFunction(fcnName, fcnImpl);
     }
 }
 
