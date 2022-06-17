@@ -91,7 +91,10 @@ void CView::addSubview(const CView::ptr &subview) {
     //remove from old superview.
     if (subview->mSuperview) {
         auto &brothers = subview->mSuperview->mSubviews;
-        brothers->erase(std::remove(brothers->begin(), brothers->end(), subview));
+        brothers->erase(
+            std::remove(brothers->begin(), brothers->end(), subview),
+            brothers->end()
+        );
     }
     //add to new superview.
     mSubviews->push_back(subview);
@@ -109,7 +112,10 @@ void CView::removeFromSuperview() {
     }
     
     auto &brothers = mSuperview->mSubviews;
-    brothers->erase(std::remove(brothers->begin(), brothers->end(), shared()));
+    brothers->erase(
+        std::remove(brothers->begin(), brothers->end(), shared()),
+        brothers->end()
+    );
     
     mSuperview = nullptr;
 }

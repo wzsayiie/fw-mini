@@ -58,7 +58,10 @@ void CViewController::addChildController(const CViewController::ptr &childContro
     //remove from old parent.
     if (childController->mParentController) {
         auto &brothers = childController->mParentController->mChildControllers;
-        brothers->erase(std::remove(brothers->begin(), brothers->end(), childController));
+        brothers->erase(
+            std::remove(brothers->begin(), brothers->end(), childController),
+            brothers->end()
+        );
     }
     //add to new parent:
     view()->addSubview(childController->view());
@@ -82,7 +85,10 @@ void CViewController::removeFromParentController() {
     
     //remove from the parent:
     auto &brothers = mParentController->mChildControllers;
-    brothers->erase(std::remove(brothers->begin(), brothers->end(), shared()));
+    brothers->erase(
+        std::remove(brothers->begin(), brothers->end(), shared()),
+        brothers->end()
+    );
     mParentController = nullptr;
     
     view()->removeFromSuperview();
