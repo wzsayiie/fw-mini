@@ -84,7 +84,7 @@ static void RegisterBuiltinScript(MJsVM *vm) {
     vm->evaluate("builtin", builtin);
 }
 
-static void launch() m_app_launch(launch) {
+static void launch() m_app_launch(launch, 10) {
     //exception process.
     MJsVM *vm = MJsVM::instance();
     vm->setExceptionListener(MF(OnException));

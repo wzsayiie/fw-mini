@@ -7,7 +7,7 @@ MScheduler *MScheduler::instance() {
     static MScheduler::ptr obj;
     if (!obj) {
         obj = MScheduler::create();
-        MApp::instance()->addUpdateListener(MFunction<void ()>::create([]() {
+        MApp::instance()->addUpdateListener(0, MF<void ()>([]() {
             obj->update();
         }));
     }

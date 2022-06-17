@@ -15,22 +15,36 @@ public:
     MINIKIT_HOST_CALL void launch();
     MINIKIT_HOST_CALL void update();
 
-    void addLaunchListener(const MFunction<void ()>::ptr &listener);
-    void addUpdateListener(const MFunction<void ()>::ptr &listener);
-    void removeListener   (const MFunction<void ()>::ptr &listener);
+    void addLaunchListener(int priority, const MFunction<void ()>::ptr &listener);
+    void addUpdateListener(int priority, const MFunction<void ()>::ptr &listener);
+
+    void removeLaunchListener(const MFunction<void ()>::ptr &listener);
+    void removeUpdateListener(const MFunction<void ()>::ptr &listener);
 
 private:
-    std::set<MFunction<void ()>::ptr> mLaunchListeners;
-    std::set<MFunction<void ()>::ptr> mUpdateListeners;
+    struct ListenerItem {
+        MFunction<void ()>::ptr listener;
+        int priority;
+    };
+
+private:
+    void addListener(
+        std::vector<ListenerItem> *items, int priority, const MFunction<void ()>::ptr &listener);
+    void removeListener(
+        std::vector<ListenerItem> *items, const MFunction<void ()>::ptr &listener);
+
+private:
+    std::vector<ListenerItem> mLaunchListeners;
+    std::vector<ListenerItem> mUpdateListeners;
 };
 
 //launch registrar:
 
-#define m_app_launch(fcn)                               \
-/**/    ;                                               \
-/**/    static _MAppLaunchRegistrar _unused_##fcn(fcn); \
+#define m_app_launch(fcn, ...)                                          \
+/**/    ;                                                               \
+/**/    static _MAppLaunchRegistrar _unused_##fcn(fcn, ##__VA_ARGS__);  \
 /**/    void fcn()
 
 struct dash_exportable _MAppLaunchRegistrar {
-    _MAppLaunchRegistrar(void (*fcn)()) noexcept;
+    _MAppLaunchRegistrar(void (*fcn)(), int priority = 0) noexcept;
 };
