@@ -4,6 +4,6 @@
 
 namespace reflect {
 
-std::string meta_json_description();
+dash_exportable std::string meta_json_description();
 
 } //end reflect.

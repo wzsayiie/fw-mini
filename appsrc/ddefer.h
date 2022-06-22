@@ -19,6 +19,6 @@ private:
     std::function<void ()> _func;
 };
 
-} //end dash
+} //end dash.
 
 #define dash_defer dash::defer dash_name = [&]()
