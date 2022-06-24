@@ -1,5 +1,5 @@
 #pragma once
 
-#include <string>
+#include "dstd.h"
 
 void MPrint(const std::string &message);
