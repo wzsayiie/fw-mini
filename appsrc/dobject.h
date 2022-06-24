@@ -4,17 +4,14 @@
 
 namespace dash {
 
-//pod:
-
-struct pod_object {
-};
-
 //virtual:
 
 class dash_exportable virtual_object {
 public:
     virtual ~virtual_object() = default;
 };
+
+//object:
 
 class dash_exportable object : public virtual_object {
 public:
