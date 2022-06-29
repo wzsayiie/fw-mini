@@ -1,14 +1,16 @@
 #pragma once
 
+#include <type_traits>
 #include "dobject.h"
-#include "dstd.h"
 
 namespace dash {
 
-class dash_exportable encodable {
+//member base:
+
+class dash_exportable encodable_base {
 public:
-    encodable(const std::string &key, size_t size);
-    virtual ~encodable();
+    encodable_base(const std::string &key);
+    virtual ~encodable_base();
 
 public:
     const std::string key() const;
@@ -21,9 +23,60 @@ private:
     std::string _key;
 };
 
+//member implementations:
+
+template<class Type, bool IsClass> class encodable_value;
+
+template<class Type> class encodable_value<Type, true>
+    : public encodable_base
+    , public Type
+{
+public:
+    using encodable_base::encodable_base;
+
+public:
+    void operator=(const Type &value) {
+        *(Type *)this = value;
+    }
+
+    operator const Type &() const {
+        return *(Type *)this;
+    }
+};
+
+template<class Type> class encodable_value<Type, false>
+    : public encodable_base
+{
+public:
+    using encodable_base::encodable_base;
+
+public:
+    void operator=(const Type &value) {
+        _value = value;
+    }
+
+    operator const Type &() const {
+        return _value;
+    }
+
+private:
+    Type _value {};
+};
+
+template<class Type> struct encodable
+    : encodable_value<Type, std::is_class<Type>::value>
+{
+    typedef encodable_value<Type, std::is_class<Type>::value> _inheritable;
+
+    using _inheritable::_inheritable;
+    using _inheritable::operator=;
+};
+
+//container:
+
 struct dash_exportable encodable_object
     : virtual_object
-    , std::map<std::string, encodable *>
+    , std::map<std::string, encodable_base *>
 {
 };
 
