@@ -24,7 +24,7 @@ public class MainActivity extends Activity implements TextWatcher, TextView.OnEd
         System.loadLibrary("main");
     }
 
-    private DrawView mDrawView;
+    private MAndrdDrawView mDrawView;
     private EditText mEditText;
 
     @Override
@@ -94,14 +94,14 @@ public class MainActivity extends Activity implements TextWatcher, TextView.OnEd
         }
     }
 
-    private DrawView createDrawView(RelativeLayout layout) {
+    private MAndrdDrawView createDrawView(RelativeLayout layout) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP   );
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT  );
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT );
 
-        DrawView view = new DrawView(this);
+        MAndrdDrawView view = new MAndrdDrawView(this);
         view.setLayoutParams(params);
         layout.addView(view);
 
