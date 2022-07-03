@@ -50,22 +50,25 @@ public class MAndrdDrawView extends View {
     }
 
     private void drawPolygon(Canvas canvas) {
-        //set the color.
+        //color.
         Paint paint = new Paint();
-        paint.setColor(windowTriangleGraphColor(index));
+        paint.setColor(polygonRGBA());
 
-        //connect the points.
-        float x0 = windowTriangleGraphX0(index);
-        float y0 = windowTriangleGraphY0(index);
-        float x1 = windowTriangleGraphX1(index);
-        float y1 = windowTriangleGraphY1(index);
-        float x2 = windowTriangleGraphX2(index);
-        float y2 = windowTriangleGraphY2(index);
-
+        //points:
         Path path = new Path();
-        path.moveTo(x0, y0);
-        path.lineTo(x1, y1);
-        path.lineTo(x2, y2);
+
+        int points = polygonPoints();
+        for (int i = 0; i < points; ++i) {
+            float x = polygonPointX(i);
+            float y = polygonPointY(i);
+
+            if (i == 0) {
+                path.moveTo(x, y);
+            } else {
+                path.lineTo(x, y);
+            }
+        }
+
         path.close();
 
         //draw.
@@ -73,10 +76,10 @@ public class MAndrdDrawView extends View {
     }
 
     private void drawImage(Canvas canvas) {
-        //get the image.
+        //image.
         Bitmap image = imageObject();
 
-        //set the position rectangle.
+        //area:
         int x = (int) imageX     ();
         int y = (int) imageY     ();
         int w = (int) imageWidth ();
@@ -90,17 +93,17 @@ public class MAndrdDrawView extends View {
     }
 
     private void drawText(Canvas canvas) {
-        //get the string.
+        //string.
         String str = textString();
 
-        //set the color.
+        //font size.
         Paint paint = new Paint();
-        paint.setColor(textColor());
-
-        //set the font size.
         paint.setTextSize(textFontSize());
 
-        //set the position rectangle.
+        //color.
+        paint.setColor(textColor());
+
+        //area:
         float x = textX     ();
         float y = textY     ();
         float w = textWidth ();
@@ -113,52 +116,53 @@ public class MAndrdDrawView extends View {
         float th = textRect.height() * 1.2f;    //the text height.
         float bh = textRect.height();           //the height above text baseline.
 
+        //align:
         int hAlign = textHAlign();
         int vAlign = textVAlign();
 
         float tx = 0;
         float ty = 0;
-        if /**/ (hAlign == 'L') { tx = x; }
+        if /**/ (hAlign == 'L') { tx = x               ; }
         else if (hAlign == 'C') { tx = x + (w - tw) / 2; }
-        else if (hAlign == 'R') { tx = x + (w - tw); }
-        if /**/ (vAlign == 'T') { ty = y; }
-        else if (vAlign == 'C') { ty = y + (h - th) / 2; }
-        else if (vAlign == 'B') { ty = y + (h - th); }
+        else if (hAlign == 'R') { tx = x + (w - tw)    ; }
+        if /**/ (vAlign == 'T') { ty = y               ; }
+        else if (vAlign == 'M') { ty = y + (h - th) / 2; }
+        else if (vAlign == 'B') { ty = y + (h - th)    ; }
 
         //draw.
         //NOTE: drawText() requires starting point of the text baseline.
         canvas.drawText(str, tx, ty + bh, paint);
     }
 
-    private native void   drawGraphs    ();
+    private static native void   drawGraphs   ();
 
-    private native int    graphCount    ();
-    private native void   selectGraph   (int index);
-    private native char   graphType     ();
+    private static native int    graphCount   ();
+    private static native void   selectGraph  (int index);
+    private static native char   graphType    ();
 
-    private native float  clipX         ();
-    private native float  clipY         ();
-    private native float  clipWidth     ();
-    private native float  clipHeight    ();
+    private static native float  clipX        ();
+    private static native float  clipY        ();
+    private static native float  clipWidth    ();
+    private static native float  clipHeight   ();
 
-    private native int    polygonVerties();
-    private native float  polygonVertexX(int index);
-    private native float  polygonVertexY(int index);
-    private native int    polygonRGBA   ();
+    private static native int    polygonPoints();
+    private static native float  polygonPointX(int index);
+    private static native float  polygonPointY(int index);
+    private static native int    polygonRGBA  ();
 
-    private native Bitmap imageObject   ();
-    private native float  imageX        ();
-    private native float  imageY        ();
-    private native float  imageWidth    ();
-    private native float  imageHeight   ();
+    private static native Bitmap imageObject  ();
+    private static native float  imageX       ();
+    private static native float  imageY       ();
+    private static native float  imageWidth   ();
+    private static native float  imageHeight  ();
 
-    private native String textString    ();
-    private native float  textFontSize  ();
-    private native int    textColor     ();
-    private native char   textHAlign    ();
-    private native char   textVAlign    ();
-    private native float  textX         ();
-    private native float  textY         ();
-    private native float  textWidth     ();
-    private native float  textHeight    ();
+    private static native String textString   ();
+    private static native float  textFontSize ();
+    private static native int    textColor    ();
+    private static native char   textHAlign   ();
+    private static native char   textVAlign   ();
+    private static native float  textX        ();
+    private static native float  textY        ();
+    private static native float  textWidth    ();
+    private static native float  textHeight   ();
 }

@@ -16,8 +16,8 @@ protected:
 
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MAndrdBundle_installNative(JNIEnv *, jclass) {
-    auto bundle = MAndrdBundle::create();
-    MBundle::setInstance(bundle);
+    auto obj = MAndrdBundle::create();
+    MBundle::setInstance(obj);
 }
 
 extern "C" JNIEXPORT jstring JNICALL

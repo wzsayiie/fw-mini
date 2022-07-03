@@ -47,6 +47,7 @@ public class MAndrdBundle {
 
     @SuppressWarnings("unused") //used by native.
     protected static String onGetResBundleDirectory() {
+        //android resources are placed in a zip bundle, there is no resource directory.
         return null;
     }
 
