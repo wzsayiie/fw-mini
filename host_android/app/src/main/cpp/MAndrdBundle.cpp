@@ -3,8 +3,6 @@
 #include "mfilemanager.h"
 #include "mjnihelper.h"
 
-const char *MAndrdBundleJClassPath = "src/app/mini/MAndrdBundle";
-
 minikit_class(MAndrdBundle, MBundle) {
 protected:
     MVector<uint8_t>::ptr onLoadResource(const std::string &path) override;
@@ -14,6 +12,12 @@ protected:
     std::string onGetTemporaryDirectory() override;
 };
 
+static jclass GetGlobalJClass() {
+    static jclass global = mini_global_jclass "src/app/mini/MAndrdBundle";
+    return global;
+}
+#define cls GetGlobalJClass()
+
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MAndrdBundle_installNative(JNIEnv *, jclass) {
     auto obj = MAndrdBundle::create();
@@ -22,43 +26,32 @@ Java_src_app_mini_MAndrdBundle_installNative(JNIEnv *, jclass) {
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_MAndrdBundle_resBundleName(JNIEnv *, jclass) {
-    std::string name = MBundle::ResBundleDirectoryName;
-    return MJNINewLocalJString(name);
+    return mini_local_jstring MBundle::ResBundleDirectoryName;
 }
 
 MVector<uint8_t>::ptr MAndrdBundle::onLoadResource(const std::string &path) {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdBundleJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "(Ljava/lang/String;)[B");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "(Ljava/lang/String;)[B");
 
-    auto jPath  = MJNINewLocalJString(path);
-    auto jBytes = (jbyteArray)MJNIGetEnv()->CallStaticObjectMethod(cls, mtd, jPath);
+    jstring jPath = mini_local_jstring path;
+    auto    jRes  = (jbyteArray)mini_jni_env->CallStaticObjectMethod(cls, method, jPath);
 
-    return MJNIGetBytes(jBytes);
+    return mini_cpp_bytes jRes;
 }
 
 std::string MAndrdBundle::onGetResBundleDirectory() {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdBundleJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "()Ljava/lang/String;");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "()Ljava/lang/String;");
 
-    auto jDir = (jstring)MJNIGetEnv()->CallStaticObjectMethod(cls, mtd);
-
-    return MJNIGetString(jDir);
+    return mini_cpp_string (jstring)mini_jni_env->CallStaticObjectMethod(cls, method);
 }
 
 std::string MAndrdBundle::onGetDocumentDirectory() {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdBundleJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "()Ljava/lang/String;");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "()Ljava/lang/String;");
 
-    auto jDir = (jstring)MJNIGetEnv()->CallStaticObjectMethod(cls, mtd);
-
-    return MJNIGetString(jDir);
+    return mini_cpp_string (jstring)mini_jni_env->CallStaticObjectMethod(cls, method);
 }
 
 std::string MAndrdBundle::onGetTemporaryDirectory() {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdBundleJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "()Ljava/lang/String;");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "()Ljava/lang/String;");
 
-    auto jDir = (jstring)MJNIGetEnv()->CallStaticObjectMethod(cls, mtd);
-
-    return MJNIGetString(jDir);
+    return mini_cpp_string (jstring)mini_jni_env->CallStaticObjectMethod(cls, method);
 }

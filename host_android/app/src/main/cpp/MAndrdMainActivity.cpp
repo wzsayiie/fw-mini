@@ -65,8 +65,7 @@ Java_src_app_mini_MAndrdMainActivity_windowTouchEnd(JNIEnv *, jclass, jfloat x, 
 
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MAndrdMainActivity_windowWrite(JNIEnv *, jclass, jstring jText, jboolean enter) {
-    std::string text = MJNIGetString(jText);
-    MWindow::mainWindow()->write(text, enter);
+    MWindow::mainWindow()->write(mini_cpp_string jText, enter);
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
@@ -81,6 +80,5 @@ Java_src_app_mini_MAndrdMainActivity_checkWritingEnabled(JNIEnv *, jclass) {
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_MAndrdMainActivity_checkWritingRawText(JNIEnv *, jclass) {
-    std::string text = MWindow::mainWindow()->checkWritingRawText();
-    return MJNINewLocalJString(text);
+    return mini_local_jstring MWindow::mainWindow()->checkWritingRawText();
 }

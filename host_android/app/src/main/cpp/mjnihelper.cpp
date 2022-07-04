@@ -1,5 +1,7 @@
 #include "mjnihelper.h"
 
+//environment:
+
 const jint UsingVersion = JNI_VERSION_1_6;
 static JNIEnv *sEnv = nullptr;
 
@@ -8,16 +10,33 @@ jint JNI_OnLoad(JavaVM *vm, void *) {
     return UsingVersion;
 }
 
-jclass MJNINewGlobalJClass(const char *clsPath) {
-    jclass localRef = sEnv->FindClass(clsPath);
-    return (jclass)sEnv->NewGlobalRef(localRef);
-}
-
-JNIEnv *MJNIGetEnv() {
+JNIEnv *MJniGetEnv() {
     return sEnv;
 }
 
-jbyteArray MJNINewLocalJBytes(const MVector<uint8_t>::ptr &bytes) {
+//global reference:
+
+jclass MJniGlobalJClassMaker::operator<<(const char *classPath) const {
+    jclass local = sEnv->FindClass(classPath);
+    return (jclass)sEnv->NewGlobalRef(local);
+}
+
+std::shared_ptr<_jobject> MJniGlobalJObjectMaker::operator<<(jobject ref) const {
+    if (!ref) {
+        return nullptr;
+    }
+
+    jobject global = sEnv->NewGlobalRef(ref);
+    return {
+        global, [](jobject stored) {
+            sEnv->DeleteGlobalRef(stored);
+        }
+    };
+}
+
+//type conversion:
+
+jbyteArray MJniLocalJBytesMaker::operator<<(const MVector<uint8_t>::ptr &bytes) const {
     if (!bytes || bytes->empty()) {
         return nullptr;
     }
@@ -31,7 +50,7 @@ jbyteArray MJNINewLocalJBytes(const MVector<uint8_t>::ptr &bytes) {
     return jBytes;
 }
 
-jstring MJNINewLocalJString(const std::string &str) {
+jstring MJniLocalJStringMaker::operator<<(const std::string &str) const {
     if (str.empty()) {
         return nullptr;
     }
@@ -39,7 +58,7 @@ jstring MJNINewLocalJString(const std::string &str) {
     return sEnv->NewStringUTF(str.c_str());
 }
 
-MVector<uint8_t>::ptr MJNIGetBytes(jbyteArray jBytes) {
+MVector<uint8_t>::ptr MJniCppBytesMaker::operator<<(jbyteArray jBytes) const {
     if (!jBytes) {
         return nullptr;
     }
@@ -53,7 +72,7 @@ MVector<uint8_t>::ptr MJNIGetBytes(jbyteArray jBytes) {
     return bytes;
 }
 
-std::string MJNIGetString(jstring jStr) {
+std::string MJniCppStringMaker::operator<<(jstring jStr) const {
     if (!jStr) {
         return "";
     }

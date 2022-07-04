@@ -5,5 +5,5 @@
 
 minikit_class(MAndrdImage, MImage) {
 public:
-    jobject mBitmap = nullptr;
+    std::shared_ptr<_jobject> mBitmap;
 };

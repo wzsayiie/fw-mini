@@ -1,7 +1,5 @@
 #include "MAndrdImageFactory.h"
 
-const char *MAndrdImageFactoryJClassPath = "src/app/mini/MAndrdImageFactory";
-
 minikit_class(MAndrdImageFactory, MImageFactory) {
 public:
     MImage::ptr onDecodeFFData(const MVector<uint8_t>::ptr &ffData) override;
@@ -13,6 +11,12 @@ public:
     MSize::ptr onGetPixelSize(const MImage::ptr &image) override;
 };
 
+static jclass GetGlobalJClass() {
+    static jclass global = mini_global_jclass "src/app/mini/MAndrdImageFactory";
+    return global;
+}
+#define cls GetGlobalJClass()
+
 extern "C" JNIEXPORT void JNICALL
 Java_src_app_mini_MAndrdImageFactory_install(JNIEnv *, jclass) {
     auto obj = MAndrdImageFactory::create();
@@ -20,38 +24,35 @@ Java_src_app_mini_MAndrdImageFactory_install(JNIEnv *, jclass) {
 }
 
 MImage::ptr MAndrdImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData) {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdImageFactoryJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "([B)Landroid/graphics/Bitmap;");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "([B)Landroid/graphics/Bitmap;");
 
-    jbyteArray jFFData = MJNINewLocalJBytes(ffData);
-    jobject    jBitmap = MJNIGetEnv()->CallStaticObjectMethod(cls, mtd, jFFData);
+    jbyteArray jFFData = mini_local_jbytes ffData;
+    jobject    jBitmap = mini_jni_env->CallStaticObjectMethod(cls, method, jFFData);
 
     if (jBitmap) {
         auto image = MAndrdImage::create();
-        image->mBitmap = jBitmap;
+        image->mBitmap = mini_global_jobject jBitmap;
         return image;
     }
     return nullptr;
 }
 
 MImage::ptr MAndrdImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitDat, int width, int height) {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdImageFactoryJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "([BII)Landroid/graphics/Bitmap;");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "([BII)Landroid/graphics/Bitmap;");
 
-    jbyteArray jBitDat = MJNINewLocalJBytes(bitDat);
-    jobject    jBitmap = MJNIGetEnv()->CallStaticObjectMethod(cls, mtd, jBitDat, width, height);
+    jbyteArray jBitDat = mini_local_jbytes bitDat;
+    jobject    jBitmap = mini_jni_env->CallStaticObjectMethod(cls, method, jBitDat, width, height);
 
     if (jBitmap) {
         auto image = MAndrdImage::create();
-        image->mBitmap = jBitmap;
+        image->mBitmap = mini_global_jobject jBitmap;
         return image;
     }
     return nullptr;
 }
 
 MVector<uint8_t>::ptr MAndrdImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdImageFactoryJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "(Landroid/graphics/Bitmap;C)[B");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "(Landroid/graphics/Bitmap;C)[B");
 
     jchar jFormat = 0;
     switch (format) {
@@ -59,30 +60,28 @@ MVector<uint8_t>::ptr MAndrdImageFactory::onEncodeFFData(const MImage::ptr &imag
         case MImageFileFormat::PNG : jFormat = 'P'; break;
     }
 
-    jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap;
-    auto    jFFData = (jbyteArray)MJNIGetEnv()->CallStaticObjectMethod(cls, mtd, jBitmap, jFormat);
+    jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap.get();
+    auto    jFFData = (jbyteArray)mini_jni_env->CallStaticObjectMethod(cls, method, jBitmap, jFormat);
 
-    return MJNIGetBytes(jFFData);
+    return mini_cpp_bytes jFFData;
 }
 
 MVector<uint8_t>::ptr MAndrdImageFactory::onEncodeBitmap(const MImage::ptr &image) {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdImageFactoryJClassPath);
-    static jmethodID mtd = MJNIGetEnv()->GetStaticMethodID(cls, __func__, "(Landroid/graphics/Bitmap;)[B");
+    static jmethodID method = mini_jni_env->GetStaticMethodID(cls, __func__, "(Landroid/graphics/Bitmap;)[B");
 
-    jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap;
-    auto    jBitDat = (jbyteArray)MJNIGetEnv()->CallStaticObjectMethod(cls, mtd, jBitmap);
+    jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap.get();
+    auto    jBitDat = (jbyteArray)mini_jni_env->CallStaticObjectMethod(cls, method, jBitmap);
 
-    return MJNIGetBytes(jBitDat);
+    return mini_cpp_bytes jBitDat;
 }
 
 MSize::ptr MAndrdImageFactory::onGetPixelSize(const MImage::ptr &image) {
-    static jclass    cls = MJNINewGlobalJClass(MAndrdImageFactoryJClassPath);
-    static jmethodID wfn = MJNIGetEnv()->GetStaticMethodID(cls, "onGetPixelX", "(Landroid/graphics/Bitmap;)F");
-    static jmethodID hfn = MJNIGetEnv()->GetStaticMethodID(cls, "onGetPixelY", "(Landroid/graphics/Bitmap;)F");
+    static jmethodID wFunc = mini_jni_env->GetStaticMethodID(cls, "onGetPixelX", "(Landroid/graphics/Bitmap;)F");
+    static jmethodID hFunc = mini_jni_env->GetStaticMethodID(cls, "onGetPixelY", "(Landroid/graphics/Bitmap;)F");
 
-    jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap;
-    float   width   = MJNIGetEnv()->CallStaticFloatMethod(cls, wfn, jBitmap);
-    float   height  = MJNIGetEnv()->CallStaticFloatMethod(cls, hfn, jBitmap);
+    jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap.get();
+    float   width   = mini_jni_env->CallStaticFloatMethod(cls, wFunc, jBitmap);
+    float   height  = mini_jni_env->CallStaticFloatMethod(cls, hFunc, jBitmap);
 
     return MSize::from(width, height);
 }

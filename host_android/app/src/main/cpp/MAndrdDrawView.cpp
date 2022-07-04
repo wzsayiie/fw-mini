@@ -83,7 +83,7 @@ Java_src_app_mini_MAndrdDrawView_polygonRGBA(JNIEnv *, jclass) {
 extern "C" JNIEXPORT jobject JNICALL
 Java_src_app_mini_MAndrdDrawView_imageObject(JNIEnv *, jclass) {
     auto image = (MAndrdImage *)sImage->image().get();
-    return image->mBitmap;
+    return image->mBitmap.get();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
@@ -108,8 +108,7 @@ Java_src_app_mini_MAndrdDrawView_imageHeight(JNIEnv *, jclass) {
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_MAndrdDrawView_textString(JNIEnv *, jclass) {
-    const std::string &text = sText->text();
-    return MJNINewLocalJString(text);
+    return mini_local_jstring sText->text();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL
