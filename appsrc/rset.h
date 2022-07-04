@@ -12,7 +12,7 @@ template<> struct typeids_of<base_set> {
     static constexpr const void *value[] = { "base_set", nullptr };
 };
 
-class dash_exportable base_set : public extends<base_set, object> {
+class d_exportable base_set : public extends<base_set, object> {
 public:
     virtual void _insert(const any &v) = 0;
     virtual void _erase (const any &v) = 0;

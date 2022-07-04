@@ -2,7 +2,7 @@
 
 #include "cview.h"
 
-centui_class(CImageView, CView) {
+c_class(CImageView, CView) {
 public:
     using upper::upper;
 

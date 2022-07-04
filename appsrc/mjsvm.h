@@ -2,9 +2,9 @@
 
 #include "mobject.h"
 
-minikit_class(MJsVM, MObject) {
+m_class(MJsVM, MObject) {
 public:
-    MINIKIT_HOST_CALL static void setInstance(const MJsVM::ptr &obj);
+    M_HOST_CALL static void setInstance(const MJsVM::ptr &obj);
     static MJsVM *instance();
 
 public:
@@ -15,12 +15,12 @@ public:
     void evaluate(const std::string &name, const std::string &script);
 
 protected:
-    MINIKIT_HOST_CALL void onException(const std::string &message);
+    M_HOST_CALL void onException(const std::string &message);
 
-    MINIKIT_HOST_IMPL virtual
+    M_HOST_IMPL virtual
         void onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func);
 
-    MINIKIT_HOST_IMPL virtual
+    M_HOST_IMPL virtual
         void onEvaluate(const std::string &name, const std::string &script);
 
 private:

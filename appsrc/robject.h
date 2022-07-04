@@ -10,7 +10,7 @@ template<> struct typeids_of<class object> {
     static constexpr const void *value[] = { "object", nullptr };
 };
 
-class dash_exportable object : public dash::extends<object, dash::object> {
+class d_exportable object : public dash::extends<object, dash::object> {
 public:
     static object::ptr create() {
         return object::ptr(new object, [](object *a) {
@@ -33,7 +33,7 @@ private:
 
 //extends:
 
-template<class Class, class Super> class dash_exportable extends : public dash::extends<Class, Super> {
+template<class Class, class Super> class d_exportable extends : public dash::extends<Class, Super> {
 public:
     typedef extends<Class, Super> upper;
     

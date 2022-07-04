@@ -2,7 +2,7 @@
 
 #include "mfilemanager.h"
 
-minikit_class(MPCBundle, MBundle) {
+m_class(MPCBundle, MBundle) {
 public:
     static void install();
 

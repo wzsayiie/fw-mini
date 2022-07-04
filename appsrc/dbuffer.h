@@ -4,8 +4,8 @@
 
 namespace dash {
 
-dash_exportable int   bytes_buffer_size();
-dash_exportable void *bytes_buffer();
+d_exportable int   bytes_buffer_size();
+d_exportable void *bytes_buffer();
 
 template<class Type> int buffer_size() {
     return bytes_buffer_size() / (int)sizeof(Type);

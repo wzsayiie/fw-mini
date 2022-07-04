@@ -5,9 +5,9 @@
 namespace reflect {
 
 //arguments and return value of current stack frame.
-dash_exportable int  get_arg_count();
-dash_exportable any  get_arg_value(int index);
-dash_exportable void return_value (const any &value);
+d_exportable int  get_arg_count();
+d_exportable any  get_arg_value(int index);
+d_exportable void return_value (const any &value);
 
 //function arguments count:
 
@@ -76,7 +76,7 @@ template<> struct typeids_of<base_function> {
     static constexpr const void *value[] = { "base_function", nullptr };
 };
 
-class dash_exportable base_function : public extends<base_function, object> {
+class d_exportable base_function : public extends<base_function, object> {
 public:
     any call_with_args(const std::vector<any> &args) const;
 

@@ -12,7 +12,7 @@ template<> struct typeids_of<base_map> {
     static constexpr const void *value[] = { "base_map", nullptr };
 };
 
-class dash_exportable base_map : public extends<base_map, object> {
+class d_exportable base_map : public extends<base_map, object> {
 public:
     virtual void _insert(const any &k, const any &v) = 0;
     virtual void _erase (const any &k)               = 0;

@@ -4,7 +4,7 @@
 
 //key:
 
-minikit_enum(MKey) {
+m_enum(MKey) {
     Back  = 0x08,
     Enter = 0x0D,
     Space = 0x20,
@@ -22,7 +22,7 @@ minikit_enum(MKey) {
 
 //window:
 
-minikit_class(MWindow, MObject) {
+m_class(MWindow, MObject) {
 public:
     static constexpr float UpdateEverySeconds = 0.1f;
     static constexpr const char *TitleName = "Mini";
@@ -32,26 +32,26 @@ public:
     static MWindow *mainWindow();
 
 public:
-    MINIKIT_HOST_CALL void load();
-    MINIKIT_HOST_CALL void show();
-    MINIKIT_HOST_CALL void hide();
+    M_HOST_CALL void load();
+    M_HOST_CALL void show();
+    M_HOST_CALL void hide();
 
-    MINIKIT_HOST_CALL void resizePixel(float pixelW, float pixelH);
-    MINIKIT_HOST_CALL void draw();
+    M_HOST_CALL void resizePixel(float pixelW, float pixelH);
+    M_HOST_CALL void draw();
 
-    MINIKIT_HOST_CALL void touchBeginPixel(float pixelX, float pixelY);
-    MINIKIT_HOST_CALL void touchMovePixel (float pixelX, float pixelY);
-    MINIKIT_HOST_CALL void touchEndPixel  (float pixelX, float pixelY);
-    MINIKIT_HOST_CALL void mouseMovePixel (float pixelX, float pixelY);
+    M_HOST_CALL void touchBeginPixel(float pixelX, float pixelY);
+    M_HOST_CALL void touchMovePixel (float pixelX, float pixelY);
+    M_HOST_CALL void touchEndPixel  (float pixelX, float pixelY);
+    M_HOST_CALL void mouseMovePixel (float pixelX, float pixelY);
     
-    MINIKIT_HOST_CALL void mouseWheel(float delta);
-    MINIKIT_HOST_CALL void key(MKey key);
-    MINIKIT_HOST_CALL void write(const std::string &text, bool enter);
+    M_HOST_CALL void mouseWheel(float delta);
+    M_HOST_CALL void key(MKey key);
+    M_HOST_CALL void write(const std::string &text, bool enter);
 
     //text box control.
-    MINIKIT_HOST_CALL bool        checkWritingUpdated();
-    MINIKIT_HOST_CALL bool        checkWritingEnabled();
-    MINIKIT_HOST_CALL std::string checkWritingRawText();
+    M_HOST_CALL bool        checkWritingUpdated();
+    M_HOST_CALL bool        checkWritingEnabled();
+    M_HOST_CALL std::string checkWritingRawText();
 
     bool        loaded();
     bool        shown();

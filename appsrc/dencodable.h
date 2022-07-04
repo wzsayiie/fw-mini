@@ -7,7 +7,7 @@ namespace dash {
 
 //member base:
 
-class dash_exportable encodable_base {
+class d_exportable encodable_base {
 public:
     encodable_base(const std::string &key);
     virtual ~encodable_base();
@@ -74,18 +74,18 @@ template<class Type> struct encodable
 
 //container:
 
-struct dash_exportable encodable_object
+struct d_exportable encodable_object
     : virtual_object
     , std::map<std::string, encodable_base *>
 {
 };
 
-dash_exportable
+d_exportable
 void collect_sub_encodable(encodable_object *obj, size_t size);
 
 } //end dash.
 
-#define dash_encodable_object(cls)                          \
+#define d_encodable_object(cls)                             \
 /**/    cls() {                                             \
 /**/        dash::collect_sub_encodable(this, sizeof(cls)); \
 /**/    }

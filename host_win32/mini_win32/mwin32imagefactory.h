@@ -3,13 +3,13 @@
 #include "mimage.h"
 #include "mwin32gdiplus.h"
 
-minikit_class(MWin32Image, MImage)
+m_class(MWin32Image, MImage)
 {
 public:
     std::shared_ptr<Gdiplus::Image> mGdiImage;
 };
 
-minikit_class(MWin32ImageFactory, MImageFactory)
+m_class(MWin32ImageFactory, MImageFactory)
 {
 public:
     static void install();

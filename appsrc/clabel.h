@@ -2,7 +2,7 @@
 
 #include "cview.h"
 
-centui_class(CLabel, CView) {
+c_class(CLabel, CView) {
 public:
     using upper::upper;
 

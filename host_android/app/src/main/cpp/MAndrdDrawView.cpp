@@ -108,7 +108,7 @@ Java_src_app_mini_MAndrdDrawView_imageHeight(JNIEnv *, jclass) {
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_src_app_mini_MAndrdDrawView_textString(JNIEnv *, jclass) {
-    return mini_local_jstring sText->text();
+    return m_local_jstring sText->text();
 }
 
 extern "C" JNIEXPORT jfloat JNICALL

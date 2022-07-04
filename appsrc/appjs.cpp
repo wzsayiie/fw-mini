@@ -18,11 +18,11 @@ static std::string MMetaJsonDescription() {
 }
 
 static std::string MGetOS() {
-    if (DASH_OS_ANDROID) { return "android"; }
-    if (DASH_OS_IOS    ) { return "ios"    ; }
-    if (DASH_OS_WIN32  ) { return "window" ; }
-    if (DASH_OS_OSX    ) { return "macos"  ; }
-    if (DASH_OS_LINUX  ) { return "linux"  ; }
+    if (D_OS_ANDROID) { return "android"; }
+    if (D_OS_IOS    ) { return "ios"    ; }
+    if (D_OS_WIN32  ) { return "window" ; }
+    if (D_OS_OSX    ) { return "macos"  ; }
+    if (D_OS_LINUX  ) { return "linux"  ; }
     
     return "";
 }

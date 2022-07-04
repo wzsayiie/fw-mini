@@ -10,7 +10,7 @@ MImage::ptr MWin32ImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffDa
 {
     //copy the memory data:
     HGLOBAL memory = GlobalAlloc(GMEM_FIXED, (SIZE_T)ffData->size());
-    dash_defer { GlobalFree(memory); };
+    d_defer { GlobalFree(memory); };
 
     if (void *bytes = GlobalLock(memory))
     {
@@ -30,7 +30,7 @@ MImage::ptr MWin32ImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffDa
         return nullptr;
     }
 
-    dash_defer { stream->Release(); };
+    d_defer { stream->Release(); };
 
     //create the image.
     Gdiplus::Image *gdiImage = Gdiplus::Image::FromStream(stream, FALSE);
@@ -90,7 +90,7 @@ MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeFFData(const MImage::ptr &imag
         return nullptr;
     }
 
-    dash_defer { stream->Release(); };
+    d_defer { stream->Release(); };
 
     MWin32Image::ptr w32image = std::static_pointer_cast<MWin32Image>(image);
     Gdiplus::Image  *gdiImage = w32image->mGdiImage.get();

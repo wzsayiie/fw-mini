@@ -4,7 +4,7 @@
 
 //app:
 
-minikit_class(MApp, MObject) {
+m_class(MApp, MObject) {
 public:
     static constexpr float UpdateEverySeconds = 0.1f;
 
@@ -12,8 +12,8 @@ public:
     static MApp *instance();
 
 public:
-    MINIKIT_HOST_CALL void launch();
-    MINIKIT_HOST_CALL void update();
+    M_HOST_CALL void launch();
+    M_HOST_CALL void update();
 
     void addLaunchListener(int priority, const MFunction<void ()>::ptr &listener);
     void addUpdateListener(int priority, const MFunction<void ()>::ptr &listener);
@@ -45,6 +45,6 @@ private:
 /**/    static _MAppLaunchRegistrar _unused_##fcn(fcn, ##__VA_ARGS__);  \
 /**/    void fcn()
 
-struct dash_exportable _MAppLaunchRegistrar {
+struct d_exportable _MAppLaunchRegistrar {
     _MAppLaunchRegistrar(void (*fcn)(), int priority = 0) noexcept;
 };

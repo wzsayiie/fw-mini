@@ -81,7 +81,7 @@ template<> struct typeids_of<std::string> { static constexpr const void *value[]
 
 //type name:
 
-dash_exportable std::string make_typename(void **ids);
+d_exportable std::string make_typename(void **ids);
 
 template<class Type> struct typename_of {
     static const char *value() {

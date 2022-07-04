@@ -7,14 +7,14 @@ namespace dash {
 
 //virtual:
 
-class dash_exportable virtual_object {
+class d_exportable virtual_object {
 public:
     virtual ~virtual_object() = default;
 };
 
 //object:
 
-class dash_exportable object : public virtual_object {
+class d_exportable object : public virtual_object {
 public:
     typedef std::shared_ptr<object> ptr;
 
@@ -24,7 +24,7 @@ public:
     }
 };
 
-template<class Class, class Super> class dash_exportable extends : public Super {
+template<class Class, class Super> class d_exportable extends : public Super {
 public:
     typedef std::shared_ptr<Class> ptr;
     

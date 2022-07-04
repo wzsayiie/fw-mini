@@ -1,6 +1,6 @@
 #include "dprint.h"
 
-#if DASH_OS_ANDROID
+#if D_OS_ANDROID
     #include <android/log.h>
 
     void dash::print_string(const char *str) {

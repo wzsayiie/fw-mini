@@ -2,7 +2,7 @@
 
 #include "mobject.h"
 
-minikit_class(MScheduler, MObject) {
+m_class(MScheduler, MObject) {
 public:
     static MScheduler *instance();
 

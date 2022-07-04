@@ -16,7 +16,7 @@ enum class data_type {
     is_object,
 };
 
-class dash_exportable any {
+class d_exportable any {
 public:
     any();
     any(nullptr_t);

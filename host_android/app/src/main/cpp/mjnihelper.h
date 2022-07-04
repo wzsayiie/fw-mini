@@ -7,7 +7,7 @@
 
 JNIEnv *MJniGetEnv();
 
-#define mini_jni_env MJniGetEnv()
+#define m_jni_env MJniGetEnv()
 
 //global reference:
 
@@ -19,8 +19,8 @@ struct MJniGlobalJObjectMaker {
     std::shared_ptr<_jobject> operator<<(jobject ref) const;
 };
 
-#define mini_global_jclass  MJniGlobalJClassMaker ()<<
-#define mini_global_jobject MJniGlobalJObjectMaker()<<
+#define m_global_jclass  MJniGlobalJClassMaker ()<<
+#define m_global_jobject MJniGlobalJObjectMaker()<<
 
 //type conversion:
 
@@ -32,8 +32,8 @@ struct MJniLocalJStringMaker {
     jstring operator<<(const std::string &str) const;
 };
 
-#define mini_local_jbytes  MJniLocalJBytesMaker ()<<
-#define mini_local_jstring MJniLocalJStringMaker()<<
+#define m_local_jbytes  MJniLocalJBytesMaker ()<<
+#define m_local_jstring MJniLocalJStringMaker()<<
 
 struct MJniCppBytesMaker {
     MVector<uint8_t>::ptr operator<<(jbyteArray jBytes) const;
@@ -43,5 +43,5 @@ struct MJniCppStringMaker {
     std::string operator<<(jstring jStr) const;
 };
 
-#define mini_cpp_bytes  MJniCppBytesMaker ()<<
-#define mini_cpp_string MJniCppStringMaker()<<
+#define m_cpp_bytes  MJniCppBytesMaker ()<<
+#define m_cpp_string MJniCppStringMaker()<<

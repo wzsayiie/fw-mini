@@ -2,7 +2,7 @@
 
 #include "cviewcontroller.h"
 
-minikit_class(CWindow, MWindow) {
+m_class(CWindow, MWindow) {
 public:
     void setRootViewController(const CViewController::ptr &viewController);
     CViewController::ptr rootViewController();

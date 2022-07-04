@@ -25,7 +25,7 @@ static void AppendExceptionInfo(
     appended->append(L"\n");
 }
 
-minikit_class(MJsFunction, MBaseFunction)
+m_class(MJsFunction, MBaseFunction)
 {
 public:
     MJsFunction(MWin32JsVM *jsVM, JsValueRef func)

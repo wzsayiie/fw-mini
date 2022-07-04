@@ -21,4 +21,4 @@ private:
 
 } //end dash.
 
-#define dash_defer dash::defer dash_name = [&]()
+#define d_defer dash::defer d_name = [&]()
