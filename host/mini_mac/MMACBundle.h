@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "mfilemanager.h"
 
-minikit_class(MMACBundle, MBundle) {
+m_class(MMACBundle, MBundle) {
 public:
     static void install();
 

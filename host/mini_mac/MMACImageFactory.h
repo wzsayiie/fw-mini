@@ -11,12 +11,12 @@
 
 #endif
 
-minikit_class(MMACImage, MImage) {
+m_class(MMACImage, MImage) {
 public:
     _NSImage *mNSImage = nil;
 };
 
-minikit_class(MMACImageFactory, MImageFactory) {
+m_class(MMACImageFactory, MImageFactory) {
 public:
     static void install();
     

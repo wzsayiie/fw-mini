@@ -9,7 +9,7 @@
 @implementation MCPPValueWrapper
 @end
 
-minikit_class(MJsFunction, MBaseFunction) {
+m_class(MJsFunction, MBaseFunction) {
 public:
     MJsFunction(MMACJsVM *jsVM, JSValue *func) {
         mJsVM = jsVM;

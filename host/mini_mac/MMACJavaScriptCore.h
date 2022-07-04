@@ -1,7 +1,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "mjsvm.h"
 
-minikit_class(MMACJsVM, MJsVM) {
+m_class(MMACJsVM, MJsVM) {
 public:
     static void install();
     
