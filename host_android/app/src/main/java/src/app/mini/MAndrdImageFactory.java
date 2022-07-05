@@ -52,16 +52,16 @@ public class MAndrdImageFactory {
 
         for (int i = 0; i < count; ++i) {
             //NOTE: the color byte order used by android is Argb, but the C++ side uses rgbA.
-            int a = bytes[4 * i    ];
-            int r = bytes[4 * i + 1];
-            int g = bytes[4 * i + 2];
-            int b = bytes[4 * i + 3];
+            int a = bytes[4 * i + 3];
+            int r = bytes[4 * i + 2];
+            int g = bytes[4 * i + 1];
+            int b = bytes[4 * i    ];
 
             int rgba = (
                 ((r << 24) & 0xFF000000) |
-                ((g << 24) & 0xFF000000) |
-                ((b << 24) & 0xFF000000) |
-                ((a << 24) & 0xFF000000)
+                ((g << 16) & 0x00FF0000) |
+                ((b <<  8) & 0x0000FF00) |
+                ((a      ) & 0x000000FF)
             );
             ints[i] = rgba;
         }
@@ -76,10 +76,10 @@ public class MAndrdImageFactory {
         for (int i = 0; i < count; ++i) {
             int rgba = ints[i];
 
-            bytes[4 * i    ] = (byte) (rgba      ); //a.
-            bytes[4 * i + 1] = (byte) (rgba >> 24); //r.
-            bytes[4 * i + 2] = (byte) (rgba >> 16); //g.
-            bytes[4 * i + 3] = (byte) (rgba >>  8); //b.
+            bytes[4 * i + 3] = (byte) (rgba      ); //a.
+            bytes[4 * i + 2] = (byte) (rgba >> 24); //r.
+            bytes[4 * i + 1] = (byte) (rgba >> 16); //g.
+            bytes[4 * i    ] = (byte) (rgba >>  8); //b.
         }
 
         return bytes;

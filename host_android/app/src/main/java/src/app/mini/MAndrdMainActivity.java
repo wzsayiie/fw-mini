@@ -115,13 +115,13 @@ public class MAndrdMainActivity extends Activity
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         EditText edit = new EditText(this);
+        edit.setVisibility(View.INVISIBLE);
+        //"done" key is only available in single-line mode.
+        edit.setSingleLine();
+        //finally add listeners. event callbacks may be fired when set the edit.
         edit.addTextChangedListener(this);
         edit.setOnEditorActionListener(this);
         edit.setOnKeyListener(this);
-        edit.setVisibility(View.INVISIBLE);
-
-        //"done" key is only available in single-line mode.
-        edit.setSingleLine();
 
         edit.setLayoutParams(params);
         parentLayout.addView(edit);
@@ -177,7 +177,6 @@ public class MAndrdMainActivity extends Activity
     public void onTextChanged(CharSequence sequence, int start, int before, int count) {
         //this method monitors the text changes.
 
-        //"createEditText" may call this event method when initializing the edit.
         if (mEditText == null) {
             return;
         }

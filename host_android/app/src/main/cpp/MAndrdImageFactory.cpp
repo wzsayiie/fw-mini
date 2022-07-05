@@ -76,12 +76,12 @@ MVector<uint8_t>::ptr MAndrdImageFactory::onEncodeBitmap(const MImage::ptr &imag
 }
 
 MSize::ptr MAndrdImageFactory::onGetPixelSize(const MImage::ptr &image) {
-    static jmethodID wFunc = m_jni_env->GetStaticMethodID(cls, "onGetPixelX", "(Landroid/graphics/Bitmap;)F");
-    static jmethodID hFunc = m_jni_env->GetStaticMethodID(cls, "onGetPixelY", "(Landroid/graphics/Bitmap;)F");
+    static jmethodID wMethod = m_jni_env->GetStaticMethodID(cls, "onGetPixelX", "(Landroid/graphics/Bitmap;)F");
+    static jmethodID hMethod = m_jni_env->GetStaticMethodID(cls, "onGetPixelY", "(Landroid/graphics/Bitmap;)F");
 
     jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap.get();
-    float   width   = m_jni_env->CallStaticFloatMethod(cls, wFunc, jBitmap);
-    float   height  = m_jni_env->CallStaticFloatMethod(cls, hFunc, jBitmap);
+    float   width   = m_jni_env->CallStaticFloatMethod(cls, wMethod, jBitmap);
+    float   height  = m_jni_env->CallStaticFloatMethod(cls, hMethod, jBitmap);
 
     return MSize::from(width, height);
 }
