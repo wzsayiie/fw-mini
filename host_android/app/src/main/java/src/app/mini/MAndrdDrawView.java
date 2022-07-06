@@ -3,10 +3,8 @@ package src.app.mini;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.view.View;
 
@@ -54,7 +52,7 @@ public class MAndrdDrawView extends View {
     private void drawPolygon(Canvas canvas) {
         //color.
         Paint paint = new Paint();
-        paint.setColor(polygonRGBA());
+        paint.setColor(polygonARGB());
 
         //points:
         Path path = new Path();
@@ -103,7 +101,7 @@ public class MAndrdDrawView extends View {
         paint.setTextSize(textFontSize());
 
         //color.
-        paint.setColor(textColor());
+        paint.setColor(textARGB());
 
         //area:
         float x = textX     ();
@@ -150,7 +148,7 @@ public class MAndrdDrawView extends View {
     private static native int    polygonPoints();
     private static native float  polygonPointX(int index);
     private static native float  polygonPointY(int index);
-    private static native int    polygonRGBA  ();
+    private static native int    polygonARGB  ();
 
     private static native Bitmap imageObject  ();
     private static native float  imageX       ();
@@ -160,7 +158,7 @@ public class MAndrdDrawView extends View {
 
     private static native String textString   ();
     private static native float  textFontSize ();
-    private static native int    textColor    ();
+    private static native int    textARGB     ();
     private static native char   textHAlign   ();
     private static native char   textVAlign   ();
     private static native float  textX        ();

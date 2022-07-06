@@ -41,8 +41,9 @@ MImage::ptr MMACImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap
     auto pixels = MVector<uint8_t>::create(); {
         pixels->resize(width * height * 4);
         
-        auto src = (MColorRGBA *)bitmap->data();
-        auto dst = (MColorABGR *)pixels->data();
+        //IMPORTANT: color byte order transform.
+        auto src = (MColorRGBA   *)bitmap->data();
+        auto dst = (MClassicABGR *)pixels->data();
         MColorTransform(src, dst, width * height);
     }
     
@@ -117,9 +118,9 @@ MVector<uint8_t>::ptr MMACImageFactory::onEncodeBitmap(const MImage::ptr &image)
     
     CGContextRelease(context);
 
-    //transform color format.
-    auto src = (MColorABGR *)bitmap->data();
-    auto dst = (MColorRGBA *)bitmap->data();
+    //IMPORTANT: color byte order transform.
+    auto src = (MClassicABGR *)bitmap->data();
+    auto dst = (MColorRGBA   *)bitmap->data();
     MColorTransform(src, dst, width * height);
 
     return bitmap;

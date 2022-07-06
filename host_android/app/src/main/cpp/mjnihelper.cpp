@@ -41,13 +41,27 @@ jbyteArray MJniLocalJBytesMaker::operator<<(const MVector<uint8_t>::ptr &bytes) 
         return nullptr;
     }
 
-    auto ptr = (jbyte *)bytes->data();
-    auto len = (jsize  )bytes->size();
+    auto byteBuf = (jbyte *)bytes->data();
+    auto byteNum = (jsize  )bytes->size();
 
-    jbyteArray jBytes = sEnv->NewByteArray(len);
-    sEnv->SetByteArrayRegion(jBytes, 0, len, ptr);
+    jbyteArray jBytes = sEnv->NewByteArray(byteNum);
+    sEnv->SetByteArrayRegion(jBytes, 0, byteNum, byteBuf);
 
     return jBytes;
+}
+
+jintArray MJniLocalJIntsMaker::operator<<(const MVector<int>::ptr &bytes) const {
+    if (!bytes || bytes->empty()) {
+        return nullptr;
+    }
+
+    auto intBuf = (jint *)bytes->data();
+    auto intNum = (jsize )bytes->size();
+
+    jintArray jInts = sEnv->NewIntArray(intNum);
+    sEnv->SetIntArrayRegion(jInts, 0, intNum, intBuf);
+
+    return jInts;
 }
 
 jstring MJniLocalJStringMaker::operator<<(const std::string &str) const {
@@ -63,11 +77,26 @@ MVector<uint8_t>::ptr MJniCppBytesMaker::operator<<(jbyteArray jBytes) const {
         return nullptr;
     }
 
-    auto ptr = (uint8_t *)sEnv->GetByteArrayElements(jBytes, nullptr);
-    auto len = (size_t   )sEnv->GetArrayLength(jBytes);
+    auto byteBuf = (uint8_t *)sEnv->GetByteArrayElements(jBytes, nullptr);
+    auto byteNum = (size_t   )sEnv->GetArrayLength(jBytes);
 
-    auto bytes = MVector<uint8_t>::create(ptr, ptr + len);
-    sEnv->ReleaseByteArrayElements(jBytes, (jbyte *)ptr, 0);
+    auto bytes = MVector<uint8_t>::create(byteBuf, byteBuf + byteNum);
+    sEnv->ReleaseByteArrayElements(jBytes, (jbyte *)byteBuf, 0);
+
+    return bytes;
+}
+
+MVector<uint8_t>::ptr MJniCppBytesMaker::operator<<(jintArray jInts) const {
+    if (!jInts) {
+        return nullptr;
+    }
+
+    auto byteBuf = (uint8_t *)sEnv->GetIntArrayElements(jInts, nullptr);
+    auto intNum  = (size_t   )sEnv->GetArrayLength(jInts);
+    auto byteNum = intNum * sizeof(jint);
+
+    auto bytes = MVector<uint8_t>::create(byteBuf, byteBuf + byteNum);
+    sEnv->ReleaseIntArrayElements(jInts, (jint *)byteBuf, 0);
 
     return bytes;
 }

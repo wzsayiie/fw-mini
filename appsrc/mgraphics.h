@@ -40,8 +40,8 @@ union MColorRGBA {
     };
 };
 
-//android and win32 apis use the order of a-r-g-b.
-union MColorARGB {
+//android and win32 gdi+ use the order of Argb.
+union MEarlyARGB {
     int argb = 0;
 
     struct {
@@ -52,8 +52,8 @@ union MColorARGB {
     };
 };
 
-//mac apis use the order of a-b-g-r.
-union MColorABGR {
+//mac apis use the order of Abgr.
+union MClassicABGR {
     int abgr = 0;
 
     struct {

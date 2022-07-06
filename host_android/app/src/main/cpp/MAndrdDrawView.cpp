@@ -76,8 +76,11 @@ Java_src_app_mini_MAndrdDrawView_polygonPointY(JNIEnv *, jclass, jint index) {
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MAndrdDrawView_polygonRGBA(JNIEnv *, jclass) {
-    return sPolygon->rgba();
+Java_src_app_mini_MAndrdDrawView_polygonARGB(JNIEnv *, jclass) {
+    //IMPORTANT: color byte order transform.
+    int color = sPolygon->rgba();
+    MColorTransform((MColorRGBA *)color, (MEarlyARGB *)color, 1);
+    return color;
 }
 
 extern "C" JNIEXPORT jobject JNICALL
@@ -117,8 +120,11 @@ Java_src_app_mini_MAndrdDrawView_textFontSize(JNIEnv *, jclass) {
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_src_app_mini_MAndrdDrawView_textColor(JNIEnv *, jclass) {
-    return sText->rgba();
+Java_src_app_mini_MAndrdDrawView_textARGB(JNIEnv *, jclass) {
+    //IMPORTANT: color byte order transform.
+    int color = sText->rgba();
+    MColorTransform((MColorRGBA *)color, (MEarlyARGB *)color, 1);
+    return color;
 }
 
 extern "C" JNIEXPORT jchar JNICALL
