@@ -76,6 +76,14 @@ const CGFloat TextFieldBottom =  20;
     [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    //this is a single-controller app,
+    //this event will only be fired once on launching.
+    self.window->show();
+}
+
 - (void)applicationWillEnterForeground {
     self.window->show();
 }
