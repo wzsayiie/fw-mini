@@ -79,7 +79,7 @@ extern "C" JNIEXPORT jint JNICALL
 Java_src_app_mini_MAndrdDrawView_polygonARGB(JNIEnv *, jclass) {
     //IMPORTANT: color byte order transform.
     int color = sPolygon->rgba();
-    MColorTransform((MColorRGBA *)color, (MEarlyARGB *)color, 1);
+    MColorTransform((MColorRGBA *)&color, (MEarlyARGB *)&color, 1);
     return color;
 }
 
@@ -123,7 +123,7 @@ extern "C" JNIEXPORT jint JNICALL
 Java_src_app_mini_MAndrdDrawView_textARGB(JNIEnv *, jclass) {
     //IMPORTANT: color byte order transform.
     int color = sText->rgba();
-    MColorTransform((MColorRGBA *)color, (MEarlyARGB *)color, 1);
+    MColorTransform((MColorRGBA *)&color, (MEarlyARGB *)&color, 1);
     return color;
 }
 
