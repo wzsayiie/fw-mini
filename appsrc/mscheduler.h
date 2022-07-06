@@ -9,8 +9,8 @@ public:
 public:
     double GetSecondsTick();
 
-    void loop  (double interval, const MFunction<void ()>::ptr &task);
-    void delay (double waiting , const MFunction<void ()>::ptr &task);
+    void loop  (double seconds, const MFunction<void ()>::ptr &task);
+    void delay (double seconds, const MFunction<void ()>::ptr &task);
     void cancel(const MFunction<void ()>::ptr &task);
 
 private:

@@ -21,29 +21,29 @@ double MScheduler::GetSecondsTick() {
     return ms.count() / 1000.0;
 }
 
-define_reflectable_class_function(MScheduler, loop, "args:interval,task")
-void MScheduler::loop(double interval, const MFunction<void ()>::ptr &task) {
-    if (interval <= 0 || !task) {
+define_reflectable_class_function(MScheduler, loop, "args:seconds,task")
+void MScheduler::loop(double seconds, const MFunction<void ()>::ptr &task) {
+    if (seconds <= 0 || !task) {
         return;
     }
 
     TaskSetting setting; {
         setting.onlyOnce = false;
-        setting.nextTick = GetSecondsTick() + interval;
-        setting.interval = interval;
+        setting.nextTick = GetSecondsTick() + seconds;
+        setting.interval = seconds;
     }
     mTasks.insert({ task, setting });
 }
 
-define_reflectable_class_function(MScheduler, delay, "args:waiting,task")
-void MScheduler::delay(double waiting, const MFunction<void ()>::ptr &task) {
+define_reflectable_class_function(MScheduler, delay, "args:seconds,task")
+void MScheduler::delay(double seconds, const MFunction<void ()>::ptr &task) {
     if (!task) {
         return;
     }
 
     TaskSetting setting; {
         setting.onlyOnce = true;
-        setting.nextTick = GetSecondsTick() + waiting;
+        setting.nextTick = GetSecondsTick() + seconds;
         setting.interval = 0;
     }
     mTasks.insert({ task, setting });
