@@ -34,6 +34,8 @@ public class MAndrdDrawView extends View {
                 case 'T': drawText   (canvas); break;
             }
         }
+
+        clearGraphs();
     }
 
     private void drawClip(Canvas canvas) {
@@ -135,6 +137,7 @@ public class MAndrdDrawView extends View {
     }
 
     private static native void   drawGraphs   ();
+    private static native void   clearGraphs  ();
 
     private static native int    graphCount   ();
     private static native void   selectGraph  (int index);

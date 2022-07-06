@@ -13,6 +13,11 @@ Java_src_app_mini_MAndrdDrawView_drawGraphs(JNIEnv *, jclass) {
     MWindow::mainWindow()->draw();
 }
 
+extern "C" JNIEXPORT void JNICALL
+Java_src_app_mini_MAndrdDrawView_clearGraphs(JNIEnv *, jclass) {
+    MContextReset();
+}
+
 extern "C" JNIEXPORT jint JNICALL
 Java_src_app_mini_MAndrdDrawView_graphCount(JNIEnv *, jclass) {
     return (jint)MContextGetGraphs()->size();
