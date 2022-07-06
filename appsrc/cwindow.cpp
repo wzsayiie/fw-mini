@@ -26,7 +26,7 @@ void CWindow::onLoad() {
     );
     rootViewController()->view()->setFrame(bounds);
 
-    rootViewController()->loadView();
+    rootViewController()->makeViewLoad();
 }
 
 void CWindow::onShow() {
