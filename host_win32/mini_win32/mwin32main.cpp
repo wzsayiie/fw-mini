@@ -237,7 +237,7 @@ static void OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
         SelectBitmap(dc, bmp);
 
         //set the background gray.
-        RECT rect = { 0, 0, clientSize.cy, clientSize.cy };
+        RECT rect = { 0, 0, clientSize.cx, clientSize.cy };
         HBRUSH backgroundBrush = CreateSolidBrush(0xF0F0F0);
         FillRect(dc, &rect, backgroundBrush);
         DeleteBrush(backgroundBrush);
