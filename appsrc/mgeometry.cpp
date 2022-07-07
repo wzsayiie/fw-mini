@@ -135,7 +135,7 @@ MSize::ptr  MRect::size  () { return mSize   ? mSize   : MSize ::zero(); }
 
 define_reflectable_class_function(MRect, none, "getter")
 bool MRect::none() {
-    return mSize ? mSize->none() : true;
+    return !mSize || mSize->none();
 }
 
 define_reflectable_class_function(MRect, equal, "args:that")
