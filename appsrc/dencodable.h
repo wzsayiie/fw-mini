@@ -13,7 +13,7 @@ public:
     virtual ~encodable_base();
 
 public:
-    const std::string key() const;
+    const std::string &key() const;
 
 protected:
     virtual void encode(void *context) const;

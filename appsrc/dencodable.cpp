@@ -21,7 +21,7 @@ encodable_base::~encodable_base() {
     s_ranges->erase((size_t)this);
 }
 
-const std::string encodable_base::key() const {
+const std::string &encodable_base::key() const {
     return _key;
 }
 
