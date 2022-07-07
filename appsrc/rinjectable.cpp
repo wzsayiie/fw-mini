@@ -44,8 +44,8 @@ static function_table::ptr injected_table_of(const char *cls_name) {
         return found->second;
     }
 
-    auto creatred = function_table::create();
-    auto inserted = s_tables->insert({ sym, creatred });
+    auto created  = function_table::create();
+    auto inserted = s_tables->insert({ sym, created });
     return inserted.first->second;
 }
 
