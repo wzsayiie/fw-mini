@@ -41,7 +41,6 @@ public:
     void setVAlign   (MVAlign            align);
 
     std::string text     ();
-    bool        entered  ();
     MColor::ptr textColor();
     float       fontSize ();
     MHAlign     hAlign   ();
@@ -64,14 +63,12 @@ private:
     CTextFieldDelegate::ptr mDelegate;
     
     std::string mText;
-    bool        mEntered   = false;
     MColor::ptr mTextColor = MColor::blackColor();
     float       mFontSize  = 16;
     MHAlign     mHAlign    = MHAlign::Left;
     MVAlign     mVAlign    = MVAlign::Middle;
 
     std::string mLastText;
-    bool        mLastEntered     = false;
     int         mEditingSenders  = 0;
     bool        mEditingBegan    = false;
     double      mCursorBeginTick = 0;

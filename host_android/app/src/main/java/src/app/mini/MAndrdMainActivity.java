@@ -41,9 +41,8 @@ public class MAndrdMainActivity extends Activity
         MAndrdImageFactory.install();
 
         //pixel scale.
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        setPixelScale(metrics.density);
+        float scale = displayDensity();
+        setPixelScale(scale);
 
         //application event.
         appLaunch();
@@ -111,7 +110,10 @@ public class MAndrdMainActivity extends Activity
     }
 
     private EditText createEditText(RelativeLayout parentLayout) {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(800, 100);
+        float scale  = displayDensity();
+        int   width  = (int) (scale * 300);
+        int   height = (int) (scale *  50);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         EditText edit = new EditText(this);
@@ -127,6 +129,12 @@ public class MAndrdMainActivity extends Activity
         parentLayout.addView(edit);
 
         return edit;
+    }
+
+    private float displayDensity() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        return metrics.density;
     }
 
     private void scheduleTimer(float intervalSeconds, Runnable runnable) {

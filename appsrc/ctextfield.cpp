@@ -66,14 +66,12 @@ void CTextField::setHAlign   (MHAlign            align) { mHAlign    = align; }
 void CTextField::setVAlign   (MVAlign            align) { mVAlign    = align; }
 
 define_reflectable_class_function(CTextField, text     , "getter")
-define_reflectable_class_function(CTextField, entered  , "getter")
 define_reflectable_class_function(CTextField, textColor, "getter")
 define_reflectable_class_function(CTextField, fontSize , "getter")
 define_reflectable_class_function(CTextField, hAlign   , "getter")
 define_reflectable_class_function(CTextField, vAlign   , "getter")
 
 std::string CTextField::text     () { return mText     ; }
-bool        CTextField::entered  () { return mEntered  ; }
 MColor::ptr CTextField::textColor() { return mTextColor ? mTextColor : MColor::clearColor(); }
 float       CTextField::fontSize () { return mFontSize ; }
 MHAlign     CTextField::hAlign   () { return mHAlign   ; }
@@ -87,12 +85,11 @@ void CTextField::sendEditing() {
     if (mEditingSenders <= 0) {
         return;
     }
-    if (mLastText == mText && mLastEntered == mEntered) {
+    if (mLastText == mText) {
         return;
     }
 
     mLastText = mText;
-    mLastEntered = mEntered;
 
     //NOTE: firstly emit "editing begin".
     if (!mEditingBegan) {
@@ -132,9 +129,12 @@ bool CTextField::canRespondWriting(const MPoint::ptr &pt) {
 
 void CTextField::onWrite(const std::string &string, bool enter) {
     mText = string;
-    mEntered = enter;
-
     sendEditing();
+
+    //press enter to end editing.
+    if (enter) {
+        resignFocusResponder();
+    }
 }
 
 void CTextField::onDraw(float width, float height) {

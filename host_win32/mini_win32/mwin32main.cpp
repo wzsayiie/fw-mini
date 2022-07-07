@@ -107,7 +107,7 @@ static void CreateEditWithParent(HWND parent)
 
 static void UpdateEditFrameWithSpace(int spaceWidth, int spaceHeight)
 {
-    const int EditWidth  = 200;
+    const int EditWidth  = 300;
     const int EditHeight =  20;
     const int EditBottom =  20;
 
