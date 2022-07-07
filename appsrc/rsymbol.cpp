@@ -5,17 +5,17 @@ namespace reflect {
 static dash::lazy<std::set<std::string>> s_strings;
 
 symbol symbol::make(const char *str) {
-    return symbol(str);
+    return str;
 }
 
 symbol symbol::find(const char *str) {
     if (str && *str) {
         auto it = s_strings->find(str);
         if (it != s_strings->end()) {
-            return symbol(it->c_str());
+            return it->c_str();
         }
     }
-    return symbol(nullptr);
+    return nullptr;
 }
 
 symbol::symbol() {
