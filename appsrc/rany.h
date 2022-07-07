@@ -92,7 +92,6 @@ public:
     
 private:
     union data_word {
-        int64_t as_void  ;
         bool    as_bool  ;
         uint8_t as_byte  ;
         int     as_int   ;
