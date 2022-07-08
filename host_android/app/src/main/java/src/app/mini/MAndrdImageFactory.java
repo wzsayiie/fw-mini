@@ -3,6 +3,9 @@ package src.app.mini;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 public class MAndrdImageFactory {
 
     public static native void install();
@@ -21,7 +24,24 @@ public class MAndrdImageFactory {
 
     @SuppressWarnings("unused") //used by native.
     protected static byte[] onEncodeFFData(Bitmap bitmap, char format) {
-        return null;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        switch (format) {
+            case 'J': bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output); break;
+            case 'P': bitmap.compress(Bitmap.CompressFormat.PNG , 100, output); break;
+        }
+
+        try {
+            byte[] ffData = output.toByteArray();
+            output.close();
+
+            if (ffData.length > 0) {
+                return ffData;
+            }
+            return null;
+
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @SuppressWarnings("unused") //used by native.
