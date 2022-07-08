@@ -6,7 +6,6 @@
 
 const CGFloat TextFieldWidth  = 300;
 const CGFloat TextFieldHeight =  30;
-const CGFloat TextFieldBottom =  20;
 
 @implementation MIOSViewController
 
@@ -117,10 +116,11 @@ const CGFloat TextFieldBottom =  20;
 }
 
 - (void)updateTextFieldFrameWithSpace:(CGSize)space keyboardHeight:(CGFloat)keyboardHeight {
-    CGRect frame = self.textField.frame;
+    space.height -= keyboardHeight;
     
+    CGRect frame = self.textField.frame;
     frame.origin.x = (space.width  - frame.size.width ) / 2;
-    frame.origin.y = (space.height - frame.size.height) - TextFieldBottom - keyboardHeight;
+    frame.origin.y = (space.height - frame.size.height) / 2;
     
     self.textField.frame = frame;
 }

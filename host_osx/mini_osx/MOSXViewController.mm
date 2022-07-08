@@ -9,7 +9,6 @@ const CGFloat ViewContentWidth  = 360;
 const CGFloat ViewContentHeight = 640;
 const CGFloat TextFieldWidth    = 300;
 const CGFloat TextFieldHeight   =  20;
-const CGFloat TextFieldBottom   =  20;
 
 @implementation MOSXViewController
 
@@ -160,8 +159,8 @@ const CGFloat TextFieldBottom   =  20;
     NSSize space = self.view.frame.size;
     NSRect frame = self.textField.frame;
     
-    frame.origin.x = (space.width - frame.size.width) / 2;
-    frame.origin.y = TextFieldBottom;
+    frame.origin.x = (space.width  - frame.size.width ) / 2;
+    frame.origin.y = (space.height - frame.size.height) / 2;
     
     self.textField.frame = frame;
 }
