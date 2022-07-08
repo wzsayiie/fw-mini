@@ -109,13 +109,12 @@ static void UpdateEditFrameWithSpace(int spaceWidth, int spaceHeight)
 {
     const int EditWidth  = 300;
     const int EditHeight =  20;
-    const int EditBottom =  20;
 
     SetWindowPos(
         /* wnd    */ sEditWnd,
         /* insert */ nullptr,
-        /* x      */ (spaceWidth - EditWidth) / 2,
-        /* y      */ spaceHeight - EditHeight - EditBottom,
+        /* x      */ (spaceWidth  - EditWidth ) / 2,
+        /* y      */ (spaceHeight - EditHeight) / 2,
         /* width  */ EditWidth,
         /* height */ EditHeight,
         /* flags  */ 0
