@@ -5,49 +5,55 @@
 
 //environment:
 
-JNIEnv *MJniGetEnv();
+struct _m_jenv_maker {
+    JNIEnv *operator->() const;
+};
 
-#define m_jni_env MJniGetEnv()
+const _m_jenv_maker m_jenv;
 
 //global reference:
 
-struct MJniGlobalJClassMaker {
-    jclass operator<<(const char *classPath) const;
+struct _m_global_jclass_maker {
+    std::shared_ptr<_jclass> operator<<(const char *path) const;
 };
 
-struct MJniGlobalJObjectMaker {
+struct _m_global_jobject_maker {
     std::shared_ptr<_jobject> operator<<(jobject ref) const;
 };
 
-#define m_global_jclass  MJniGlobalJClassMaker ()<<
-#define m_global_jobject MJniGlobalJObjectMaker()<<
+const _m_global_jclass_maker  m_global_jclass ;
+const _m_global_jobject_maker m_global_jobject;
 
 //type conversion:
 
-struct MJniLocalJBytesMaker {
+struct _m_local_jbytes_maker {
     jbyteArray operator<<(const MVector<uint8_t>::ptr &bytes) const;
 };
 
-struct MJniLocalJIntsMaker {
+struct _m_local_jints_maker {
     jintArray operator<<(const MVector<int>::ptr &bytes) const;
 };
 
-struct MJniLocalJStringMaker {
+struct _m_local_jstring_maker {
     jstring operator<<(const std::string &str) const;
 };
 
-#define m_local_jbytes  MJniLocalJBytesMaker ()<<
-#define m_local_jints   MJniLocalJIntsMaker  ()<<
-#define m_local_jstring MJniLocalJStringMaker()<<
+const _m_local_jbytes_maker  m_local_jbytes ;
+const _m_local_jints_maker   m_local_jints  ;
+const _m_local_jstring_maker m_local_jstring;
 
-struct MJniCppBytesMaker {
-    MVector<uint8_t>::ptr operator<<(jbyteArray jBytes) const;
-    MVector<uint8_t>::ptr operator<<(jintArray  jInts ) const;
+struct _m_cpp_bytes_maker {
+    MVector<uint8_t>::ptr operator<<(jobject jObj) const;
 };
 
-struct MJniCppStringMaker {
-    std::string operator<<(jstring jStr) const;
+struct _m_cpp_ints_maker {
+    MVector<uint8_t>::ptr operator<<(jobject jObj) const;
 };
 
-#define m_cpp_bytes  MJniCppBytesMaker ()<<
-#define m_cpp_string MJniCppStringMaker()<<
+struct _m_cpp_string_maker {
+    std::string operator<<(jobject jObj) const;
+};
+
+const _m_cpp_bytes_maker  m_cpp_bytes ;
+const _m_cpp_ints_maker   m_cpp_ints  ;
+const _m_cpp_string_maker m_cpp_string;

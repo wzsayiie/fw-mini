@@ -10,33 +10,35 @@ jint JNI_OnLoad(JavaVM *vm, void *) {
     return UsingVersion;
 }
 
-JNIEnv *MJniGetEnv() {
+JNIEnv *_m_jenv_maker::operator->() const {
     return sEnv;
 }
 
 //global reference:
 
-jclass MJniGlobalJClassMaker::operator<<(const char *classPath) const {
-    jclass local = sEnv->FindClass(classPath);
-    return (jclass)sEnv->NewGlobalRef(local);
+std::shared_ptr<_jclass> _m_global_jclass_maker::operator<<(const char *path) const {
+    jclass local = sEnv->FindClass(path);
+
+    auto global = (jclass)sEnv->NewGlobalRef(local);
+    return std::shared_ptr<_jclass>(global, [](jclass stored) {
+        sEnv->DeleteGlobalRef(stored);
+    });
 }
 
-std::shared_ptr<_jobject> MJniGlobalJObjectMaker::operator<<(jobject ref) const {
+std::shared_ptr<_jobject> _m_global_jobject_maker::operator<<(jobject ref) const {
     if (!ref) {
         return nullptr;
     }
 
     jobject global = sEnv->NewGlobalRef(ref);
-    return {
-        global, [](jobject stored) {
-            sEnv->DeleteGlobalRef(stored);
-        }
-    };
+    return std::shared_ptr<_jobject>(global, [](jobject stored) {
+        sEnv->DeleteGlobalRef(stored);
+    });
 }
 
 //type conversion:
 
-jbyteArray MJniLocalJBytesMaker::operator<<(const MVector<uint8_t>::ptr &bytes) const {
+jbyteArray _m_local_jbytes_maker::operator<<(const MVector<uint8_t>::ptr &bytes) const {
     if (!bytes || bytes->empty()) {
         return nullptr;
     }
@@ -50,7 +52,7 @@ jbyteArray MJniLocalJBytesMaker::operator<<(const MVector<uint8_t>::ptr &bytes) 
     return jBytes;
 }
 
-jintArray MJniLocalJIntsMaker::operator<<(const MVector<int>::ptr &bytes) const {
+jintArray _m_local_jints_maker::operator<<(const MVector<int>::ptr &bytes) const {
     if (!bytes || bytes->empty()) {
         return nullptr;
     }
@@ -64,7 +66,7 @@ jintArray MJniLocalJIntsMaker::operator<<(const MVector<int>::ptr &bytes) const 
     return jInts;
 }
 
-jstring MJniLocalJStringMaker::operator<<(const std::string &str) const {
+jstring _m_local_jstring_maker::operator<<(const std::string &str) const {
     if (str.empty()) {
         return nullptr;
     }
@@ -72,13 +74,14 @@ jstring MJniLocalJStringMaker::operator<<(const std::string &str) const {
     return sEnv->NewStringUTF(str.c_str());
 }
 
-MVector<uint8_t>::ptr MJniCppBytesMaker::operator<<(jbyteArray jBytes) const {
-    if (!jBytes) {
+MVector<uint8_t>::ptr _m_cpp_bytes_maker::operator<<(jobject jObj) const {
+    if (!jObj) {
         return nullptr;
     }
 
-    auto byteBuf = (uint8_t *)sEnv->GetByteArrayElements(jBytes, nullptr);
-    auto byteNum = (size_t   )sEnv->GetArrayLength(jBytes);
+    auto jBytes  = (jbyteArray)jObj;
+    auto byteBuf = (uint8_t * )sEnv->GetByteArrayElements(jBytes, nullptr);
+    auto byteNum = (size_t    )sEnv->GetArrayLength(jBytes);
 
     auto bytes = MVector<uint8_t>::create(byteBuf, byteBuf + byteNum);
     sEnv->ReleaseByteArrayElements(jBytes, (jbyte *)byteBuf, 0);
@@ -86,11 +89,12 @@ MVector<uint8_t>::ptr MJniCppBytesMaker::operator<<(jbyteArray jBytes) const {
     return bytes;
 }
 
-MVector<uint8_t>::ptr MJniCppBytesMaker::operator<<(jintArray jInts) const {
-    if (!jInts) {
+MVector<uint8_t>::ptr _m_cpp_ints_maker::operator<<(jobject jObj) const {
+    if (!jObj) {
         return nullptr;
     }
 
+    auto jInts   = (jintArray)jObj;
     auto byteBuf = (uint8_t *)sEnv->GetIntArrayElements(jInts, nullptr);
     auto intNum  = (size_t   )sEnv->GetArrayLength(jInts);
     auto byteNum = intNum * sizeof(jint);
@@ -101,11 +105,12 @@ MVector<uint8_t>::ptr MJniCppBytesMaker::operator<<(jintArray jInts) const {
     return bytes;
 }
 
-std::string MJniCppStringMaker::operator<<(jstring jStr) const {
-    if (!jStr) {
+std::string _m_cpp_string_maker::operator<<(jobject jObj) const {
+    if (!jObj) {
         return "";
     }
 
+    auto jStr = (jstring)jObj;
     const char *chars = sEnv->GetStringUTFChars(jStr, nullptr);
 
     std::string str(chars ? chars : "");
