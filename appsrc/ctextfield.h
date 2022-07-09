@@ -46,11 +46,7 @@ public:
     MHAlign     hAlign   ();
     MVAlign     vAlign   ();
 
-private:
-    void increaseEditingSender();
-    void sendEditing();
-    void reduceEditingSender();
-
+protected:
     void onBecomeFocusResponder() override;
     void onResignFocusResponder() override;
 
@@ -58,6 +54,11 @@ private:
     void onWrite(const std::string &string, bool enter) override;
 
     void onDraw(float width, float height) override;
+
+private:
+    void increaseEditingSender();
+    void sendEditing();
+    void reduceEditingSender();
 
 private:
     CTextFieldDelegate::ptr mDelegate;

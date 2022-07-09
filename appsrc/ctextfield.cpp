@@ -77,38 +77,6 @@ float       CTextField::fontSize () { return mFontSize ; }
 MHAlign     CTextField::hAlign   () { return mHAlign   ; }
 MVAlign     CTextField::vAlign   () { return mVAlign   ; }
 
-void CTextField::increaseEditingSender() {
-    mEditingSenders += 1;
-}
-
-void CTextField::sendEditing() {
-    if (mEditingSenders <= 0) {
-        return;
-    }
-    if (mLastText == mText) {
-        return;
-    }
-
-    mLastText = mText;
-
-    //NOTE: firstly emit "editing begin".
-    if (!mEditingBegan) {
-        mEditingBegan = true;
-        delegate()->editingBegin();
-    }
-
-    delegate()->textChange();
-}
-
-void CTextField::reduceEditingSender() {
-    mEditingSenders -= 1;
-
-    if (mEditingSenders == 0 && mEditingBegan) {
-        delegate()->editingEnd();
-        mEditingBegan = false;
-    }
-}
-
 void CTextField::onBecomeFocusResponder() {
     increaseEditingSender();
 
@@ -164,5 +132,37 @@ void CTextField::onDraw(float width, float height) {
         MContextSelectVAlign  (mVAlign  );
 
         MContextDrawText(0, 0, width, height);
+    }
+}
+
+void CTextField::increaseEditingSender() {
+    mEditingSenders += 1;
+}
+
+void CTextField::sendEditing() {
+    if (mEditingSenders <= 0) {
+        return;
+    }
+    if (mLastText == mText) {
+        return;
+    }
+
+    mLastText = mText;
+
+    //NOTE: firstly emit "editing begin".
+    if (!mEditingBegan) {
+        mEditingBegan = true;
+        delegate()->editingBegin();
+    }
+
+    delegate()->textChange();
+}
+
+void CTextField::reduceEditingSender() {
+    mEditingSenders -= 1;
+
+    if (mEditingSenders == 0 && mEditingBegan) {
+        delegate()->editingEnd();
+        mEditingBegan = false;
     }
 }
