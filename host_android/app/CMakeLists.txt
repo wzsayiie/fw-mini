@@ -10,9 +10,6 @@ list(APPEND src_aims src/main/cpp/*.cpp)
 list(APPEND sys_libs log)
 ### configutation end.
 
-# ignore when header path contains "\".
-add_compile_options(-Wno-nonportable-include-path)
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
 include_directories(${inc_path})
