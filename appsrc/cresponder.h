@@ -2,8 +2,17 @@
 
 #include "cobject.h"
 
-class CResponder;
-using CResponderDetector =  MFunction<bool (const std::shared_ptr<CResponder> &, const MPoint::ptr &)>;
+//response event:
+
+c_enum(CResponseEvent) {
+    Touch     = 1,
+    MouseMove = 2,
+    Wheel     = 3,
+    Key       = 4,
+    Writing   = 5,
+};
+
+//responder:
 
 c_class(CResponder, CObject) {
 public:
@@ -17,14 +26,16 @@ public:
     void resignFocusResponder();
     bool isFocusResponder    ();
     
-    virtual CResponder::ptr findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit);
+    virtual CResponder::ptr findResponder(CResponseEvent event, const MPoint::ptr &pt);
     virtual MPoint::ptr responseOffset();
+    
+    bool canRespond(CResponseEvent event, const MPoint::ptr &pt);
     
     virtual bool canRespondTouch    (const MPoint::ptr &pt);
     virtual bool canRespondMouseMove(const MPoint::ptr &pt);
     virtual bool canRespondWheel    (const MPoint::ptr &pt);
-    virtual bool canRespondKey      (const MPoint::ptr &pt);
-    virtual bool canRespondWriting  (const MPoint::ptr &pt);
+    virtual bool canRespondKey      ();
+    virtual bool canRespondWriting  ();
     
 protected: public:
     virtual void onBecomeFocusResponder();

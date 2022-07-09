@@ -123,7 +123,7 @@ void CTextField::onResignFocusResponder() {
     mCursorBeginTick = 0;
 }
 
-bool CTextField::canRespondWriting(const MPoint::ptr &pt) {
+bool CTextField::canRespondWriting() {
     return true;
 }
 

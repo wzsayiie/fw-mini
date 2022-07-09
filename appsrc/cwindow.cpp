@@ -47,10 +47,8 @@ void CWindow::onDraw(float width, float height) {
 }
 
 void CWindow::onTouchBegin(float x, float y) {
-    mTouchingResponder = rootViewController()->findResponder(MPoint::from(x, y),
-        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &npt) {
-            return obj->canRespondTouch(npt);
-        })
+    mTouchingResponder = rootViewController()->findResponder(
+        CResponseEvent::Touch, MPoint::from(x, y)
     );
     
     if (mTouchingResponder) {
@@ -87,10 +85,8 @@ void CWindow::onTouchEnd(float x, float y) {
 }
 
 void CWindow::onMouseMove(float x, float y) {
-    CResponder::ptr responder = rootViewController()->findResponder(MPoint::from(x, y),
-        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &npt) {
-            return obj->canRespondMouseMove(npt);
-        })
+    CResponder::ptr responder = rootViewController()->findResponder(
+        CResponseEvent::MouseMove, MPoint::from(x, y)
     );
     
     //exit last responder.
@@ -118,10 +114,8 @@ void CWindow::onMouseMove(float x, float y) {
 }
 
 void CWindow::onMouseWheel(float delta) {
-    CResponder::ptr responder = rootViewController()->findResponder(mousePosition(),
-        CResponderDetector::create([](const CResponder::ptr &obj, const MPoint::ptr &npt) {
-            return obj->canRespondWheel(npt);
-        })
+    CResponder::ptr responder = rootViewController()->findResponder(
+        CResponseEvent::Wheel ,mousePosition()
     );
     
     if (responder) {
@@ -135,8 +129,7 @@ void CWindow::onKey(MKey key) {
         return;
     }
 
-    //NOTE: finding with a null "pt" means that mouse position is ignored.
-    if (!responder->canRespondKey(nullptr)) {
+    if (!responder->canRespondKey()) {
         return;
     }
 
@@ -149,7 +142,7 @@ void CWindow::onWrite(const std::string &text, bool enter)  {
         return;
     }
 
-    if (!responder->canRespondWriting(nullptr)) {
+    if (!responder->canRespondWriting()) {
         return;
     }
     

@@ -130,9 +130,9 @@ CView *CView::superview() {
     return mSuperview;
 }
 
-define_reflectable_class_function(CView, findResponder, "virtual;args:x,y,fit")
-CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) {
-    implement_injectable_function(CResponder::ptr, fit, pt)
+define_reflectable_class_function(CView, findResponder, "virtual;args:event,pt")
+CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt) {
+    implement_injectable_function(CResponder::ptr, event, pt)
     
     //invisible view does not respond any events.
     if (!mFrame || mFrame->none()) {
@@ -162,16 +162,15 @@ CResponder::ptr CView::findResponder(const MPoint::ptr &pt, const CResponderDete
         MPoint::ptr off = it->frame()->origin();
         MPoint::ptr npt = pt->sub(off);
 
-        CResponder::ptr responder = it->findResponder(npt, fit);
+        CResponder::ptr responder = it->findResponder(event, npt);
         if (responder) {
             return responder;
         }
     }
     
     //is self suitable.
-    auto self = shared();
-    if (fit->call(self, pt)) {
-        return self;
+    if (canRespond(event, pt)) {
+        return shared();
     }
     
     return nullptr;

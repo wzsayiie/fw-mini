@@ -54,7 +54,7 @@ private:
     void onBecomeFocusResponder() override;
     void onResignFocusResponder() override;
 
-    bool canRespondWriting(const MPoint::ptr &pt) override;
+    bool canRespondWriting() override;
     void onWrite(const std::string &string, bool enter) override;
 
     void onDraw(float width, float height) override;

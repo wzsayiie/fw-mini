@@ -30,7 +30,7 @@ public:
     MVector<CView::ptr>::ptr subviews();
     CView *superview();
     
-    CResponder::ptr findResponder(const MPoint::ptr &pt, const CResponderDetector::ptr &fit) override;
+    CResponder::ptr findResponder(CResponseEvent event, const MPoint::ptr &pt) override;
     MPoint::ptr responseOffset() override;
     
     bool canRespondTouch    (const MPoint::ptr &pt) override;
