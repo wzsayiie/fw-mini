@@ -1,8 +1,5 @@
 #include "cbutton.h"
 
-const int PointedForegroundRGBA = MColor::LightGrayRGBA & 0xFFffFF80;
-const int TouchedForegroundRGBA = MColor::GrayRGBA      & 0xFFffFF80;
-
 define_reflectable_class_function(CButton, titleLabel, "getter")
 CLabel::ptr CButton::titleLabel() {
     if (!mTitleLabel) {
@@ -50,11 +47,14 @@ void CButton::onLayoutSubviews(float width, float height) {
 }
 
 void CButton::onDrawForeground(float width, float height) {
+    //NOTE: reserve focus frame drawn by control.
+    base::onDrawForeground(width, height);
+    
     if (mTouched) {
-        MContextSelectRGBA(TouchedForegroundRGBA);
+        MContextSelectRGBA(0xFFffFF80 & MColor::LightGrayRGBA);
         MContextDrawRect(0, 0, width, height);
     } else if (mPointed) {
-        MContextSelectRGBA(PointedForegroundRGBA);
+        MContextSelectRGBA(0xFFffFF80 & MColor::GrayRGBA);
         MContextDrawRect(0, 0, width, height);
     }
 }

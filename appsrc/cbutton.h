@@ -15,7 +15,7 @@ public:
     void setClickTarget(const MFunction<void ()>::ptr &target);
     MFunction<void ()>::ptr clickTarget();
 
-private:
+protected:
     void onMouseEnter(float x, float y) override;
     void onMouseExit (float x, float y) override;
     void onTouchBegin(float x, float y) override;
