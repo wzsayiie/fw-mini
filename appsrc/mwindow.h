@@ -6,6 +6,7 @@
 
 m_enum(MKey) {
     Back  = 0x08,
+    Tab   = 0x09,
     Enter = 0x0D,
     Space = 0x20,
 

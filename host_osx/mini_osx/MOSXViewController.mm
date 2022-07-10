@@ -122,11 +122,7 @@ const CGFloat TextFieldHeight   =  20;
 }
 
 - (NSEvent *)keyboardKeyDown:(NSEvent *)event {
-    //do not process keys with modifier keys.
-    if (event.modifierFlags & NSEventModifierFlagDeviceIndependentFlagsMask) {
-        return event;
-    }
-    
+    //text field process.
     if (!self.textField.hidden) {
         if (event.keyCode == kVK_Return) {
             [self makeControlTextEnter];
@@ -137,8 +133,10 @@ const CGFloat TextFieldHeight   =  20;
         }
     }
     
+    //keyboard process.
     switch (event.keyCode) {
         case kVK_Delete    : self.window->key(MKey::Back ); break;
+        case kVK_Tab       : self.window->key(MKey::Tab  ); break;
         case kVK_Return    : self.window->key(MKey::Enter); break;
         case kVK_Space     : self.window->key(MKey::Space); break;
             
