@@ -49,7 +49,7 @@ protected: public:
     virtual void onMouseExit (float x, float y);
     virtual void onWheel     (float delta);
     virtual void onKey       (MKey key);
-    virtual void onWrite     (const std::string &string, bool enter);
+    virtual void onWrite     (const std::string &text, MKey key);
     
 private:
     static CResponder *sFocusResponder;

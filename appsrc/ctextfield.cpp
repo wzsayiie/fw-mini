@@ -65,12 +65,14 @@ define_reflectable_class_function(CTextField, textColor, "getter")
 define_reflectable_class_function(CTextField, fontSize , "getter")
 define_reflectable_class_function(CTextField, hAlign   , "getter")
 define_reflectable_class_function(CTextField, vAlign   , "getter")
+define_reflectable_class_function(CTextField, entered  , "getter")
 
-std::string CTextField::text     () { return mText     ; }
+std::string CTextField::text     () { return mText                                         ; }
 MColor::ptr CTextField::textColor() { return mTextColor ? mTextColor : MColor::clearColor(); }
-float       CTextField::fontSize () { return mFontSize ; }
-MHAlign     CTextField::hAlign   () { return mHAlign   ; }
-MVAlign     CTextField::vAlign   () { return mVAlign   ; }
+float       CTextField::fontSize () { return mFontSize                                     ; }
+MHAlign     CTextField::hAlign   () { return mHAlign                                       ; }
+MVAlign     CTextField::vAlign   () { return mVAlign                                       ; }
+bool        CTextField::entered  () { return mKey == MKey::Enter                           ; }
 
 void CTextField::onBecomeFocusResponder() {
     increaseEditingSender();
@@ -90,12 +92,13 @@ bool CTextField::canRespondWriting() {
     return true;
 }
 
-void CTextField::onWrite(const std::string &string, bool enter) {
-    mText = string;
+void CTextField::onWrite(const std::string &text, MKey key) {
+    mText = text;
+    mKey  = key ;
     sendEditing();
 
-    //press enter to end editing.
-    if (enter) {
+    //to end editing.
+    if (key == MKey::Tab || key == MKey::Enter) {
         transferFocusControl();
     }
 }
@@ -119,13 +122,15 @@ void CTextField::onDraw(float width, float height) {
         auto   count    = (int64_t)(duration * 1000) / (int64_t)(interval * 1000);
 
         if (count % 2) {
+            MContextSelectRGBA(mTextColor->rgba() & 0xFFffFF40);
+        } else {
             MContextSelectRGBA(mTextColor->rgba());
-
-            MContextDrawRect(0,              0, width, thick ); //top.
-            MContextDrawRect(0, height - thick, width, thick ); //bottom.
-            MContextDrawRect(0,              0, thick, height); //left.
-            MContextDrawRect(width - thick,  0, thick, height); //right.
         }
+        
+        MContextDrawRect(0,              0, width, thick ); //top.
+        MContextDrawRect(0, height - thick, width, thick ); //bottom.
+        MContextDrawRect(0,              0, thick, height); //left.
+        MContextDrawRect(width - thick,  0, thick, height); //right.
     }
 
     //draw text.
@@ -143,17 +148,24 @@ void CTextField::onDraw(float width, float height) {
 
 void CTextField::increaseEditingSender() {
     mEditingSenders += 1;
+
+    //NOTE: clean last key record.
+    if (mEditingSenders == 1) {
+        mLastKey = MKey::None;
+        mKey = MKey::None;
+    }
 }
 
 void CTextField::sendEditing() {
     if (mEditingSenders <= 0) {
         return;
     }
-    if (mLastText == mText) {
+    if (mLastText == mText && mLastKey == mKey) {
         return;
     }
 
     mLastText = mText;
+    mLastKey  = mKey ;
 
     //NOTE: firstly emit "editing begin".
     if (!mEditingBegan) {

@@ -121,9 +121,9 @@ void MWindow::key(MKey key) {
     onKey(key);
 }
 
-define_reflectable_class_function(MWindow, write, "args:text,enter")
-void MWindow::write(const std::string &text, bool enter) {
-    onWrite(text, enter);
+define_reflectable_class_function(MWindow, write, "args:text,key")
+void MWindow::write(const std::string &text, MKey key) {
+    onWrite(text, key);
 }
 
 define_reflectable_class_function(MWindow, checkWritingUpdated)
@@ -224,7 +224,7 @@ void MWindow::onKey(MKey key) {
     implement_injectable_function(void, key)
 }
 
-define_reflectable_class_function(MWindow, onWrite, "virtual;args:text,enter")
-void MWindow::onWrite(const std::string &text, bool enter) {
-    implement_injectable_function(void, text, enter)
+define_reflectable_class_function(MWindow, onWrite, "virtual;args:text,key")
+void MWindow::onWrite(const std::string &text, MKey key) {
+    implement_injectable_function(void, text, key)
 }

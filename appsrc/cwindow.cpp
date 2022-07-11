@@ -136,7 +136,7 @@ void CWindow::onKey(MKey key) {
     responder->onKey(key);
 }
 
-void CWindow::onWrite(const std::string &text, bool enter)  {
+void CWindow::onWrite(const std::string &text, MKey key) {
     CResponder::ptr responder = CResponder::focusResponder();
     if (!responder) {
         return;
@@ -146,5 +146,5 @@ void CWindow::onWrite(const std::string &text, bool enter)  {
         return;
     }
     
-    responder->onWrite(text, enter);
+    responder->onWrite(text, key);
 }

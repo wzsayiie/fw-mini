@@ -5,6 +5,8 @@
 //key:
 
 m_enum(MKey) {
+    None  = 0,
+
     Back  = 0x08,
     Tab   = 0x09,
     Enter = 0x0D,
@@ -47,7 +49,7 @@ public:
     
     M_HOST_CALL void mouseWheel(float delta);
     M_HOST_CALL void key(MKey key);
-    M_HOST_CALL void write(const std::string &text, bool enter);
+    M_HOST_CALL void write(const std::string &text, MKey key);
 
     //text box control.
     M_HOST_CALL bool        checkWritingUpdated();
@@ -77,7 +79,7 @@ protected: public:
     
     virtual void onMouseWheel(float delta);
     virtual void onKey(MKey key);
-    virtual void onWrite(const std::string &text, bool enter);
+    virtual void onWrite(const std::string &text, MKey key);
 
 private:
     static MWindow::ptr sMainWindow;

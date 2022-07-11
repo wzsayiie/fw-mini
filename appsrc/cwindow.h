@@ -24,7 +24,7 @@ protected:
     
     void onMouseWheel(float delta) override;
     void onKey(MKey key) override;
-    void onWrite(const std::string &text, bool enter) override;
+    void onWrite(const std::string &text, MKey key) override;
     
 private:
     CViewController::ptr mRootViewController  ;

@@ -120,7 +120,7 @@ void CResponder::onKey(MKey key) {
     implement_injectable_function(void, key)
 }
 
-define_reflectable_class_function(CResponder, onWrite, "virtual;args:string,enter")
-void CResponder::onWrite(const std::string &string, bool enter) {
-    implement_injectable_function(void, string, enter)
+define_reflectable_class_function(CResponder, onWrite, "virtual;args:text,key")
+void CResponder::onWrite(const std::string &text, MKey key) {
+    implement_injectable_function(void, text, key)
 }
