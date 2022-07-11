@@ -21,13 +21,16 @@ protected:
     void onTouchBegin(float x, float y) override;
     void onTouchEnd  (float x, float y) override;
 
+    void onControlKey(MKey key) override;
+
     void onLayoutSubviews(float width, float height) override;
     void onDrawForeground(float width, float height) override;
 
 private:
     CLabel::ptr mTitleLabel;
     MFunction<void ()>::ptr mClickTarget;
-
-    bool mPointed = false;
-    bool mTouched = false;
+    
+    bool   mCurrentPointed = false;
+    bool   mCurrentTouched = false;
+    double mTouchMaskStamp = 0;
 };
