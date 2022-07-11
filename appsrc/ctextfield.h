@@ -53,7 +53,8 @@ protected:
     bool canRespondWriting() override;
     void onWrite(const std::string &string, bool enter) override;
 
-    void onDraw(float width, float height) override;
+    void onDrawForeground(float width, float height) override;
+    void onDraw          (float width, float height) override;
 
 private:
     void increaseEditingSender();

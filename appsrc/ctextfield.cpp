@@ -26,11 +26,6 @@ void CTextFieldDelegate::editingBegin() { if (mEditingBeginTarget) { mEditingBeg
 void CTextFieldDelegate::textChange  () { if (mTextChangeTarget  ) { mTextChangeTarget  ->call(); } }
 void CTextFieldDelegate::editingEnd  () { if (mEditingEndTarget  ) { mEditingEndTarget  ->call(); } }
 
-//assist:
-
-const float CursorHeight   = 4.0f;
-const float CursorInterval = 0.6f;
-
 //text field:
 
 define_reflectable_class_function(CTextField, setDelegate, "setter;args:delegate")
@@ -101,8 +96,12 @@ void CTextField::onWrite(const std::string &string, bool enter) {
 
     //press enter to end editing.
     if (enter) {
-        resignFocusResponder();
+        transferFocusControl();
     }
+}
+
+void CTextField::onDrawForeground(float width, float height) {
+    //block the focus frame of the focused control.
 }
 
 void CTextField::onDraw(float width, float height) {
@@ -111,14 +110,21 @@ void CTextField::onDraw(float width, float height) {
     }
 
     //draw cursor.
-    if (mCursorBeginTick) {
-        double current  = MScheduler::instance()->GetSecondsTick();
-        double duration = current - mCursorBeginTick;
-        auto   gapCount = (int64_t)(duration * 1000) / (int64_t)(CursorInterval * 1000);
+    float interval = 0.6f;
+    float thick    = 2.0f;
 
-        if (gapCount % 2) {
+    if (mCursorBeginTick) {
+        double now      = MScheduler::instance()->GetSecondsTick();
+        double duration = now - mCursorBeginTick;
+        auto   count    = (int64_t)(duration * 1000) / (int64_t)(interval * 1000);
+
+        if (count % 2) {
             MContextSelectRGBA(mTextColor->rgba());
-            MContextDrawRect(0, height - CursorHeight, width, CursorHeight);
+
+            MContextDrawRect(0,              0, width, thick ); //top.
+            MContextDrawRect(0, height - thick, width, thick ); //bottom.
+            MContextDrawRect(0,              0, thick, height); //left.
+            MContextDrawRect(width - thick,  0, thick, height); //right.
         }
     }
 
