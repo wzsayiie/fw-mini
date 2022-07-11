@@ -18,8 +18,8 @@ const UINT_PTR WindowUpdateTimerId = 2;
 
 static HWND    sEditWnd         = nullptr;
 static WNDPROC sEditDefaultProc = nullptr;
+static WPARAM  sEditControlKey  = 0;
 static bool    sLButtonDowned   = false;
-static bool    sEditEmitEnter   = false;
 
 static void OpenConsole(void)
 {
@@ -70,9 +70,9 @@ static SIZE GetClientSize(HWND wnd)
 
 static LRESULT CALLBACK EditCustomProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (msg == WM_KEYDOWN && wParam == VK_RETURN)
+    if (msg == WM_KEYDOWN && (wParam == VK_TAB || wParam == VK_RETURN))
     {
-        sEditEmitEnter = true;
+        sEditControlKey = wParam;
 
         auto wParam = MAKEWPARAM(0, EN_CHANGE);
         auto lParam = (LPARAM)wnd;
@@ -357,15 +357,15 @@ static void OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
         GetWindowTextW(sEditWnd, dash::buffer<WCHAR>(), dash::buffer_size<WCHAR>());
         std::string u8text = MU8StringFromU16(dash::buffer<char16_t>());
 
-        if (sEditEmitEnter)
+        MKey key = MKey::None;
+        switch (sEditControlKey)
         {
-            sEditEmitEnter = false;
-            MWindow::mainWindow()->write(u8text, true);
+            case VK_TAB   : key = MKey::Tab  ; break;
+            case VK_RETURN: key = MKey::Enter; break;
         }
-        else
-        {
-            MWindow::mainWindow()->write(u8text, false);
-        }
+        sEditControlKey = 0;
+
+        MWindow::mainWindow()->write(u8text, key);
     }
 }
 
