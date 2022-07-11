@@ -134,6 +134,15 @@ define_reflectable_class_function(CView, findResponder, "virtual;args:event,pt")
 CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt) {
     implement_injectable_function(CResponder::ptr, event, pt)
     
+    //untouchable views ignore cursor events.
+    if (!mTouchable) {
+        if (event == CResponseEvent::Touch     ||
+            event == CResponseEvent::MouseMove ||
+            event == CResponseEvent::Wheel     )
+        {
+            return nullptr;
+        }
+    }
     //invisible view does not respond any events.
     if (!mFrame || mFrame->none()) {
         return nullptr;

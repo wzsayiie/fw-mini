@@ -112,6 +112,7 @@ CView::ptr CViewController::view() {
     if (!mView) {
         mView = loadView();
         mView->setViewController(this);
+        mView->setTouchable(true);
     }
     return mView;
 }
