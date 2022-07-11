@@ -331,6 +331,7 @@ static void OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
     switch (virtualkey)
     {
         case VK_BACK  : window->key(MKey::Back ); break;
+        case VK_TAB   : window->key(MKey::Tab  ); break;
         case VK_RETURN: window->key(MKey::Enter); break;
         case VK_SPACE : window->key(MKey::Space); break;
 
