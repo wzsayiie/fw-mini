@@ -93,7 +93,7 @@ void CViewController::removeFromParentController() {
     
     view()->removeFromSuperview();
     
-    //adpater apear status.
+    //adpater appear status.
     makeViewDisappear();
 }
 
