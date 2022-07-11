@@ -10,20 +10,20 @@ public:
     ~CControl();
     
 public:
-    void setResponderId(const std::string &iden);
-    std::string responderId();
+    void setControlId(const std::string &iden);
+    std::string controlId();
     
-    void transferFocusResponder();
+    void transferFocusControl();
     
-    void setFrontResponder(const std::string &iden);
-    void setNextResponder (const std::string &iden);
-    void setLeftResponder (const std::string &iden);
-    void setRightResponder(const std::string &iden);
+    void setFrontControl(const std::string &iden);
+    void setNextControl (const std::string &iden);
+    void setLeftControl (const std::string &iden);
+    void setRightControl(const std::string &iden);
     
-    std::string frontResponder();
-    std::string nextResponder ();
-    std::string leftResponder ();
-    std::string rightResponder();
+    std::string frontControl();
+    std::string nextControl ();
+    std::string leftControl ();
+    std::string rightControl();
     
 protected:
     void onDrawForeground(float width, float height) override;
@@ -35,13 +35,16 @@ protected: public:
     virtual void onControlKey(MKey key);
     
 private:
-    void transfer(const std::initializer_list<std::string> &ids);
+    void setControl(CControl **target, const std::string &iden);
+    std::string controlIdOf(CControl **target);
+
+    void transfer(const std::initializer_list<CControl **> &ids);
     
 private:
-    std::string mResponderId;
+    std::string mControlId;
     
-    std::string mFrontResponder;
-    std::string mNextResponder ;
-    std::string mLeftResponder ;
-    std::string mRightResponder;
+    CControl *mFrontControl = nullptr;
+    CControl *mNextControl  = nullptr;
+    CControl *mLeftControl  = nullptr;
+    CControl *mRightControl = nullptr;
 };

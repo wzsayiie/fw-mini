@@ -1,11 +1,13 @@
 #include "ccontrol.h"
 
-static dash::lazy<std::map<std::string, CControl *>> sResponders;
-static int sResponderIdCount = 0;
+static dash::lazy<std::map<std::string, CControl *>> sMap;
+static dash::lazy<std::set<CControl *>> sSet;
+static int sIdCount = 0;
 
 CControl::CControl() {
-    mResponderId = std::to_string(++sResponderIdCount);
-    sResponders->insert({ mResponderId, this });
+    mControlId = std::to_string(++sIdCount);
+    sMap->insert({ mControlId, this });
+    sSet->insert(this);
     
     setTouchable(true);
     setAcceptMouseMove(true);
@@ -17,49 +19,58 @@ CControl::CControl(float x, float y, float width, float height): CControl() {
 }
 
 CControl::~CControl() {
-    sResponders->erase(mResponderId);
+    sMap->erase(mControlId);
+    sSet->erase(this);
 }
 
-define_reflectable_class_function(CControl, setResponderId, "setter;args:iden")
-void CControl::setResponderId(const std::string &iden) {
+define_reflectable_class_function(CControl, setControlId, "setter;args:iden")
+void CControl::setControlId(const std::string &iden) {
     if (iden.empty()) {
         return;
     }
     
-    sResponders->erase(mResponderId);
-    sResponders->insert({ iden, this });
-    mResponderId = iden;
+    sMap->erase(mControlId);
+    sMap->insert({ iden, this });
+    mControlId = iden;
 }
 
-define_reflectable_class_function(CControl, responderId, "getter")
-std::string CControl::responderId() {
-    return mResponderId;
+define_reflectable_class_function(CControl, controlId, "getter")
+std::string CControl::controlId() {
+    return mControlId;
 }
 
-define_reflectable_class_function(CControl, transferFocusResponder)
-void CControl::transferFocusResponder() {
-    transfer({ mRightResponder, mNextResponder });
+define_reflectable_class_function(CControl, transferFocusControl)
+void CControl::transferFocusControl() {
+    transfer({
+        &mRightControl, &mNextControl ,
+        &mLeftControl , &mFrontControl
+    });
+
+    //abandon the focus if it has not been transferred.
+    if (isFocusResponder()) {
+        resignFocusResponder();
+    }
 }
 
-define_reflectable_class_function(CControl, setFrontResponder, "setter;args:iden")
-define_reflectable_class_function(CControl, setNextResponder , "setter;args:iden")
-define_reflectable_class_function(CControl, setLeftResponder , "setter;args:iden")
-define_reflectable_class_function(CControl, setRightResponder, "setter;args:iden")
+define_reflectable_class_function(CControl, setFrontControl, "setter;args:iden")
+define_reflectable_class_function(CControl, setNextControl , "setter;args:iden")
+define_reflectable_class_function(CControl, setLeftControl , "setter;args:iden")
+define_reflectable_class_function(CControl, setRightControl, "setter;args:iden")
 
-void CControl::setFrontResponder(const std::string &iden) { mFrontResponder = iden; }
-void CControl::setNextResponder (const std::string &iden) { mNextResponder  = iden; }
-void CControl::setLeftResponder (const std::string &iden) { mLeftResponder  = iden; }
-void CControl::setRightResponder(const std::string &iden) { mRightResponder = iden; }
+void CControl::setFrontControl(const std::string &iden) { setControl(&mFrontControl, iden); }
+void CControl::setNextControl (const std::string &iden) { setControl(&mNextControl , iden); }
+void CControl::setLeftControl (const std::string &iden) { setControl(&mLeftControl , iden); }
+void CControl::setRightControl(const std::string &iden) { setControl(&mRightControl, iden); }
 
-define_reflectable_class_function(CControl, frontResponder, "getter")
-define_reflectable_class_function(CControl, nextResponder , "getter")
-define_reflectable_class_function(CControl, leftResponder , "getter")
-define_reflectable_class_function(CControl, rightResponder, "getter")
+define_reflectable_class_function(CControl, frontControl, "getter")
+define_reflectable_class_function(CControl, nextControl , "getter")
+define_reflectable_class_function(CControl, leftControl , "getter")
+define_reflectable_class_function(CControl, rightControl, "getter")
 
-std::string CControl::frontResponder() { return mFrontResponder; }
-std::string CControl::nextResponder () { return mNextResponder ; }
-std::string CControl::leftResponder () { return mLeftResponder ; }
-std::string CControl::rightResponder() { return mRightResponder; }
+std::string CControl::frontControl() { return controlIdOf(&mFrontControl); }
+std::string CControl::nextControl () { return controlIdOf(&mNextControl ); }
+std::string CControl::leftControl () { return controlIdOf(&mLeftControl ); }
+std::string CControl::rightControl() { return controlIdOf(&mRightControl); }
 
 void CControl::onDrawForeground(float width, float height) {
     if (!isFocusResponder()) {
@@ -68,7 +79,7 @@ void CControl::onDrawForeground(float width, float height) {
     
     //mark focus responder:
     MContextSelectRGBA(MColor::BlackRGBA);
-    const float thick = 2;
+    const float thick = 2.0f;
     
     MContextDrawRect(0,              0, width, thick ); //top.
     MContextDrawRect(0, height - thick, width, thick ); //bottom.
@@ -82,12 +93,19 @@ bool CControl::canRespondKey() {
 
 void CControl::onKey(MKey key) {
     switch (key) {
-        case MKey::Tab  : transfer({ mRightResponder, mNextResponder  }); break;
-        case MKey::Down : transfer({ mNextResponder , mRightResponder }); break;
-        case MKey::Right: transfer({ mRightResponder, mNextResponder  }); break;
-        case MKey::Up   : transfer({ mFrontResponder                  }); break;
-        case MKey::Left : transfer({ mLeftResponder                   }); break;
+        case MKey::Down : transfer({ &mNextControl , &mRightControl }); break;
+        case MKey::Right: transfer({ &mRightControl, &mNextControl  }); break;
+        case MKey::Up   : transfer({ &mFrontControl, &mLeftControl  }); break;
+        case MKey::Left : transfer({ &mLeftControl , &mFrontControl }); break;
         
+        case MKey::Tab: {
+            transfer({
+                &mRightControl, &mNextControl ,
+                &mLeftControl , &mFrontControl
+            });
+            break;
+        }
+
         //pass the event to subclass.
         default: onControlKey(key);
     }
@@ -98,18 +116,40 @@ void CControl::onControlKey(MKey key) {
     implement_injectable_function(void, key)
 }
 
-void CControl::transfer(const std::initializer_list<std::string> &ids) {
+void CControl::setControl(CControl **target, const std::string &iden) {
+    auto it = sMap->find(iden);
+
+    //NOTE: record the reference to the control instead of id. cause id may change.
+    if (it != sMap->end()) {
+        *target = it->second;
+    } else {
+        *target = nullptr;
+    }
+}
+
+std::string CControl::controlIdOf(CControl **target) {
+    if (!*target) {
+        return "";
+    }
+
+    //the control has been released.
+    if (sSet->find(*target) == sSet->end()) {
+        *target = nullptr;
+        return "";
+    }
+
+    return (*target)->controlId();
+}
+
+void CControl::transfer(const std::initializer_list<CControl **> &ids) {
     for (auto &iden : ids) {
-        if (iden.empty()) {
+        //the control has been released.
+        if (sSet->find(*iden) == sSet->end()) {
+            *iden = nullptr;
             continue;
         }
         
-        auto it = sResponders->find(iden);
-        if (it == sResponders->end()) {
-            continue;
-        }
-        
-        it->second->becomeFocusResponder();
+        (*iden)->becomeFocusResponder();
         break;
     }
 }
