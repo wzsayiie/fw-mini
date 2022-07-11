@@ -10,7 +10,7 @@ public:
     void setImage(const MImage::ptr &image);
     MImage::ptr image();
 
-private:
+protected:
     void onDraw(float width, float height) override;
 
 private:

@@ -43,11 +43,7 @@ public:
     MPoint::ptr contentOffset();
     MSize::ptr  contentSize  ();
 
-private:
-    void increaseScollingSender();
-    void sendScrolling();
-    void reduceScollingSender();
-
+protected:
     void onTouchBegin(float x, float y) override;
     void onTouchMove (float x, float y) override;
     void onTouchEnd  (float x, float y) override;
@@ -55,6 +51,11 @@ private:
 
     void onLayoutSubviews(float width, float height) override;
     void onDrawForeground(float width, float height) override;
+
+private:
+    void increaseScollingSender();
+    void sendScrolling();
+    void reduceScollingSender();
 
 private:
     CScrollViewDelegate::ptr mDelegate;

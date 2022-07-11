@@ -126,38 +126,6 @@ MSize::ptr CScrollView::contentSize() {
     return contentView()->frame()->size();
 }
 
-void CScrollView::increaseScollingSender() {
-    mScrollingSenders += 1;
-}
-
-void CScrollView::sendScrolling() {
-    if (mScrollingSenders <= 0) {
-        return;
-    }
-
-    MPoint::ptr contentOrigin = contentView()->frame()->origin();
-    if (contentOrigin->equal(mLastContentOrigin)) {
-        return;
-    }
-
-    mLastContentOrigin = contentOrigin;
-    if (!mScrollingBegan) {
-        mScrollingBegan = true;
-        delegate()->scrollingBegin();
-    } else {
-        delegate()->scrolling();
-    }
-}
-
-void CScrollView::reduceScollingSender() {
-    mScrollingSenders -= 1;
-
-    if (mScrollingSenders == 0 && mScrollingBegan) {
-        delegate()->scrollingEnd();
-        mScrollingBegan = false;
-    }
-}
-
 void CScrollView::onTouchBegin(float x, float y) {
     mContentTouchX = x - contentView()->frame()->x();
     mContentTouchY = y - contentView()->frame()->y();
@@ -227,5 +195,37 @@ void CScrollView::onDrawForeground(float width, float height) {
 
         MContextSelectRGBA(IndicatorRGBA);
         MContextDrawRect(ix, iy, iw, ih);
+    }
+}
+
+void CScrollView::increaseScollingSender() {
+    mScrollingSenders += 1;
+}
+
+void CScrollView::sendScrolling() {
+    if (mScrollingSenders <= 0) {
+        return;
+    }
+
+    MPoint::ptr contentOrigin = contentView()->frame()->origin();
+    if (contentOrigin->equal(mLastContentOrigin)) {
+        return;
+    }
+
+    mLastContentOrigin = contentOrigin;
+    if (!mScrollingBegan) {
+        mScrollingBegan = true;
+        delegate()->scrollingBegin();
+    } else {
+        delegate()->scrolling();
+    }
+}
+
+void CScrollView::reduceScollingSender() {
+    mScrollingSenders -= 1;
+
+    if (mScrollingSenders == 0 && mScrollingBegan) {
+        delegate()->scrollingEnd();
+        mScrollingBegan = false;
     }
 }

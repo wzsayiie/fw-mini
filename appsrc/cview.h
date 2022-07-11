@@ -7,7 +7,7 @@ public:
     CView();
     CView(float x, float y, float width, float height);
     
-public: 
+public:
     void setViewController (CObject           *controller);
     void setFrame          (const MRect::ptr  &frame     );
     void setBackgroundColor(const MColor::ptr &color     );

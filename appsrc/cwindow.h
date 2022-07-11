@@ -9,7 +9,7 @@ public:
     
     void makeMainWindow();
     
-private:
+protected:
     void onLoad() override;
     void onShow() override;
     void onHide() override;

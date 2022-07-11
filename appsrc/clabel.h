@@ -19,7 +19,7 @@ public:
     MHAlign     hAlign   ();
     MVAlign     vAlign   ();
 
-private:
+protected:
     void onDraw(float width, float height) override;
 
 private:
