@@ -9,10 +9,7 @@ CControl::CControl() {
     sMap->insert({ mControlId, this });
     sSet->insert(this);
     
-    setTouchable(true);
-    setAcceptMouseMove(true);
-    setAcceptWheel(true);
-    setAcceptKey(true);
+    setInteractive(true);
 }
 
 CControl::CControl(float x, float y, float width, float height): CControl() {

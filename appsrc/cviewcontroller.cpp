@@ -112,7 +112,6 @@ CView::ptr CViewController::view() {
     if (!mView) {
         mView = loadView();
         mView->setViewController(this);
-        mView->setTouchable(true);
     }
     return mView;
 }
@@ -120,48 +119,8 @@ CView::ptr CViewController::view() {
 define_reflectable_class_function(CViewController, findResponder, "virtual;args:event,pt")
 CResponder::ptr CViewController::findResponder(CResponseEvent event, const MPoint::ptr &pt) {
     implement_injectable_function(CResponder::ptr, event, pt)
-    
-    //invisible controller does not respond any events.
-    if (view()->frame()->none()) {
-        return nullptr;
-    }
-    if (!view()->visible()) {
-        return nullptr;
-    }
-    //controller does not respond events outside it.
-    MRect::ptr ownBounds = view()->bounds();
-    if (pt && !ownBounds->contains(pt)) {
-        return nullptr;
-    }
-    
-    //find in the child controllers.
-    for (auto &it : *mChildControllers) {
-        //ignore out-of-bounds child controllers.
-        if (it->view()->frame()->intersects(ownBounds)->none()) {
-            continue;
-        }
 
-        MPoint::ptr off = it->view()->frame()->origin();
-        MPoint::ptr npt = pt->sub(off);
-        
-        CResponder::ptr responder = it->findResponder(event, npt);
-        if (responder) {
-            return responder;
-        }
-    }
-
-    //find in the views.
-    CResponder::ptr responder = view()->findResponder(event, pt);
-    if (responder) {
-        return responder;
-    }
-    
-    //test self.
-    if (canRespond(event, pt)) {
-        return shared();
-    }
-    
-    return nullptr;
+    return view()->findResponder(event, pt);
 }
 
 define_reflectable_class_function(CView, responseOffset, "virtual")
@@ -175,21 +134,21 @@ define_reflectable_class_function(CViewController, canRespondTouch, "virtual;arg
 bool CViewController::canRespondTouch(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
-    return true;
+    return view()->bounds()->contains(pt);
 }
 
 define_reflectable_class_function(CViewController, canRespondMouseMove, "virtual;args:pt")
 bool CViewController::canRespondMouseMove(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
-    return true;
+    return view()->bounds()->contains(pt);
 }
 
 define_reflectable_class_function(CViewController, canRespondWheel, "virtual;args:pt")
 bool CViewController::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
-    return true;
+    return view()->bounds()->contains(pt);
 }
 
 define_reflectable_class_function(CViewController, canRespondKey, "virtual")

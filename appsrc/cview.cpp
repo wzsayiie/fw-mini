@@ -1,4 +1,5 @@
 #include "cview.h"
+#include "cviewcontroller.h"
 
 CView::CView() {
     mSubviews = MVector<CView::ptr>::create();
@@ -9,10 +10,15 @@ CView::CView(float x, float y, float width, float height) {
     mFrame = MRect::from(x, y, width, height);
 }
 
-define_reflectable_class_function(CView, setViewController, "setter;args:controller")
-void CView::setViewController(CObject *controller) {
-    mViewController = controller;
-}
+define_reflectable_class_function(CView, setViewController , "setter;args:controller" )
+define_reflectable_class_function(CView, setInteractive    , "setter;args:interactive")
+define_reflectable_class_function(CView, setVisible        , "setter;args:visible"    )
+define_reflectable_class_function(CView, setBackgroundColor, "setter;args:color"      )
+
+void CView::setViewController (CViewController   *controller ) { mViewController  = controller ; }
+void CView::setInteractive    (bool               interactive) { mInteractive     = interactive; }
+void CView::setVisible        (bool               visible    ) { mVisible         = visible    ; }
+void CView::setBackgroundColor(const MColor::ptr &color      ) { mBackgroundColor = color      ; }
 
 define_reflectable_class_function(CView, setFrame, "setter;args:frame")
 void CView::setFrame(const MRect::ptr &frame) {
@@ -30,39 +36,19 @@ void CView::setFrame(const MRect::ptr &frame) {
     }
 }
 
-define_reflectable_class_function(CView, setBackgroundColor, "setter;args:color")
-void CView::setBackgroundColor(const MColor::ptr &color) {
-    mBackgroundColor = color;
-}
-
-define_reflectable_class_function(CView, setVisible        , "setter;args:visible"  )
-define_reflectable_class_function(CView, setTouchable      , "setter;args:touchable")
-define_reflectable_class_function(CView, setAcceptMouseMove, "setter;args:accept"   )
-define_reflectable_class_function(CView, setAcceptWheel    , "setter;args:accept"   )
-define_reflectable_class_function(CView, setAcceptKey      , "setter;args:accept"   )
-define_reflectable_class_function(CView, setAcceptWriting  , "setter;args:accept"   )
-
-void CView::setVisible        (bool visible  ) { mVisible         = visible  ; }
-void CView::setTouchable      (bool touchable) { mTouchable       = touchable; }
-void CView::setAcceptMouseMove(bool accept   ) { mAcceptMouseMove = accept   ; }
-void CView::setAcceptWheel    (bool accept   ) { mAcceptWheel     = accept   ; }
-void CView::setAcceptKey      (bool accept   ) { mAcceptKey       = accept   ; }
-void CView::setAcceptWriting  (bool accept   ) { mAcceptWriting   = accept   ; }
-
 define_reflectable_class_function(CView, viewController, "getter")
-CObject *CView::viewController() {
+CViewController *CView::viewController() {
     return mViewController;
 }
 
-define_reflectable_class_function(CView, frame, "getter")
-MRect::ptr CView::frame() {
-    return mFrame ? mFrame : MRect::zero();
+define_reflectable_class_function(CView, interactive, "getter")
+bool CView::interactive() {
+    return mInteractive;
 }
 
-define_reflectable_class_function(CView, bounds, "getter")
-MRect::ptr CView::bounds() {
-    MRect::ptr rect = frame();
-    return MRect::from(0, 0, rect->width(), rect->height());
+define_reflectable_class_function(CView, visible, "getter")
+bool CView::visible() {
+    return mVisible;
 }
 
 define_reflectable_class_function(CView, backgroundColor, "getter")
@@ -70,19 +56,18 @@ MColor::ptr CView::backgroundColor() {
     return mBackgroundColor ? mBackgroundColor : MColor::clearColor();
 }
 
-define_reflectable_class_function(CView, visible        , "getter")
-define_reflectable_class_function(CView, touchable      , "getter")
-define_reflectable_class_function(CView, acceptMouseMove, "getter")
-define_reflectable_class_function(CView, acceptWheel    , "getter")
-define_reflectable_class_function(CView, acceptKey      , "getter")
-define_reflectable_class_function(CView, acceptWriting  , "getter")
+define_reflectable_class_function(CView, bounds, "getter")
+MRect::ptr CView::bounds() {
+    if (mFrame) {
+        return MRect::from(0, 0, mFrame->width(), mFrame->height());
+    }
+    return MRect::zero();
+}
 
-bool CView::visible        () { return mVisible        ; }
-bool CView::touchable      () { return mTouchable      ; }
-bool CView::acceptMouseMove() { return mAcceptMouseMove; }
-bool CView::acceptWheel    () { return mAcceptWheel    ; }
-bool CView::acceptKey      () { return mAcceptKey      ; }
-bool CView::acceptWriting  () { return mAcceptWriting  ; }
+define_reflectable_class_function(CView, frame, "getter")
+MRect::ptr CView::frame() {
+    return mFrame ? mFrame : MRect::zero();
+}
 
 define_reflectable_class_function(CView, addSubview, "args:subview")
 void CView::addSubview(const CView::ptr &subview) {
@@ -142,40 +127,21 @@ define_reflectable_class_function(CView, findResponder, "virtual;args:event,pt")
 CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt) {
     implement_injectable_function(CResponder::ptr, event, pt)
     
-    //untouchable views ignore cursor events.
-    if (!mTouchable) {
-        if (event == CResponseEvent::Touch     ||
-            event == CResponseEvent::MouseMove ||
-            event == CResponseEvent::Wheel     )
-        {
-            return nullptr;
-        }
+    //events outside of view are not accepted.
+    if (!bounds()->contains(pt)) {
+        return nullptr;
     }
-    //invisible view does not respond any events.
+
+    //ignore invisible views.
     if (!mFrame || mFrame->none()) {
         return nullptr;
     }
     if (!mVisible) {
         return nullptr;
     }
-    //view does not respond events outside it.
-    MRect::ptr ownBounds = bounds();
-    if (pt && !ownBounds->contains(pt)) {
-        return nullptr;
-    }
 
-    //find in subviews.
+    //test subviews.
     for (auto &it : *mSubviews) {
-        //NOTE: if it is the root view of a view controller, ignore it.
-        //this avoids duplicate lookups.
-        if (it->viewController()) {
-            continue;
-        }
-        //ignore out-of-bounds subviews.
-        if (it->frame()->intersects(ownBounds)->none()) {
-            continue;
-        }
-        
         MPoint::ptr off = it->frame()->origin();
         MPoint::ptr npt = pt->sub(off);
 
@@ -184,12 +150,17 @@ CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt
             return responder;
         }
     }
-    
-    //is self suitable.
+
+    //test self.
     if (canRespond(event, pt)) {
         return shared();
     }
-    
+
+    //test controller.
+    if (mViewController && mViewController->canRespond(event, pt)) {
+        return mViewController->shared();
+    }
+
     return nullptr;
 }
 
@@ -212,42 +183,45 @@ define_reflectable_class_function(CView, canRespondTouch, "virtual;args:pt")
 bool CView::canRespondTouch(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
-    return mTouchable;
+    return mInteractive && mVisible && bounds()->contains(pt);
 }
 
 define_reflectable_class_function(CView, canRespondMouseMove, "virtual;args:pt")
 bool CView::canRespondMouseMove(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
-    return mAcceptMouseMove;
+    return mInteractive && mVisible && bounds()->contains(pt);
 }
 
 define_reflectable_class_function(CView, canRespondWheel, "virtual;args:pt")
 bool CView::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
 
-    return mAcceptWheel;
+    return mInteractive && mVisible && bounds()->contains(pt);
 }
 
 define_reflectable_class_function(CView, canRespondKey)
 bool CView::canRespondKey() {
     implement_injectable_function(bool)
 
-    return mAcceptKey;
+    return mInteractive && mVisible;
 }
 
 define_reflectable_class_function(CView, canRespondWriting)
 bool CView::canRespondWriting() {
     implement_injectable_function(bool)
 
-    return mAcceptWriting;
+    return mInteractive && mVisible;
 }
 
 define_reflectable_class_function(CView, draw)
 void CView::draw() {
+    //subviews do not go beyond the superview's bounds.
     if (!mFrame || mFrame->none()) {
         return;
     }
+
+    //if a view is not visible, all its subviews are also not visible.
     if (!mVisible) {
         return;
     }
@@ -265,7 +239,7 @@ void CView::draw() {
 
         MRect::ptr ownBounds = bounds();
         for (auto &it : *mSubviews) {
-            //NOTE: ignore out-of-bounds subviews.
+            //ignore out-of-bounds subviews.
             if (it->frame()->intersects(ownBounds)->none()) {
                 continue;
             }

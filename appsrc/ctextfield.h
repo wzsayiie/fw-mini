@@ -28,8 +28,7 @@ private:
 
 c_class(CTextField, CControl) {
 public:
-    CTextField();
-    CTextField(float x, float y, float width, float height);
+    using upper::upper;
 
 public:
     void setDelegate(const CTextFieldDelegate::ptr &delegate);

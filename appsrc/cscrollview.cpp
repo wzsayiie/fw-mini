@@ -38,8 +38,7 @@ const float IndicatorWidth = 4;
 //scroll view:
 
 CScrollView::CScrollView() {
-    setAcceptWheel(true);
-    setTouchable(true);
+    setInteractive(true);
 }
 
 CScrollView::CScrollView(float x, float y, float width, float height): CScrollView() {
