@@ -12,6 +12,7 @@ CControl::CControl() {
     setTouchable(true);
     setAcceptMouseMove(true);
     setAcceptWheel(true);
+    setAcceptKey(true);
 }
 
 CControl::CControl(float x, float y, float width, float height): CControl() {
@@ -87,10 +88,6 @@ void CControl::onDrawForeground(float width, float height) {
     MContextDrawRect(width - thick,  0, thick, height); //right.
 }
 
-bool CControl::canRespondKey() {
-    return true;
-}
-
 void CControl::onKey(MKey key) {
     switch (key) {
         case MKey::Down : transfer({ &mNextControl , &mRightControl }); break;
@@ -120,7 +117,7 @@ void CControl::setControl(CControl **target, const std::string &iden) {
     auto it = sMap->find(iden);
 
     //NOTE: record the reference to the control instead of id. cause id may change.
-    if (it != sMap->end()) {
+    if (it != sMap->end() && it->second != this) {
         *target = it->second;
     } else {
         *target = nullptr;

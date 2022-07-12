@@ -28,6 +28,14 @@ void CTextFieldDelegate::editingEnd  () { if (mEditingEndTarget  ) { mEditingEnd
 
 //text field:
 
+CTextField::CTextField() {
+    setAcceptWriting(true);
+}
+
+CTextField::CTextField(float x, float y, float width, float height): CTextField() {
+    setFrame(MRect::from(x, y, width, height));
+}
+
 define_reflectable_class_function(CTextField, setDelegate, "setter;args:delegate")
 void CTextField::setDelegate(const CTextFieldDelegate::ptr &delegate) {
     mDelegate = delegate;
@@ -86,10 +94,6 @@ void CTextField::onResignFocusResponder() {
 
     MWindow::mainWindow()->setWritingEnabled(false, "");
     mCursorBeginTick = 0;
-}
-
-bool CTextField::canRespondWriting() {
-    return true;
 }
 
 void CTextField::onWrite(const std::string &text, MKey key) {

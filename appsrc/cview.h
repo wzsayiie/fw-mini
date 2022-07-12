@@ -15,6 +15,8 @@ public:
     void setTouchable      (bool               touchable );
     void setAcceptMouseMove(bool               accept    );
     void setAcceptWheel    (bool               accept    );
+    void setAcceptKey      (bool               accept    );
+    void setAcceptWriting  (bool               accept    );
 
     CObject    *viewController ();
     MRect::ptr  frame          ();
@@ -24,6 +26,8 @@ public:
     bool        touchable      ();
     bool        acceptMouseMove();
     bool        acceptWheel    ();
+    bool        acceptKey      ();
+    bool        acceptWriting  ();
     
     void addSubview(const CView::ptr &subview);
     void removeFromSuperview();
@@ -36,6 +40,8 @@ public:
     bool canRespondTouch    (const MPoint::ptr &pt) override;
     bool canRespondMouseMove(const MPoint::ptr &pt) override;
     bool canRespondWheel    (const MPoint::ptr &pt) override;
+    bool canRespondKey      ()                      override;
+    bool canRespondWriting  ()                      override;
     
     void draw();
     
@@ -54,6 +60,8 @@ private:
     bool        mTouchable       = false;
     bool        mAcceptMouseMove = false;
     bool        mAcceptWheel     = false;
+    bool        mAcceptKey       = false;
+    bool        mAcceptWriting   = false;
     
     MVector<CView::ptr>::ptr mSubviews;
     CView *mSuperview = nullptr;

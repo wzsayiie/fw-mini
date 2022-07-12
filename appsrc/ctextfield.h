@@ -28,7 +28,8 @@ private:
 
 c_class(CTextField, CControl) {
 public:
-    using upper::upper;
+    CTextField();
+    CTextField(float x, float y, float width, float height);
 
 public:
     void setDelegate(const CTextFieldDelegate::ptr &delegate);
@@ -51,7 +52,6 @@ protected:
     void onBecomeFocusResponder() override;
     void onResignFocusResponder() override;
 
-    bool canRespondWriting() override;
     void onWrite(const std::string &text, MKey key) override;
 
     void onDrawForeground(float width, float height) override;

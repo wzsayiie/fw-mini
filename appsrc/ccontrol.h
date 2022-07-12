@@ -27,8 +27,6 @@ public:
     
 protected:
     void onDrawForeground(float width, float height) override;
-    
-    bool canRespondKey() override;
     void onKey(MKey key) override final;
     
 protected: public:

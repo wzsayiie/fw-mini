@@ -39,11 +39,15 @@ define_reflectable_class_function(CView, setVisible        , "setter;args:visibl
 define_reflectable_class_function(CView, setTouchable      , "setter;args:touchable")
 define_reflectable_class_function(CView, setAcceptMouseMove, "setter;args:accept"   )
 define_reflectable_class_function(CView, setAcceptWheel    , "setter;args:accept"   )
+define_reflectable_class_function(CView, setAcceptKey      , "setter;args:accept"   )
+define_reflectable_class_function(CView, setAcceptWriting  , "setter;args:accept"   )
 
 void CView::setVisible        (bool visible  ) { mVisible         = visible  ; }
 void CView::setTouchable      (bool touchable) { mTouchable       = touchable; }
 void CView::setAcceptMouseMove(bool accept   ) { mAcceptMouseMove = accept   ; }
 void CView::setAcceptWheel    (bool accept   ) { mAcceptWheel     = accept   ; }
+void CView::setAcceptKey      (bool accept   ) { mAcceptKey       = accept   ; }
+void CView::setAcceptWriting  (bool accept   ) { mAcceptWriting   = accept   ; }
 
 define_reflectable_class_function(CView, viewController, "getter")
 CObject *CView::viewController() {
@@ -70,11 +74,15 @@ define_reflectable_class_function(CView, visible        , "getter")
 define_reflectable_class_function(CView, touchable      , "getter")
 define_reflectable_class_function(CView, acceptMouseMove, "getter")
 define_reflectable_class_function(CView, acceptWheel    , "getter")
+define_reflectable_class_function(CView, acceptKey      , "getter")
+define_reflectable_class_function(CView, acceptWriting  , "getter")
 
 bool CView::visible        () { return mVisible        ; }
 bool CView::touchable      () { return mTouchable      ; }
 bool CView::acceptMouseMove() { return mAcceptMouseMove; }
 bool CView::acceptWheel    () { return mAcceptWheel    ; }
+bool CView::acceptKey      () { return mAcceptKey      ; }
+bool CView::acceptWriting  () { return mAcceptWriting  ; }
 
 define_reflectable_class_function(CView, addSubview, "args:subview")
 void CView::addSubview(const CView::ptr &subview) {
@@ -219,6 +227,20 @@ bool CView::canRespondWheel(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
 
     return mAcceptWheel;
+}
+
+define_reflectable_class_function(CView, canRespondKey)
+bool CView::canRespondKey() {
+    implement_injectable_function(bool)
+
+    return mAcceptKey;
+}
+
+define_reflectable_class_function(CView, canRespondWriting)
+bool CView::canRespondWriting() {
+    implement_injectable_function(bool)
+
+    return mAcceptWriting;
 }
 
 define_reflectable_class_function(CView, draw)
