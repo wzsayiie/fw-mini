@@ -123,6 +123,13 @@ CResponder::ptr CViewController::findResponder(CResponseEvent event, const MPoin
     return view()->findResponder(event, pt);
 }
 
+define_reflectable_class_function(CViewController, existResponder, "virtual;args:responder")
+bool CViewController::existResponder(const CResponder::ptr &responder) {
+    implement_injectable_function(bool, responder)
+
+    return view()->existResponder(responder);
+}
+
 define_reflectable_class_function(CView, responseOffset, "virtual")
 MPoint::ptr CViewController::responseOffset()  {
     implement_injectable_function(MPoint::ptr)

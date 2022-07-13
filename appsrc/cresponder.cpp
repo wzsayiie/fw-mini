@@ -80,6 +80,12 @@ CResponder::ptr CResponder::findResponder(CResponseEvent event, const MPoint::pt
     return nullptr;
 }
 
+define_reflectable_class_function(CResponder, existResponder, "virtual;args:responder")
+bool CResponder::existResponder(const CResponder::ptr &responder) {
+    implement_injectable_function(bool, responder)
+    return false;
+}
+
 define_reflectable_class_function(CResponder, responseOffset, "virtual")
 MPoint::ptr CResponder::responseOffset() {
     implement_injectable_function(MPoint::ptr)

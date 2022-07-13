@@ -28,8 +28,9 @@ public:
     MVector<CView::ptr>::ptr subviews();
     CView *superview();
     
-    CResponder::ptr findResponder(CResponseEvent event, const MPoint::ptr &pt) override;
-    MPoint::ptr responseOffset() override;
+    CResponder::ptr findResponder (CResponseEvent event, const MPoint::ptr &pt) override;
+    bool            existResponder(const CResponder::ptr &responder) override;
+    MPoint::ptr     responseOffset() override;
     
     bool canBecomeFocusResponder() override;
 

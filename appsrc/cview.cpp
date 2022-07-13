@@ -178,6 +178,32 @@ CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt
     return nullptr;
 }
 
+define_reflectable_class_function(CView, existResponder, "virtual;args:responder")
+bool CView::existResponder(const CResponder::ptr &responder) {
+    implement_injectable_function(bool, responder)
+    
+    if (!responder) {
+        return false;
+    }
+
+    //check self.
+    if (mViewController == responder.get()) {
+        return true;
+    }
+    if (this == responder.get()) {
+        return true;
+    }
+
+    //check subviews.
+    for (auto &it : *mSubviews) {
+        if (it->existResponder(responder)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 define_reflectable_class_function(CView, responseOffset, "virtual")
 MPoint::ptr CView::responseOffset() {
     implement_injectable_function(MPoint::ptr)
