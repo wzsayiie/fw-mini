@@ -25,6 +25,9 @@ public:
     void becomeFocusResponder();
     void resignFocusResponder();
     bool isFocusResponder    ();
+
+    virtual bool canBecomeFocusResponder();
+    virtual bool canResignFocusResponder();
     
     virtual CResponder::ptr findResponder(CResponseEvent event, const MPoint::ptr &pt);
     virtual MPoint::ptr responseOffset();

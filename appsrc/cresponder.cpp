@@ -30,7 +30,16 @@ void CResponder::becomeFocusResponder() {
     if (this == sFocusResponder) {
         return;
     }
+
+    //check.
+    if (!canBecomeFocusResponder()) {
+        return;
+    }
+    if (sFocusResponder && !sFocusResponder->canResignFocusResponder()) {
+        return;
+    }
     
+    //transfer.
     if (sFocusResponder) {
         sFocusResponder->onResignFocusResponder();
     }
@@ -43,7 +52,13 @@ void CResponder::resignFocusResponder() {
     if (this != sFocusResponder) {
         return;
     }
+
+    //check.
+    if (!canResignFocusResponder()) {
+        return;
+    }
     
+    //transfer.
     onResignFocusResponder();
     sFocusResponder = nullptr;
 }
@@ -52,6 +67,12 @@ define_reflectable_class_function(CResponder, isFocusResponder)
 bool CResponder::isFocusResponder() {
     return this == sFocusResponder;
 }
+
+define_reflectable_class_function(CResponder, canBecomeFocusResponder, "virtual")
+define_reflectable_class_function(CResponder, canResignFocusResponder, "virtual")
+
+bool CResponder::canBecomeFocusResponder() { implement_injectable_function(bool) return false; }
+bool CResponder::canResignFocusResponder() { implement_injectable_function(bool) return true ; }
 
 define_reflectable_class_function(CResponder, findResponder, "virtual;args:event,pt")
 CResponder::ptr CResponder::findResponder(CResponseEvent event, const MPoint::ptr &pt) {

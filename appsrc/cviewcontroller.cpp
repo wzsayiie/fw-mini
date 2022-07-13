@@ -130,6 +130,13 @@ MPoint::ptr CViewController::responseOffset()  {
     return view()->responseOffset();
 }
 
+define_reflectable_class_function(CViewController, canBecomeFocusResponder)
+bool CViewController::canBecomeFocusResponder() {
+    implement_injectable_function(bool)
+
+    return true;
+}
+
 define_reflectable_class_function(CViewController, canRespondTouch, "virtual;args:pt")
 bool CViewController::canRespondTouch(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)

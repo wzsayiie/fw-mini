@@ -10,15 +10,29 @@ CView::CView(float x, float y, float width, float height) {
     mFrame = MRect::from(x, y, width, height);
 }
 
-define_reflectable_class_function(CView, setViewController , "setter;args:controller" )
-define_reflectable_class_function(CView, setInteractive    , "setter;args:interactive")
-define_reflectable_class_function(CView, setVisible        , "setter;args:visible"    )
-define_reflectable_class_function(CView, setBackgroundColor, "setter;args:color"      )
+define_reflectable_class_function(CView, setViewController, "setter;args:controller")
+void CView::setViewController(CViewController *controller) {
+    mViewController = controller;
+}
 
-void CView::setViewController (CViewController   *controller ) { mViewController  = controller ; }
-void CView::setInteractive    (bool               interactive) { mInteractive     = interactive; }
-void CView::setVisible        (bool               visible    ) { mVisible         = visible    ; }
-void CView::setBackgroundColor(const MColor::ptr &color      ) { mBackgroundColor = color      ; }
+define_reflectable_class_function(CView, setInteractive, "setter;args:interactive")
+void CView::setInteractive(bool interactive) {
+    mInteractive = interactive;
+
+    if (!interactive && isFocusResponder()) {
+        resignFocusResponder();
+    }
+}
+
+define_reflectable_class_function(CView, setVisible, "setter;args:visible")
+void CView::setVisible(bool visible) {
+    mVisible = visible;
+}
+
+define_reflectable_class_function(CView, setBackgroundColor, "setter;args:color")
+void CView::setBackgroundColor(const MColor::ptr &color) {
+    mBackgroundColor = color;
+}
 
 define_reflectable_class_function(CView, setFrame, "setter;args:frame")
 void CView::setFrame(const MRect::ptr &frame) {
@@ -177,6 +191,13 @@ MPoint::ptr CView::responseOffset() {
     }
     
     return MPoint::from(x, y);
+}
+
+define_reflectable_class_function(CView, canBecomeFocusResponder)
+bool CView::canBecomeFocusResponder() {
+    implement_injectable_function(bool)
+
+    return mInteractive;
 }
 
 define_reflectable_class_function(CView, canRespondTouch, "virtual;args:pt")

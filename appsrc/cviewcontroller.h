@@ -21,6 +21,8 @@ public:
     CResponder::ptr findResponder(CResponseEvent event, const MPoint::ptr &pt) override;
     MPoint::ptr responseOffset() override;
     
+    bool canBecomeFocusResponder() override;
+
     bool canRespondTouch    (const MPoint::ptr &pt) override;
     bool canRespondMouseMove(const MPoint::ptr &pt) override;
     bool canRespondWheel    (const MPoint::ptr &pt) override;
