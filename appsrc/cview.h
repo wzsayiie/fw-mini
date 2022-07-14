@@ -10,18 +10,20 @@ public:
     CView(float x, float y, float width, float height);
     
 public:
-    void setViewController (CViewController   *controller );
-    void setInteractive    (bool               interactive);
-    void setVisible        (bool               visible    );
-    void setBackgroundColor(const MColor::ptr &color      );
-    void setFrame          (const MRect::ptr  &frame      );
+    void setViewController (CViewController               *controller );
+    void setInteractive    (bool                           interactive);
+    void setVisible        (bool                           visible    );
+    void setBackgroundColor(const MColor::ptr             &color      );
+    void setLayoutDelegate (const MFunction<void ()>::ptr &delegate   );
+    void setFrame          (const MRect::ptr              &frame      );
 
-    CViewController *viewController ();
-    bool             interactive    ();
-    bool             visible        ();
-    MColor::ptr      backgroundColor();
-    MRect::ptr       bounds         ();
-    MRect::ptr       frame          ();
+    CViewController        *viewController ();
+    bool                    interactive    ();
+    bool                    visible        ();
+    MColor::ptr             backgroundColor();
+    MFunction<void ()>::ptr layoutDelegate ();
+    MRect::ptr              bounds         ();
+    MRect::ptr              frame          ();
     
     void addSubview(const CView::ptr &subview);
     void removeFromSuperview();
@@ -50,11 +52,15 @@ protected: public:
     virtual void onDrawForeground(float width, float height);
     
 private:
-    CViewController *mViewController  = nullptr;
-    bool             mInteractive     = false;
-    bool             mVisible         = true;
-    MColor::ptr      mBackgroundColor ;
-    MRect::ptr       mFrame           ;
+    void layoutSubviews();
+
+private:
+    CViewController        *mViewController  = nullptr;
+    bool                    mInteractive     = false;
+    bool                    mVisible         = true;
+    MColor::ptr             mBackgroundColor ;
+    MFunction<void ()>::ptr mLayoutDelegate  ;
+    MRect::ptr              mFrame           ;
     
     MVector<CView::ptr>::ptr mSubviews;
     CView *mSuperview = nullptr;

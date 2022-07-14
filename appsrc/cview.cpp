@@ -34,6 +34,11 @@ void CView::setBackgroundColor(const MColor::ptr &color) {
     mBackgroundColor = color;
 }
 
+define_reflectable_class_function(CView, setLayoutDelegate, "setter;args:delegate")
+void CView::setLayoutDelegate(const MFunction<void ()>::ptr &delegate) {
+    mLayoutDelegate = delegate;
+}
+
 define_reflectable_class_function(CView, setFrame, "setter;args:frame")
 void CView::setFrame(const MRect::ptr &frame) {
     float oldWidth  = mFrame ? mFrame->width () : 0;
@@ -46,7 +51,7 @@ void CView::setFrame(const MRect::ptr &frame) {
     if (newWidth  != oldWidth  ||
         newHeight != oldHeight )
     {
-        onLayoutSubviews(newWidth, newHeight);
+        layoutSubviews();
     }
 }
 
@@ -68,6 +73,11 @@ bool CView::visible() {
 define_reflectable_class_function(CView, backgroundColor, "getter")
 MColor::ptr CView::backgroundColor() {
     return mBackgroundColor ? mBackgroundColor : MColor::clearColor();
+}
+
+define_reflectable_class_function(CView, layoutDelegate, "getter")
+MFunction<void ()>::ptr CView::layoutDelegate() {
+    return mLayoutDelegate;
 }
 
 define_reflectable_class_function(CView, bounds, "getter")
@@ -108,8 +118,7 @@ void CView::addSubview(const CView::ptr &subview) {
     subview->mSuperview = this;
     
     //layout.
-    MSize::ptr space = frame()->size();
-    onLayoutSubviews(space->width(), space->height());
+    layoutSubviews();
 }
 
 define_reflectable_class_function(CView, removeFromSuperview)
@@ -323,4 +332,14 @@ void CView::onDraw(float width, float height) {
 define_reflectable_class_function(CView, onDrawForeground, "virtual;args:width,height")
 void CView::onDrawForeground(float width, float height) {
     implement_injectable_function(void, width, height)
+}
+
+void CView::layoutSubviews() {
+    if (mLayoutDelegate) {
+        mLayoutDelegate->call();
+
+    } else {
+        MSize::ptr space = frame()->size();
+        onLayoutSubviews(space->width(), space->height());
+    }
 }
