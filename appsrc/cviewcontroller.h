@@ -17,6 +17,9 @@ public:
     CViewController *parentController();
     
     CView::ptr view();
+
+    bool viewLoaded  ();
+    bool viewAppeared();
     
     CResponder::ptr findResponder (CResponseEvent event, const MPoint::ptr &pt) override;
     bool            existResponder(const CResponder::ptr &responder) override;
@@ -41,8 +44,6 @@ private:
     MVector<CViewController::ptr>::ptr mChildControllers;
     CViewController *mParentController = nullptr;
     
-    bool mViewLoaded   = false;
     bool mViewAppeared = false;
-    
     CView::ptr mView;
 };

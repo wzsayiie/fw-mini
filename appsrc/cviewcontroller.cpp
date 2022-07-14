@@ -6,12 +6,7 @@ CViewController::CViewController() {
 
 define_reflectable_class_function(CViewController, makeViewLoad)
 void CViewController::makeViewLoad() {
-    if (mViewLoaded) {
-        return;
-    }
-    
-    mViewLoaded = true;
-    onViewLoad();
+    view();
 }
 
 define_reflectable_class_function(CViewController, makeViewAppear)
@@ -112,8 +107,20 @@ CView::ptr CViewController::view() {
     if (!mView) {
         mView = loadView();
         mView->setViewController(this);
+
+        onViewLoad();
     }
     return mView;
+}
+
+define_reflectable_class_function(CViewController, viewLoaded, "getter")
+bool CViewController::viewLoaded() {
+    return mView != nullptr;
+}
+
+define_reflectable_class_function(CViewController, viewAppeared, "getter")
+bool CViewController::viewAppeared() {
+    return mViewAppeared;
 }
 
 define_reflectable_class_function(CViewController, findResponder, "virtual;args:event,pt")
