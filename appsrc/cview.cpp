@@ -163,12 +163,12 @@ CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt
         return nullptr;
     }
 
-    //test subviews.
-    for (auto &it : *mSubviews) {
-        MPoint::ptr off = it->frame()->origin();
+    //test subviews (NOTE: find from the back).
+    for (auto it = mSubviews->rbegin(); it != mSubviews->rend(); ++it) {
+        MPoint::ptr off = (*it)->frame()->origin();
         MPoint::ptr npt = pt->sub(off);
 
-        CResponder::ptr responder = it->findResponder(event, npt);
+        CResponder::ptr responder = (*it)->findResponder(event, npt);
         if (responder) {
             return responder;
         }
