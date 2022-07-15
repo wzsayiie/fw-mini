@@ -20,14 +20,14 @@ std::string CButton::title() {
     return titleLabel()->text();
 }
 
-define_reflectable_class_function(CButton, setClickTarget, "setter;args:target")
-void CButton::setClickTarget(const MFunction<void ()>::ptr &target) {
-    mClickTarget = target;
+define_reflectable_class_function(CButton, setClickListener, "setter;args:listener")
+void CButton::setClickListener(const MFunction<void ()>::ptr &listener) {
+    mClickListener = listener;
 }
 
-define_reflectable_class_function(CButton, clickTarget, "getter")
-MFunction<void ()>::ptr CButton::clickTarget() {
-    return mClickTarget;
+define_reflectable_class_function(CButton, clickListener, "getter")
+MFunction<void ()>::ptr CButton::clickListener() {
+    return mClickListener;
 }
 
 void CButton::onMouseEnter(float x, float y) { mCurrentPointed = true ; }
@@ -37,8 +37,8 @@ void CButton::onTouchBegin(float x, float y) { mCurrentTouched = true ; }
 void CButton::onTouchEnd(float x, float y) {
     mCurrentTouched = false;
 
-    if (mClickTarget && bounds()->contains(MPoint::from(x, y))) {
-        mClickTarget->call();
+    if (mClickListener && bounds()->contains(MPoint::from(x, y))) {
+        mClickListener->call();
     }
 }
 
@@ -50,8 +50,8 @@ void CButton::onControlKey(MKey key) {
     double now = MScheduler::instance()->GetSecondsTick();
     mTouchMaskStamp = now + 0.1;
 
-    if (mClickTarget) {
-        mClickTarget->call();
+    if (mClickListener) {
+        mClickListener->call();
     }
 }
 

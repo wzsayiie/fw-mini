@@ -12,8 +12,8 @@ public:
     void setTitle(const std::string &title);
     std::string title();
 
-    void setClickTarget(const MFunction<void ()>::ptr &target);
-    MFunction<void ()>::ptr clickTarget();
+    void setClickListener(const MFunction<void ()>::ptr &listener);
+    MFunction<void ()>::ptr clickListener();
 
 protected:
     void onMouseEnter(float x, float y) override;
@@ -28,7 +28,7 @@ protected:
 
 private:
     CLabel::ptr mTitleLabel;
-    MFunction<void ()>::ptr mClickTarget;
+    MFunction<void ()>::ptr mClickListener;
     
     bool   mCurrentPointed = false;
     bool   mCurrentTouched = false;
