@@ -2,6 +2,9 @@
 
 #include "cview.h"
 
+class CNavigationController;
+class CTabPageController;
+
 c_class(CViewController, CResponder) {
 public:
     CViewController();
@@ -14,12 +17,17 @@ public:
     void addChildController(const CViewController::ptr &childController);
     void removeFromParentController();
     MVector<CViewController::ptr>::ptr childControllers();
-    CViewController *parentController();
+    CViewController::ptr parentController();
     
-    CView::ptr view();
+    void setNavigationController(const std::shared_ptr<CNavigationController> &controller);
+    void setTabPageController   (const std::shared_ptr<CTabPageController>    &controller);
 
-    bool viewLoaded  ();
-    bool viewAppeared();
+    std::shared_ptr<CNavigationController> navigationController();
+    std::shared_ptr<CTabPageController>    tabPageController   ();
+
+    bool       viewLoaded  ();
+    bool       viewAppeared();
+    CView::ptr view        ();
     
     CResponder::ptr findResponder (CResponseEvent event, const MPoint::ptr &pt) override;
     bool            existResponder(const CResponder::ptr &responder) override;
@@ -42,8 +50,11 @@ protected: public:
     
 private:
     MVector<CViewController::ptr>::ptr mChildControllers;
-    CViewController *mParentController = nullptr;
+    std::weak_ptr<CViewController>     mParentController;
     
+    std::weak_ptr<CNavigationController> mNavigationController;
+    std::weak_ptr<CTabPageController>    mTabPageController   ;
+
     bool mViewAppeared = false;
     CView::ptr mView;
 };

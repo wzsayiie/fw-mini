@@ -11,7 +11,7 @@ CView::CView(float x, float y, float width, float height) {
 }
 
 define_reflectable_class_function(CView, setViewController, "setter;args:controller")
-void CView::setViewController(CViewController *controller) {
+void CView::setViewController(const CViewController::ptr &controller) {
     mViewController = controller;
 }
 
@@ -56,8 +56,8 @@ void CView::setFrame(const MRect::ptr &frame) {
 }
 
 define_reflectable_class_function(CView, viewController, "getter")
-CViewController *CView::viewController() {
-    return mViewController;
+CViewController::ptr CView::viewController() {
+    return mViewController.lock();
 }
 
 define_reflectable_class_function(CView, interactive, "getter")
@@ -101,13 +101,15 @@ void CView::addSubview(const CView::ptr &subview) {
     if (subview.get() == this) {
         return;
     }
-    if (subview->mSuperview == this) {
+
+    CView::ptr oldSuper = subview->mSuperview.lock();
+    if (oldSuper.get() == this) {
         return;
     }
     
     //remove from old superview.
-    if (subview->mSuperview) {
-        auto &brothers = subview->mSuperview->mSubviews;
+    if (oldSuper) {
+        auto &brothers = oldSuper->mSubviews;
         brothers->erase(
             std::remove(brothers->begin(), brothers->end(), subview),
             brothers->end()
@@ -115,7 +117,7 @@ void CView::addSubview(const CView::ptr &subview) {
     }
     //add to new superview.
     mSubviews->push_back(subview);
-    subview->mSuperview = this;
+    subview->mSuperview = shared();
     
     //layout.
     layoutSubviews();
@@ -123,17 +125,18 @@ void CView::addSubview(const CView::ptr &subview) {
 
 define_reflectable_class_function(CView, removeFromSuperview)
 void CView::removeFromSuperview() {
-    if (!mSuperview) {
+    CView::ptr nowSuper = mSuperview.lock();
+    if (!nowSuper) {
         return;
     }
     
-    auto &brothers = mSuperview->mSubviews;
+    auto &brothers = nowSuper->mSubviews;
     brothers->erase(
         std::remove(brothers->begin(), brothers->end(), shared()),
         brothers->end()
     );
     
-    mSuperview = nullptr;
+    mSuperview.reset();
 }
 
 define_reflectable_class_function(CView, subviews)
@@ -142,8 +145,8 @@ MVector<CView::ptr>::ptr CView::subviews() {
 }
 
 define_reflectable_class_function(CView, superview)
-CView *CView::superview() {
-    return mSuperview;
+CView::ptr CView::superview() {
+    return mSuperview.lock();
 }
 
 define_reflectable_class_function(CView, findResponder, "virtual;args:event,pt")
@@ -180,8 +183,9 @@ CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt
     }
 
     //test controller.
-    if (mViewController && mViewController->canRespond(event, pt)) {
-        return mViewController->shared();
+    CViewController::ptr controller = mViewController.lock();
+    if (controller && controller->canRespond(event, pt)) {
+        return controller;
     }
 
     return nullptr;
@@ -196,7 +200,7 @@ bool CView::existResponder(const CResponder::ptr &responder) {
     }
 
     //check self.
-    if (mViewController == responder.get()) {
+    if (mViewController.lock().get() == responder.get()) {
         return true;
     }
     if (this == responder.get()) {
@@ -220,7 +224,7 @@ MPoint::ptr CView::responseOffset() {
     float x = frame()->x();
     float y = frame()->y();
     
-    for (auto it = mSuperview; it; it = it->mSuperview) {
+    for (auto it = mSuperview.lock(); it; it = it->mSuperview.lock()) {
         x += it->frame()->x();
         y += it->frame()->y();
     }

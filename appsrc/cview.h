@@ -10,25 +10,25 @@ public:
     CView(float x, float y, float width, float height);
     
 public:
-    void setViewController (CViewController               *controller );
-    void setInteractive    (bool                           interactive);
-    void setVisible        (bool                           visible    );
-    void setBackgroundColor(const MColor::ptr             &color      );
-    void setLayoutDelegate (const MFunction<void ()>::ptr &delegate   );
-    void setFrame          (const MRect::ptr              &frame      );
+    void setViewController (const std::shared_ptr<CViewController> &controller );
+    void setInteractive    (bool                                    interactive);
+    void setVisible        (bool                                    visible    );
+    void setBackgroundColor(const MColor::ptr                      &color      );
+    void setLayoutDelegate (const MFunction<void ()>::ptr          &delegate   );
+    void setFrame          (const MRect::ptr                       &frame      );
 
-    CViewController        *viewController ();
-    bool                    interactive    ();
-    bool                    visible        ();
-    MColor::ptr             backgroundColor();
-    MFunction<void ()>::ptr layoutDelegate ();
-    MRect::ptr              bounds         ();
-    MRect::ptr              frame          ();
+    std::shared_ptr<CViewController> viewController ();
+    bool                             interactive    ();
+    bool                             visible        ();
+    MColor::ptr                      backgroundColor();
+    MFunction<void ()>::ptr          layoutDelegate ();
+    MRect::ptr                       bounds         ();
+    MRect::ptr                       frame          ();
     
     void addSubview(const CView::ptr &subview);
     void removeFromSuperview();
     MVector<CView::ptr>::ptr subviews();
-    CView *superview();
+    CView::ptr superview();
     
     CResponder::ptr findResponder (CResponseEvent event, const MPoint::ptr &pt) override;
     bool            existResponder(const CResponder::ptr &responder) override;
@@ -55,13 +55,13 @@ private:
     void layoutSubviews();
 
 private:
-    CViewController        *mViewController  = nullptr;
-    bool                    mInteractive     = false;
-    bool                    mVisible         = true;
-    MColor::ptr             mBackgroundColor ;
-    MFunction<void ()>::ptr mLayoutDelegate  ;
-    MRect::ptr              mFrame           ;
+    std::weak_ptr<CViewController> mViewController  ;
+    bool                           mInteractive     = false;
+    bool                           mVisible         = true;
+    MColor::ptr                    mBackgroundColor ;
+    MFunction<void ()>::ptr        mLayoutDelegate  ;
+    MRect::ptr                     mFrame           ;
     
-    MVector<CView::ptr>::ptr mSubviews;
-    CView *mSuperview = nullptr;
+    MVector<CView::ptr>::ptr mSubviews ;
+    std::weak_ptr<CView>     mSuperview;
 };

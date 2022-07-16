@@ -1,4 +1,6 @@
 #include "cviewcontroller.h"
+#include "cnavigationcontroller.h"
+#include "ctabpagecontroller.h"
 
 CViewController::CViewController() {
     mChildControllers = MVector<CViewController::ptr>::create();
@@ -46,13 +48,15 @@ void CViewController::addChildController(const CViewController::ptr &childContro
     if (childController.get() == this) {
         return;
     }
-    if (childController->mParentController == this) {
+
+    CViewController::ptr oldParent = childController->mParentController.lock();
+    if (oldParent.get() == this) {
         return;
     }
     
     //remove from old parent.
-    if (childController->mParentController) {
-        auto &brothers = childController->mParentController->mChildControllers;
+    if (oldParent) {
+        auto &brothers = oldParent->mChildControllers;
         brothers->erase(
             std::remove(brothers->begin(), brothers->end(), childController),
             brothers->end()
@@ -62,7 +66,7 @@ void CViewController::addChildController(const CViewController::ptr &childContro
     view()->addSubview(childController->view());
     
     mChildControllers->push_back(childController);
-    childController->mParentController = this;
+    childController->mParentController = shared();
     
     //adapter appear status.
     if (mViewAppeared) {
@@ -74,17 +78,18 @@ void CViewController::addChildController(const CViewController::ptr &childContro
 
 define_reflectable_class_function(CViewController, removeFromParentController)
 void CViewController::removeFromParentController() {
-    if (!mParentController) {
+    CViewController::ptr nowParent = mParentController.lock();
+    if (!nowParent) {
         return;
     }
     
     //remove from the parent:
-    auto &brothers = mParentController->mChildControllers;
+    auto &brothers = nowParent->mChildControllers;
     brothers->erase(
         std::remove(brothers->begin(), brothers->end(), shared()),
         brothers->end()
     );
-    mParentController = nullptr;
+    mParentController.reset();
     
     view()->removeFromSuperview();
     
@@ -98,19 +103,28 @@ MVector<CViewController::ptr>::ptr CViewController::childControllers() {
 }
 
 define_reflectable_class_function(CViewController, parentController)
-CViewController *CViewController::parentController() {
-    return mParentController;
+CViewController::ptr CViewController::parentController() {
+    return mParentController.lock();
 }
 
-define_reflectable_class_function(CViewController, view, "getter")
-CView::ptr CViewController::view() {
-    if (!mView) {
-        mView = loadView();
-        mView->setViewController(this);
+define_reflectable_class_function(CViewController, setNavigationController, "setter;args:controller")
+void CViewController::setNavigationController(const CNavigationController::ptr &controller) {
+    mNavigationController = controller;
+}
 
-        onViewLoad();
-    }
-    return mView;
+define_reflectable_class_function(CViewController, setTabPageController, "setter;args:controller")
+void CViewController::setTabPageController(const CTabPageController::ptr &controller) {
+    mTabPageController = controller;
+}
+
+define_reflectable_class_function(CViewController, navigationController, "getter")
+CNavigationController::ptr CViewController::navigationController() {
+    return mNavigationController.lock();
+}
+
+define_reflectable_class_function(CViewController, tabPageController, "getter")
+CTabPageController::ptr CViewController::tabPageController() {
+    return mTabPageController.lock();
 }
 
 define_reflectable_class_function(CViewController, viewLoaded, "getter")
@@ -121,6 +135,17 @@ bool CViewController::viewLoaded() {
 define_reflectable_class_function(CViewController, viewAppeared, "getter")
 bool CViewController::viewAppeared() {
     return mViewAppeared;
+}
+
+define_reflectable_class_function(CViewController, view, "getter")
+CView::ptr CViewController::view() {
+    if (!mView) {
+        mView = loadView();
+        mView->setViewController(shared());
+
+        onViewLoad();
+    }
+    return mView;
 }
 
 define_reflectable_class_function(CViewController, findResponder, "virtual;args:event,pt")
