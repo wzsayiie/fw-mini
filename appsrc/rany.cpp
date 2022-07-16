@@ -28,7 +28,7 @@ any::any(const std::string &value) {
 any::any(object *value) {
     _type = data_type::is_object;
     if (value) {
-        _object = value->shared();
+        _object = value->me();
     }
 }
 

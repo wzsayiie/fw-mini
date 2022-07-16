@@ -66,7 +66,7 @@ void CViewController::addChildController(const CViewController::ptr &childContro
     view()->addSubview(childController->view());
     
     mChildControllers->push_back(childController);
-    childController->mParentController = shared();
+    childController->mParentController = me();
     
     //adapter appear status.
     if (mViewAppeared) {
@@ -86,7 +86,7 @@ void CViewController::removeFromParentController() {
     //remove from the parent:
     auto &brothers = nowParent->mChildControllers;
     brothers->erase(
-        std::remove(brothers->begin(), brothers->end(), shared()),
+        std::remove(brothers->begin(), brothers->end(), me()),
         brothers->end()
     );
     mParentController.reset();
@@ -141,7 +141,7 @@ define_reflectable_class_function(CViewController, view, "getter")
 CView::ptr CViewController::view() {
     if (!mView) {
         mView = loadView();
-        mView->setViewController(shared());
+        mView->setViewController(me());
 
         onViewLoad();
     }

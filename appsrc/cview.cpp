@@ -117,7 +117,7 @@ void CView::addSubview(const CView::ptr &subview) {
     }
     //add to new superview.
     mSubviews->push_back(subview);
-    subview->mSuperview = shared();
+    subview->mSuperview = me();
     
     //layout.
     layoutSubviews();
@@ -132,7 +132,7 @@ void CView::removeFromSuperview() {
     
     auto &brothers = nowSuper->mSubviews;
     brothers->erase(
-        std::remove(brothers->begin(), brothers->end(), shared()),
+        std::remove(brothers->begin(), brothers->end(), me()),
         brothers->end()
     );
     
@@ -179,7 +179,7 @@ CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt
 
     //test self.
     if (canRespond(event, pt)) {
-        return shared();
+        return me();
     }
 
     //test controller.

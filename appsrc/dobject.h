@@ -26,7 +26,7 @@ public:
     }
 
 public:
-    ptr shared() const {
+    ptr me() const {
         return _weak.lock();
     }
 
@@ -52,7 +52,7 @@ public:
     using Super::Super;
 
 public:
-    ptr shared() const {
+    ptr me() const {
         return std::static_pointer_cast<Class>(this->_weak.lock());
     }
 };

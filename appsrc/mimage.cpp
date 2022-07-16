@@ -38,17 +38,17 @@ void MImage::writeFile(const std::string &path, MImageFileFormat format) {
 
 define_reflectable_class_function(MImage, copyFFData, "args:format")
 MVector<uint8_t>::ptr MImage::copyFFData(MImageFileFormat format) {
-    return MImageFactory::instance()->encodeFFData(shared(), format);
+    return MImageFactory::instance()->encodeFFData(me(), format);
 }
 
 define_reflectable_class_function(MImage, copyBitmap)
 MVector<uint8_t>::ptr MImage::copyBitmap() {
-    return MImageFactory::instance()->encodeBitmap(shared());
+    return MImageFactory::instance()->encodeBitmap(me());
 }
 
 define_reflectable_class_function(MImage, pixelSize, "getter")
 MSize::ptr MImage::pixelSize() {
-    return MImageFactory::instance()->getPixelSize(shared());
+    return MImageFactory::instance()->getPixelSize(me());
 }
 
 //image factory:

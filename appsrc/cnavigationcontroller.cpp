@@ -33,7 +33,7 @@ void CNavigationController::pushPageController(const CViewController::ptr &contr
     }
 
     //show new top:
-    controller->setNavigationController(shared());
+    controller->setNavigationController(me());
     mPageControllers->push_back(controller);
 
     showBackPageController();

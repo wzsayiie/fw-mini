@@ -42,7 +42,7 @@ MPoint::ptr MPoint::add(const MPoint::ptr &that) {
     if (that) {
         return from(mX + that->mX, mY + that->mY);
     }
-    return shared();
+    return me();
 }
 
 define_reflectable_class_function(MPoint, sub, "args:that")
@@ -50,7 +50,7 @@ MPoint::ptr MPoint::sub(const MPoint::ptr &that) {
     if (that) {
         return from(mX - that->mX, mY - that->mY);
     }
-    return shared();
+    return me();
 }
 
 //size:

@@ -15,7 +15,7 @@ CViewController::ptr CWindow::rootViewController() {
 
 define_reflectable_class_function(CWindow, makeMainWindow)
 void CWindow::makeMainWindow() {
-    MWindow::setMainWindow(shared());
+    MWindow::setMainWindow(me());
 }
 
 void CWindow::onLoad() {

@@ -14,7 +14,7 @@ CResponder *CResponder::sFocusResponder = nullptr;
 
 CResponder::ptr CResponder::focusResponder() {
     if (sFocusResponder) {
-        return sFocusResponder->shared();
+        return sFocusResponder->me();
     }
     return nullptr;
 }
