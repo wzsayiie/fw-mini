@@ -29,14 +29,14 @@ void CNavigationController::pushPageController(const CViewController::ptr &contr
 
     //remove old top.
     if (!mPageControllers->empty()) {
-        CViewController::ptr oldTop = mPageControllers->back();
-        oldTop->removeFromParentController();
+        hideBackPageController();
     }
 
-    //show new top.
-    controller->setNavigationController(this);
+    //show new top:
+    controller->setNavigationController(shared());
     mPageControllers->push_back(controller);
-    addChildController(controller);
+
+    showBackPageController();
 }
 
 define_reflectable_class_function(CNavigationController, popToPageController, "args:controller")
@@ -52,31 +52,25 @@ void CNavigationController::popToPageController(const CViewController::ptr &cont
     for (auto it = target + 1; it != mPageControllers->end(); ++it) {
         (*it)->setNavigationController(nullptr);
     }
-
-    CViewController::ptr oldTop = mPageControllers->back();
-    oldTop->removeFromParentController();
-
+    hideBackPageController();
     mPageControllers->erase(target + 1, mPageControllers->end());
 
     //show new top.
-    addChildController(*target);
+    showBackPageController();
 }
 
 define_reflectable_class_function(CNavigationController, popPageController)
 void CNavigationController::popPageController() {
     //remove old top.
     if (!mPageControllers->empty()) {
-        CViewController::ptr oldTop = mPageControllers->back();
+        mPageControllers->back()->setNavigationController(nullptr);
+        hideBackPageController();
         mPageControllers->pop_back();
-        
-        oldTop->setNavigationController(nullptr);
-        oldTop->removeFromParentController();
     }
 
     //show new top.
     if (!mPageControllers->empty()) {
-        CViewController::ptr newTop = mPageControllers->back();
-        addChildController(newTop);
+        showBackPageController();
     }
 }
 
@@ -84,9 +78,26 @@ void CNavigationController::onViewLoad() {
     view()->setLayoutDelegate(MF(this, &CNavigationController::layoutPageControllers));
 }
 
+void CNavigationController::showBackPageController() {
+    CViewController::ptr back = mPageControllers->back();
+    addChildController(back);
+}
+
+void CNavigationController::hideBackPageController() {
+    CViewController::ptr back = mPageControllers->back();
+
+    //NOTE: remove focus if necessary.
+    CResponder::ptr focus = CResponder::focusResponder();
+    if (back->existResponder(focus)) {
+        focus->resignFocusResponder();
+    }
+
+    back->removeFromParentController();
+}
+
 void CNavigationController::layoutPageControllers() {
     if (!mPageControllers->empty()) {
-        CViewController::ptr top = mPageControllers->back();
-        top->view()->setFrame(view()->bounds());
+        CViewController::ptr back = mPageControllers->back();
+        back->view()->setFrame(view()->bounds());
     }
 }

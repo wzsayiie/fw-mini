@@ -18,6 +18,9 @@ protected:
     void onViewLoad() override;
 
 private:
+    void showBackPageController();
+    void hideBackPageController();
+
     void layoutPageControllers();
 
 private:
