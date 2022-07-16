@@ -19,9 +19,6 @@ public:
     static CResponder::ptr focusResponder();
     
 public:
-    ~CResponder();
-    
-public:
     void becomeFocusResponder();
     void resignFocusResponder();
     bool isFocusResponder    ();
@@ -56,5 +53,5 @@ protected: public:
     virtual void onWrite     (const std::string &text, MKey key);
     
 private:
-    static CResponder *sFocusResponder;
+    static CResponder::ptr sFocusResponder;
 };

@@ -10,24 +10,15 @@ define_reflectable_enum_const(CResponseEvent, Writing  )
 
 //responder:
 
-CResponder *CResponder::sFocusResponder = nullptr;
+CResponder::ptr CResponder::sFocusResponder;
 
 CResponder::ptr CResponder::focusResponder() {
-    if (sFocusResponder) {
-        return sFocusResponder->me();
-    }
-    return nullptr;
-}
-
-CResponder::~CResponder() {
-    if (this == sFocusResponder) {
-        sFocusResponder = nullptr;
-    }
+    return sFocusResponder;
 }
 
 define_reflectable_class_function(CResponder, becomeFocusResponder)
 void CResponder::becomeFocusResponder() {
-    if (this == sFocusResponder) {
+    if (this == sFocusResponder.get()) {
         return;
     }
 
@@ -39,17 +30,19 @@ void CResponder::becomeFocusResponder() {
         return;
     }
     
-    //transfer.
-    if (sFocusResponder) {
-        sFocusResponder->onResignFocusResponder();
+    //transfer:
+    CResponder::ptr previous = sFocusResponder;
+    sFocusResponder = me();
+
+    if (previous) {
+        previous->onResignFocusResponder();
     }
     onBecomeFocusResponder();
-    sFocusResponder = this;
 }
 
 define_reflectable_class_function(CResponder, resignFocusResponder)
 void CResponder::resignFocusResponder() {
-    if (this != sFocusResponder) {
+    if (this != sFocusResponder.get()) {
         return;
     }
 
@@ -59,13 +52,13 @@ void CResponder::resignFocusResponder() {
     }
     
     //transfer.
-    onResignFocusResponder();
     sFocusResponder = nullptr;
+    onResignFocusResponder();
 }
 
 define_reflectable_class_function(CResponder, isFocusResponder)
 bool CResponder::isFocusResponder() {
-    return this == sFocusResponder;
+    return this == sFocusResponder.get();
 }
 
 define_reflectable_class_function(CResponder, canBecomeFocusResponder, "virtual")
