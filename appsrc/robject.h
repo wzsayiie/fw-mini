@@ -12,23 +12,9 @@ template<> struct typeids_of<class object> {
 
 class d_exportable object : public dash::extends<object, dash::object> {
 public:
-    static object::ptr create() {
-        return object::ptr(new object, [](object *a) {
-            a->release();
-        });
+    virtual symbol class_symbol() const {
+        return symbol_of<object>::value();
     }
-    
-public:
-    virtual symbol class_symbol() const;
-    
-    object::ptr shared();
-    
-    int  ref_count() const;
-    void retain();
-    void release();
-    
-private:
-    int _ref_count = 1;
 };
 
 //extends:
@@ -36,13 +22,6 @@ private:
 template<class Class, class Super> class d_exportable extends : public dash::extends<Class, Super> {
 public:
     typedef extends<Class, Super> upper;
-    
-public:
-    template<class... Args> static std::shared_ptr<Class> create(Args... args) {
-        return std::shared_ptr<Class>(new Class(args...), [](Class *a) {
-            return a->release();
-        });
-    }
 
 public:
     using _middle = dash::extends<Class, Super>;
@@ -51,10 +30,6 @@ public:
 public:
     symbol class_symbol() const override {
         return symbol_of<Class>::value();
-    }
-    
-    std::shared_ptr<Class> shared() {
-        return std::static_pointer_cast<Class>(object::shared());
     }
 };
 

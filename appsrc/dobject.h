@@ -20,8 +20,18 @@ public:
 
 public:
     static ptr create() {
-        return std::make_shared<object>();
+        ptr obj = std::make_shared<object>();
+        obj->_weak = obj;
+        return obj;
     }
+
+public:
+    ptr shared() const {
+        return _weak.lock();
+    }
+
+protected:
+    std::weak_ptr<object> _weak;
 };
 
 template<class Class, class Super> class d_exportable extends : public Super {
@@ -33,11 +43,18 @@ public:
 
 public:
     template<class... Args> static ptr create(Args... args) {
-        return std::make_shared<Class>(args...);
+        ptr obj = std::make_shared<Class>(args...);
+        obj->_weak = obj;
+        return obj;
     }
 
 public:
     using Super::Super;
+
+public:
+    ptr shared() const {
+        return std::static_pointer_cast<Class>(this->_weak.lock());
+    }
 };
 
 } //end dash.
