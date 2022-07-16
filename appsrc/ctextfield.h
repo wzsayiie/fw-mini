@@ -4,7 +4,7 @@
 
 //text field delegate:
 
-c_class(CTextFieldDelegate, CObject) {
+m_class(CTextFieldDelegate, CObject) {
 public:
     void setEditingBeginTarget(const MFunction<void ()>::ptr &target);
     void setTextChangeTarget  (const MFunction<void ()>::ptr &target);
@@ -26,7 +26,7 @@ private:
 
 //text field:
 
-c_class(CTextField, CControl) {
+m_class(CTextField, CControl) {
 public:
     using upper::upper;
 

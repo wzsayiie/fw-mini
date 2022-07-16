@@ -4,7 +4,7 @@
 
 //response event:
 
-c_enum(CResponseEvent) {
+m_enum(CResponseEvent) {
     Touch     = 1,
     MouseMove = 2,
     Wheel     = 3,
@@ -14,7 +14,7 @@ c_enum(CResponseEvent) {
 
 //responder:
 
-c_class(CResponder, CObject) {
+m_class(CResponder, CObject) {
 public:
     static CResponder::ptr focusResponder();
     

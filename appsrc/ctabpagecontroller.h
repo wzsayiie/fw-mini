@@ -2,7 +2,7 @@
 
 #include "cviewcontroller.h"
 
-c_class(CTabPageController, CViewController) {
+m_class(CTabPageController, CViewController) {
 public:
     CTabPageController();
 

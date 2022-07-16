@@ -5,7 +5,7 @@
 class CNavigationController;
 class CTabPageController;
 
-c_class(CViewController, CResponder) {
+m_class(CViewController, CResponder) {
 public:
     CViewController();
     

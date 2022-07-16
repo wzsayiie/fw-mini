@@ -2,7 +2,7 @@
 
 #include "cviewcontroller.h"
 
-c_class(CNavigationController, CViewController) {
+m_class(CNavigationController, CViewController) {
 public:
     CNavigationController();
 

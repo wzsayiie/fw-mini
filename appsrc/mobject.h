@@ -8,20 +8,11 @@ declare_reflectable_class(MObject)
 class d_exportable MObject : public reflect::extends<MObject, reflect::injectable> {
 };
 
-template<class Class, class Super> class d_exportable MExtends : public reflect::extends<Class, Super> {
-public:
-    typedef MExtends<Class, Super> upper;
-
-public:
-    using _middle = reflect::extends<Class, Super>;
-    using _middle::_middle;
-};
-
 //definition:
 
-#define m_class(Class, Super)               \
-/**/    declare_reflectable_class(Class)    \
-/**/    class d_exportable Class : public MExtends<Class, Super>
+#define m_class(Class, Super)                                           \
+/**/    declare_reflectable_class(Class)                                \
+/**/    class d_exportable Class : public reflect::extends<Class, Super>
 
 #define m_enum(Enum)                    \
 /**/    declare_reflectable_enum(Enum)  \

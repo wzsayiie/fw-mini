@@ -1,6 +1,6 @@
 #include "centui.h"
 
-c_class(MainViewController, CViewController) {
+m_class(MainViewController, CViewController) {
 protected:
     void onViewLoad() override {
     }

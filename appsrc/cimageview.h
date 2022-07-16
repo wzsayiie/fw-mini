@@ -2,7 +2,7 @@
 
 #include "cview.h"
 
-c_class(CImageView, CView) {
+m_class(CImageView, CView) {
 public:
     using upper::upper;
 

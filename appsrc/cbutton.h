@@ -3,7 +3,7 @@
 #include "ccontrol.h"
 #include "clabel.h"
 
-c_class(CButton, CControl) {
+m_class(CButton, CControl) {
 public:
     using upper::upper;
 

@@ -4,7 +4,7 @@
 
 class CViewController;
 
-c_class(CView, CResponder) {
+m_class(CView, CResponder) {
 public:
     CView();
     CView(float x, float y, float width, float height);
