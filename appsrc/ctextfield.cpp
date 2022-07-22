@@ -2,9 +2,9 @@
 
 //text field delegate:
 
-define_reflectable_class_function(CTextFieldDelegate, setEditingBeginTarget, "setter;args:delegate")
-define_reflectable_class_function(CTextFieldDelegate, setTextChangeTarget  , "setter;args:delegate")
-define_reflectable_class_function(CTextFieldDelegate, setEditingEndTarget  , "setter;args:delegate")
+define_reflectable_class_function(CTextFieldDelegate, setEditingBeginTarget, "setter;args:target")
+define_reflectable_class_function(CTextFieldDelegate, setTextChangeTarget  , "setter;args:target")
+define_reflectable_class_function(CTextFieldDelegate, setEditingEndTarget  , "setter;args:target")
 
 void CTextFieldDelegate::setEditingBeginTarget(const MFunction<void ()>::ptr &target) { mEditingBeginTarget = target; }
 void CTextFieldDelegate::setTextChangeTarget  (const MFunction<void ()>::ptr &target) { mTextChangeTarget   = target; }
