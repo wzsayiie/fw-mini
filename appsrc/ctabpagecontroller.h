@@ -5,6 +5,14 @@
 //tab page controller delegate:
 
 m_class(CTabPageControllerDelegate, CObject) {
+public:
+    void setPagesChangeTarget(const MFunction<void ()>::ptr &target);
+    MFunction<void ()>::ptr pagesChangeTarget();
+    
+    void pagesChange();
+    
+private:
+    MFunction<void ()>::ptr mPagesChangeTarget;
 };
 
 //tab page controller:
@@ -14,6 +22,9 @@ public:
     CTabPageController();
     
 public:
+    void setDelegate(const CTabPageControllerDelegate::ptr &delegate);
+    CTabPageControllerDelegate::ptr delegate();
+    
     void setPageControllers(const MVector<CViewController::ptr>::ptr &controllers);
 
     int indexOfPageController(const CViewController::ptr &controller);

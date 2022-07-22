@@ -5,6 +5,14 @@
 //navigation controller delegate:
 
 m_class(CNavigationControllerDelegate, CObject) {
+public:
+    void setPagesChangeTarget(const MFunction<void ()>::ptr &target);
+    MFunction<void ()>::ptr pagesChangeTarget();
+    
+    void pagesChange();
+    
+private:
+    MFunction<void ()>::ptr mPagesChangeTarget;
 };
 
 //navigation controller:
@@ -14,6 +22,9 @@ public:
     CNavigationController();
 
 public:
+    void setDelegate(const CNavigationControllerDelegate::ptr &delegate);
+    CNavigationControllerDelegate::ptr delegate();
+    
     void pushPageController (const CViewController::ptr &controller);
     void popToPageController(const CViewController::ptr &controller);
     void popPageController  ();
