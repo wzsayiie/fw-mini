@@ -44,10 +44,10 @@ public:
     MSize::ptr  contentSize  ();
 
 protected:
-    void onTouchBegin(float x, float y) override;
-    void onTouchMove (float x, float y) override;
-    void onTouchEnd  (float x, float y) override;
-    void onWheel     (float delta)      override;
+    void onTouchBegin(float x, float y)              override;
+    void onTouchMove (float x, float y)              override;
+    void onTouchEnd  (float x, float y)              override;
+    void onMouseWheel(float x, float y, float delta) override;
 
     void onLayoutSubviews(float width, float height) override;
     void onDrawForeground(float width, float height) override;

@@ -1,22 +1,6 @@
 #include "mwindow.h"
 #include "mgraphics.h"
 
-//key:
-
-define_reflectable_enum_const(MKey, Back )
-define_reflectable_enum_const(MKey, Enter)
-define_reflectable_enum_const(MKey, Space)
-define_reflectable_enum_const(MKey, Left )
-define_reflectable_enum_const(MKey, Up   )
-define_reflectable_enum_const(MKey, Right)
-define_reflectable_enum_const(MKey, Down )
-define_reflectable_enum_const(MKey, A    )
-define_reflectable_enum_const(MKey, D    )
-define_reflectable_enum_const(MKey, S    )
-define_reflectable_enum_const(MKey, W    )
-
-//window:
-
 define_reflectable_class_const(MWindow, UpdateEverySeconds)
 define_reflectable_class_const(MWindow, TitleName)
 
@@ -81,49 +65,58 @@ void MWindow::draw() {
     onDraw(mSize->width(), mSize->height());
 }
 
-define_reflectable_class_function(MWindow, touchBeginPixel, "args:pixelX,pixelY")
-void MWindow::touchBeginPixel(float pixelX, float pixelY) {
-    float x = m_pt_from_px pixelX;
-    float y = m_pt_from_px pixelY;
-    onTouchBegin(x, y);
+define_reflectable_class_function(MWindow, touchBegin, "args:evt,with")
+void MWindow::touchBegin(const MTouch::ptr &evt, const MKbKey::ptr &with) {
+    //touch events can be accompanied by keyboard modifiers.
+    MResetCurrentKbKey(with);
+    MResetCurrentTouch(evt);
+
+    onTouchBegin(evt->x(), evt->y());
+
+    MResetCurrentKbKey(nullptr);
+    MResetCurrentTouch(nullptr);
 }
 
-define_reflectable_class_function(MWindow, touchMovePixel, "args:pixelX,pixelY")
-void MWindow::touchMovePixel(float pixelX, float pixelY) {
-    float x = m_pt_from_px pixelX;
-    float y = m_pt_from_px pixelY;
-    onTouchMove(x, y);
+define_reflectable_class_function(MWindow, touchMove, "args:evt")
+void MWindow::touchMove(const MTouch::ptr &evt) {
+    MResetCurrentTouch(evt);
+    onTouchMove(evt->x(), evt->y());
+    MResetCurrentTouch(nullptr);
 }
 
-define_reflectable_class_function(MWindow, touchEndPixel, "args:pixelX,pixelY")
-void MWindow::touchEndPixel(float pixelX, float pixelY) {
-    float x = m_pt_from_px pixelX;
-    float y = m_pt_from_px pixelY;
-    onTouchEnd(x, y);
+define_reflectable_class_function(MWindow, touchEnd, "args:evt")
+void MWindow::touchEnd(const MTouch::ptr &evt) {
+    MResetCurrentTouch(evt);
+    onTouchEnd(evt->x(), evt->y());
+    MResetCurrentTouch(nullptr);
 }
 
-define_reflectable_class_function(MWindow, mouseMovePixel, "args:pixelX,pixelY")
-void MWindow::mouseMovePixel(float pixelX, float pixelY) {
-    float x = m_pt_from_px pixelX;
-    float y = m_pt_from_px pixelY;
-    
-    mMousePosition = MPoint::from(x, y);
-    onMouseMove(x, y);
+define_reflectable_class_function(MWindow, mouseMove, "args:evt")
+void MWindow::mouseMove(const MMouseMove::ptr &evt) {
+    MResetCurrentMouseMove(evt);
+    onMouseMove(evt->x(), evt->y());
+    MResetCurrentMouseMove(nullptr);
 }
 
-define_reflectable_class_function(MWindow, mouseWheel, "args:delta")
-void MWindow::mouseWheel(float delta) {
-    onMouseWheel(delta);
+define_reflectable_class_function(MWindow, mouseWheel, "args:evt")
+void MWindow::mouseWheel(const MMouseWheel::ptr &evt) {
+    MResetCurrentMouseWheel(evt);
+    onMouseWheel(evt->x(), evt->y(), evt->delta());
+    MResetCurrentMouseWheel(nullptr);
 }
 
-define_reflectable_class_function(MWindow, key, "args:key")
-void MWindow::key(MKey key) {
-    onKey(key);
+define_reflectable_class_function(MWindow, kbKey, "args:evt")
+void MWindow::kbKey(const MKbKey::ptr &evt) {
+    MResetCurrentKbKey(evt);
+    onKbKey(evt->code());
+    MResetCurrentKbKey(nullptr);
 }
 
-define_reflectable_class_function(MWindow, write, "args:text,key")
-void MWindow::write(const std::string &text, MKey key) {
-    onWrite(text, key);
+define_reflectable_class_function(MWindow, writing, "args:evt")
+void MWindow::writing(const MWriting::ptr &evt) {
+    MResetCurrentWriting(evt);
+    onWriting(evt->text());
+    MResetCurrentWriting(nullptr);
 }
 
 define_reflectable_class_function(MWindow, checkWritingUpdated)
@@ -214,17 +207,17 @@ void MWindow::onTouchMove (float x, float y) { implement_injectable_function(voi
 void MWindow::onTouchEnd  (float x, float y) { implement_injectable_function(void, x, y) }
 void MWindow::onMouseMove (float x, float y) { implement_injectable_function(void, x, y) }
 
-define_reflectable_class_function(MWindow, onMouseWheel, "virtual;args:delta")
-void MWindow::onMouseWheel(float delta) {
+define_reflectable_class_function(MWindow, onMouseWheel, "virtual;args:x,y,delta")
+void MWindow::onMouseWheel(float x, float y, float delta) {
     implement_injectable_function(void, delta)
 }
 
-define_reflectable_class_function(MWindow, onKey, "virtual;args:key")
-void MWindow::onKey(MKey key) {
-    implement_injectable_function(void, key)
+define_reflectable_class_function(MWindow, onKbKey, "virtual;args:code")
+void MWindow::onKbKey(MKbKeyCode code) {
+    implement_injectable_function(void, code)
 }
 
-define_reflectable_class_function(MWindow, onWrite, "virtual;args:text,key")
-void MWindow::onWrite(const std::string &text, MKey key) {
-    implement_injectable_function(void, text, key)
+define_reflectable_class_function(MWindow, onWriting, "virtual;args:text")
+void MWindow::onWriting(const std::string &text) {
+    implement_injectable_function(void, text)
 }

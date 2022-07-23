@@ -23,10 +23,10 @@ public:
     
 protected:
     void onDrawForeground(float width, float height) override;
-    void onKey(MKey key) override final;
+    void onKbKey(MKbKeyCode code) override final;
     
 protected: public:
-    virtual void onControlKey(MKey key);
+    virtual void onControlKbKey(MKbKeyCode code);
     
 private:
     void setControl(CControl **target, const std::string &iden);

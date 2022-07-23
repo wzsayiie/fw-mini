@@ -29,17 +29,17 @@ public:
     bool       viewAppeared();
     CView::ptr view        ();
     
-    CResponder::ptr findResponder (CResponseEvent event, const MPoint::ptr &pt) override;
+    CResponder::ptr findResponder (MEvent evt, const MPoint::ptr &pt) override;
     bool            existResponder(const CResponder::ptr &responder) override;
     MPoint::ptr     responseOffset() override;
     
     bool canBecomeFocusResponder() override;
 
-    bool canRespondTouch    (const MPoint::ptr &pt) override;
-    bool canRespondMouseMove(const MPoint::ptr &pt) override;
-    bool canRespondWheel    (const MPoint::ptr &pt) override;
-    bool canRespondKey      ()                      override;
-    bool canRespondWriting  ()                      override;
+    bool canRespondTouch     (const MPoint::ptr &pt) override;
+    bool canRespondMouseMove (const MPoint::ptr &pt) override;
+    bool canRespondMouseWheel(const MPoint::ptr &pt) override;
+    bool canRespondKbKey     ()                      override;
+    bool canRespondWriting   ()                      override;
     
 protected: public:
     virtual CView::ptr loadView();

@@ -67,12 +67,12 @@ define_reflectable_class_function(CTextField, hAlign   , "getter")
 define_reflectable_class_function(CTextField, vAlign   , "getter")
 define_reflectable_class_function(CTextField, entered  , "getter")
 
-std::string CTextField::text     () { return mText                                         ; }
+std::string CTextField::text     () { return mText    ; }
 MColor::ptr CTextField::textColor() { return mTextColor ? mTextColor : MColor::clearColor(); }
-float       CTextField::fontSize () { return mFontSize                                     ; }
-MHAlign     CTextField::hAlign   () { return mHAlign                                       ; }
-MVAlign     CTextField::vAlign   () { return mVAlign                                       ; }
-bool        CTextField::entered  () { return mKey == MKey::Enter                           ; }
+float       CTextField::fontSize () { return mFontSize; }
+MHAlign     CTextField::hAlign   () { return mHAlign  ; }
+MVAlign     CTextField::vAlign   () { return mVAlign  ; }
+bool        CTextField::entered  () { return mEntered ; }
 
 void CTextField::onBecomeFocusResponder() {
     increaseEditingSender();
@@ -88,13 +88,14 @@ void CTextField::onResignFocusResponder() {
     mCursorBeginTick = 0;
 }
 
-void CTextField::onWrite(const std::string &text, MKey key) {
+void CTextField::onWriting(const std::string &text) {
     mText = text;
-    mKey  = key ;
     sendEditing();
+}
 
-    //to end editing.
-    if (key == MKey::Tab || key == MKey::Enter) {
+void CTextField::onControlKbKey(MKbKeyCode code) {
+    if (code == MKbKeyCode::Enter) {
+        //to end editing.
         transferFocusControl();
     }
 }
@@ -144,24 +145,17 @@ void CTextField::onDraw(float width, float height) {
 
 void CTextField::increaseEditingSender() {
     mEditingSenders += 1;
-
-    //NOTE: clean last key record.
-    if (mEditingSenders == 1) {
-        mLastKey = MKey::None;
-        mKey = MKey::None;
-    }
 }
 
 void CTextField::sendEditing() {
     if (mEditingSenders <= 0) {
         return;
     }
-    if (mLastText == mText && mLastKey == mKey) {
+    if (mLastText == mText) {
         return;
     }
 
     mLastText = mText;
-    mLastKey  = mKey ;
 
     //NOTE: firstly emit "editing begin".
     if (!mEditingBegan) {

@@ -149,9 +149,9 @@ CView::ptr CView::superview() {
     return mSuperview.lock();
 }
 
-define_reflectable_class_function(CView, findResponder, "virtual;args:event,pt")
-CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt) {
-    implement_injectable_function(CResponder::ptr, event, pt)
+define_reflectable_class_function(CView, findResponder, "virtual;args:evt,pt")
+CResponder::ptr CView::findResponder(MEvent evt, const MPoint::ptr &pt) {
+    implement_injectable_function(CResponder::ptr, evt, pt)
     
     //events outside of view are not accepted.
     if (!bounds()->contains(pt)) {
@@ -171,20 +171,20 @@ CResponder::ptr CView::findResponder(CResponseEvent event, const MPoint::ptr &pt
         MPoint::ptr off = (*it)->frame()->origin();
         MPoint::ptr npt = pt->sub(off);
 
-        CResponder::ptr responder = (*it)->findResponder(event, npt);
+        CResponder::ptr responder = (*it)->findResponder(evt, npt);
         if (responder) {
             return responder;
         }
     }
 
     //test self.
-    if (canRespond(event, pt)) {
+    if (canRespond(evt, pt)) {
         return me();
     }
 
     //test controller.
     CViewController::ptr controller = mViewController.lock();
-    if (controller && controller->canRespond(event, pt)) {
+    if (controller && controller->canRespond(evt, pt)) {
         return controller;
     }
 
@@ -253,15 +253,15 @@ bool CView::canRespondMouseMove(const MPoint::ptr &pt) {
     return mInteractive && mVisible && bounds()->contains(pt);
 }
 
-define_reflectable_class_function(CView, canRespondWheel, "virtual;args:pt")
-bool CView::canRespondWheel(const MPoint::ptr &pt) {
+define_reflectable_class_function(CView, canRespondMouseWheel, "virtual;args:pt")
+bool CView::canRespondMouseWheel(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
 
     return mInteractive && mVisible && bounds()->contains(pt);
 }
 
-define_reflectable_class_function(CView, canRespondKey)
-bool CView::canRespondKey() {
+define_reflectable_class_function(CView, canRespondKbKey)
+bool CView::canRespondKbKey() {
     implement_injectable_function(bool)
 
     return mInteractive && mVisible;

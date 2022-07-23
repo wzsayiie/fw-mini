@@ -74,22 +74,25 @@ void CControl::onDrawForeground(float width, float height) {
     MContextDrawRect(width - thick,  0, thick, height); //right.
 }
 
-void CControl::onKey(MKey key) {
-    switch (key) {
-        case MKey::Left : transfer({ &mPreviousControl }); break;
-        case MKey::Up   : transfer({ &mPreviousControl }); break;
-        case MKey::Right: transfer({ &mNextControl     }); break;
-        case MKey::Down : transfer({ &mNextControl     }); break;
-        case MKey::Tab  : transfer({ &mNextControl     }); break;
+void CControl::onKbKey(MKbKeyCode code) {
+    if (code == MKbKeyCode::Tab) {
+        MKbKey::ptr key = MCurrentKbKey();
 
+        if (key->modifiers() == MKbModifier_Shift) {
+            transfer({ &mPreviousControl });
+        } else if (key->modifiers() == 0) {
+            transfer({ &mNextControl });
+        }
+
+    } else {
         //pass the event to subclass.
-        default: onControlKey(key);
+        onControlKbKey(code);
     }
 }
 
-define_reflectable_class_function(CControl, onControlKey, "virtual;args:key")
-void CControl::onControlKey(MKey key) {
-    implement_injectable_function(void, key)
+define_reflectable_class_function(CControl, onControlKbKey, "virtual;args:code")
+void CControl::onControlKbKey(MKbKeyCode code) {
+    implement_injectable_function(void, code)
 }
 
 void CControl::setControl(CControl **target, const std::string &iden) {

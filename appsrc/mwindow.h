@@ -1,29 +1,7 @@
 #pragma once
 
+#include "mevent.h"
 #include "mgeometry.h"
-
-//key:
-
-m_enum(MKey) {
-    None  = 0,
-
-    Back  = 0x08,
-    Tab   = 0x09,
-    Enter = 0x0D,
-    Space = 0x20,
-
-    Left  = 0x25,
-    Up    = 0x26,
-    Right = 0x27,
-    Down  = 0x28,
-
-    A     = 'A' ,
-    D     = 'D' ,
-    S     = 'S' ,
-    W     = 'W' ,
-};
-
-//window:
 
 m_class(MWindow, MObject) {
 public:
@@ -42,14 +20,14 @@ public:
     M_HOST_CALL void resizePixel(float pixelW, float pixelH);
     M_HOST_CALL void draw();
 
-    M_HOST_CALL void touchBeginPixel(float pixelX, float pixelY);
-    M_HOST_CALL void touchMovePixel (float pixelX, float pixelY);
-    M_HOST_CALL void touchEndPixel  (float pixelX, float pixelY);
-    M_HOST_CALL void mouseMovePixel (float pixelX, float pixelY);
-    
-    M_HOST_CALL void mouseWheel(float delta);
-    M_HOST_CALL void key(MKey key);
-    M_HOST_CALL void write(const std::string &text, MKey key);
+    M_HOST_CALL void touchBegin(const MTouch::ptr &evt, const MKbKey::ptr &with);
+    M_HOST_CALL void touchMove (const MTouch::ptr &evt);
+    M_HOST_CALL void touchEnd  (const MTouch::ptr &evt);
+
+    M_HOST_CALL void mouseMove (const MMouseMove::ptr  &evt);
+    M_HOST_CALL void mouseWheel(const MMouseWheel::ptr &evt);
+    M_HOST_CALL void kbKey     (const MKbKey::ptr      &evt);
+    M_HOST_CALL void writing   (const MWriting::ptr    &evt);
 
     //text box control.
     M_HOST_CALL bool        checkWritingUpdated();
@@ -75,11 +53,11 @@ protected: public:
     virtual void onTouchBegin(float x, float y);
     virtual void onTouchMove (float x, float y);
     virtual void onTouchEnd  (float x, float y);
+
     virtual void onMouseMove (float x, float y);
-    
-    virtual void onMouseWheel(float delta);
-    virtual void onKey(MKey key);
-    virtual void onWrite(const std::string &text, MKey key);
+    virtual void onMouseWheel(float x, float y, float delta);
+    virtual void onKbKey     (MKbKeyCode code);
+    virtual void onWriting   (const std::string &text);
 
 private:
     static MWindow::ptr sMainWindow;

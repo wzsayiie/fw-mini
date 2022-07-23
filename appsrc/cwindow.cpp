@@ -48,7 +48,7 @@ void CWindow::onDraw(float width, float height) {
 
 void CWindow::onTouchBegin(float x, float y) {
     mTouchingResponder = rootViewController()->findResponder(
-        CResponseEvent::Touch, MPoint::from(x, y)
+        MEvent::Touch, MPoint::from(x, y)
     );
     
     if (mTouchingResponder) {
@@ -86,7 +86,7 @@ void CWindow::onTouchEnd(float x, float y) {
 
 void CWindow::onMouseMove(float x, float y) {
     CResponder::ptr responder = rootViewController()->findResponder(
-        CResponseEvent::MouseMove, MPoint::from(x, y)
+        MEvent::MouseMove, MPoint::from(x, y)
     );
     
     //exit last responder.
@@ -113,30 +113,34 @@ void CWindow::onMouseMove(float x, float y) {
     mMouseMovingResponder = responder;
 }
 
-void CWindow::onMouseWheel(float delta) {
+void CWindow::onMouseWheel(float x, float y, float delta) {
     CResponder::ptr responder = rootViewController()->findResponder(
-        CResponseEvent::Wheel ,mousePosition()
+        MEvent::MouseWheel, MPoint::from(x, y)
     );
     
     if (responder) {
-        responder->onWheel(delta);
+        MPoint::ptr offset = responder->responseOffset();
+        float nx = x - offset->x();
+        float ny = y - offset->y();
+
+        responder->onMouseWheel(nx, ny, delta);
     }
 }
 
-void CWindow::onKey(MKey key) {
+void CWindow::onKbKey(MKbKeyCode code) {
     CResponder::ptr responder = CResponder::focusResponder();
     if (!responder) {
         return;
     }
 
-    if (!responder->canRespondKey()) {
+    if (!responder->canRespondKbKey()) {
         return;
     }
 
-    responder->onKey(key);
+    responder->onKbKey(code);
 }
 
-void CWindow::onWrite(const std::string &text, MKey key) {
+void CWindow::onWriting(const std::string &text) {
     CResponder::ptr responder = CResponder::focusResponder();
     if (!responder) {
         return;
@@ -146,5 +150,5 @@ void CWindow::onWrite(const std::string &text, MKey key) {
         return;
     }
     
-    responder->onWrite(text, key);
+    responder->onWriting(text);
 }

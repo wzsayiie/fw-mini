@@ -148,8 +148,8 @@ CView::ptr CViewController::view() {
     return mView;
 }
 
-define_reflectable_class_function(CViewController, findResponder, "virtual;args:event,pt")
-CResponder::ptr CViewController::findResponder(CResponseEvent event, const MPoint::ptr &pt) {
+define_reflectable_class_function(CViewController, findResponder, "virtual;args:evt,pt")
+CResponder::ptr CViewController::findResponder(MEvent event, const MPoint::ptr &pt) {
     implement_injectable_function(CResponder::ptr, event, pt)
 
     return view()->findResponder(event, pt);
@@ -190,15 +190,15 @@ bool CViewController::canRespondMouseMove(const MPoint::ptr &pt) {
     return view()->bounds()->contains(pt);
 }
 
-define_reflectable_class_function(CViewController, canRespondWheel, "virtual;args:pt")
-bool CViewController::canRespondWheel(const MPoint::ptr &pt) {
+define_reflectable_class_function(CViewController, canRespondMouseWheel, "virtual;args:pt")
+bool CViewController::canRespondMouseWheel(const MPoint::ptr &pt) {
     implement_injectable_function(bool, pt)
     
     return view()->bounds()->contains(pt);
 }
 
-define_reflectable_class_function(CViewController, canRespondKey, "virtual")
-bool CViewController::canRespondKey() {
+define_reflectable_class_function(CViewController, canRespondKbKey, "virtual")
+bool CViewController::canRespondKbKey() {
     implement_injectable_function(bool)
     
     return true;

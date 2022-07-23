@@ -20,11 +20,11 @@ protected:
     void onTouchBegin(float x, float y) override;
     void onTouchMove (float x, float y) override;
     void onTouchEnd  (float x, float y) override;
-    void onMouseMove (float x, float y) override;
-    
-    void onMouseWheel(float delta) override;
-    void onKey(MKey key) override;
-    void onWrite(const std::string &text, MKey key) override;
+
+    void onMouseMove (float x, float y)              override;
+    void onMouseWheel(float x, float y, float delta) override;
+    void onKbKey     (MKbKeyCode code)               override;
+    void onWriting   (const std::string &text)       override;
     
 private:
     CViewController::ptr mRootViewController  ;

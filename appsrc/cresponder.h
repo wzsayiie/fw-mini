@@ -2,18 +2,6 @@
 
 #include "cobject.h"
 
-//response event:
-
-m_enum(CResponseEvent) {
-    Touch     = 1,
-    MouseMove = 2,
-    Wheel     = 3,
-    Key       = 4,
-    Writing   = 5,
-};
-
-//responder:
-
 m_class(CResponder, CObject) {
 public:
     static CResponder::ptr focusResponder();
@@ -26,17 +14,17 @@ public:
     virtual bool canBecomeFocusResponder();
     virtual bool canResignFocusResponder();
     
-    virtual CResponder::ptr findResponder (CResponseEvent event, const MPoint::ptr &pt);
+    virtual CResponder::ptr findResponder (MEvent evt, const MPoint::ptr &pt);
     virtual bool            existResponder(const CResponder::ptr &responder);
     virtual MPoint::ptr     responseOffset();
     
-    bool canRespond(CResponseEvent event, const MPoint::ptr &pt);
+    bool canRespond(MEvent evt, const MPoint::ptr &pt);
     
-    virtual bool canRespondTouch    (const MPoint::ptr &pt);
-    virtual bool canRespondMouseMove(const MPoint::ptr &pt);
-    virtual bool canRespondWheel    (const MPoint::ptr &pt);
-    virtual bool canRespondKey      ();
-    virtual bool canRespondWriting  ();
+    virtual bool canRespondTouch     (const MPoint::ptr &pt);
+    virtual bool canRespondMouseMove (const MPoint::ptr &pt);
+    virtual bool canRespondMouseWheel(const MPoint::ptr &pt);
+    virtual bool canRespondKbKey     ();
+    virtual bool canRespondWriting   ();
     
 protected: public:
     virtual void onBecomeFocusResponder();
@@ -48,9 +36,9 @@ protected: public:
     virtual void onMouseEnter(float x, float y);
     virtual void onMouseMove (float x, float y);
     virtual void onMouseExit (float x, float y);
-    virtual void onWheel     (float delta);
-    virtual void onKey       (MKey key);
-    virtual void onWrite     (const std::string &text, MKey key);
+    virtual void onMouseWheel(float x, float y, float delta);
+    virtual void onKbKey     (MKbKeyCode code);
+    virtual void onWriting   (const std::string &text);
     
 private:
     static CResponder::ptr sFocusResponder;

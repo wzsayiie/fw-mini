@@ -42,8 +42,8 @@ void CButton::onTouchEnd(float x, float y) {
     }
 }
 
-void CButton::onControlKey(MKey key) {
-    if (key != MKey::Enter) {
+void CButton::onControlKbKey(MKbKeyCode code) {
+    if (code != MKbKeyCode::Enter) {
         return;
     }
 

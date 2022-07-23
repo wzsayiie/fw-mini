@@ -146,7 +146,7 @@ void CScrollView::onTouchEnd(float x, float y) {
     reduceScollingSender();
 }
 
-void CScrollView::onWheel(float delta) {
+void CScrollView::onMouseWheel(float x, float y, float delta) {
     MRect::ptr content       = contentView()->frame();
     MSize::ptr ownSize       = frame()->size();
     float      contentX      = content->x();

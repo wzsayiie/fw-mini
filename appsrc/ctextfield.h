@@ -51,7 +51,8 @@ protected:
     void onBecomeFocusResponder() override;
     void onResignFocusResponder() override;
 
-    void onWrite(const std::string &text, MKey key) override;
+    void onWriting     (const std::string &text) override;
+    void onControlKbKey(MKbKeyCode         code) override;
 
     void onDrawForeground(float width, float height) override;
     void onDraw          (float width, float height) override;
@@ -65,14 +66,13 @@ private:
     CTextFieldDelegate::ptr mDelegate;
     
     std::string mText      ;
-    MKey        mKey       = MKey::None;
+    bool        mEntered   = false;
     MColor::ptr mTextColor = MColor::blackColor();
     float       mFontSize  = 16;
     MHAlign     mHAlign    = MHAlign::Left;
     MVAlign     mVAlign    = MVAlign::Middle;
 
     std::string mLastText        ;
-    MKey        mLastKey         = MKey::None;
     int         mEditingSenders  = 0;
     bool        mEditingBegan    = false;
     double      mCursorBeginTick = 0;

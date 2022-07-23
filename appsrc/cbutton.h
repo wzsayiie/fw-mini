@@ -21,7 +21,7 @@ protected:
     void onTouchBegin(float x, float y) override;
     void onTouchEnd  (float x, float y) override;
 
-    void onControlKey(MKey key) override;
+    void onControlKbKey(MKbKeyCode code) override;
 
     void onLayoutSubviews(float width, float height) override;
     void onDrawForeground(float width, float height) override;
