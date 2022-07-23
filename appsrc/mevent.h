@@ -108,7 +108,7 @@ public:
     
     MKbKeyCode   code     ();
     MKbModifiers modifiers();
-    char         printed  ();
+    int          printable();
     
 private:
     MKbKeyCode   mCode      = MKbKeyCode::Null;

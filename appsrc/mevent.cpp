@@ -89,6 +89,49 @@ float MMouseWheel::y    () { return mY    ; }
 
 //keyboard key event:
 
+define_reflectable_class_function(MKbKey, make, "args:code,modifiers")
+MKbKey::ptr MKbKey::make(MKbKeyCode code, MKbModifiers modifiers) {
+    auto event = MKbKey::create();
+
+    event->mCode      = code     ;
+    event->mModifiers = modifiers;
+
+    return event;
+}
+
+define_reflectable_class_function(MKbKey, code, "getter")
+MKbKeyCode MKbKey::code() {
+    return mCode;
+}
+
+define_reflectable_class_function(MKbKey, modifiers, "getter")
+MKbModifiers MKbKey::modifiers() {
+    return mModifiers;
+}
+
+define_reflectable_class_function(MKbKey, printable, "getter")
+int MKbKey::printable() {
+    if (mCode == MKbKeyCode::Tab  ) { return '\t'; }
+    if (mCode == MKbKeyCode::Enter) { return '\n'; }
+    if (mCode == MKbKeyCode::Space) { return ' ' ; }
+
+    if ('A' <= (int)mCode && (int)mCode <= 'Z') {
+        if ((!(mModifiers & MKbModifier_Caps) && !(mModifiers & MKbModifier_Shift)) ||
+            ( (mModifiers & MKbModifier_Caps) &&  (mModifiers & MKbModifier_Shift)) )
+        {
+            //lowercase.
+            return (int)mCode - 'A' + 'a';
+        }
+        else
+        {
+            //uppercase.
+            return (int)mCode;
+        }
+    }
+
+    return '?';
+}
+
 //text writing event:
 
 define_reflectable_class_function(MWriting, make, "args:text")
