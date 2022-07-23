@@ -1,41 +1,57 @@
 #include "mevent.h"
+#include "mgraphics.h"
+
+//event:
+
+define_reflectable_enum_const(MEvent, Touch     )
+define_reflectable_enum_const(MEvent, MouseMove )
+define_reflectable_enum_const(MEvent, MouseWheel)
+define_reflectable_enum_const(MEvent, KbKey     )
+define_reflectable_enum_const(MEvent, Writing   )
 
 //touch event:
 
-define_reflectable_class_function(MTouch, makeBegin, "args:x,y,source")
-MTouch::ptr MTouch::makeBegin(float x, float y, MTouchSource source) {
-    auto event = MTouch::create();
+define_reflectable_enum_const(MTouchSource, Finger )
+define_reflectable_enum_const(MTouchSource, LButton)
+
+define_reflectable_enum_const(MTouchStep, Begin)
+define_reflectable_enum_const(MTouchStep, Move )
+define_reflectable_enum_const(MTouchStep, End  )
+
+define_reflectable_class_function(MTouch, makeBeginPixel, "args:pixelX,pixelY,source")
+MTouch::ptr MTouch::makeBeginPixel(float pixelX, float pixelY, MTouchSource source) {
+    auto evt = MTouch::create();
     
-    event->mSource = source;
-    event->mStep   = MTouchStep::Begin;
-    event->mX      = x;
-    event->mY      = y;
+    evt->mSource = source;
+    evt->mStep   = MTouchStep::Begin;
+    evt->mX      = m_pt_from_px pixelX;
+    evt->mY      = m_pt_from_px pixelY;
     
-    return event;
+    return evt;
 }
 
-define_reflectable_class_function(MTouch, makeMove, "args:x,y,source")
-MTouch::ptr MTouch::makeMove(float x, float y, MTouchSource source) {
-    auto event = MTouch::create();
+define_reflectable_class_function(MTouch, makeMovePixel, "args:pixelX,pixelY,source")
+MTouch::ptr MTouch::makeMovePixel(float pixelX, float pixelY, MTouchSource source) {
+    auto evt = MTouch::create();
     
-    event->mSource = source;
-    event->mStep   = MTouchStep::Move;
-    event->mX      = x;
-    event->mY      = y;
+    evt->mSource = source;
+    evt->mStep   = MTouchStep::Move;
+    evt->mX      = m_pt_from_px pixelX;
+    evt->mY      = m_pt_from_px pixelY;
     
-    return event;
+    return evt;
 }
 
-define_reflectable_class_function(MTouch, makeEnd, "args:x,y,source")
-MTouch::ptr MTouch::makeEnd(float x, float y, MTouchSource source) {
-    auto event = MTouch::create();
+define_reflectable_class_function(MTouch, makeEndPixel, "args:pixelX,pixelY,source")
+MTouch::ptr MTouch::makeEndPixel(float pixelX, float pixelY, MTouchSource source) {
+    auto evt = MTouch::create();
     
-    event->mSource = source;
-    event->mStep   = MTouchStep::End;
-    event->mX      = x;
-    event->mY      = y;
+    evt->mSource = source;
+    evt->mStep   = MTouchStep::End;
+    evt->mX      = m_pt_from_px pixelX;
+    evt->mY      = m_pt_from_px pixelY;
     
-    return event;
+    return evt;
 }
 
 define_reflectable_class_function(MTouch, source, "getter")
@@ -50,14 +66,14 @@ float        MTouch::y     () { return mY     ; }
 
 //mouse move event:
 
-define_reflectable_class_function(MMouseMove, make, "args:x,y")
-MMouseMove::ptr MMouseMove::make(float x, float y) {
-    auto event = MMouseMove::create();
+define_reflectable_class_function(MMouseMove, makePixel, "args:pixelX,pixelY")
+MMouseMove::ptr MMouseMove::makePixel(float pixelX, float pixelY) {
+    auto evt = MMouseMove::create();
     
-    event->mX = x;
-    event->mY = y;
+    evt->mX = m_pt_from_px pixelX;
+    evt->mY = m_pt_from_px pixelY;
     
-    return event;
+    return evt;
 }
 
 define_reflectable_class_function(MMouseMove, x, "getter")
@@ -68,35 +84,55 @@ float MMouseMove::y() { return mY; }
 
 //mouse wheel event:
 
-define_reflectable_class_function(MMouseWheel, make, "args:delta,x,y")
-MMouseWheel::ptr MMouseWheel::make(float delta, float x, float y) {
-    auto event = MMouseWheel::create();
+define_reflectable_class_function(MMouseWheel, makePixel, "args:delta,pixelX,pixelY")
+MMouseWheel::ptr MMouseWheel::makePixel(float delta, float pixelX, float pixelY) {
+    auto evt = MMouseWheel::create();
     
-    event->mDelta = delta;
-    event->mX     = x    ;
-    event->mY     = y    ;
+    evt->mX     = m_pt_from_px pixelX;
+    evt->mY     = m_pt_from_px pixelY;
+    evt->mDelta = delta;
     
-    return event;
+    return evt;
 }
 
-define_reflectable_class_function(MMouseWheel, delta, "getter")
 define_reflectable_class_function(MMouseWheel, x    , "getter")
 define_reflectable_class_function(MMouseWheel, y    , "getter")
+define_reflectable_class_function(MMouseWheel, delta, "getter")
 
-float MMouseWheel::delta() { return mDelta; }
 float MMouseWheel::x    () { return mX    ; }
 float MMouseWheel::y    () { return mY    ; }
+float MMouseWheel::delta() { return mDelta; }
 
 //keyboard key event:
 
+define_reflectable_const(MKbModifier_Alt  )
+define_reflectable_const(MKbModifier_Caps )
+define_reflectable_const(MKbModifier_Cmd  )
+define_reflectable_const(MKbModifier_Ctrl )
+define_reflectable_const(MKbModifier_Shift)
+
+define_reflectable_enum_const(MKbKeyCode, Null )
+define_reflectable_enum_const(MKbKeyCode, Back )
+define_reflectable_enum_const(MKbKeyCode, Tab  )
+define_reflectable_enum_const(MKbKeyCode, Enter)
+define_reflectable_enum_const(MKbKeyCode, Space)
+define_reflectable_enum_const(MKbKeyCode, Left )
+define_reflectable_enum_const(MKbKeyCode, Up   )
+define_reflectable_enum_const(MKbKeyCode, Right)
+define_reflectable_enum_const(MKbKeyCode, Down )
+define_reflectable_enum_const(MKbKeyCode, A    )
+define_reflectable_enum_const(MKbKeyCode, D    )
+define_reflectable_enum_const(MKbKeyCode, S    )
+define_reflectable_enum_const(MKbKeyCode, W    )
+
 define_reflectable_class_function(MKbKey, make, "args:code,modifiers")
 MKbKey::ptr MKbKey::make(MKbKeyCode code, MKbModifiers modifiers) {
-    auto event = MKbKey::create();
+    auto evt = MKbKey::create();
 
-    event->mCode      = code     ;
-    event->mModifiers = modifiers;
+    evt->mCode      = code     ;
+    evt->mModifiers = modifiers;
 
-    return event;
+    return evt;
 }
 
 define_reflectable_class_function(MKbKey, code, "getter")
@@ -136,9 +172,9 @@ int MKbKey::printable() {
 
 define_reflectable_class_function(MWriting, make, "args:text")
 MWriting::ptr MWriting::make(const std::string &text) {
-    auto event = MWriting::create();
-    event->mText = text;
-    return event;
+    auto evt = MWriting::create();
+    evt->mText = text;
+    return evt;
 }
 
 define_reflectable_class_function(MWriting, text, "getter")
@@ -160,11 +196,11 @@ define_reflectable_function(MResetCurrentMouseWheel, "args:event")
 define_reflectable_function(MResetCurrentKbKey     , "args:event")
 define_reflectable_function(MResetCurrentWriting   , "args:event")
 
-void MResetCurrentTouch     (const MTouch::ptr      &event) { sTouch      = event; }
-void MResetCurrentMouseMove (const MMouseMove::ptr  &event) { sMouseMove  = event; }
-void MResetCurrentMouseWheel(const MMouseWheel::ptr &event) { sMouseWheel = event; }
-void MResetCurrentKbKey     (const MKbKey::ptr      &event) { sKbKey      = event; }
-void MResetCurrentWriting   (const MWriting::ptr    &event) { sWriting    = event; }
+void MResetCurrentTouch     (const MTouch::ptr      &evt) { sTouch      = evt; }
+void MResetCurrentMouseMove (const MMouseMove::ptr  &evt) { sMouseMove  = evt; }
+void MResetCurrentMouseWheel(const MMouseWheel::ptr &evt) { sMouseWheel = evt; }
+void MResetCurrentKbKey     (const MKbKey::ptr      &evt) { sKbKey      = evt; }
+void MResetCurrentWriting   (const MWriting::ptr    &evt) { sWriting    = evt; }
 
 define_reflectable_function(MCurrentTouch     )
 define_reflectable_function(MCurrentMouseMove )

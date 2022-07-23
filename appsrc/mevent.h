@@ -27,9 +27,9 @@ m_enum(MTouchStep) {
 
 m_class(MTouch, MObject) {
 public:
-    static MTouch::ptr makeBegin(float x, float y, MTouchSource source);
-    static MTouch::ptr makeMove (float x, float y, MTouchSource source);
-    static MTouch::ptr makeEnd  (float x, float y, MTouchSource source);
+    static MTouch::ptr makeBeginPixel(float pixelX, float pixelY, MTouchSource source);
+    static MTouch::ptr makeMovePixel (float pixelX, float pixelY, MTouchSource source);
+    static MTouch::ptr makeEndPixel  (float pixelX, float pixelY, MTouchSource source);
     
     MTouchSource source();
     MTouchStep   step  ();
@@ -47,7 +47,7 @@ private:
 
 m_class(MMouseMove, MObject) {
 public:
-    static MMouseMove::ptr make(float x, float y);
+    static MMouseMove::ptr makePixel(float pixelX, float pixelY);
     
     float x();
     float y();
@@ -61,16 +61,16 @@ private:
 
 m_class(MMouseWheel, MObject) {
 public:
-    static MMouseWheel::ptr make(float delta, float x, float y);
+    static MMouseWheel::ptr makePixel(float pixelX, float pixelY, float delta);
     
-    float delta();
     float x    ();
     float y    ();
+    float delta();
 
 private:
-    float mDelta = 0;
     float mX     = 0;
     float mY     = 0;
+    float mDelta = 0;
 };
 
 //keyboard key event:
@@ -129,11 +129,11 @@ private:
 
 //current events:
 
-void MResetCurrentTouch     (const MTouch::ptr      &event);
-void MResetCurrentMouseMove (const MMouseMove::ptr  &event);
-void MResetCurrentMouseWheel(const MMouseWheel::ptr &event);
-void MResetCurrentKbKey     (const MKbKey::ptr      &event);
-void MResetCurrentWriting   (const MWriting::ptr    &event);
+void MResetCurrentTouch     (const MTouch::ptr      &evt);
+void MResetCurrentMouseMove (const MMouseMove::ptr  &evt);
+void MResetCurrentMouseWheel(const MMouseWheel::ptr &evt);
+void MResetCurrentKbKey     (const MKbKey::ptr      &evt);
+void MResetCurrentWriting   (const MWriting::ptr    &evt);
 
 MTouch::ptr      MCurrentTouch     ();
 MMouseMove::ptr  MCurrentMouseMove ();
