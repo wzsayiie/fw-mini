@@ -19,20 +19,36 @@ private:
 
 m_class(CTabPageController, CViewController) {
 public:
+    static const int NoneIndex = -1;
+
+public:
     CTabPageController();
     
 public:
     void setDelegation(const CTabPageControllerDelegation::ptr &delegation);
     CTabPageControllerDelegation::ptr delegation();
     
-    void setPageControllers(const MVector<CViewController::ptr>::ptr &controllers);
+    void setPages(const MVector<CViewController::ptr>::ptr &pages);
 
-    int indexOfPageController(const CViewController::ptr &controller);
-    CViewController::ptr pageControllerAtIndex(int index);
+    int indexOfPage(const CViewController::ptr &page);
+    CViewController::ptr pageAtIndex(int index);
     
-    void selectPageController(const CViewController::ptr &controller);
-    void selectPageIndex(int index);
+    void selectPage(const CViewController::ptr &page);
+    void selectIndex(int index);
     
-    CViewController::ptr selectedPageController();
-    int selectedPageIndex();
+    CViewController::ptr selectedPage();
+    int selectedIndex();
+
+protected:
+    void onViewLoad() override;
+
+private:
+    void layoutPages();
+    void showPage(const CViewController::ptr &page);
+    void hidePage(const CViewController::ptr &page);
+
+private:
+    CTabPageControllerDelegation::ptr mDelegation;
+    MVector<CViewController::ptr>::ptr mPages;
+    int mSelectedIndex = NoneIndex;
 };
