@@ -18,7 +18,6 @@ const UINT_PTR WindowUpdateTimerId = 2;
 
 static HWND    sEditWnd         = nullptr;
 static WNDPROC sEditDefaultProc = nullptr;
-static WPARAM  sEditControlKey  = 0;
 static bool    sLButtonDowned   = false;
 
 static void OpenConsole(void)
@@ -68,16 +67,37 @@ static SIZE GetClientSize(HWND wnd)
     return size;
 }
 
+static MKbModifiers GetModifiers()
+{
+    MKbModifiers modifiers = 0;
+
+    //high byte flags 'pressed'.
+    if (HIBYTE(GetKeyState(VK_MENU   ))) { modifiers |= MKbModifier_Alt  ; }
+    if (HIBYTE(GetKeyState(VK_CONTROL))) { modifiers |= MKbModifier_Ctrl ; }
+    if (HIBYTE(GetKeyState(VK_SHIFT  ))) { modifiers |= MKbModifier_Shift; }
+    //low byte flags 'toggled'.
+    if (LOBYTE(GetKeyState(VK_CAPITAL))) { modifiers |= MKbModifier_Caps ; }
+
+    return modifiers;
+}
+
 static LRESULT CALLBACK EditCustomProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (msg == WM_KEYDOWN && (wParam == VK_TAB || wParam == VK_RETURN))
+    //custom process for "tab" and "enter" keys. application may relies them to move focus.
+    MKbKeyCode code = MKbKeyCode::Null;
+    if (msg == WM_KEYDOWN)
     {
-        sEditControlKey = wParam;
+        switch (wParam)
+        {
+            case VK_TAB   : code = MKbKeyCode::Tab  ; break;
+            case VK_RETURN: code = MKbKeyCode::Enter; break;
+        }
+    }
 
-        auto wParam = MAKEWPARAM(0, EN_CHANGE);
-        auto lParam = (LPARAM)wnd;
-        SendMessageW(GetParent(wnd), WM_COMMAND, wParam, lParam);
-        
+    if (code != MKbKeyCode::Null)
+    {
+        auto evt = MKbKey::make(code, GetModifiers());
+        MWindow::mainWindow()->kbKey(evt);
         return 0;
     }
     else
@@ -254,29 +274,28 @@ static void OnPaint(HWND wnd, WPARAM wParam, LPARAM lParam)
 
 static void OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MWindow::mainWindow();
+    auto x = (float)GET_X_LPARAM(lParam);
+    auto y = (float)GET_Y_LPARAM(lParam);
 
-    LPARAM clientPoint = lParam;
-    auto x = GET_X_LPARAM(clientPoint);
-    auto y = GET_Y_LPARAM(clientPoint);
-
+    //NOTE:
     //mouse event.
-    window->mouseMovePixel((float)x, (float)y);
+    auto moveEvent = MMouseMove::makePixel(x, y);
+    MWindow::mainWindow()->mouseMove(moveEvent);
 
-    //touch event.
+    //touch event:
+    auto touchEvent = MTouch::makeBeginPixel(x, y, MTouchSource::LButton);
+    auto kbKeyEvent = MKbKey::make(MKbKeyCode::Null, GetModifiers());
+    MWindow::mainWindow()->touchBegin(touchEvent, kbKeyEvent);
+
     sLButtonDowned = true;
-    window->touchBeginPixel((float)x, (float)y);
     //NOTE: to capture events when the mouse moves outside the window.
     SetCapture(wnd);
 }
 
 static void OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MWindow::mainWindow();
-
-    LPARAM clientPoint = lParam;
-    int x = GET_X_LPARAM(clientPoint);
-    int y = GET_Y_LPARAM(clientPoint);
+    auto x = (float)GET_X_LPARAM(lParam);
+    auto y = (float)GET_Y_LPARAM(lParam);
 
     //mouse event:
     SIZE clientSize = GetClientSize(wnd);
@@ -284,23 +303,22 @@ static void OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
     if (0 <= x && x <= clientSize.cx
      && 0 <= y && y <= clientSize.cy)
     {
-        window->mouseMovePixel((float)x, (float)y);
+        auto moveEvent = MMouseMove::makePixel(x, y);
+        MWindow::mainWindow()->mouseMove(moveEvent);
     }
 
     //touch event.
     if (sLButtonDowned)
     {
-        window->touchMovePixel((float)x, (float)y);
+        auto touchEvent = MTouch::makeMovePixel(x, y, MTouchSource::LButton);
+        MWindow::mainWindow()->touchMove(touchEvent);
     }
 }
 
 static void OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MWindow::mainWindow();
-
-    LPARAM clientPoint = lParam;
-    int x = GET_X_LPARAM(clientPoint);
-    int y = GET_Y_LPARAM(clientPoint);
+    auto x = (float)GET_X_LPARAM(lParam);
+    auto y = (float)GET_Y_LPARAM(lParam);
 
     //mouse event:
     SIZE clientSize = GetClientSize(wnd);
@@ -308,43 +326,54 @@ static void OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
     if (0 <= x && x <= clientSize.cx
      && 0 <= y && y <= clientSize.cy)
     {
-        window->mouseMovePixel((float)x, (float)y);
+        auto moveEvent = MMouseMove::makePixel(x, y);
+        MWindow::mainWindow()->mouseMove(moveEvent);
     }
 
-    //touch event.
-    window->touchEndPixel((float)x, (float)y);
+    //touch event:
+    auto touchEvent = MTouch::makeEndPixel(x, y, MTouchSource::LButton);
+    MWindow::mainWindow()->touchEnd(touchEvent);
+
     sLButtonDowned = false;
     ReleaseCapture();
 }
 
 static void OnMouseWheel(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    short delta = GET_WHEEL_DELTA_WPARAM(wParam);
-    MWindow::mainWindow()->mouseWheel(delta);
+    auto delta = (float)GET_WHEEL_DELTA_WPARAM(wParam);
+    auto x     = (float)GET_X_LPARAM(lParam);
+    auto y     = (float)GET_Y_LPARAM(lParam);
+    
+    auto evt = MMouseWheel::makePixel(x, y, delta);
+    MWindow::mainWindow()->mouseWheel(evt);
 }
 
 static void OnKeyDown(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    MWindow *window = MWindow::mainWindow();
-
-    WPARAM virtualkey = wParam;
-    switch (virtualkey)
+    MKbKeyCode code = MKbKeyCode::Null;
+    switch (wParam)
     {
-        case VK_BACK  : window->key(MKey::Back ); break;
-        case VK_TAB   : window->key(MKey::Tab  ); break;
-        case VK_RETURN: window->key(MKey::Enter); break;
-        case VK_SPACE : window->key(MKey::Space); break;
+        case VK_BACK  : code = MKbKeyCode::Back ; break;
+        case VK_TAB   : code = MKbKeyCode::Tab  ; break;
+        case VK_RETURN: code = MKbKeyCode::Enter; break;
+        case VK_SPACE : code = MKbKeyCode::Space; break;
 
-        case VK_LEFT  : window->key(MKey::Left ); break;
-        case VK_UP    : window->key(MKey::Up   ); break;
-        case VK_RIGHT : window->key(MKey::Right); break;
-        case VK_DOWN  : window->key(MKey::Down ); break;
+        case VK_LEFT  : code = MKbKeyCode::Left ; break;
+        case VK_UP    : code = MKbKeyCode::Up   ; break;
+        case VK_RIGHT : code = MKbKeyCode::Right; break;
+        case VK_DOWN  : code = MKbKeyCode::Down ; break;
 
-        case 'A'      : window->key(MKey::A    ); break;
-        case 'D'      : window->key(MKey::D    ); break;
-        case 'S'      : window->key(MKey::S    ); break;
-        case 'W'      : window->key(MKey::W    ); break;
+        case 'A'      : code = MKbKeyCode::A    ; break;
+        case 'D'      : code = MKbKeyCode::D    ; break;
+        case 'S'      : code = MKbKeyCode::S    ; break;
+        case 'W'      : code = MKbKeyCode::W    ; break;
+
+        //unsupported keys.
+        default: return;
     }
+
+    auto evt = MKbKey::make(code, GetModifiers());
+    MWindow::mainWindow()->kbKey(evt);
 }
 
 static void OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
@@ -357,15 +386,8 @@ static void OnCommand(HWND wnd, WPARAM wParam, LPARAM lParam)
         GetWindowTextW(sEditWnd, dash::buffer<WCHAR>(), dash::buffer_size<WCHAR>());
         std::string u8text = MU8StringFromU16(dash::buffer<char16_t>());
 
-        MKey key = MKey::None;
-        switch (sEditControlKey)
-        {
-            case VK_TAB   : key = MKey::Tab  ; break;
-            case VK_RETURN: key = MKey::Enter; break;
-        }
-        sEditControlKey = 0;
-
-        MWindow::mainWindow()->write(u8text, key);
+        auto evt = MWriting::make(u8text);
+        MWindow::mainWindow()->writing(evt);
     }
 }
 
@@ -383,6 +405,7 @@ static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
         case WM_MOUSEMOVE  : OnMouseMove  (wnd, wParam, lParam); return 0;
         case WM_LBUTTONUP  : OnLButtonUp  (wnd, wParam, lParam); return 0;
         case WM_MOUSEWHEEL : OnMouseWheel (wnd, wParam, lParam); return 0;
+        case WM_SYSKEYDOWN : OnKeyDown    (wnd, wParam, lParam); return 0;
         case WM_KEYDOWN    : OnKeyDown    (wnd, wParam, lParam); return 0;
         case WM_COMMAND    : OnCommand    (wnd, wParam, lParam); return 0;
 

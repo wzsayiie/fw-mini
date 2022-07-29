@@ -67,7 +67,8 @@ void MWindow::draw() {
 
 define_reflectable_class_function(MWindow, touchBegin, "args:evt,with")
 void MWindow::touchBegin(const MTouch::ptr &evt, const MKbKey::ptr &with) {
-    //touch events can be accompanied by keyboard modifiers.
+    //touch begin event can be accompanied by keyboard modifiers,
+    //by this way applications can be more expressive.
     MResetCurrentKbKey(with);
     MResetCurrentTouch(evt);
 
