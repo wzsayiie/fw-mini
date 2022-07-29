@@ -1,30 +1,30 @@
 #include "cscrollview.h"
 
-//scroll view delegate:
+//scroll view delegation:
 
-define_reflectable_class_function(CScrollViewDelegate, setScrollingBeginTarget, "setter;args:target")
-define_reflectable_class_function(CScrollViewDelegate, setScrollingTarget     , "setter;args:target")
-define_reflectable_class_function(CScrollViewDelegate, setScrollingEndTarget  , "setter;args:target")
+define_reflectable_class_function(CScrollViewDelegation, setScrollingBeginTarget, "setter;args:target")
+define_reflectable_class_function(CScrollViewDelegation, setScrollingTarget     , "setter;args:target")
+define_reflectable_class_function(CScrollViewDelegation, setScrollingEndTarget  , "setter;args:target")
 
-void CScrollViewDelegate::setScrollingBeginTarget(const MFunction<void ()>::ptr &target) { mScrollingBeginTarget = target; }
-void CScrollViewDelegate::setScrollingTarget     (const MFunction<void ()>::ptr &target) { mScrollingTarget      = target; }
-void CScrollViewDelegate::setScrollingEndTarget  (const MFunction<void ()>::ptr &target) { mScrollingEndTarget   = target; }
+void CScrollViewDelegation::setScrollingBeginTarget(const MFunction<void ()>::ptr &target) { mScrollingBeginTarget = target; }
+void CScrollViewDelegation::setScrollingTarget     (const MFunction<void ()>::ptr &target) { mScrollingTarget      = target; }
+void CScrollViewDelegation::setScrollingEndTarget  (const MFunction<void ()>::ptr &target) { mScrollingEndTarget   = target; }
 
-define_reflectable_class_function(CScrollViewDelegate, scrollingBeginTarget, "getter")
-define_reflectable_class_function(CScrollViewDelegate, scrollingTarget     , "getter")
-define_reflectable_class_function(CScrollViewDelegate, scrollingEndTarget  , "getter")
+define_reflectable_class_function(CScrollViewDelegation, scrollingBeginTarget, "getter")
+define_reflectable_class_function(CScrollViewDelegation, scrollingTarget     , "getter")
+define_reflectable_class_function(CScrollViewDelegation, scrollingEndTarget  , "getter")
 
-MFunction<void ()>::ptr CScrollViewDelegate::scrollingBeginTarget() { return mScrollingBeginTarget; }
-MFunction<void ()>::ptr CScrollViewDelegate::scrollingTarget     () { return mScrollingTarget     ; }
-MFunction<void ()>::ptr CScrollViewDelegate::scrollingEndTarget  () { return mScrollingEndTarget  ; }
+MFunction<void ()>::ptr CScrollViewDelegation::scrollingBeginTarget() { return mScrollingBeginTarget; }
+MFunction<void ()>::ptr CScrollViewDelegation::scrollingTarget     () { return mScrollingTarget     ; }
+MFunction<void ()>::ptr CScrollViewDelegation::scrollingEndTarget  () { return mScrollingEndTarget  ; }
 
-define_reflectable_class_function(CScrollViewDelegate, scrollingBegin)
-define_reflectable_class_function(CScrollViewDelegate, scrolling     )
-define_reflectable_class_function(CScrollViewDelegate, scrollingEnd  )
+define_reflectable_class_function(CScrollViewDelegation, scrollingBegin)
+define_reflectable_class_function(CScrollViewDelegation, scrolling     )
+define_reflectable_class_function(CScrollViewDelegation, scrollingEnd  )
 
-void CScrollViewDelegate::scrollingBegin() { if (mScrollingBeginTarget) { mScrollingBeginTarget->call(); } }
-void CScrollViewDelegate::scrolling     () { if (mScrollingTarget     ) { mScrollingTarget     ->call(); } }
-void CScrollViewDelegate::scrollingEnd  () { if (mScrollingEndTarget  ) { mScrollingEndTarget  ->call(); } }
+void CScrollViewDelegation::scrollingBegin() { if (mScrollingBeginTarget) { mScrollingBeginTarget->call(); } }
+void CScrollViewDelegation::scrolling     () { if (mScrollingTarget     ) { mScrollingTarget     ->call(); } }
+void CScrollViewDelegation::scrollingEnd  () { if (mScrollingEndTarget  ) { mScrollingEndTarget  ->call(); } }
 
 //assist:
 
@@ -45,17 +45,17 @@ CScrollView::CScrollView(float x, float y, float width, float height): CScrollVi
     setFrame(MRect::from(x, y, width, height));
 }
 
-define_reflectable_class_function(CScrollView, setDelegate, "setter;args:delegate")
-void CScrollView::setDelegate(const CScrollViewDelegate::ptr &delegate) {
-    mDelegate = delegate;
+define_reflectable_class_function(CScrollView, setDelegation, "setter;args:delegation")
+void CScrollView::setDelegation(const CScrollViewDelegation::ptr &delegation) {
+    mDelegation = delegation;
 }
 
-define_reflectable_class_function(CScrollView, delegate, "getter")
-CScrollViewDelegate::ptr CScrollView::delegate() {
-    if (!mDelegate) {
-        mDelegate = CScrollViewDelegate::create();
+define_reflectable_class_function(CScrollView, delegation, "getter")
+CScrollViewDelegation::ptr CScrollView::delegation() {
+    if (!mDelegation) {
+        mDelegation = CScrollViewDelegation::create();
     }
-    return mDelegate;
+    return mDelegation;
 }
 
 define_reflectable_class_function(CScrollView, addContentSubview, "args:subview")
@@ -214,9 +214,9 @@ void CScrollView::sendScrolling() {
     mLastContentOrigin = contentOrigin;
     if (!mScrollingBegan) {
         mScrollingBegan = true;
-        delegate()->scrollingBegin();
+        delegation()->scrollingBegin();
     } else {
-        delegate()->scrolling();
+        delegation()->scrolling();
     }
 }
 
@@ -224,7 +224,7 @@ void CScrollView::reduceScollingSender() {
     mScrollingSenders -= 1;
 
     if (mScrollingSenders == 0 && mScrollingBegan) {
-        delegate()->scrollingEnd();
+        delegation()->scrollingEnd();
         mScrollingBegan = false;
     }
 }

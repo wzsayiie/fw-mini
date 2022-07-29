@@ -2,9 +2,9 @@
 
 #include "ccontrol.h"
 
-//text field delegate:
+//text field delegation:
 
-m_class(CTextFieldDelegate, CObject) {
+m_class(CTextFieldDelegation, CObject) {
 public:
     void setEditingBeginTarget(const MFunction<void ()>::ptr &target);
     void setTextChangeTarget  (const MFunction<void ()>::ptr &target);
@@ -31,8 +31,8 @@ public:
     using upper::upper;
 
 public:
-    void setDelegate(const CTextFieldDelegate::ptr &delegate);
-    CTextFieldDelegate::ptr delegate();
+    void setDelegation(const CTextFieldDelegation::ptr &delegation);
+    CTextFieldDelegation::ptr delegation();
 
     void setText     (const std::string &text );
     void setTextColor(const MColor::ptr &color);
@@ -63,7 +63,7 @@ private:
     void reduceEditingSender();
 
 private:
-    CTextFieldDelegate::ptr mDelegate;
+    CTextFieldDelegation::ptr mDelegation;
     
     std::string mText      ;
     bool        mEntered   = false;

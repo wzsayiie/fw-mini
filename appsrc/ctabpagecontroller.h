@@ -2,9 +2,9 @@
 
 #include "cviewcontroller.h"
 
-//tab page controller delegate:
+//tab page controller delegation:
 
-m_class(CTabPageControllerDelegate, CObject) {
+m_class(CTabPageControllerDelegation, CObject) {
 public:
     void setPagesChangeTarget(const MFunction<void ()>::ptr &target);
     MFunction<void ()>::ptr pagesChangeTarget();
@@ -22,8 +22,8 @@ public:
     CTabPageController();
     
 public:
-    void setDelegate(const CTabPageControllerDelegate::ptr &delegate);
-    CTabPageControllerDelegate::ptr delegate();
+    void setDelegation(const CTabPageControllerDelegation::ptr &delegation);
+    CTabPageControllerDelegation::ptr delegation();
     
     void setPageControllers(const MVector<CViewController::ptr>::ptr &controllers);
 

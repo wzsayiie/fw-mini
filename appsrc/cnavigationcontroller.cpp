@@ -1,19 +1,19 @@
 #include "cnavigationcontroller.h"
 
-//navigation controller delegate:
+//navigation controller delegation:
 
-define_reflectable_class_function(CNavigationControllerDelegate, setPagesChangeTarget, "setter;args:target")
-void CNavigationControllerDelegate::setPagesChangeTarget(const MFunction<void ()>::ptr &target) {
+define_reflectable_class_function(CNavigationControllerDelegation, setPagesChangeTarget, "setter;args:target")
+void CNavigationControllerDelegation::setPagesChangeTarget(const MFunction<void ()>::ptr &target) {
     mPagesChangeTarget = target;
 }
 
-define_reflectable_class_function(CNavigationControllerDelegate, pagesChangeTarget, "getter")
-MFunction<void ()>::ptr CNavigationControllerDelegate::pagesChangeTarget() {
+define_reflectable_class_function(CNavigationControllerDelegation, pagesChangeTarget, "getter")
+MFunction<void ()>::ptr CNavigationControllerDelegation::pagesChangeTarget() {
     return mPagesChangeTarget;
 }
 
-define_reflectable_class_function(CNavigationControllerDelegate, pagesChange)
-void CNavigationControllerDelegate::pagesChange() {
+define_reflectable_class_function(CNavigationControllerDelegation, pagesChange)
+void CNavigationControllerDelegation::pagesChange() {
     if (mPagesChangeTarget) {
         mPagesChangeTarget->call();
     }
@@ -24,12 +24,12 @@ void CNavigationControllerDelegate::pagesChange() {
 CNavigationController::CNavigationController() {
 }
 
-define_reflectable_class_function(CNavigationController, setDelegate, "setter:args:delegate")
-void CNavigationController::setDelegate(const CNavigationControllerDelegate::ptr &delegate) {
+define_reflectable_class_function(CNavigationController, setDelegation, "setter:args:delegation")
+void CNavigationController::setDelegation(const CNavigationControllerDelegation::ptr &delegation) {
 }
 
-define_reflectable_class_function(CNavigationController, delegate, "getter")
-CNavigationControllerDelegate::ptr CNavigationController::delegate() {
+define_reflectable_class_function(CNavigationController, delegation, "getter")
+CNavigationControllerDelegation::ptr CNavigationController::delegation() {
     return nullptr;
 }
 

@@ -34,9 +34,9 @@ void CView::setBackgroundColor(const MColor::ptr &color) {
     mBackgroundColor = color;
 }
 
-define_reflectable_class_function(CView, setLayoutDelegate, "setter;args:delegate")
-void CView::setLayoutDelegate(const MFunction<void ()>::ptr &delegate) {
-    mLayoutDelegate = delegate;
+define_reflectable_class_function(CView, setLayoutDelegation, "setter;args:delegation")
+void CView::setLayoutDelegation(const MFunction<void ()>::ptr &delegation) {
+    mLayoutDelegation = delegation;
 }
 
 define_reflectable_class_function(CView, setFrame, "setter;args:frame")
@@ -75,9 +75,9 @@ MColor::ptr CView::backgroundColor() {
     return mBackgroundColor ? mBackgroundColor : MColor::clearColor();
 }
 
-define_reflectable_class_function(CView, layoutDelegate, "getter")
-MFunction<void ()>::ptr CView::layoutDelegate() {
-    return mLayoutDelegate;
+define_reflectable_class_function(CView, layoutDelegation, "getter")
+MFunction<void ()>::ptr CView::layoutDelegation() {
+    return mLayoutDelegation;
 }
 
 define_reflectable_class_function(CView, bounds, "getter")
@@ -339,8 +339,8 @@ void CView::onDrawForeground(float width, float height) {
 }
 
 void CView::layoutSubviews() {
-    if (mLayoutDelegate) {
-        mLayoutDelegate->call();
+    if (mLayoutDelegation) {
+        mLayoutDelegation->call();
 
     } else {
         MSize::ptr space = frame()->size();

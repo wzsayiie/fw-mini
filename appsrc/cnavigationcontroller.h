@@ -2,9 +2,9 @@
 
 #include "cviewcontroller.h"
 
-//navigation controller delegate:
+//navigation controller delegation:
 
-m_class(CNavigationControllerDelegate, CObject) {
+m_class(CNavigationControllerDelegation, CObject) {
 public:
     void setPagesChangeTarget(const MFunction<void ()>::ptr &target);
     MFunction<void ()>::ptr pagesChangeTarget();
@@ -22,8 +22,8 @@ public:
     CNavigationController();
 
 public:
-    void setDelegate(const CNavigationControllerDelegate::ptr &delegate);
-    CNavigationControllerDelegate::ptr delegate();
+    void setDelegation(const CNavigationControllerDelegation::ptr &delegation);
+    CNavigationControllerDelegation::ptr delegation();
     
     void pushPageController (const CViewController::ptr &controller);
     void popToPageController(const CViewController::ptr &controller);

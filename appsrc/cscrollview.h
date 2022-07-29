@@ -2,9 +2,9 @@
 
 #include "cview.h"
 
-//scroll view delegate:
+//scroll view delegation:
 
-m_class(CScrollViewDelegate, CObject) {
+m_class(CScrollViewDelegation, CObject) {
 public:
     void setScrollingBeginTarget(const MFunction<void ()>::ptr &target);
     void setScrollingTarget     (const MFunction<void ()>::ptr &target);
@@ -32,8 +32,8 @@ public:
     CScrollView(float x, float y, float width, float height);
 
 public:
-    void setDelegate(const CScrollViewDelegate::ptr &delegate);
-    CScrollViewDelegate::ptr delegate();
+    void setDelegation(const CScrollViewDelegation::ptr &delegation);
+    CScrollViewDelegation::ptr delegation();
 
     void addContentSubview(const CView::ptr &subview);
     void setContentOffset(float x, float y);
@@ -58,7 +58,7 @@ private:
     void reduceScollingSender();
 
 private:
-    CScrollViewDelegate::ptr mDelegate;
+    CScrollViewDelegation::ptr mDelegation;
     CView::ptr mContentView;
 
     MPoint::ptr mLastContentOrigin;

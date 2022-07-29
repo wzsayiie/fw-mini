@@ -1,19 +1,19 @@
 #include "ctabpagecontroller.h"
 
-//tab page controller delegate:
+//tab page controller delegation:
 
-define_reflectable_class_function(CTabPageControllerDelegate, setPagesChangeTarget, "setter;args:target")
-void CTabPageControllerDelegate::setPagesChangeTarget(const MFunction<void ()>::ptr &target) {
+define_reflectable_class_function(CTabPageControllerDelegation, setPagesChangeTarget, "setter;args:target")
+void CTabPageControllerDelegation::setPagesChangeTarget(const MFunction<void ()>::ptr &target) {
     mPagesChangeTarget = target;
 }
 
-define_reflectable_class_function(CTabPageControllerDelegate, pagesChangeTarget, "getter")
-MFunction<void ()>::ptr CTabPageControllerDelegate::pagesChangeTarget() {
+define_reflectable_class_function(CTabPageControllerDelegation, pagesChangeTarget, "getter")
+MFunction<void ()>::ptr CTabPageControllerDelegation::pagesChangeTarget() {
     return mPagesChangeTarget;
 }
 
-define_reflectable_class_function(CTabPageControllerDelegate, pagesChange)
-void CTabPageControllerDelegate::pagesChange() {
+define_reflectable_class_function(CTabPageControllerDelegation, pagesChange)
+void CTabPageControllerDelegation::pagesChange() {
     if (mPagesChangeTarget) {
         mPagesChangeTarget->call();
     }
@@ -24,12 +24,12 @@ void CTabPageControllerDelegate::pagesChange() {
 CTabPageController::CTabPageController() {
 }
 
-define_reflectable_class_function(CTabPageController, setDelegate, "setter:args:delegate")
-void CTabPageController::setDelegate(const CTabPageControllerDelegate::ptr &delegate) {
+define_reflectable_class_function(CTabPageController, setDelegation, "setter:args:delegation")
+void CTabPageController::setDelegation(const CTabPageControllerDelegation::ptr &delegation) {
 }
 
-define_reflectable_class_function(CTabPageController, delegate, "getter")
-CTabPageControllerDelegate::ptr CTabPageController::delegate() {
+define_reflectable_class_function(CTabPageController, delegation, "getter")
+CTabPageControllerDelegation::ptr CTabPageController::delegation() {
     return nullptr;
 }
 

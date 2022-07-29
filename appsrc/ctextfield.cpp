@@ -1,44 +1,44 @@
 #include "ctextfield.h"
 
-//text field delegate:
+//text field delegation:
 
-define_reflectable_class_function(CTextFieldDelegate, setEditingBeginTarget, "setter;args:target")
-define_reflectable_class_function(CTextFieldDelegate, setTextChangeTarget  , "setter;args:target")
-define_reflectable_class_function(CTextFieldDelegate, setEditingEndTarget  , "setter;args:target")
+define_reflectable_class_function(CTextFieldDelegation, setEditingBeginTarget, "setter;args:target")
+define_reflectable_class_function(CTextFieldDelegation, setTextChangeTarget  , "setter;args:target")
+define_reflectable_class_function(CTextFieldDelegation, setEditingEndTarget  , "setter;args:target")
 
-void CTextFieldDelegate::setEditingBeginTarget(const MFunction<void ()>::ptr &target) { mEditingBeginTarget = target; }
-void CTextFieldDelegate::setTextChangeTarget  (const MFunction<void ()>::ptr &target) { mTextChangeTarget   = target; }
-void CTextFieldDelegate::setEditingEndTarget  (const MFunction<void ()>::ptr &target) { mEditingEndTarget   = target; }
+void CTextFieldDelegation::setEditingBeginTarget(const MFunction<void ()>::ptr &target) { mEditingBeginTarget = target; }
+void CTextFieldDelegation::setTextChangeTarget  (const MFunction<void ()>::ptr &target) { mTextChangeTarget   = target; }
+void CTextFieldDelegation::setEditingEndTarget  (const MFunction<void ()>::ptr &target) { mEditingEndTarget   = target; }
 
-define_reflectable_class_function(CTextFieldDelegate, editingBeginTarget, "getter")
-define_reflectable_class_function(CTextFieldDelegate, textChangeTarget  , "getter")
-define_reflectable_class_function(CTextFieldDelegate, editingEndTarget  , "getter")
+define_reflectable_class_function(CTextFieldDelegation, editingBeginTarget, "getter")
+define_reflectable_class_function(CTextFieldDelegation, textChangeTarget  , "getter")
+define_reflectable_class_function(CTextFieldDelegation, editingEndTarget  , "getter")
 
-MFunction<void ()>::ptr CTextFieldDelegate::editingBeginTarget() { return mEditingBeginTarget; }
-MFunction<void ()>::ptr CTextFieldDelegate::textChangeTarget  () { return mTextChangeTarget  ; }
-MFunction<void ()>::ptr CTextFieldDelegate::editingEndTarget  () { return mEditingEndTarget  ; }
+MFunction<void ()>::ptr CTextFieldDelegation::editingBeginTarget() { return mEditingBeginTarget; }
+MFunction<void ()>::ptr CTextFieldDelegation::textChangeTarget  () { return mTextChangeTarget  ; }
+MFunction<void ()>::ptr CTextFieldDelegation::editingEndTarget  () { return mEditingEndTarget  ; }
 
-define_reflectable_class_function(CTextFieldDelegate, editingBegin)
-define_reflectable_class_function(CTextFieldDelegate, textChange  )
-define_reflectable_class_function(CTextFieldDelegate, editingEnd  )
+define_reflectable_class_function(CTextFieldDelegation, editingBegin)
+define_reflectable_class_function(CTextFieldDelegation, textChange  )
+define_reflectable_class_function(CTextFieldDelegation, editingEnd  )
 
-void CTextFieldDelegate::editingBegin() { if (mEditingBeginTarget) { mEditingBeginTarget->call(); } }
-void CTextFieldDelegate::textChange  () { if (mTextChangeTarget  ) { mTextChangeTarget  ->call(); } }
-void CTextFieldDelegate::editingEnd  () { if (mEditingEndTarget  ) { mEditingEndTarget  ->call(); } }
+void CTextFieldDelegation::editingBegin() { if (mEditingBeginTarget) { mEditingBeginTarget->call(); } }
+void CTextFieldDelegation::textChange  () { if (mTextChangeTarget  ) { mTextChangeTarget  ->call(); } }
+void CTextFieldDelegation::editingEnd  () { if (mEditingEndTarget  ) { mEditingEndTarget  ->call(); } }
 
 //text field:
 
-define_reflectable_class_function(CTextField, setDelegate, "setter;args:delegate")
-void CTextField::setDelegate(const CTextFieldDelegate::ptr &delegate) {
-    mDelegate = delegate;
+define_reflectable_class_function(CTextField, setDelegation, "setter;args:delegation")
+void CTextField::setDelegation(const CTextFieldDelegation::ptr &delegation) {
+    mDelegation = delegation;
 }
 
-define_reflectable_class_function(CTextField, delegate, "getter")
-CTextFieldDelegate::ptr CTextField::delegate() {
-    if (!mDelegate) {
-        mDelegate = CTextFieldDelegate::create();
+define_reflectable_class_function(CTextField, delegation, "getter")
+CTextFieldDelegation::ptr CTextField::delegation() {
+    if (!mDelegation) {
+        mDelegation = CTextFieldDelegation::create();
     }
-    return mDelegate;
+    return mDelegation;
 }
 
 define_reflectable_class_function(CTextField, setText, "setter;args:text")
@@ -149,7 +149,7 @@ void CTextField::increaseEditingSender() {
     if (mEditingSenders == 1) {
         //NOTE: reset "entered" flag.
         mEntered = false;
-        delegate()->editingBegin();
+        delegation()->editingBegin();
     }
 }
 
@@ -162,13 +162,13 @@ void CTextField::sendEditing() {
     }
 
     mLastText = mText;
-    delegate()->textChange();
+    delegation()->textChange();
 }
 
 void CTextField::reduceEditingSender() {
     mEditingSenders -= 1;
 
     if (mEditingSenders == 0) {
-        delegate()->editingEnd();
+        delegation()->editingEnd();
     }
 }
