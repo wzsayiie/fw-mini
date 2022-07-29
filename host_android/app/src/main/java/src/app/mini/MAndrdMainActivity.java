@@ -120,7 +120,7 @@ public class MAndrdMainActivity extends Activity
         edit.setVisibility(View.INVISIBLE);
         //"done" key is only available in single-line mode.
         edit.setSingleLine();
-        //finally add listeners. event callbacks may be fired when set the edit.
+        //finally add listeners. event callbacks may be fired when configuring the edit.
         edit.addTextChangedListener(this);
         edit.setOnEditorActionListener(this);
         edit.setOnKeyListener(this);
@@ -190,7 +190,7 @@ public class MAndrdMainActivity extends Activity
         }
 
         String string = mEditText.getText().toString();
-        windowWrite(string, false);
+        windowWriting(string);
     }
 
     public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
@@ -201,8 +201,7 @@ public class MAndrdMainActivity extends Activity
         }
 
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            String string = mEditText.getText().toString();
-            windowWrite(string, true);
+            windowKeyEnter();
         }
 
         //return true to keep soft keyboard (false means that the event has not been consumed yet.
@@ -219,8 +218,7 @@ public class MAndrdMainActivity extends Activity
 
         if (code == KeyEvent.KEYCODE_ENTER) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                String string = mEditText.getText().toString();
-                windowWrite(string, true);
+                windowKeyEnter();
             }
             return true;
         }
@@ -241,7 +239,8 @@ public class MAndrdMainActivity extends Activity
     private static native void    windowTouchBegin   (float x, float y);
     private static native void    windowTouchMove    (float x, float y);
     private static native void    windowTouchEnd     (float x, float y);
-    private static native void    windowWrite        (String text, boolean enter);
+    private static native void    windowKeyEnter     ();
+    private static native void    windowWriting      (String text);
 
     private static native boolean checkWritingUpdated();
     private static native boolean checkWritingEnabled();

@@ -50,22 +50,32 @@ Java_src_app_mini_MAndrdMainActivity_windowHide(JNIEnv *, jclass) {
 
 extern "C" JNIEXPORT JNICALL void
 Java_src_app_mini_MAndrdMainActivity_windowTouchBegin(JNIEnv *, jclass, jfloat x, jfloat y) {
-    MWindow::mainWindow()->touchBeginPixel(x, y);
+    auto evt = MTouch::makeBeginPixel(x, y, MTouchSource::Finger);
+    MWindow::mainWindow()->touchBegin(evt, nullptr);
 }
 
 extern "C" JNIEXPORT JNICALL void
 Java_src_app_mini_MAndrdMainActivity_windowTouchMove(JNIEnv *, jclass, jfloat x, jfloat y) {
-    MWindow::mainWindow()->touchMovePixel(x, y);
+    auto evt = MTouch::makeMovePixel(x, y, MTouchSource::Finger);
+    MWindow::mainWindow()->touchMove(evt);
 }
 
 extern "C" JNIEXPORT JNICALL void
 Java_src_app_mini_MAndrdMainActivity_windowTouchEnd(JNIEnv *, jclass, jfloat x, jfloat y) {
-    MWindow::mainWindow()->touchEndPixel(x, y);
+    auto evt = MTouch::makeEndPixel(x, y, MTouchSource::Finger);
+    MWindow::mainWindow()->touchEnd(evt);
 }
 
 extern "C" JNIEXPORT JNICALL void
-Java_src_app_mini_MAndrdMainActivity_windowWrite(JNIEnv *, jclass, jstring jText, jboolean enter) {
-    MWindow::mainWindow()->write(m_cpp_string << jText, enter);
+Java_src_app_mini_MAndrdMainActivity_windowKeyEnter(JNIEnv *, jclass) {
+    auto evt = MKbKey::make(MKbKeyCode::Enter, 0);
+    MWindow::mainWindow()->kbKey(evt);
+}
+
+extern "C" JNIEXPORT JNICALL void
+Java_src_app_mini_MAndrdMainActivity_windowWriting(JNIEnv *, jclass, jstring jText) {
+    auto evt = MWriting::make(m_cpp_string << jText);
+    MWindow::mainWindow()->writing(evt);
 }
 
 extern "C" JNIEXPORT JNICALL jboolean
