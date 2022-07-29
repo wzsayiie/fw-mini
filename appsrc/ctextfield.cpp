@@ -95,8 +95,8 @@ void CTextField::onWriting(const std::string &text) {
 
 void CTextField::onControlKbKey(MKbKeyCode code) {
     if (code == MKbKeyCode::Enter) {
-        //to end editing.
-        transferFocusControl();
+        mEntered = true;
+        transferFocusToAny();
     }
 }
 
@@ -145,6 +145,12 @@ void CTextField::onDraw(float width, float height) {
 
 void CTextField::increaseEditingSender() {
     mEditingSenders += 1;
+
+    if (mEditingSenders == 1) {
+        //NOTE: reset "entered" flag.
+        mEntered = false;
+        delegate()->editingBegin();
+    }
 }
 
 void CTextField::sendEditing() {
@@ -156,21 +162,13 @@ void CTextField::sendEditing() {
     }
 
     mLastText = mText;
-
-    //NOTE: firstly emit "editing begin".
-    if (!mEditingBegan) {
-        mEditingBegan = true;
-        delegate()->editingBegin();
-    }
-
     delegate()->textChange();
 }
 
 void CTextField::reduceEditingSender() {
     mEditingSenders -= 1;
 
-    if (mEditingSenders == 0 && mEditingBegan) {
+    if (mEditingSenders == 0) {
         delegate()->editingEnd();
-        mEditingBegan = false;
     }
 }

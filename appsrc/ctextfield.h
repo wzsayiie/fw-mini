@@ -74,6 +74,5 @@ private:
 
     std::string mLastText        ;
     int         mEditingSenders  = 0;
-    bool        mEditingBegan    = false;
     double      mCursorBeginTick = 0;
 };
