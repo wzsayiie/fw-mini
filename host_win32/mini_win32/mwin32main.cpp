@@ -285,7 +285,7 @@ static void OnLButtonDown(HWND wnd, WPARAM wParam, LPARAM lParam)
     //touch event:
     auto touchEvent = MTouch::makeBeginPixel(x, y, MTouchSource::LButton);
     auto kbKeyEvent = MKbKey::make(MKbKeyCode::Null, GetModifiers());
-    MWindow::mainWindow()->touchBegin(touchEvent, kbKeyEvent);
+    MWindow::mainWindow()->touch(touchEvent, kbKeyEvent);
 
     sLButtonDowned = true;
     //NOTE: to capture events when the mouse moves outside the window.
@@ -311,7 +311,7 @@ static void OnMouseMove(HWND wnd, WPARAM wParam, LPARAM lParam)
     if (sLButtonDowned)
     {
         auto touchEvent = MTouch::makeMovePixel(x, y, MTouchSource::LButton);
-        MWindow::mainWindow()->touchMove(touchEvent);
+        MWindow::mainWindow()->touch(touchEvent, nullptr);
     }
 }
 
@@ -332,7 +332,7 @@ static void OnLButtonUp(HWND wnd, WPARAM wParam, LPARAM lParam)
 
     //touch event:
     auto touchEvent = MTouch::makeEndPixel(x, y, MTouchSource::LButton);
-    MWindow::mainWindow()->touchEnd(touchEvent);
+    MWindow::mainWindow()->touch(touchEvent, nullptr);
 
     sLButtonDowned = false;
     ReleaseCapture();

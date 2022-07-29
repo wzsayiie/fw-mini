@@ -65,31 +65,29 @@ void MWindow::draw() {
     onDraw(mSize->width(), mSize->height());
 }
 
-define_reflectable_class_function(MWindow, touchBegin, "args:evt,with")
-void MWindow::touchBegin(const MTouch::ptr &evt, const MKbKey::ptr &with) {
-    //touch begin event can be accompanied by keyboard modifiers,
-    //by this way applications can be more expressive.
-    MResetCurrentKbKey(with);
-    MResetCurrentTouch(evt);
+define_reflectable_class_function(MWindow, touch, "args:evt,key")
+void MWindow::touch(const MTouch::ptr &evt, const MKbKey::ptr &key) {
+    if (evt->step() == MTouchStep::Begin) {
+        //touch begin event can be accompanied by keyboard modifiers,
+        //by this way applications can be more expressive.
+        MResetCurrentKbKey(key);
+        MResetCurrentTouch(evt);
 
-    onTouchBegin(evt->x(), evt->y());
+        onTouchBegin(evt->x(), evt->y());
 
-    MResetCurrentKbKey(nullptr);
-    MResetCurrentTouch(nullptr);
-}
-
-define_reflectable_class_function(MWindow, touchMove, "args:evt")
-void MWindow::touchMove(const MTouch::ptr &evt) {
-    MResetCurrentTouch(evt);
-    onTouchMove(evt->x(), evt->y());
-    MResetCurrentTouch(nullptr);
-}
-
-define_reflectable_class_function(MWindow, touchEnd, "args:evt")
-void MWindow::touchEnd(const MTouch::ptr &evt) {
-    MResetCurrentTouch(evt);
-    onTouchEnd(evt->x(), evt->y());
-    MResetCurrentTouch(nullptr);
+        MResetCurrentKbKey(nullptr);
+        MResetCurrentTouch(nullptr);
+        
+    } else if (evt->step() == MTouchStep::Move) {
+        MResetCurrentTouch(evt);
+        onTouchMove(evt->x(), evt->y());
+        MResetCurrentTouch(nullptr);
+        
+    } else if (evt->step() == MTouchStep::End) {
+        MResetCurrentTouch(evt);
+        onTouchEnd(evt->x(), evt->y());
+        MResetCurrentTouch(nullptr);
+    }
 }
 
 define_reflectable_class_function(MWindow, mouseMove, "args:evt")

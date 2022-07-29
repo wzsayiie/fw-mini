@@ -20,10 +20,7 @@ public:
     M_HOST_CALL void resizePixel(float pixelW, float pixelH);
     M_HOST_CALL void draw();
 
-    M_HOST_CALL void touchBegin(const MTouch::ptr &evt, const MKbKey::ptr &with);
-    M_HOST_CALL void touchMove (const MTouch::ptr &evt);
-    M_HOST_CALL void touchEnd  (const MTouch::ptr &evt);
-
+    M_HOST_CALL void touch     (const MTouch::ptr      &evt, const MKbKey::ptr &key);
     M_HOST_CALL void mouseMove (const MMouseMove::ptr  &evt);
     M_HOST_CALL void mouseWheel(const MMouseWheel::ptr &evt);
     M_HOST_CALL void kbKey     (const MKbKey::ptr      &evt);

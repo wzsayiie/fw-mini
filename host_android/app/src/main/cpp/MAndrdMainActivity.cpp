@@ -51,19 +51,19 @@ Java_src_app_mini_MAndrdMainActivity_windowHide(JNIEnv *, jclass) {
 extern "C" JNIEXPORT JNICALL void
 Java_src_app_mini_MAndrdMainActivity_windowTouchBegin(JNIEnv *, jclass, jfloat x, jfloat y) {
     auto evt = MTouch::makeBeginPixel(x, y, MTouchSource::Finger);
-    MWindow::mainWindow()->touchBegin(evt, nullptr);
+    MWindow::mainWindow()->touch(evt, nullptr);
 }
 
 extern "C" JNIEXPORT JNICALL void
 Java_src_app_mini_MAndrdMainActivity_windowTouchMove(JNIEnv *, jclass, jfloat x, jfloat y) {
     auto evt = MTouch::makeMovePixel(x, y, MTouchSource::Finger);
-    MWindow::mainWindow()->touchMove(evt);
+    MWindow::mainWindow()->touch(evt, nullptr);
 }
 
 extern "C" JNIEXPORT JNICALL void
 Java_src_app_mini_MAndrdMainActivity_windowTouchEnd(JNIEnv *, jclass, jfloat x, jfloat y) {
     auto evt = MTouch::makeEndPixel(x, y, MTouchSource::Finger);
-    MWindow::mainWindow()->touchEnd(evt);
+    MWindow::mainWindow()->touch(evt, nullptr);
 }
 
 extern "C" JNIEXPORT JNICALL void
