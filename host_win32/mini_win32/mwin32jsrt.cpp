@@ -199,7 +199,7 @@ reflect::any MWin32JsVM::getCppValue(JsValueRef jsValue)
 
 void MWin32JsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func)
 {
-    auto funcId = (int64_t)mNativeFunctions.size();
+    auto funcId = (intptr_t)mNativeFunctions.size();
     mNativeFunctions[funcId] = func;
 
     //function key.
@@ -252,7 +252,7 @@ JsValueRef MWin32JsVM::onCallNativeFunction(
     auto jsVM = (MWin32JsVM *)instance();
 
     //function.
-    auto funcId = (int64_t)custom;
+    auto funcId = (intptr_t)custom;
     MBaseFunction::ptr func = jsVM->mNativeFunctions[funcId];
 
     //argument:

@@ -23,10 +23,10 @@ protected:
     void onEvaluate(const std::string &name, const std::string &script) override;
 
 private:
-    static JsValueRef onCallNativeFunction(
+    static JsValueRef CALLBACK onCallNativeFunction(
         JsValueRef callee, bool isConstruct, JsValueRef *args, USHORT argc, void *custom);
 
-    static void onCollectJsObject(JsRef value, void *custom);
+    static void CALLBACK onCollectJsObject(JsRef value, void *custom);
 
 private:
     JsRuntimeHandle mRuntime = JS_INVALID_RUNTIME_HANDLE;
