@@ -149,10 +149,10 @@ CView::ptr CViewController::view() {
 }
 
 define_reflectable_class_function(CViewController, findResponder, "virtual;args:evt,pt")
-CResponder::ptr CViewController::findResponder(MEvent event, const MPoint::ptr &pt) {
-    implement_injectable_function(CResponder::ptr, event, pt)
+CResponder::ptr CViewController::findResponder(MEvent evt, const MPoint::ptr &pt) {
+    implement_injectable_function(CResponder::ptr, evt, pt)
 
-    return view()->findResponder(event, pt);
+    return view()->findResponder(evt, pt);
 }
 
 define_reflectable_class_function(CViewController, existResponder, "virtual;args:responder")

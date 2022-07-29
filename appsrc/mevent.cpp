@@ -190,11 +190,11 @@ static dash::lazy<MMouseWheel::ptr> sMouseWheel;
 static dash::lazy<MKbKey::ptr     > sKbKey     ;
 static dash::lazy<MWriting::ptr   > sWriting   ;
 
-define_reflectable_function(MResetCurrentTouch     , "args:event")
-define_reflectable_function(MResetCurrentMouseMove , "args:event")
-define_reflectable_function(MResetCurrentMouseWheel, "args:event")
-define_reflectable_function(MResetCurrentKbKey     , "args:event")
-define_reflectable_function(MResetCurrentWriting   , "args:event")
+define_reflectable_function(MResetCurrentTouch     , "args:evt")
+define_reflectable_function(MResetCurrentMouseMove , "args:evt")
+define_reflectable_function(MResetCurrentMouseWheel, "args:evt")
+define_reflectable_function(MResetCurrentKbKey     , "args:evt")
+define_reflectable_function(MResetCurrentWriting   , "args:evt")
 
 void MResetCurrentTouch     (const MTouch::ptr      &evt) { sTouch      = evt; }
 void MResetCurrentMouseMove (const MMouseMove::ptr  &evt) { sMouseMove  = evt; }
