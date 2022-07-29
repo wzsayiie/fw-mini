@@ -7,9 +7,12 @@ protected:
 };
 
 static void Launch() m_app_launch(Launch) {
-    auto controller = MainViewController::create();
-    auto mainWindow = CWindow::create();
-    
-    mainWindow->setRootViewController(controller);
-    mainWindow->makeMainWindow();
+    auto mainPage = MainViewController::create();
+
+    auto navigator = CNavigationController::create();
+    navigator->pushPage(mainPage);
+
+    auto window = CWindow::create();
+    window->setRootViewController(navigator);
+    window->makeMainWindow();
 }

@@ -25,9 +25,21 @@ public:
     void setDelegation(const CNavigationControllerDelegation::ptr &delegation);
     CNavigationControllerDelegation::ptr delegation();
     
-    void pushPageController (const CViewController::ptr &controller);
-    void popToPageController(const CViewController::ptr &controller);
-    void popPageController  ();
+    void pushPage (const CViewController::ptr &page);
+    void popToPage(const CViewController::ptr &page);
+    void popPage  ();
     
-    CViewController::ptr topPageController();
+    CViewController::ptr topPage();
+
+protected:
+    void onViewLoad() override;
+
+private:
+    void layoutPages();
+    void showPage(const CViewController::ptr &page);
+    void hidePage(const CViewController::ptr &page);
+
+private:
+    CNavigationControllerDelegation::ptr mDelegation;
+    MVector<CViewController::ptr>::ptr mPages;
 };

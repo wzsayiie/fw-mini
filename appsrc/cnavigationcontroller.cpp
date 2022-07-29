@@ -22,30 +22,125 @@ void CNavigationControllerDelegation::pagesChange() {
 //navigation controller:
 
 CNavigationController::CNavigationController() {
+    mPages = MVector<CViewController::ptr>::create();
 }
 
 define_reflectable_class_function(CNavigationController, setDelegation, "setter:args:delegation")
 void CNavigationController::setDelegation(const CNavigationControllerDelegation::ptr &delegation) {
+    mDelegation = delegation;
 }
 
 define_reflectable_class_function(CNavigationController, delegation, "getter")
 CNavigationControllerDelegation::ptr CNavigationController::delegation() {
+    if (!mDelegation) {
+        mDelegation = CNavigationControllerDelegation::create();
+    }
+    return mDelegation;
+}
+
+define_reflectable_class_function(CNavigationController, pushPage, "args:page")
+void CNavigationController::pushPage(const CViewController::ptr &page) {
+    if (!page) {
+        return;
+    }
+
+    auto it = std::find(mPages->begin(), mPages->end(), page);
+    if (it != mPages->end()) {
+        return;
+    }
+
+    //hide old top.
+    if (!mPages->empty()) {
+        hidePage(mPages->back());
+    }
+
+    //show new top.
+    mPages->push_back(page);
+    page->setNavigationController(me());
+    showPage(page);
+
+    //emit event.
+    delegation()->pagesChange();
+}
+
+define_reflectable_class_function(CNavigationController, popToPage, "args:page")
+void CNavigationController::popToPage(const CViewController::ptr &page) {
+    if (!page) {
+        return;
+    }
+
+    auto handle = std::find(mPages->begin(), mPages->end(), page);
+    if (handle == mPages->end() || *handle == mPages->back()) {
+        return;
+    }
+
+    //remove unused pages and old top:
+    for (auto it = handle + 1; it != mPages->end(); ++it) {
+        (*it)->setNavigationController(nullptr);
+    }
+
+    CViewController::ptr top = mPages->back();
+    mPages->erase(handle + 1, mPages->end());
+
+    hidePage(top);
+
+    //show new top.
+    showPage(*handle);
+
+    //emit event.
+    delegation()->pagesChange();
+}
+
+define_reflectable_class_function(CNavigationController, popPage)
+void CNavigationController::popPage() {
+    //remove old top.
+    if (!mPages->empty()) {
+        CViewController::ptr top = mPages->back();
+        mPages->pop_back();
+
+        top->setNavigationController(nullptr);
+        hidePage(top);
+    }
+
+    //show new top.
+    if (!mPages->empty()) {
+        CViewController::ptr top = mPages->back();
+        showPage(top);
+    }
+
+    //emit event.
+    delegation()->pagesChange();
+}
+
+define_reflectable_class_function(CNavigationController, topPage, "getter")
+CViewController::ptr CNavigationController::topPage() {
+    if (!mPages->empty()) {
+        return mPages->back();
+    }
     return nullptr;
 }
 
-define_reflectable_class_function(CNavigationController, pushPageController, "args:controller")
-void CNavigationController::pushPageController(const CViewController::ptr &controller) {
+void CNavigationController::onViewLoad() {
+    view()->setLayoutDelegation(MF(this, &CNavigationController::layoutPages));
 }
 
-define_reflectable_class_function(CNavigationController, popToPageController, "args:controller")
-void CNavigationController::popToPageController(const CViewController::ptr &controller) {
+void CNavigationController::layoutPages() {
+    if (!mPages->empty()) {
+        CViewController::ptr top = mPages->back();
+        top->view()->setFrame(view()->bounds());
+    }
 }
 
-define_reflectable_class_function(CNavigationController, popPageController)
-void CNavigationController::popPageController() {
+void CNavigationController::showPage(const CViewController::ptr &page) {
+    addChildController(page);
 }
 
-define_reflectable_class_function(CNavigationController, topPageController, "getter")
-CViewController::ptr CNavigationController::topPageController() {
-    return nullptr;
+void CNavigationController::hidePage(const CViewController::ptr &page) {
+    //NOTE: resign focus if needed.
+    CResponder::ptr focus = CResponder::focusResponder();
+    if (page->existResponder(focus)) {
+        focus->resignFocusResponder();
+    }
+
+    page->removeFromParentController();
 }
