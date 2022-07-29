@@ -38,24 +38,65 @@ std::string CControl::controlId() {
 }
 
 define_reflectable_class_function(CControl, setPreviousControl, "setter;args:iden")
-define_reflectable_class_function(CControl, setNextControl    , "setter;args:iden")
+void CControl::setPreviousControl(const std::string &iden) {
+    attachControl(&mPreviousControl, iden);
+}
 
-void CControl::setPreviousControl(const std::string &iden) { setControl(&mPreviousControl, iden); }
-void CControl::setNextControl    (const std::string &iden) { setControl(&mNextControl    , iden); }
+define_reflectable_class_function(CControl, setNextControl, "setter;args:iden")
+void CControl::setNextControl(const std::string &iden) {
+    attachControl(&mNextControl, iden);
+}
 
 define_reflectable_class_function(CControl, previousControl, "getter")
-define_reflectable_class_function(CControl, nextControl    , "getter")
+std::string CControl::previousControl() {
+    CControl *control = checkControl(&mPreviousControl);
+    if (control) {
+        return control->controlId();
+    }
+    return "";
+}
 
-std::string CControl::previousControl() { return controlIdOf(&mPreviousControl); }
-std::string CControl::nextControl    () { return controlIdOf(&mNextControl    ); }
+define_reflectable_class_function(CControl, nextControl, "getter")
+std::string CControl::nextControl() {
+    CControl *control = checkControl(&mNextControl);
+    if (control) {
+        return control->controlId();
+    }
+    return "";
+}
 
-define_reflectable_class_function(CControl, transferFocusControl)
-void CControl::transferFocusControl() {
-    transfer({ &mNextControl, &mPreviousControl });
+define_reflectable_class_function(CControl, transferFocusToPrevious)
+void CControl::transferFocusToPrevious() {
+    CControl *previous = checkControl(&mPreviousControl);
+    if (previous) {
+        previous->becomeFocusResponder();
+    }
+}
 
-    //abandon the focus if it has not been transferred.
-    if (isFocusResponder()) {
-        resignFocusResponder();
+define_reflectable_class_function(CControl, transferFocusToNext)
+void CControl::transferFocusToNext() {
+    CControl *next = checkControl(&mNextControl);
+    if (next) {
+        next->becomeFocusResponder();
+    }
+}
+
+define_reflectable_class_function(CControl, transferFocusToAny)
+void CControl::transferFocusToAny() {
+    //try transferring to next:
+    CControl *next = checkControl(&mNextControl);
+    if (next) {
+        next->becomeFocusResponder();
+    }
+
+    if (next && next->isFocusResponder()) {
+        return;
+    }
+
+    //try transferring to previous.
+    CControl *previous = checkControl(&mPreviousControl);
+    if (previous) {
+        previous->becomeFocusResponder();
     }
 }
 
@@ -78,10 +119,10 @@ void CControl::onKbKey(MKbKeyCode code) {
     if (code == MKbKeyCode::Tab) {
         MKbKey::ptr key = MCurrentKbKey();
 
-        if (key->modifiers() == MKbModifier_Shift) {
-            transfer({ &mPreviousControl });
-        } else if (key->modifiers() == 0) {
-            transfer({ &mNextControl });
+        if (key->modifiers() & MKbModifier_Shift) {
+            transferFocusToPrevious();
+        } else {
+            transferFocusToAny();
         }
 
     } else {
@@ -95,10 +136,10 @@ void CControl::onControlKbKey(MKbKeyCode code) {
     implement_injectable_function(void, code)
 }
 
-void CControl::setControl(CControl **target, const std::string &iden) {
+void CControl::attachControl(CControl **target, const std::string &iden) {
     auto it = sMap->find(iden);
 
-    //NOTE: record the reference to the control instead of id. cause id may change.
+    //NOTE: record the reference to the control instead of id. because id may changes.
     if (it != sMap->end() && it->second != this) {
         *target = it->second;
     } else {
@@ -106,33 +147,15 @@ void CControl::setControl(CControl **target, const std::string &iden) {
     }
 }
 
-std::string CControl::controlIdOf(CControl **target) {
+CControl *CControl::checkControl(CControl **target) {
     if (!*target) {
-        return "";
+        return nullptr;
     }
 
     //the control has been released.
     if (sSet->find(*target) == sSet->end()) {
         *target = nullptr;
-        return "";
     }
 
-    return (*target)->controlId();
-}
-
-void CControl::transfer(const std::initializer_list<CControl **> &targets) {
-    for (auto &target : targets) {
-        if (!*target) {
-            continue;
-        }
-
-        //the control has been released.
-        if (sSet->find(*target) == sSet->end()) {
-            *target = nullptr;
-            continue;
-        }
-        
-        (*target)->becomeFocusResponder();
-        break;
-    }
+    return *target;
 }
