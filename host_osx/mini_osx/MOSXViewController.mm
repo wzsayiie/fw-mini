@@ -94,63 +94,116 @@ const CGFloat TextFieldHeight   =  20;
     self.window->resizePixel(size.width, size.height);
 }
 
-- (void)handleMouseMove:(NSEvent *)event func:(void (MWindow::*)(float x, float y))func {
+- (void)handleMouse:(NSEvent *)event step:(char)step {
     NSRect  bounds = self.view.bounds;
     NSPoint fromBL = [event locationInWindow];
     NSPoint fromUL = NSMakePoint(fromBL.x, bounds.size.height - fromBL.y);
     
-    //on windows, if the mouse is moved out of the window, the mouse move message will not be received.
+    //mouse move event.
+    //NOTE: on windows, if the mouse is moved out of the window, the mouse move message will not be received.
     //here is to ensure consistency across platforms.
     if (NSPointInRect(fromUL, bounds)) {
-        self.window->mouseMovePixel(fromUL.x, fromUL.y);
+        auto mouse = MMouseMove::makePixel(fromUL.x, fromUL.y);
+        self.window->mouseMove(mouse);
     }
     
-    if (func) {
-        (self.window->*func)(fromUL.x, fromUL.y);
+    //touch event:
+    MTouch::ptr touch;
+    switch (step) {
+        case 'B': touch = MTouch::makeBeginPixel(fromUL.x, fromUL.y, MTouchSource::LButton); break;
+        case 'M': touch = MTouch::makeMovePixel (fromUL.x, fromUL.y, MTouchSource::LButton); break;
+        case 'E': touch = MTouch::makeEndPixel  (fromUL.x, fromUL.y, MTouchSource::LButton); break;
     }
+    if (!touch) {
+        return;
+    }
+    
+    MKbKey::ptr kbKey;
+    switch (step) {
+        case 'B': kbKey = MKbKey::make(MKbKeyCode::Null, [self modifiersOfEvent:event]); break;
+    }
+    
+    self.window->touch(touch, kbKey);
 }
 
-- (void)mouseDown   :(NSEvent *)event { [self handleMouseMove:event func:&MWindow::touchBeginPixel]; }
-- (void)mouseDragged:(NSEvent *)event { [self handleMouseMove:event func:&MWindow::touchMovePixel ]; }
-- (void)mouseUp     :(NSEvent *)event { [self handleMouseMove:event func:&MWindow::touchEndPixel  ]; }
-- (void)mouseMoved  :(NSEvent *)event { [self handleMouseMove:event func:nullptr                  ]; }
+- (void)mouseDown   :(NSEvent *)event { [self handleMouse:event step:'B']; }
+- (void)mouseDragged:(NSEvent *)event { [self handleMouse:event step:'M']; }
+- (void)mouseUp     :(NSEvent *)event { [self handleMouse:event step:'E']; }
+- (void)mouseMoved  :(NSEvent *)event { [self handleMouse:event step:'_']; }
 
 - (void)scrollWheel:(NSEvent *)event {
+    NSRect  bounds = self.view.bounds;
+    NSPoint fromBL = [event locationInWindow];
+    NSPoint fromUL = NSMakePoint(fromBL.x, bounds.size.height - fromBL.y);
+    
     //the value representation of the mouse wheel change is different on different platforms.
     //here is experience value.
-    self.window->mouseWheel(event.deltaY * 20);
+    CGFloat delta = event.deltaY * 20;
+    
+    auto evt = MMouseWheel::makePixel(fromUL.x, fromUL.y, delta);
+    self.window->mouseWheel(evt);
 }
 
 - (NSEvent *)keyboardKeyDown:(NSEvent *)event {
-    //text field process.
     if (!self.textField.hidden) {
-        if (event.keyCode == kVK_Return) {
-            [self makeControlTextEnter];
+        //text field key event:
+        MKbKeyCode code = MKbKeyCode::Null;
+        switch (event.keyCode) {
+            case kVK_Tab   : code = MKbKeyCode::Tab  ; break;
+            case kVK_Return: code = MKbKeyCode::Enter; break;
+        }
+        
+        if (code != MKbKeyCode::Null) {
+            auto evt = MKbKey::make(code, [self modifiersOfEvent:event]);
+            self.window->kbKey(evt);
             return nil;
+            
         } else {
             //the event needs to continue processing.
             return event;
         }
-    }
-    
-    //keyboard process.
-    switch (event.keyCode) {
-        case kVK_Delete    : self.window->key(MKey::Back ); break;
-        case kVK_Tab       : self.window->key(MKey::Tab  ); break;
-        case kVK_Return    : self.window->key(MKey::Enter); break;
-        case kVK_Space     : self.window->key(MKey::Space); break;
-            
-        case kVK_LeftArrow : self.window->key(MKey::Left ); break;
-        case kVK_UpArrow   : self.window->key(MKey::Up   ); break;
-        case kVK_RightArrow: self.window->key(MKey::Right); break;
-        case kVK_DownArrow : self.window->key(MKey::Down ); break;
         
-        case kVK_ANSI_A    : self.window->key(MKey::A    ); break;
-        case kVK_ANSI_D    : self.window->key(MKey::D    ); break;
-        case kVK_ANSI_S    : self.window->key(MKey::S    ); break;
-        case kVK_ANSI_W    : self.window->key(MKey::W    ); break;
+    } else {
+        //key event:
+        MKbKeyCode code = MKbKeyCode::Null;
+        switch (event.keyCode) {
+            case kVK_Delete    : code = MKbKeyCode::Back ; break;
+            case kVK_Tab       : code = MKbKeyCode::Tab  ; break;
+            case kVK_Return    : code = MKbKeyCode::Enter; break;
+            case kVK_Space     : code = MKbKeyCode::Space; break;
+
+            case kVK_LeftArrow : code = MKbKeyCode::Left ; break;
+            case kVK_UpArrow   : code = MKbKeyCode::Up   ; break;
+            case kVK_RightArrow: code = MKbKeyCode::Right; break;
+            case kVK_DownArrow : code = MKbKeyCode::Down ; break;
+
+            case kVK_ANSI_A    : code = MKbKeyCode::A    ; break;
+            case kVK_ANSI_D    : code = MKbKeyCode::D    ; break;
+            case kVK_ANSI_S    : code = MKbKeyCode::S    ; break;
+            case kVK_ANSI_W    : code = MKbKeyCode::W    ; break;
+        }
+        
+        if (code != MKbKeyCode::Null) {
+            auto evt = MKbKey::make(code, [self modifiersOfEvent:event]);
+            self.window->kbKey(evt);
+            return nil;
+            
+        } else {
+            return nil;
+        }
     }
-    return nil;
+}
+
+- (MKbModifiers)modifiersOfEvent:(NSEvent *)event {
+    MKbModifiers modifiers = 0;
+    
+    if (event.modifierFlags & NSEventModifierFlagOption  ) { modifiers |= MKbModifier_Alt  ; }
+    if (event.modifierFlags & NSEventModifierFlagCapsLock) { modifiers |= MKbModifier_Caps ; }
+    if (event.modifierFlags & NSEventModifierFlagCommand ) { modifiers |= MKbModifier_Cmd  ; }
+    if (event.modifierFlags & NSEventModifierFlagControl ) { modifiers |= MKbModifier_Ctrl ; }
+    if (event.modifierFlags & NSEventModifierFlagShift   ) { modifiers |= MKbModifier_Shift; }
+    
+    return modifiers;
 }
 
 - (void)updateTextFieldFrame {
@@ -179,14 +232,11 @@ const CGFloat TextFieldHeight   =  20;
     }
 }
 
-- (void)makeControlTextEnter {
-    std::string text(self.textField.stringValue.UTF8String);
-    self.window->write(text, true);
-}
-
 - (void)controlTextDidChange:(NSNotification *)notification {
     std::string text(self.textField.stringValue.UTF8String);
-    self.window->write(text, false);
+    
+    auto evt = MWriting::make(text);
+    self.window->writing(evt);
 }
 
 @end
