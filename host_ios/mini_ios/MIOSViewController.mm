@@ -4,14 +4,11 @@
 #import "MMACImageFactory.h"
 #import "MMACJavaScriptCore.h"
 
-const CGFloat TextFieldWidth  = 300;
-const CGFloat TextFieldHeight =  30;
-
 @implementation MIOSViewController
 
 - (UITextField *)textField {
     if (!_textField) {
-        _textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, TextFieldWidth, TextFieldHeight)];
+        _textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
         _textField.layer.masksToBounds = YES;
         _textField.layer.cornerRadius = 5;
         _textField.layer.borderWidth = 1;
@@ -96,15 +93,22 @@ const CGFloat TextFieldHeight =  30;
     self.window->resizePixel(size.width, size.height);
 }
 
-- (void)touches:(NSSet<UITouch *> *)touches func:(void (MWindow::*)(float x, float y))func {
+- (void)touches:(NSSet<UITouch *> *)touches step:(char)step {
     CGPoint point = [touches.anyObject locationInView:self.view];
-    (self.window->*func)(point.x, point.y);
+    
+    MTouch::ptr evt;
+    switch (step) {
+        case 'B': evt = MTouch::makeBeginPixel(point.x, point.y, MTouchSource::Finger); break;
+        case 'M': evt = MTouch::makeMovePixel (point.x, point.y, MTouchSource::Finger); break;
+        case 'E': evt = MTouch::makeEndPixel  (point.x, point.y, MTouchSource::Finger); break;
+    }
+    self.window->touch(evt, nullptr);
 }
 
-- (void)touchesBegan    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:&MWindow::touchBeginPixel]; }
-- (void)touchesMoved    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:&MWindow::touchMovePixel ]; }
-- (void)touchesEnded    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:&MWindow::touchEndPixel  ]; }
-- (void)touchesCancelled:(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t func:&MWindow::touchEndPixel  ]; }
+- (void)touchesBegan    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t step:'B']; }
+- (void)touchesMoved    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t step:'M']; }
+- (void)touchesEnded    :(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t step:'E']; }
+- (void)touchesCancelled:(NSSet<UITouch *> *)t withEvent:(UIEvent *)e { [self touches:t step:'E']; }
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     CGRect rect = [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -144,12 +148,15 @@ const CGFloat TextFieldHeight =  30;
 
 - (void)textFieldDidChangeSelection:(UITextField *)textField {
     std::string text(textField.text.UTF8String);
-    self.window->write(text, false);
+    
+    auto evt = MWriting::make(text);
+    self.window->writing(evt);
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    std::string text(textField.text.UTF8String);
-    self.window->write(text, true);
+    auto evt = MKbKey::make(MKbKeyCode::Enter, 0);
+    self.window->kbKey(evt);
+    
     return YES;
 }
 

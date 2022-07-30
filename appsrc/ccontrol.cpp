@@ -83,12 +83,11 @@ void CControl::transferFocusToNext() {
 
 define_reflectable_class_function(CControl, transferFocusToAny)
 void CControl::transferFocusToAny() {
-    //try transferring to next:
+    //try transferring to next.
     CControl *next = checkControl(&mNextControl);
     if (next) {
         next->becomeFocusResponder();
     }
-
     if (next && next->isFocusResponder()) {
         return;
     }
@@ -98,6 +97,12 @@ void CControl::transferFocusToAny() {
     if (previous) {
         previous->becomeFocusResponder();
     }
+    if (previous && previous->isFocusResponder()) {
+        return;
+    }
+    
+    //discard focus.
+    resignFocusResponder();
 }
 
 void CControl::onDrawForeground(float width, float height) {
