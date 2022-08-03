@@ -100,8 +100,8 @@ public:
         
         commit_class(cls_type.str(), cls_type);
         commit_class_inst_function(cls_type, name, fcn_type, function<Ret (const typename Class::ptr &, Args...)>::create(
-            [=](const typename Class::ptr &self, Args... args) {
-                return (self.get()->*fcn)(args...);
+            [=](const typename Class::ptr &thisArg, Args... args) {
+                return (thisArg.get()->*fcn)(args...);
             }
         ));
     }
