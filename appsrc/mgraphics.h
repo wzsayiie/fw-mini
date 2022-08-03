@@ -96,21 +96,21 @@ public:
     static const int BrownRGBA     = 0xE29C45ff;
     static const int ClearRGBA     = 0x00000000;
 
-    static const MColor::ptr &blackColor    ();
-    static const MColor::ptr &darkGrayColor ();
-    static const MColor::ptr &grayColor     ();
-    static const MColor::ptr &lightGrayColor();
-    static const MColor::ptr &whiteColor    ();
-    static const MColor::ptr &redColor      ();
-    static const MColor::ptr &greenColor    ();
-    static const MColor::ptr &blueColor     ();
-    static const MColor::ptr &cyanColor     ();
-    static const MColor::ptr &yellowColor   ();
-    static const MColor::ptr &magentaColor  ();
-    static const MColor::ptr &orangeColor   ();
-    static const MColor::ptr &purpleColor   ();
-    static const MColor::ptr &brownColor    ();
-    static const MColor::ptr &clearColor    ();
+    static MColor::ptr blackColor    ();
+    static MColor::ptr darkGrayColor ();
+    static MColor::ptr grayColor     ();
+    static MColor::ptr lightGrayColor();
+    static MColor::ptr whiteColor    ();
+    static MColor::ptr redColor      ();
+    static MColor::ptr greenColor    ();
+    static MColor::ptr blueColor     ();
+    static MColor::ptr cyanColor     ();
+    static MColor::ptr yellowColor   ();
+    static MColor::ptr magentaColor  ();
+    static MColor::ptr orangeColor   ();
+    static MColor::ptr purpleColor   ();
+    static MColor::ptr brownColor    ();
+    static MColor::ptr clearColor    ();
 
 public:
     static MColor::ptr fromComs(float redCom, float greenCom, float blueCom, float alphaCom);
