@@ -16,10 +16,10 @@ class d_exportable base_set : public extends<base_set, object> {
 public:
     virtual void _insert(const any &v) = 0;
     virtual void _erase (const any &v) = 0;
+    virtual void _clear ()             = 0;
     
-    virtual bool _has(const any &v) const = 0;
-
-    virtual int _size() const = 0;
+    virtual bool _has (const any &v) const = 0;
+    virtual int  _size()             const = 0;
     
     virtual void _begin() = 0;
     virtual bool _on   () = 0;
@@ -49,8 +49,13 @@ public:
     void _insert(const any &v) override {
         this->insert(take<Value>::from(v));
     }
+
     void _erase(const any &v) override {
         this->erase(take<Value>::from(v));
+    }
+
+    void _clear() override {
+        this->clear();
     }
 
     bool _has(const any &v) const override {

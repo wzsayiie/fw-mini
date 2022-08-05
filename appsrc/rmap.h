@@ -16,10 +16,11 @@ class d_exportable base_map : public extends<base_map, object> {
 public:
     virtual void _insert(const any &k, const any &v) = 0;
     virtual void _erase (const any &k)               = 0;
+    virtual void _clear ()                           = 0;
     
-    virtual bool _has(const any &k) const = 0;
-
-    virtual int _size() const = 0;
+    virtual bool _has (const any &k) const = 0;
+    virtual any  _get (const any *k) const = 0;
+    virtual int  _size()             const = 0;
     
     virtual void _begin() = 0;
     virtual bool _on   () = 0;
@@ -55,12 +56,25 @@ public:
     void _insert(const any &k, const any &v) override {
         this->insert({ take<Key>::from(k), take<Value>::from(v) });
     }
+
     void _erase(const any &k) override {
         this->erase(take<Key>::from(k));
+    }
+
+    void _clear() override {
+        this->clear();
     }
     
     bool _has(const any &k) const override {
         return this->find(take<Key>::from(k)) != this->end();
+    }
+
+    any _get(const any &k) const override {
+        auto it = this->find(take<Key>::from(k));
+        if (it != this->end()) {
+            return *it;
+        }
+        return nullptr;
     }
 
     int _size() const override {

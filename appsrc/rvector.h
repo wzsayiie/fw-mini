@@ -14,15 +14,14 @@ template<> struct typeids_of<base_vector> {
 
 class d_exportable base_vector : public extends<base_vector, object> {
 public:
-    virtual void _insert(int i, const any &v) = 0;
-    virtual void _erase (int i)               = 0;
-
-    virtual void _push_back(const any &v) = 0;
-    virtual void _pop_back ()             = 0;
+    virtual void _insert   (int i, const any &v) = 0;
+    virtual void _erase    (int i)               = 0;
+    virtual void _push_back(const any &v)        = 0;
+    virtual void _pop_back ()                    = 0;
+    virtual void _clear    ()                    = 0;
     
     virtual int _size ()      const = 0;
     virtual any _at   (int i) const = 0;
-    virtual any _front()      const = 0;
     virtual any _back ()      const = 0;
 };
 
@@ -46,23 +45,48 @@ public:
 
 public:
     void _insert(int i, const any &v) override {
-        this->insert(this->begin() + i, take<Value>::from(v));
+        if (0 <= i && i <= (int)this->size()) {
+            this->insert(this->begin() + i, take<Value>::from(v));
+        }
     }
+    
     void _erase(int i) override {
-        this->erase(this->begin() + i);
+        if (0 <= i && i < (int)this->size()) {
+            this->erase(this->begin() + i);
+        }
     }
 
     void _push_back(const any &v) override {
         this->push_back(take<Value>::from(v));
     }
+
     void _pop_back() override {
-        this->pop_back();
+        if (!this->empty()) {
+            this->pop_back();
+        }
+    }
+
+    void _clear() override {
+        this->clear();
     }
     
-    int _size ()      const override { return (int)this->size(); }
-    any _at   (int i) const override { return this->at(i);       }
-    any _front()      const override { return this->front();     }
-    any _back ()      const override { return this->back();      }
+    int _size() const override {
+        return (int)this->size();
+    }
+
+    any _at(int i) const override {
+        if (0 <= i && i < (int)this->size()) {
+            return this->at(i);
+        }
+        return nullptr;
+    }
+
+    any _back() const override {
+        if (!this->empty()) {
+            return this->back();
+        }
+        return nullptr;
+    }
 };
 
 } //end reflect.
