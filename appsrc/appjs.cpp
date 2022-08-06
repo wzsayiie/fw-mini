@@ -1,5 +1,48 @@
 #include "minikit.h"
 
+//generic functions:
+
+static MBaseVector::ptr MVector_create(const std::string &vType) {
+    if (vType == "number") { return MVector<double     >::create(); }
+    if (vType == "string") { return MVector<std::string>::create(); }
+    
+    return nullptr;
+}
+
+static MBaseMap::ptr MMap_string_create(const std::string &vType) {
+    if (vType == "number") { return MMap<std::string, double     >::create(); }
+    if (vType == "string") { return MMap<std::string, std::string>::create(); }
+    
+    return nullptr;
+}
+
+static MBaseMap::ptr MMap_number_create(const std::string &vType) {
+    if (vType == "number") { return MMap<double, double     >::create(); }
+    if (vType == "string") { return MMap<double, std::string>::create(); }
+    
+    return nullptr;
+}
+
+static MBaseMap::ptr MMap_create(const std::string &kType, const std::string &vType) {
+    if (kType == "string") { return MMap_string_create(vType); }
+    if (kType == "number") { return MMap_number_create(vType); }
+    
+    return nullptr;
+}
+
+static MBaseSet::ptr MSet_create(const std::string &vType) {
+    if (vType == "number") { return MSet<double     >::create(); }
+    if (vType == "string") { return MSet<std::string>::create(); }
+    
+    return nullptr;
+}
+
+define_reflectable_function(MVector_create)
+define_reflectable_function(MMap_create   )
+define_reflectable_function(MSet_create   )
+
+//runtime functions:
+
 static void MSetObjectClassSymbol(const reflect::injectable::ptr &obj, const char *clsName) {
     if (obj) {
         reflect::symbol sym = reflect::symbol::make(clsName);
@@ -31,6 +74,8 @@ define_reflectable_function(MSetObjectClassSymbol, "args:obj,clsName")
 define_reflectable_function(MInjectClassFunction , "args:clsName,fcnName,func")
 define_reflectable_function(MMetaJsonDescription )
 define_reflectable_function(MGetOS)
+
+//virtual machine:
 
 static void OnException(const std::string &message) {
     MPrint(message);
