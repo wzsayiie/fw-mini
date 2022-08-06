@@ -19,7 +19,7 @@ public:
     virtual void _clear ()                           = 0;
     
     virtual bool _has (const any &k) const = 0;
-    virtual any  _get (const any *k) const = 0;
+    virtual any  _get (const any &k) const = 0;
     virtual int  _size()             const = 0;
     
     virtual void _begin() = 0;
@@ -72,7 +72,7 @@ public:
     any _get(const any &k) const override {
         auto it = this->find(take<Key>::from(k));
         if (it != this->end()) {
-            return *it;
+            return it->second;
         }
         return nullptr;
     }
