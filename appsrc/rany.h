@@ -16,6 +16,10 @@ enum class data_type {
     is_object,
 };
 
+template<> struct typeids_of<class any> {
+    static constexpr const void *value[] = { "any", nullptr };
+};
+
 class d_exportable any {
 public:
     any();
@@ -115,6 +119,18 @@ template<class Type> struct take {
     static Type from(const any &a) {
         static_assert(std::is_enum<Type>::value);
         return (Type)a.as_int();
+    }
+};
+
+//if is a any.
+template<> struct take<any> {
+    static any from(const any &a) {
+        return a;
+    }
+};
+template<> struct take<const any &> {
+    static any from(const any &a) {
+        return a;
     }
 };
 

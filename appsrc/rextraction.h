@@ -20,7 +20,10 @@ template<class Enum> struct extract {
 };
 
 //basic types:
+//basic types are built into the metadata, without calling the "commit" function.
 
+template<> struct extract<any                > { static symbol commit() { return symbol_of<any        >::value(); } };
+template<> struct extract<const any         &> { static symbol commit() { return symbol_of<any        >::value(); } };
 template<> struct extract<void               > { static symbol commit() { return symbol_of<void       >::value(); } };
 template<> struct extract<bool               > { static symbol commit() { return symbol_of<bool       >::value(); } };
 template<> struct extract<uint8_t            > { static symbol commit() { return symbol_of<uint8_t    >::value(); } };

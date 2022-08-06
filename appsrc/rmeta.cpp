@@ -109,6 +109,7 @@ const type_meta *query_type_meta(const symbol &sym, category cate) {
 const type_meta *query_type_meta(const symbol &sym) {
     static bool to_initialize = true;
     if (to_initialize) {
+        set_type_meta(symbol_of<any        >::value(), category::is_any   );
         set_type_meta(symbol_of<void       >::value(), category::is_void  );
         set_type_meta(symbol_of<bool       >::value(), category::is_bool  );
         set_type_meta(symbol_of<char       >::value(), category::is_char  );

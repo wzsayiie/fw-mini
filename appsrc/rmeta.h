@@ -7,6 +7,8 @@ namespace reflect {
 //type categories and qualifiers:
 
 enum class category {
+    is_any     ,    //reflect::any.
+    
     is_void    ,    //void.
     is_bool    ,    //bool.
     is_char    ,    //char.
