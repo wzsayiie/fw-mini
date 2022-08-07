@@ -11,14 +11,14 @@ static int  MVector_size     (const MBaseVector::ptr &a)                      { 
 static any  MVector_at       (const MBaseVector::ptr &a, int i)               { return a->_at  (i)   ; }
 static any  MVector_back     (const MBaseVector::ptr &a)                      { return a->_back( )   ; }
 
-define_reflectable_function(MVector_insert   )
-define_reflectable_function(MVector_erase    )
-define_reflectable_function(MVector_push_back)
-define_reflectable_function(MVector_pop_back )
-define_reflectable_function(MVector_clear    )
-define_reflectable_function(MVector_size     )
-define_reflectable_function(MVector_at       )
-define_reflectable_function(MVector_back     )
+define_reflectable_function(MVector_insert   , "ignore")
+define_reflectable_function(MVector_erase    , "ignore")
+define_reflectable_function(MVector_push_back, "ignore")
+define_reflectable_function(MVector_pop_back , "ignore")
+define_reflectable_function(MVector_clear    , "ignore")
+define_reflectable_function(MVector_size     , "ignore")
+define_reflectable_function(MVector_at       , "ignore")
+define_reflectable_function(MVector_back     , "ignore")
 
 static void MMap_insert(const MBaseMap::ptr &a, const any &k, const any &v) { a->_insert      (k, v); }
 static void MMap_erase (const MBaseMap::ptr &a, const any &k)               { a->_erase       (k)   ; }
@@ -32,17 +32,17 @@ static void MMap_next  (const MBaseMap::ptr &a)                             { a-
 static any  MMap_key   (const MBaseMap::ptr &a)                             { return a->_key  ( )   ; }
 static any  MMap_value (const MBaseMap::ptr &a)                             { return a->_value( )   ; }
 
-define_reflectable_function(MMap_insert)
-define_reflectable_function(MMap_erase )
-define_reflectable_function(MMap_clear )
-define_reflectable_function(MMap_has   )
-define_reflectable_function(MMap_get   )
-define_reflectable_function(MMap_size  )
-define_reflectable_function(MMap_begin )
-define_reflectable_function(MMap_on    )
-define_reflectable_function(MMap_next  )
-define_reflectable_function(MMap_key   )
-define_reflectable_function(MMap_value )
+define_reflectable_function(MMap_insert, "ignore")
+define_reflectable_function(MMap_erase , "ignore")
+define_reflectable_function(MMap_clear , "ignore")
+define_reflectable_function(MMap_has   , "ignore")
+define_reflectable_function(MMap_get   , "ignore")
+define_reflectable_function(MMap_size  , "ignore")
+define_reflectable_function(MMap_begin , "ignore")
+define_reflectable_function(MMap_on    , "ignore")
+define_reflectable_function(MMap_next  , "ignore")
+define_reflectable_function(MMap_key   , "ignore")
+define_reflectable_function(MMap_value , "ignore")
 
 static void MSet_insert(const MBaseSet::ptr &a, const any &v) { a->_insert      (v); }
 static void MSet_erase (const MBaseSet::ptr &a, const any &v) { a->_erase       (v); }
@@ -54,12 +54,12 @@ static bool MSet_on    (const MBaseSet::ptr &a)               { return a->_on   
 static void MSet_next  (const MBaseSet::ptr &a)               { a->_next        ( ); }
 static any  MSet_value (const MBaseSet::ptr &a)               { return a->_value( ); }
 
-define_reflectable_function(MSet_insert)
-define_reflectable_function(MSet_erase )
-define_reflectable_function(MSet_clear )
-define_reflectable_function(MSet_has   )
-define_reflectable_function(MSet_size  )
-define_reflectable_function(MSet_begin )
-define_reflectable_function(MSet_on    )
-define_reflectable_function(MSet_next  )
-define_reflectable_function(MSet_value )
+define_reflectable_function(MSet_insert, "ignore")
+define_reflectable_function(MSet_erase , "ignore")
+define_reflectable_function(MSet_clear , "ignore")
+define_reflectable_function(MSet_has   , "ignore")
+define_reflectable_function(MSet_size  , "ignore")
+define_reflectable_function(MSet_begin , "ignore")
+define_reflectable_function(MSet_on    , "ignore")
+define_reflectable_function(MSet_next  , "ignore")
+define_reflectable_function(MSet_value , "ignore")

@@ -37,9 +37,9 @@ static MBaseSet::ptr MSet_create(const std::string &vType) {
     return nullptr;
 }
 
-define_reflectable_function(MVector_create)
-define_reflectable_function(MMap_create   )
-define_reflectable_function(MSet_create   )
+define_reflectable_function(MVector_create, "ignore")
+define_reflectable_function(MMap_create   , "ignore")
+define_reflectable_function(MSet_create   , "ignore")
 
 //runtime functions:
 
@@ -70,10 +70,10 @@ static std::string MGetOS() {
     return "";
 }
 
-define_reflectable_function(MSetObjectClassSymbol, "args:obj,clsName")
-define_reflectable_function(MInjectClassFunction , "args:clsName,fcnName,func")
-define_reflectable_function(MMetaJsonDescription )
-define_reflectable_function(MGetOS)
+define_reflectable_function(MSetObjectClassSymbol, "ignore")
+define_reflectable_function(MInjectClassFunction , "ignore")
+define_reflectable_function(MMetaJsonDescription , "ignore")
+define_reflectable_function(MGetOS               , "ignore")
 
 //virtual machine:
 
@@ -119,7 +119,7 @@ static void RegisterBuiltinScript(MJsVM *vm) {
     JS_(
         class console {
             static log(message) {
-                MPrint(message)
+                MPrint(String(message))
             }
         }
     );
