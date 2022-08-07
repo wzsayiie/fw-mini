@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mcontainers.h"
 #include "mobject.h"
 
 m_class(MScheduler, MObject) {

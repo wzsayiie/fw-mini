@@ -1,5 +1,6 @@
 #pragma once
 
+#include "mcontainers.h"
 #include "mgeometry.h"
 #include "mgraphics.h" //bitmap processing will use color struct.
 
