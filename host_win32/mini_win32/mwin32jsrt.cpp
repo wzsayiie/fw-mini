@@ -1,114 +1,70 @@
 #include "mwin32jsrt.h"
 #include "mencode.h"
 
-//assist:
+//object pool:
 
-static void AppendExceptionInfo(
-    std::wstring *appended, const wchar_t *desc, JsValueRef obj, const wchar_t *keyName)
+MWin32JsObjectPool::ptr MWin32JsObjectPool::sInstance;
+
+MWin32JsObjectPool *MWin32JsObjectPool::instance()
 {
-    JsValueRef key = JS_INVALID_REFERENCE;
-    JsGetPropertyIdFromName(keyName, &key);
-
-    JsValueRef value = JS_INVALID_REFERENCE;
-    JsGetProperty(obj, key, &value);
-
-    JsValueRef string = JS_INVALID_REFERENCE;
-    JsConvertValueToString(value, &string);
-
-    const wchar_t *chars = nullptr;
-    size_t charsSize = 0;
-    JsStringToPointer(string, &chars, &charsSize);
-
-    appended->append(desc );
-    appended->append(L": ");
-    appended->append(chars);
-    appended->append(L"\n");
-}
-
-m_class(MJsFunction, MBaseFunction)
-{
-public:
-    MJsFunction(MWin32JsVM *jsVM, JsValueRef func)
+    if (!sInstance)
     {
-        JsAddRef(func, nullptr);
-
-        mJsVM = jsVM;
-        mFunc = func;
+        sInstance = MWin32JsObjectPool::create();
     }
-
-    ~MJsFunction()
-    {
-        JsRelease(mFunc, nullptr);
-    }
-
-    void on_call() const override
-    {
-        //argument:
-        std::vector<JsValueRef> jsArgs;
-
-        //NOTE: first argument is "this".
-        JsValueRef thisArg = JS_INVALID_REFERENCE;
-        JsGetUndefinedValue(&thisArg);
-        jsArgs.push_back(thisArg);
-
-        auto count = reflect::get_arg_count();
-        for (int i = 0; i < count; ++i)
-        {
-            reflect::any cppValue = reflect::get_arg_value(i);
-            JsValueRef jsValue = mJsVM->getJsValue(cppValue);
-
-            jsArgs.push_back(jsValue);
-        }
-
-        //call.
-        JsValueRef jsRet = JS_INVALID_REFERENCE;
-        JsCallFunction(mFunc, jsArgs.data(), (USHORT)jsArgs.size(), &jsRet);
-
-        //return.
-        reflect::any cppRet = mJsVM->getCppValue(jsRet);
-        reflect::return_value(cppRet);
-    }
-
-private:
-    MWin32JsVM *mJsVM;
-    JsValueRef  mFunc;
-};
-
-//js vm:
-
-void MWin32JsVM::install()
-{
-    auto obj = MWin32JsVM::create();
-    setInstance(obj);
+    return sInstance.get();
 }
 
-MWin32JsVM::MWin32JsVM()
+void MWin32JsObjectPool::clearInstance()
 {
-    JsCreateRuntime(JsRuntimeAttributeNone, nullptr, &mRuntime);
-    JsCreateContext(mRuntime, &mContext);
-    JsSetCurrentContext(mContext);
+    sInstance.reset();
 }
 
-MWin32JsVM::~MWin32JsVM()
+MWin32JsObjectPool::~MWin32JsObjectPool()
 {
-    JsRelease(mContext, nullptr);
-    JsDisposeRuntime(mRuntime);
+    mCppObjects.clear();
+    mCppHolders.clear();
+    mJsObjects .clear();
+    mJsHolders .clear();
 }
 
-JsValueRef MWin32JsVM::getJsValue(const reflect::any &cppValue)
+JsValueRef MWin32JsObjectPool::getJsValue(const reflect::any &cppValue)
 {
     switch (cppValue.preferred_type())
     {
         case reflect::data_type::is_object:
         {
-            JsValueRef jsValue = JS_INVALID_REFERENCE;
-            JsCreateObject(&jsValue);
+            reflect::object::ptr cppObject = cppValue.as_object_shared();
 
-            //bind js and cpp object.
-            JsSetObjectBeforeCollectCallback(jsValue, nullptr, onCollectJsObject);
-            mObjectMap[jsValue] = cppValue;
+            //null.
+            if (!cppObject)
+            {
+                JsValueRef nulled = JS_INVALID_REFERENCE;
+                JsGetNullValue(&nulled);
+                return nulled;
+            }
 
-            return jsValue;
+            //query from cache:
+            auto holder = mCppHolders.find(cppObject);
+            if (holder != mCppHolders.end())
+            {
+                return holder->second;
+            }
+
+            auto held = mJsObjects.find(cppObject.get());
+            if (held != mJsObjects.end())
+            {
+                return held->second;
+            }
+
+            //new object.
+            JsValueRef jsObject = JS_INVALID_REFERENCE;
+            JsCreateObject(&jsObject);
+
+            JsSetObjectBeforeCollectCallback(jsObject, this, onCollectJsObject);
+            mCppObjects[jsObject] = cppObject;
+            mCppHolders[cppObject] = jsObject;
+
+            return jsObject;
         }
 
         case reflect::data_type::is_string:
@@ -139,14 +95,14 @@ JsValueRef MWin32JsVM::getJsValue(const reflect::any &cppValue)
 
         default:
         {
-            JsValueRef undefine = JS_INVALID_REFERENCE;
-            JsGetUndefinedValue(&undefine);
-            return undefine;
+            JsValueRef undefined = JS_INVALID_REFERENCE;
+            JsGetUndefinedValue(&undefined);
+            return undefined;
         }
     }
 }
 
-reflect::any MWin32JsVM::getCppValue(JsValueRef jsValue)
+reflect::any MWin32JsObjectPool::getCppValue(JsValueRef jsValue)
 {
     JsValueType jsType = JsUndefined;
     JsGetValueType(jsValue, &jsType);
@@ -155,16 +111,44 @@ reflect::any MWin32JsVM::getCppValue(JsValueRef jsValue)
     {
         case JsFunction:
         {
-            return MJsFunction::create(this, jsValue);
+            //query from cache:
+            auto holder = mJsHolders.find(jsValue);
+            if (holder != mJsHolders.end())
+            {
+                return holder->second;
+            }
+
+            auto held = mCppObjects.find(jsValue);
+            if (held != mCppObjects.end())
+            {
+                return held->second;
+            }
+
+            //new object:
+            auto cppObject = MWin32JsFunction::create(jsValue);
+            mJsObjects[cppObject.get()] = jsValue;
+            mJsHolders[jsValue] = cppObject.get();
+
+            //NOTE: add reference count.
+            JsAddRef(jsValue, nullptr);
+
+            return cppObject;
         }
 
         case JsObject:
         {
-            auto target = mObjectMap.find(jsValue);
-            if (target != mObjectMap.end())
+            auto holder = mJsHolders.find(jsValue);
+            if (holder != mJsHolders.end())
             {
-                return target->second;
+                return holder->second;
             }
+
+            auto held = mCppObjects.find(jsValue);
+            if (held != mCppObjects.end())
+            {
+                return held->second;
+            }
+
             return nullptr;
         }
 
@@ -197,10 +181,97 @@ reflect::any MWin32JsVM::getCppValue(JsValueRef jsValue)
     }
 }
 
+void MWin32JsObjectPool::collectCppObject(reflect::object *obj)
+{
+    auto held = mJsObjects.find(obj);
+    if (held != mJsObjects.end())
+    {
+        //NOTE: release reference count.
+        JsRelease(held->second, nullptr);
+
+        mJsHolders.erase(held->second);
+        mJsObjects.erase(obj);
+    }
+}
+
+void MWin32JsObjectPool::onCollectJsObject(JsRef value, void *custom)
+{
+    auto pool = (MWin32JsObjectPool *)custom;
+    auto held = pool->mCppObjects.find(value);
+    if (held != pool->mCppObjects.end())
+    {
+        pool->mCppHolders.erase(held->second);
+        pool->mCppObjects.erase(value);
+    }
+}
+
+//js function:
+
+MWin32JsFunction::MWin32JsFunction(JsValueRef jsFunc)
+{
+    mJsFunc = jsFunc;
+}
+
+MWin32JsFunction::~MWin32JsFunction()
+{
+    MWin32JsObjectPool::instance()->collectCppObject(this);
+}
+
+void MWin32JsFunction::on_call() const
+{
+    //build argument:
+    std::vector<JsValueRef> jsArgs;
+
+    //NOTE: first argument is "this".
+    JsValueRef thisArg = JS_INVALID_REFERENCE;
+    JsGetUndefinedValue(&thisArg);
+    jsArgs.push_back(thisArg);
+
+    auto count = reflect::get_arg_count();
+    for (int i = 0; i < count; ++i)
+    {
+        reflect::any cppValue = reflect::get_arg_value(i);
+        JsValueRef jsValue = MWin32JsObjectPool::instance()->getJsValue(cppValue);
+
+        jsArgs.push_back(jsValue);
+    }
+
+    //call.
+    JsValueRef jsRet = JS_INVALID_REFERENCE;
+    JsCallFunction(mJsFunc, jsArgs.data(), (USHORT)jsArgs.size(), &jsRet);
+
+    //return value.
+    reflect::any cppRet = MWin32JsObjectPool::instance()->getCppValue(jsRet);
+    reflect::return_value(cppRet);
+}
+
+//virtual machine:
+
+void MWin32JsVM::install()
+{
+    auto obj = MWin32JsVM::create();
+    setInstance(obj);
+}
+
+MWin32JsVM::MWin32JsVM()
+{
+    MWin32JsObjectPool::clearInstance();
+
+    JsCreateRuntime(JsRuntimeAttributeNone, nullptr, &mRuntime);
+    JsCreateContext(mRuntime, &mContext);
+    JsSetCurrentContext(mContext);
+}
+
+MWin32JsVM::~MWin32JsVM()
+{
+    JsRelease(mContext, nullptr);
+    JsDisposeRuntime(mRuntime);
+}
+
 void MWin32JsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func)
 {
     auto funcId = (intptr_t)mNativeFunctions.size();
-    mNativeFunctions[funcId] = func;
+    mNativeFunctions.push_back(func);
 
     //function key.
     std::u16string u16name = MU16StringFromU8(name.c_str());
@@ -249,19 +320,18 @@ void MWin32JsVM::onEvaluate(const std::string &name, const std::string &script)
 JsValueRef MWin32JsVM::onCallNativeFunction(
     JsValueRef callee, bool isConstruct, JsValueRef *args, USHORT argc, void *custom)
 {
-    auto jsVM = (MWin32JsVM *)instance();
-
     //function.
+    auto jsVM   = (MWin32JsVM *)instance();
     auto funcId = (intptr_t)custom;
     MBaseFunction::ptr func = jsVM->mNativeFunctions[funcId];
 
-    //argument:
+    //build argument:
     std::vector<reflect::any> cppArgs;
 
     //NOTE: first argument is "this".
     for (USHORT i = 1; i < argc; ++i)
     {
-        reflect::any cppArg = jsVM->getCppValue(args[i]);
+        reflect::any cppArg = MWin32JsObjectPool::instance()->getCppValue(args[i]);
         cppArgs.push_back(cppArg);
     }
 
@@ -269,11 +339,27 @@ JsValueRef MWin32JsVM::onCallNativeFunction(
     reflect::any cppRet = func->call_with_args(cppArgs);
 
     //return.
-    return jsVM->getJsValue(cppRet);
+    return MWin32JsObjectPool::instance()->getJsValue(cppRet);
 }
 
-void MWin32JsVM::onCollectJsObject(JsRef value, void *custom)
+void MWin32JsVM::AppendExceptionInfo(
+    std::wstring *appended, const wchar_t *desc, JsValueRef obj, const wchar_t *keyName)
 {
-    auto jsVM = (MWin32JsVM *)instance();
-    jsVM->mObjectMap.erase(value);
+    JsValueRef key = JS_INVALID_REFERENCE;
+    JsGetPropertyIdFromName(keyName, &key);
+
+    JsValueRef value = JS_INVALID_REFERENCE;
+    JsGetProperty(obj, key, &value);
+
+    JsValueRef string = JS_INVALID_REFERENCE;
+    JsConvertValueToString(value, &string);
+
+    const wchar_t *chars = nullptr;
+    size_t charsSize = 0;
+    JsStringToPointer(string, &chars, &charsSize);
+
+    appended->append(desc );
+    appended->append(L": ");
+    appended->append(chars);
+    appended->append(L"\n");
 }
