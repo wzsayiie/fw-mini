@@ -8,7 +8,7 @@ public:
     static MScheduler *instance();
 
 public:
-    double GetSecondsTick();
+    double secondsTick();
 
     void loop  (double seconds, const MFunction<void ()>::ptr &task);
     void delay (double seconds, const MFunction<void ()>::ptr &task);

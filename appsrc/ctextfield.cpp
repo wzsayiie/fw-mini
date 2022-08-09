@@ -78,7 +78,7 @@ void CTextField::onBecomeFocusResponder() {
     increaseEditingSender();
 
     MWindow::mainWindow()->setWritingEnabled(true, mText);
-    mCursorBeginTick = MScheduler::instance()->GetSecondsTick();
+    mCursorBeginTick = MScheduler::instance()->secondsTick();
 }
 
 void CTextField::onResignFocusResponder() {
@@ -114,7 +114,7 @@ void CTextField::onDraw(float width, float height) {
     float thick    = 2.0f;
 
     if (mCursorBeginTick) {
-        double now      = MScheduler::instance()->GetSecondsTick();
+        double now      = MScheduler::instance()->secondsTick();
         double duration = now - mCursorBeginTick;
         auto   count    = (int64_t)(duration * 1000) / (int64_t)(interval * 1000);
 

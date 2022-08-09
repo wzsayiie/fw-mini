@@ -14,8 +14,8 @@ MScheduler *MScheduler::instance() {
     return obj.get();
 }
 
-define_reflectable_class_function(MScheduler, GetSecondsTick)
-double MScheduler::GetSecondsTick() {
+define_reflectable_class_function(MScheduler, secondsTick, "getter")
+double MScheduler::secondsTick() {
     auto at = std::chrono::system_clock::now().time_since_epoch();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(at);
     return ms.count() / 1000.0;
@@ -29,7 +29,7 @@ void MScheduler::loop(double seconds, const MFunction<void ()>::ptr &task) {
 
     TaskSetting setting; {
         setting.onlyOnce = false;
-        setting.nextTick = GetSecondsTick() + seconds;
+        setting.nextTick = secondsTick() + seconds;
         setting.interval = seconds;
     }
     mTasks.insert({ task, setting });
@@ -43,7 +43,7 @@ void MScheduler::delay(double seconds, const MFunction<void ()>::ptr &task) {
 
     TaskSetting setting; {
         setting.onlyOnce = true;
-        setting.nextTick = GetSecondsTick() + seconds;
+        setting.nextTick = secondsTick() + seconds;
         setting.interval = 0;
     }
     mTasks.insert({ task, setting });
@@ -58,7 +58,7 @@ void MScheduler::cancel(const MFunction<void ()>::ptr &task) {
 
 void MScheduler::update() {
     std::map<MFunction<void ()>::ptr, TaskSetting> remaining;
-    double now = GetSecondsTick();
+    double now = secondsTick();
 
     for (auto &pair : mTasks) {
         TaskSetting *setting = &pair.second;

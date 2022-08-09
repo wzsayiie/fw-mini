@@ -47,7 +47,7 @@ void CButton::onControlKbKey(MKbKeyCode code) {
         return;
     }
 
-    double now = MScheduler::instance()->GetSecondsTick();
+    double now = MScheduler::instance()->secondsTick();
     mTouchMaskStamp = now + 0.1;
 
     if (mClickTarget) {
@@ -63,7 +63,7 @@ void CButton::onDrawForeground(float width, float height) {
     //NOTE: reserve focus frame drawn by control.
     base::onDrawForeground(width, height);
     
-    double now = MScheduler::instance()->GetSecondsTick();
+    double now = MScheduler::instance()->secondsTick();
     if (mCurrentTouched || now < mTouchMaskStamp) {
         //touched by mouse or keyboard.
         MContextSelectRGBA(0xFFffFF80 & MColor::LightGrayRGBA);
