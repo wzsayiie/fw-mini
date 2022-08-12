@@ -43,11 +43,18 @@ define_reflectable_function(MSet_create   , "ignore")
 
 //runtime functions:
 
-static void MSetObjectClassSymbol(const reflect::injectable::ptr &obj, const char *clsName) {
+static void MSetObjectClassSymbol(const reflect::injectable::ptr &obj, const char *clsSym) {
     if (obj) {
-        reflect::symbol sym = reflect::symbol::make(clsName);
+        reflect::symbol sym = reflect::symbol::make(clsSym);
         obj->set_class_symbol(sym);
     }
+}
+
+static std::string MGetObjectClassSymbol(const reflect::object::ptr &obj) {
+    if (obj) {
+        return obj->class_symbol().str();
+    }
+    return "";
 }
 
 static void MInjectClassFunction(
@@ -71,6 +78,7 @@ static std::string MGetOS() {
 }
 
 define_reflectable_function(MSetObjectClassSymbol, "ignore")
+define_reflectable_function(MGetObjectClassSymbol, "ignore")
 define_reflectable_function(MInjectClassFunction , "ignore")
 define_reflectable_function(MMetaJsonDescription , "ignore")
 define_reflectable_function(MGetOS               , "ignore")
