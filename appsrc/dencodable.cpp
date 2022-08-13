@@ -3,9 +3,11 @@
 
 namespace dash {
 
+//field:
+
 static lazy<std::map<size_t, size_t>> s_ranges;
 
-encodable_base::encodable_base(const std::string &key) {
+encodable_field_base::encodable_field_base(const std::string &key) {
     if (key.empty()) {
         return;
     }
@@ -17,16 +19,15 @@ encodable_base::encodable_base(const std::string &key) {
     _key = key;
 }
 
-encodable_base::~encodable_base() {
+encodable_field_base::~encodable_field_base() {
     s_ranges->erase((size_t)this);
 }
 
-const std::string &encodable_base::key() const {
+const std::string &encodable_field_base::key() const {
     return _key;
 }
 
-void encodable_base::encode(void *context) const {}
-void encodable_base::decode(void *context) {}
+//object:
 
 void collect_sub_encodable(encodable_object *obj, size_t size) {
     auto bgn = (size_t)obj;
@@ -39,7 +40,7 @@ void collect_sub_encodable(encodable_object *obj, size_t size) {
     for (auto it = s_ranges->begin(); it != s_ranges->end(); ) {
         if (fit(*it)) {
             //insert to the parent.
-            auto sub = (encodable_base *)it->first;
+            auto sub = (encodable_field_base *)it->first;
             obj->insert({ sub->key(), sub });
 
             //remove from the pool.
