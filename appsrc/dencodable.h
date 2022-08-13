@@ -5,9 +5,16 @@
 
 namespace dash {
 
+//base:
+
+struct d_exportable encodable_base {
+    virtual void on_encode(void *context) const;
+    virtual void on_parse (void *context);
+};
+
 //field:
 
-class d_exportable encodable_field_base : virtual_object {
+class d_exportable encodable_field_base : public encodable_base {
 public:
     encodable_field_base(const std::string &key);
     ~encodable_field_base();
@@ -69,7 +76,7 @@ template<class Type> struct encodable
 //object:
 
 struct d_exportable encodable_object
-    : virtual_object
+    : encodable_base
     , std::map<std::string, encodable_field_base *>
 {
 };

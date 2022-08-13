@@ -3,6 +3,11 @@
 
 namespace dash {
 
+//base:
+
+void encodable_base::on_encode(void *context) const {}
+void encodable_base::on_parse (void *context)       {}
+
 //field:
 
 static lazy<std::map<size_t, size_t>> s_ranges;
