@@ -3,11 +3,6 @@
 
 namespace dash {
 
-//base:
-
-void encodable_base::on_encode(void *context) const {}
-void encodable_base::on_parse (void *context)       {}
-
 //field:
 
 static lazy<std::map<size_t, size_t>> s_ranges;
@@ -28,13 +23,17 @@ encodable_field_base::~encodable_field_base() {
     s_ranges->erase((size_t)this);
 }
 
+void encodable_field_base::on_encode(void *context) const {}
+void encodable_field_base::on_parse (void *context)       {}
+void encodable_field_base::on_clear ()                    {}
+
 const std::string &encodable_field_base::key() const {
     return _key;
 }
 
 //object:
 
-void collect_sub_encodable(encodable_object *obj, size_t size) {
+void encodable_object::collect(encodable_object *obj, size_t size) {
     auto bgn = (size_t)obj;
     auto end = (size_t)obj + size;
 

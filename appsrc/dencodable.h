@@ -5,21 +5,18 @@
 
 namespace dash {
 
-//base:
-
-struct d_exportable encodable_base {
-    virtual void on_encode(void *context) const;
-    virtual void on_parse (void *context);
-};
-
 //field:
 
-class d_exportable encodable_field_base : public encodable_base {
+class d_exportable encodable_field_base {
 public:
     encodable_field_base(const std::string &key);
     ~encodable_field_base();
 
 public:
+    virtual void on_encode(void *context) const;
+    virtual void on_parse (void *context);
+    virtual void on_clear ();
+    
     const std::string &key() const;
 
 private:
@@ -75,18 +72,20 @@ template<class Type> struct encodable
 
 //object:
 
-struct d_exportable encodable_object
-    : encodable_base
-    , std::map<std::string, encodable_field_base *>
+class d_exportable encodable_object
+    : public    virtual_object
+    , protected std::map<std::string, encodable_field_base *>
 {
+protected:
+    static void collect(encodable_object *obj, size_t size);
 };
-
-d_exportable
-void collect_sub_encodable(encodable_object *obj, size_t size);
 
 } //end dash.
 
-#define d_encodable_object(cls)                             \
-/**/    cls() {                                             \
-/**/        dash::collect_sub_encodable(this, sizeof(cls)); \
+#define d_encodable_object(cls, base, body)                         \
+/**/    struct cls : base {                                         \
+/**/        cls() {                                                 \
+/**/            dash::encodable_object::collect(this, sizeof(cls)); \
+/**/        }                                                       \
+/**/        struct body;                                            \
 /**/    }
