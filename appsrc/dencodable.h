@@ -73,8 +73,8 @@ template<class Type> struct encodable
 //object:
 
 class d_exportable encodable_object
-    : public    virtual_object
-    , protected std::map<std::string, encodable_field_base *>
+    : public virtual_object
+    , public std::map<std::string, encodable_field_base *>
 {
 protected:
     static void collect(encodable_object *obj, size_t size);
@@ -82,10 +82,10 @@ protected:
 
 } //end dash.
 
-#define d_encodable_object(cls, base, body)                         \
+#define d_encodable_object(cls, base, ...)                          \
 /**/    struct cls : base {                                         \
 /**/        cls() {                                                 \
 /**/            dash::encodable_object::collect(this, sizeof(cls)); \
 /**/        }                                                       \
-/**/        struct body;                                            \
+/**/        struct __VA_ARGS__;                                     \
 /**/    }
