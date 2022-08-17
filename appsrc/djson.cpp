@@ -1,4 +1,5 @@
 #include "djson.h"
+#include "dprint.h"
 
 namespace dash {
 
@@ -38,10 +39,15 @@ void json_object::encode_with_ctx(json_encoding_ctx *ctx) const {
 }
 
 void json_object::parse_with_ctx(json_parsing_ctx *ctx) {
-    json_parse_token(ctx, true, '{');
-    
-    //if is empty object.
-    if (json_parse_token(ctx, false, '}')) {
+    //null object.
+    if (json_parse_token(ctx, false, "null")) {
+        return;
+    }
+
+    json_parse_token(ctx, true, "{");
+
+    //if is null object.
+    if (json_parse_token(ctx, false, "}")) {
         return;
     }
     
@@ -51,21 +57,22 @@ void json_object::parse_with_ctx(json_parsing_ctx *ctx) {
         json_parse_string(ctx, true, &key);
         
         //":".
-        json_parse_token(ctx, true, ':');
+        json_parse_token(ctx, true, ":");
         
         //value.
         auto it = find(key);
-        if (it == end()) {
+        if (it != end()) {
+            it->second->on_parse(ctx);
+        } else {
             //ignore this value.
             json_parse_value(ctx, true);
         }
-        it->second->on_parse(ctx);
         
         //"}" or ",".
-        if (json_parse_token(ctx, false, '}')) {
+        if (json_parse_token(ctx, false, "}")) {
             break;
         }
-        json_parse_token(ctx, true, ',');
+        json_parse_token(ctx, true, ",");
     }
 }
 
@@ -93,8 +100,8 @@ void json_encode_string(json_encoding_ctx *ctx, const std::string &value) {
     json_encode_indent(ctx, ctx->indent_head);
     ctx->buffer.append("\"");
     
-    for (char chr : value) {
-        switch (chr) {
+    for (char ch : value) {
+        switch (ch) {
             //NOTE: unicode escape "\u" is unsupported.
             
             case '\"': ctx->buffer.append("\\\""); break;
@@ -106,7 +113,7 @@ void json_encode_string(json_encoding_ctx *ctx, const std::string &value) {
             case '\r': ctx->buffer.append("\\r" ); break;
             case '\t': ctx->buffer.append("\\t" ); break;
                 
-            default: ctx->buffer.push_back(chr);
+            default: ctx->buffer.push_back(ch);
         }
     }
     
@@ -137,24 +144,116 @@ void json_encode_bool(json_encoding_ctx *ctx, bool value) {
 
 //parser:
 
-bool json_parse_space(json_parsing_ctx *ctx, bool throwing) {
+static bool parse_error(json_parsing_ctx *ctx, bool throwing, const char *want) {
+    const char *end = std::min(ctx->ptr + 40, ctx->end);
+    std::string pos = std::string(ctx->ptr, end);
+    print("json parse error, want", want, "at:", pos);
+
+    if (throwing) {
+        throw false;
+    }
     return false;
 }
 
-bool json_parse_token(json_parsing_ctx *ctx, bool throwing, char token) {
-    return false;
+static bool can_step_forward(json_parsing_ctx *ctx, size_t step = 1) {
+    return ctx->ptr + step <= ctx->end;
+}
+
+static bool is_blank(char ch) {
+    switch (ch) {
+        case ' ' : return true;
+        case '\t': return true;
+        case '\n': return true;
+        case '\r': return true;
+
+        default: return false;
+    }
+}
+
+bool json_parse_blank(json_parsing_ctx *ctx, bool throwing) {
+    while (can_step_forward(ctx)) {
+        if (is_blank(*ctx->ptr)) {
+            ctx->ptr += 1;
+        } else {
+            return true;
+        }
+    }
+    return parse_error(ctx, throwing, "blank");
+}
+
+bool json_parse_token(json_parsing_ctx *ctx, bool throwing, const char *token) {
+    json_parse_blank(ctx, false);
+
+    size_t size = strlen(token);
+    if (can_step_forward(ctx, size) && strncmp(ctx->ptr, token, size) == 0) {
+        ctx->ptr += size;
+        return true;
+    }
+    return parse_error(ctx, throwing, token);
 }
 
 bool json_parse_value(json_parsing_ctx *ctx, bool throwing) {
-    return false;
+    auto _str = std::string();
+    auto _dbl = (double)0;
+    auto _bol = false;
+
+    if (json_parse_string(ctx, false, &_str )) { return true; }
+    if (json_parse_double(ctx, false, &_dbl )) { return true; }
+    if (json_parse_bool  (ctx, false, &_bol )) { return true; }
+    if (json_parse_token (ctx, false, "null")) { return true; }
+    if (json_parse_object(ctx, false        )) { return true; }
+    if (json_parse_array (ctx, false        )) { return true; }
+
+    return parse_error(ctx, throwing, "value");
 }
 
 bool json_parse_object(json_parsing_ctx *ctx, bool throwing) {
-    return false;
+    json_parse_token(ctx, true, "{");
+        
+    //if is empty object.
+    if (json_parse_token(ctx, false, "}")) {
+        return true;
+    }
+
+    while (true) {
+        //key.
+        std::string key;
+        json_parse_string(ctx, true, &key);
+
+        //":".
+        json_parse_token(ctx, true, ":");
+
+        //value.
+        json_parse_value(ctx, true);
+            
+        //"}" or ",".
+        if (json_parse_token(ctx, false, "}")) {
+            break;
+        }
+        json_parse_token(ctx, true, ",");
+    }
+    return true;
 }
 
 bool json_parse_array(json_parsing_ctx *ctx, bool throwing) {
-    return false;
+    json_parse_token(ctx, true, "[");
+
+    //if is empty array.
+    if (json_parse_token(ctx, false, "]")) {
+        return true;
+    }
+    
+    while (true) {
+        //value.
+        json_parse_array(ctx, true);
+        
+        //"]" or ",".
+        if (json_parse_token(ctx, false, "]")) {
+            break;
+        }
+        json_parse_token(ctx, true, ",");
+    }
+    return true;
 }
 
 bool json_parse_string(json_parsing_ctx *ctx, bool throwing, std::string *value) {

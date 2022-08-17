@@ -36,10 +36,6 @@ public:
     void operator=(const Type &value) {
         *(Type *)this = value;
     }
-
-    operator const Type &() const {
-        return *(Type *)this;
-    }
 };
 
 template<class Type> class encodable_field<Type, false>
@@ -53,7 +49,7 @@ public:
         _value = value;
     }
 
-    operator const Type &() const {
+    operator Type() const {
         return _value;
     }
 

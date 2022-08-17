@@ -193,8 +193,8 @@ template<> struct json_encoder<bool> {
 
 //paser:
 
-d_exportable bool json_parse_space (json_parsing_ctx *ctx, bool throwing);
-d_exportable bool json_parse_token (json_parsing_ctx *ctx, bool throwing, char token);
+d_exportable bool json_parse_blank (json_parsing_ctx *ctx, bool throwing);
+d_exportable bool json_parse_token (json_parsing_ctx *ctx, bool throwing, const char *token);
 d_exportable bool json_parse_value (json_parsing_ctx *ctx, bool throwing);
 d_exportable bool json_parse_object(json_parsing_ctx *ctx, bool throwing);
 d_exportable bool json_parse_array (json_parsing_ctx *ctx, bool throwing);
@@ -204,55 +204,68 @@ d_exportable bool json_parse_bool  (json_parsing_ctx *ctx, bool throwing, bool  
 
 template<class Key, class Value> struct json_parser<std::map<Key, Value>> {
     static void parse(json_parsing_ctx *ctx, std::map<Key, Value> *field) {
-        json_parse_token(ctx, true, '{');
+        //if is a null object.
+        if (json_parse_token(ctx, false, "null")) {
+            return;
+        }
+
+        json_parse_token(ctx, true, "{");
         
         //if is empty object.
-        if (json_parse_token(ctx, false, '}')) {
+        if (json_parse_token(ctx, false, "}")) {
             return;
         }
         
         while (true) {
             //key.
             ctx->from_string = true;
-            Key key;
+            Key key{};
             json_parser<Key>::parse(ctx, &key);
             
             //":".
-            json_parse_token(ctx, true, ':');
+            json_parse_token(ctx, true, ":");
             
             //value.
             ctx->from_string = false;
-            Value value;
+            Value value{};
             json_parser<Value>::parse(ctx, &value);
+
+            field->insert({ key, value });
             
             //"}" or ",".
-            if (json_parse_token(ctx, false, '}')) {
+            if (json_parse_token(ctx, false, "}")) {
                 break;
             }
-            json_parse_token(ctx, true, ',');
+            json_parse_token(ctx, true, ",");
         }
     }
 };
 
 template<class Value> struct json_parser<std::vector<Value>> {
     static void parse(json_parsing_ctx *ctx, std::vector<Value> *field) {
-        json_parse_token(ctx, true, '[');
+        //if is a null object.
+        if (json_parse_token(ctx, false, "null")) {
+            return;
+        }
+
+        json_parse_token(ctx, true, "[");
         
         //if is empty array.
-        if (json_parse_token(ctx, false, ']')) {
+        if (json_parse_token(ctx, false, "]")) {
             return;
         }
         
         while (true) {
             //value.
-            Value value;
+            Value value{};
             json_parser<Value>::parse(ctx, &value);
+            field->push_back(value);
             
             //"]" or ",".
-            if (json_parse_token(ctx, false, ']')) {
+            if (json_parse_token(ctx, false, "]")) {
                 break;
             }
-            json_parse_token(ctx, true, ',');
+            json_parse_token(ctx, true, ",");
         }
     }
 };
@@ -276,6 +289,8 @@ template<> struct json_parser<double> {
         *field = value;
     }
     
+    //"json<double> *" can not be converted to "double *",
+    //need to rewrite this function of the same name.
     static void parse(json_parsing_ctx *ctx, double *field) {
         json_parse_double(ctx, true, field);
     }
