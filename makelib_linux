@@ -4,8 +4,8 @@ set -e -u
 
 cd `dirname $0`
 
-_dir=BUILD/linux_x64
-_out=libmini.so
+_dir="BUILD/linux_x64"
+_out="libmini.so"
 
 _flg="\
     -std=c++17 \

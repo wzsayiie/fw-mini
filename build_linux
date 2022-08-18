@@ -10,7 +10,7 @@ _outdir="../BUILD/linux_x64"
 mkdir -p $_outdir
 rm    -f $_outdir/$_rawexe
 
-./init
+sh init
 make
 
 cp $_rawexe $_outdir
