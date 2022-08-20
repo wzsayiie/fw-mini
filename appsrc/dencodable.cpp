@@ -7,7 +7,7 @@ namespace dash {
 
 static lazy<std::map<size_t, size_t>> s_ranges;
 
-encodable_field_base::encodable_field_base(const std::string &key) {
+encodable_field::encodable_field(const std::string &key) {
     if (key.empty()) {
         return;
     }
@@ -19,15 +19,15 @@ encodable_field_base::encodable_field_base(const std::string &key) {
     _key = key;
 }
 
-encodable_field_base::~encodable_field_base() {
+encodable_field::~encodable_field() {
     s_ranges->erase((size_t)this);
 }
 
-void encodable_field_base::on_encode(void *context) const {}
-void encodable_field_base::on_parse (void *context)       {}
-void encodable_field_base::on_clear ()                    {}
+void encodable_field::on_encode(void *context) const {}
+void encodable_field::on_parse (void *context)       {}
+void encodable_field::on_clear ()                    {}
 
-const std::string &encodable_field_base::key() const {
+const std::string &encodable_field::key() const {
     return _key;
 }
 
@@ -44,7 +44,7 @@ void encodable_object::collect(encodable_object *obj, size_t size) {
     for (auto it = s_ranges->begin(); it != s_ranges->end(); ) {
         if (fit(*it)) {
             //insert to the parent.
-            auto sub = (encodable_field_base *)it->first;
+            auto sub = (encodable_field *)it->first;
             obj->insert({ sub->key(), sub });
 
             //remove from the pool.

@@ -7,10 +7,10 @@ namespace dash {
 
 //field:
 
-class d_exportable encodable_field_base {
+class d_exportable encodable_field {
 public:
-    encodable_field_base(const std::string &key);
-    ~encodable_field_base();
+    encodable_field(const std::string &key);
+    ~encodable_field();
 
 public:
     virtual void on_encode(void *context) const;
@@ -23,14 +23,14 @@ private:
     std::string _key;
 };
 
-template<class Type, bool IsClass> class encodable_field;
+template<class Type, bool IsClass> class encodable_field_impl;
 
-template<class Type> class encodable_field<Type, true>
-    : public encodable_field_base
+template<class Type> class encodable_field_impl<Type, true>
+    : public encodable_field
     , public Type
 {
 public:
-    using encodable_field_base::encodable_field_base;
+    using encodable_field::encodable_field;
 
 public:
     void operator=(const Type &value) {
@@ -38,11 +38,11 @@ public:
     }
 };
 
-template<class Type> class encodable_field<Type, false>
-    : public encodable_field_base
+template<class Type> class encodable_field_impl<Type, false>
+    : public encodable_field
 {
 public:
-    using encodable_field_base::encodable_field_base;
+    using encodable_field::encodable_field;
 
 public:
     void operator=(const Type &value) {
@@ -58,9 +58,9 @@ private:
 };
 
 template<class Type> struct encodable
-    : encodable_field<Type, std::is_class<Type>::value>
+    : encodable_field_impl<Type, std::is_class<Type>::value>
 {
-    typedef encodable_field<Type, std::is_class<Type>::value> _inheritable;
+    typedef encodable_field_impl<Type, std::is_class<Type>::value> _inheritable;
 
     using _inheritable::_inheritable;
     using _inheritable::operator=;
@@ -70,7 +70,7 @@ template<class Type> struct encodable
 
 class d_exportable encodable_object
     : public virtual_object
-    , public std::map<std::string, encodable_field_base *>
+    , public std::map<std::string, encodable_field *>
 {
 protected:
     static void collect(encodable_object *obj, size_t size);
