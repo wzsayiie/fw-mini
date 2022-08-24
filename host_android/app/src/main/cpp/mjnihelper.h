@@ -2,6 +2,7 @@
 
 #include <jni.h>
 #include "mobject.h"
+#include "mcontainers.h"
 
 //environment:
 
