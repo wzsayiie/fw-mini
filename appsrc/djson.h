@@ -109,12 +109,12 @@ template<class Key, class Value> struct json_encoder<std::map<Key, Value>> {
         json_encode_endline(ctx);
 
         size_t count = 0;
-        for (auto &pair : map) {
+        for (auto &[key, value] : map) {
             //key.
             ctx->this_is_key = true;
             ctx->indent_head = true;
             ctx->indent_deep += 1;
-            json_encoder<Key>::encode(ctx, pair.first);
+            json_encoder<Key>::encode(ctx, key);
             ctx->indent_deep -= 1;
             
             //":".
@@ -125,7 +125,7 @@ template<class Key, class Value> struct json_encoder<std::map<Key, Value>> {
             ctx->this_is_key = false;
             ctx->indent_head = false;
             ctx->indent_deep += 1;
-            json_encoder<Value>::encode(ctx, pair.second);
+            json_encoder<Value>::encode(ctx, value);
             ctx->indent_deep -= 1;
             
             //",".

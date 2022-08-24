@@ -29,8 +29,8 @@ bool json_object::parse(const std::string &text) {
 }
 
 void json_object::clear() {
-    for (auto &pair : *this) {
-        pair.second->on_clear();
+    for (auto &[key, field] : *this) {
+        field->on_clear();
     }
 }
 

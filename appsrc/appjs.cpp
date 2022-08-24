@@ -92,31 +92,24 @@ static void OnException(const std::string &message) {
 static void EnrollClassFunctions(
     MJsVM *vm, const std::string &clsName, const std::map<std::string, reflect::variable> &funcs)
 {
-    for (auto &pair : funcs) {
-        const std::string  &fcnName = pair.first;
-        const reflect::any &fcnImpl = pair.second.value;
-
+    for (auto &[fcnName, fcnImpl] : funcs) {
         std::string fullName = clsName + "_" + fcnName;
-        vm->registerFunction(fullName, fcnImpl);
+        vm->registerFunction(fullName, fcnImpl.value);
     }
 }
 
 static void RegisterNativeFunctions(MJsVM *vm) {
     //class static and instance functions:
-    for (auto &pair : *reflect::classes()) {
-        const std::string &clsName = pair.first;
-        auto clsMeta = (reflect::class_meta *)reflect::query_type_meta(pair.second.type);
+    for (auto &[clsName, clsDesc] : *reflect::classes()) {
+        auto clsMeta = (reflect::class_meta *)reflect::query_type_meta(clsDesc.type);
 
         EnrollClassFunctions(vm, clsName, clsMeta->static_functions);
         EnrollClassFunctions(vm, clsName, clsMeta->inst_functions  );
     }
 
     //global functions.
-    for (auto &pair : *reflect::functions()) {
-        const std::string  &fcnName = pair.first;
-        const reflect::any &fcnImpl = pair.second.value;
-
-        vm->registerFunction(fcnName, fcnImpl);
+    for (auto &[fcnName, fcnImpl] : *reflect::functions()) {
+        vm->registerFunction(fcnName, fcnImpl.value);
     }
 }
 

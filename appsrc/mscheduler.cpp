@@ -60,23 +60,22 @@ void MScheduler::update() {
     std::map<MFunction<void ()>::ptr, TaskSetting> remaining;
     double now = secondsTick();
 
-    for (auto &pair : mTasks) {
-        TaskSetting *setting = &pair.second;
+    for (auto &[task, setting] : mTasks) {
 
-        if (setting->onlyOnce) {
-            if (setting->nextTick <= now) {
-                pair.first->call();
+        if (setting.onlyOnce) {
+            if (setting.nextTick <= now) {
+                task->call();
             } else {
-                remaining.insert(pair);
+                remaining[task] = setting;
             }
 
         } else {
-            if (setting->nextTick <= now) {
-                pair.first->call();
-                setting->nextTick += setting->interval;
+            if (setting.nextTick <= now) {
+                task->call();
+                setting.nextTick += setting.interval;
             }
             //always remained.
-            remaining.insert(pair);
+            remaining[task] = setting;
         }
     }
 
