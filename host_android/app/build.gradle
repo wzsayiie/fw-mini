@@ -10,8 +10,8 @@ android {
     //compile configuration.
     defaultConfig {
         applicationId "domain.corp.store.flavor.app"
-        minSdkVersion 28
-        targetSdkVersion 32
+        minSdkVersion 21 //android 5.
+        targetSdkVersion 32 //android 12.
         versionCode 1
         versionName "1.0"
         ndk {
@@ -43,5 +43,5 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
 }
