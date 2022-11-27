@@ -22,7 +22,7 @@ std::string CButton::title() {
 
 define_reflectable_class_function(CButton, setClickTarget, "setter;args:target")
 void CButton::setClickTarget(const MFunction<void ()>::ptr &target) {
-    mClickTarget= target;
+    mClickTarget = target;
 }
 
 define_reflectable_class_function(CButton, clickTarget, "getter")
