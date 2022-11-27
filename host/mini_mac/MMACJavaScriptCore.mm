@@ -1,79 +1,98 @@
 #import "MMACJavaScriptCore.h"
 
-//assist:
+//object pool:
 
-@interface MCPPValueWrapper : NSObject
-@property (nonatomic) reflect::any CPPValue;
-@end
+@implementation MMACCppObjectHolder
 
-@implementation MCPPValueWrapper
-@end
-
-m_class(MJsFunction, MBaseFunction) {
-public:
-    MJsFunction(MMACJsVM *jsVM, JSValue *func) {
-        mJsVM = jsVM;
-        mFunc = func;
+- (instancetype)initWithCppValue:(const reflect::object::ptr &)cppObject {
+    if (self = [super init]) {
+        self.cppObject = cppObject;
     }
-
-    void on_call() const override {
-        //argument:
-        NSMutableArray *jsArgs = [NSMutableArray array];
-        
-        int count = reflect::get_arg_count();
-        for (int i = 0; i < count; ++i) {
-            reflect::any cppArg = reflect::get_arg_value(i);
-            JSValue *jsArg = mJsVM->getJsValue(cppArg);
-            
-            [jsArgs addObject:jsArg];
-        }
-        
-        //call.
-        JSValue *jsRet = [mFunc callWithArguments:jsArgs];
-        
-        //return.
-        reflect::any cppRet = mJsVM->getCppValue(jsRet);
-        reflect::return_value(cppRet);
-    }
-
-private:
-    MMACJsVM *mJsVM;
-    JSValue  *mFunc;
-};
-
-//js vm:
-
-void MMACJsVM::install() {
-    auto obj = MMACJsVM::create();
-    setInstance(obj);
+    return self;
 }
 
-MMACJsVM::MMACJsVM() {
-    mContext = [[JSContext alloc] init];
-    mContext.exceptionHandler = ^(JSContext *, JSValue *exception) {
-        onHandleException(exception);
-    };
-    
-    //a JSValue does not provide the method to determine whether it is a function.
-    [mContext evaluateScript:@"function _is_function(a) { return typeof a == 'function' }"];
-    
-    JSValue *isFunc = [mContext.globalObject valueForProperty:@"_is_function"];
-    mIsFunction = ^(JSValue *value) {
-        return [isFunc callWithArguments:@[ value ]].toBool;
-    };
+- (void)dealloc {
+    [MMACJsObjectPool.instance collectJsObject:@(self.hash)];
 }
 
-JSValue *MMACJsVM::getJsValue(const reflect::any &cppValue) {
+@end
+
+@implementation MMACJsObjectWeakRef
+
+- (instancetype)initWithJsValue:(JSValue *)jsObject {
+    if (self = [super init]) {
+        self.jsObject = jsObject;
+    }
+    return self;
+}
+
+@end
+
+static MMACJsObjectPool *sSharedJsObjectPool = nil;
+
+@implementation MMACJsObjectPool
+
++ (instancetype)instance {
+    if (!sSharedJsObjectPool) {
+        sSharedJsObjectPool = [[self alloc] init];
+    }
+    return sSharedJsObjectPool;
+}
+
++ (void)clearInstance {
+    sSharedJsObjectPool = nil;
+}
+
+- (instancetype)init {
+    if (self = [super init]) {
+        self.cppObjects = [NSMutableDictionary dictionary];
+        self.cppHolders = [NSMutableDictionary dictionary];
+        self.jsObjects  = [NSMutableDictionary dictionary];
+        self.jsHolders  = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
+- (JSValue *)jsValueFromCpp:(const reflect::any &)cppValue {
+    JSContext *context = MMACJsVM::instance()->context();
+    
     switch (cppValue.preferred_type()) {
         case reflect::data_type::is_object: {
-            MCPPValueWrapper *wrapper = [[MCPPValueWrapper alloc] init];
-            wrapper.CPPValue = cppValue;
+            reflect::object::ptr  cppObject  = cppValue.as_object_shared();
+            MMACCppObjectPointer *cppPointer = @((intptr_t)cppObject.get());
             
-            return [JSValue valueWithObject:wrapper inContext:mContext];
+            //null.
+            if (!cppObject) {
+                return nil;
+            }
+            
+            //query from cache:
+            {
+                MMACJsObjectWeakRef *holder = self.cppHolders[cppPointer];
+                if (holder) {
+                    return holder.jsObject;
+                }
+                
+                JSValue *held = self.jsObjects[cppPointer];
+                if (held) {
+                    return held;
+                }
+            }
+            
+            //new object.
+            MMACCppObjectHolder     *cppHolder  = [[MMACCppObjectHolder alloc] initWithCppValue:cppObject];
+            MMACCppObjectHolderHash *holderHash = @(cppHolder.hash);
+            JSValue                 *jsObject   = [JSValue valueWithObject:cppHolder inContext:context];
+            MMACJsObjectWeakRef     *jsWeak     = [[MMACJsObjectWeakRef alloc] initWithJsValue:jsObject];
+            
+            self.cppObjects[holderHash] = cppHolder;
+            self.cppHolders[cppPointer] = jsWeak   ;
+            
+            return jsObject;
         }
         
         case reflect::data_type::is_string: {
-            return [JSValue valueWithObject:@(cppValue.as_chars()) inContext:mContext];
+            return [JSValue valueWithObject:@(cppValue.as_chars()) inContext:context];
         }
         
         case reflect::data_type::is_byte  :
@@ -81,30 +100,48 @@ JSValue *MMACJsVM::getJsValue(const reflect::any &cppValue) {
         case reflect::data_type::is_int64 :
         case reflect::data_type::is_float :
         case reflect::data_type::is_double: {
-            return [JSValue valueWithDouble:cppValue.as_double() inContext:mContext];
+            return [JSValue valueWithDouble:cppValue.as_double() inContext:context];
         }
         
         case reflect::data_type::is_bool: {
-            return [JSValue valueWithBool:cppValue.as_bool() inContext:mContext];
+            return [JSValue valueWithBool:cppValue.as_bool() inContext:context];
         }
         
         default: {
-            return nullptr;
+            return nil;
         }
     }
 }
 
-reflect::any MMACJsVM::getCppValue(JSValue *jsValue) {
+- (reflect::any)cppValueFromJs:(JSValue *)jsValue {
     if (jsValue.isObject) {
-        if (mIsFunction(jsValue)) {
-            return MJsFunction::create(this, jsValue);
+        MMACCppObjectHolderHash *holderHash = @([jsValue.toObject hash]);
+        
+        //query from cache:
+        {
+            MMACCppObjectPointer *cppPointer = self.jsHolders[holderHash];
+            if (cppPointer) {
+                return ((reflect::object *)cppPointer.longLongValue);
+            }
             
-        } else if ([jsValue.toObject isKindOfClass:MCPPValueWrapper.class]) {
-            return ((MCPPValueWrapper *)jsValue.toObject).CPPValue;
-            
-        } else {
-            return nullptr;
+            MMACCppObjectHolder *cppHolder = self.cppObjects[holderHash];
+            if (cppHolder) {
+                return cppHolder.cppObject;
+            }
         }
+        
+        //new object if the value is a function.
+        if (MMACJsVM::instance()->isFunction(jsValue)) {
+            reflect::object::ptr  cppObject  = MMACJsFunction::create(jsValue);
+            MMACCppObjectPointer *cppPointer = @((intptr_t)cppObject.get());
+            
+            self.jsObjects[cppPointer] = jsValue   ;
+            self.jsHolders[holderHash] = cppPointer;
+            
+            return cppObject;
+        }
+        
+        return nullptr;
         
     } else if (jsValue.isString) {
         return jsValue.toString.UTF8String;
@@ -118,6 +155,93 @@ reflect::any MMACJsVM::getCppValue(JSValue *jsValue) {
     } else {
         return nullptr;
     }
+}
+
+- (void)collectCppObject:(MMACCppObjectPointer *)cppPointer {
+    JSValue *jsValue = self.jsObjects[cppPointer];
+    MMACCppObjectHolderHash *holderHash = @([jsValue.toObject hash]);
+    
+    [self.jsObjects removeObjectForKey:cppPointer];
+    [self.jsHolders removeObjectForKey:holderHash];
+}
+
+- (void)collectJsObject:(MMACCppObjectHolderHash *)holderHash {
+    MMACCppObjectHolder  *cppHolder  = self.cppObjects[holderHash];
+    MMACCppObjectPointer *cppPointer = @((intptr_t)cppHolder.cppObject.get());
+    
+    [self.cppObjects removeObjectForKey:holderHash];
+    [self.cppHolders removeObjectForKey:cppPointer];
+}
+
+@end
+
+//js fucntion:
+
+MMACJsFunction::MMACJsFunction(JSValue *func) {
+    mFunc = func;
+}
+
+MMACJsFunction::~MMACJsFunction() {
+    [MMACJsObjectPool.instance collectCppObject:@((intptr_t)this)];
+}
+
+void MMACJsFunction::on_call() const {
+    //argument:
+    NSMutableArray *jsArgs = [NSMutableArray array];
+        
+    int count = reflect::get_arg_count();
+    for (int i = 0; i < count; ++i) {
+        reflect::any cppArg = reflect::get_arg_value(i);
+        JSValue *jsArg = [MMACJsObjectPool.instance jsValueFromCpp:cppArg];
+            
+        [jsArgs addObject:jsArg];
+    }
+        
+    //call.
+    JSValue *jsRet = [mFunc callWithArguments:jsArgs];
+        
+    //return.
+    reflect::any cppRet = [MMACJsObjectPool.instance cppValueFromJs:jsRet];
+    reflect::return_value(cppRet);
+}
+
+
+//virtual machine:
+
+void MMACJsVM::install() {
+    auto obj = MMACJsVM::create();
+    setInstance(obj);
+}
+
+MMACJsVM *MMACJsVM::instance() {
+    return (MMACJsVM *)MJsVM::instance();
+}
+
+MMACJsVM::MMACJsVM() {
+    mContext = [[JSContext alloc] init];
+    mContext.exceptionHandler = ^(JSContext *, JSValue *exception) {
+        onHandleException(exception);
+    };
+    
+    //a JSValue does not provide the method to determine whether it is a function.
+    [mContext evaluateScript:@"function _is_function(a) { return typeof(a) == 'function' }"];
+    
+    JSValue *isFunc = [mContext.globalObject valueForProperty:@"_is_function"];
+    mIsFunction = ^(JSValue *value) {
+        return [isFunc callWithArguments:@[ value ]].toBool;
+    };
+}
+
+MMACJsVM::~MMACJsVM() {
+    [MMACJsObjectPool clearInstance];
+}
+
+bool MMACJsVM::isFunction(JSValue *value) {
+    return mIsFunction(value);
+}
+
+JSContext *MMACJsVM::context() {
+    return mContext;
 }
 
 void MMACJsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) {
@@ -142,12 +266,12 @@ void MMACJsVM::onEvaluate(const std::string &name, const std::string &script) {
 JSValue *MMACJsVM::onCallNativeFunction(const MBaseFunction::ptr &func, NSArray<JSValue *> *jsArgs) {
     std::vector<reflect::any> cppArgs;
     for (JSValue *jsArg in jsArgs) {
-        reflect::any cppArg = getCppValue(jsArg);
+        reflect::any cppArg = [MMACJsObjectPool.instance cppValueFromJs:jsArg];
         cppArgs.push_back(cppArg);
     }
     
     reflect::any cppRet = func->call_with_args(cppArgs);
-    return getJsValue(cppRet);
+    return [MMACJsObjectPool.instance jsValueFromCpp:cppRet];
 }
 
 void MMACJsVM::onHandleException(JSValue *exception) {
