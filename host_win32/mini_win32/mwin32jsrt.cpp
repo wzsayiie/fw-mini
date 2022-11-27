@@ -255,8 +255,6 @@ void MWin32JsVM::install()
 
 MWin32JsVM::MWin32JsVM()
 {
-    MWin32JsObjectPool::clearInstance();
-
     JsCreateRuntime(JsRuntimeAttributeNone, nullptr, &mRuntime);
     JsCreateContext(mRuntime, &mContext);
     JsSetCurrentContext(mContext);
@@ -264,6 +262,8 @@ MWin32JsVM::MWin32JsVM()
 
 MWin32JsVM::~MWin32JsVM()
 {
+    MWin32JsObjectPool::clearInstance();
+    
     JsRelease(mContext, nullptr);
     JsDisposeRuntime(mRuntime);
 }

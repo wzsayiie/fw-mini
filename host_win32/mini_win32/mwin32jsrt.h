@@ -29,8 +29,10 @@ private:
     static void CALLBACK onCollectJsObject(JsRef value, void *custom);
 
 private:
+    //js hold cpp objects.
     std::map<JsValueRef          , reflect::object::ptr> mCppObjects;
     std::map<reflect::object::ptr, JsValueRef          > mCppHolders;
+    //cpp hold js objects.
     std::map<reflect::object *   , JsValueRef          > mJsObjects ;
     std::map<JsValueRef          , reflect::object *   > mJsHolders ;
 };
