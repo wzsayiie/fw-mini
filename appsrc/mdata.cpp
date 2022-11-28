@@ -1,5 +1,11 @@
 #include "mdata.h"
 
+MData::MData() {
+}
+
+MData::MData(uint8_t *begin, uint8_t *end): mBytes(begin, end) {
+}
+
 void MData::appendBytes(uint8_t *begin, uint8_t *end) {
     mBytes.insert(mBytes.end(), begin, end);
 }

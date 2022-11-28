@@ -4,6 +4,10 @@
 
 m_class(MData, MObject) {
 public:
+    MData();
+    MData(uint8_t *begin, uint8_t *end);
+
+public:
     void appendBytes(uint8_t *begin, uint8_t *end);
     void appendData (const MData::ptr &data);
 

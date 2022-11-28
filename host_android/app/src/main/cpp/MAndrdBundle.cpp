@@ -3,7 +3,7 @@
 
 m_class(MAndrdBundle, MBundle) {
 protected:
-    MVector<uint8_t>::ptr onLoadResource(const std::string &path) override;
+    MData::ptr onLoadResource(const std::string &path) override;
 
     std::string onGetResBundleDirectory() override;
     std::string onGetDocumentDirectory () override;
@@ -26,7 +26,7 @@ Java_src_app_mini_MAndrdBundle_resBundleName(JNIEnv *, jclass) {
     return m_local_jstring << MBundle::ResBundleDirectoryName;
 }
 
-MVector<uint8_t>::ptr MAndrdBundle::onLoadResource(const std::string &path) {
+MData::ptr MAndrdBundle::onLoadResource(const std::string &path) {
     static jmethodID method = m_jenv->GetStaticMethodID(C(), __func__, "(Ljava/lang/String;)[B");
 
     jstring jPath = m_local_jstring << path;

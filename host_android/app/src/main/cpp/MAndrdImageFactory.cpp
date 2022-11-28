@@ -2,11 +2,11 @@
 
 m_class(MAndrdImageFactory, MImageFactory) {
 protected:
-    MImage::ptr onDecodeFFData(const MVector<uint8_t>::ptr &ffData) override;
-    MImage::ptr onDecodeBitmap(const MVector<uint8_t>::ptr &bitDat, int width, int height) override;
+    MImage::ptr onDecodeFFData(const MData::ptr &ffData) override;
+    MImage::ptr onDecodeBitmap(const MData::ptr &bitDat, int width, int height) override;
 
-    MVector<uint8_t>::ptr onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) override;
-    MVector<uint8_t>::ptr onEncodeBitmap(const MImage::ptr &image) override;
+    MData::ptr onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) override;
+    MData::ptr onEncodeBitmap(const MImage::ptr &image) override;
 
     MSize::ptr onGetPixelSize(const MImage::ptr &image) override;
 };
@@ -22,7 +22,7 @@ Java_src_app_mini_MAndrdImageFactory_install(JNIEnv *, jclass) {
     MImageFactory::setInstance(obj);
 }
 
-MImage::ptr MAndrdImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData) {
+MImage::ptr MAndrdImageFactory::onDecodeFFData(const MData::ptr &ffData) {
     static jmethodID method = m_jenv->GetStaticMethodID(C(), __func__, "([B)Landroid/graphics/Bitmap;");
 
     jbyteArray jFFData = m_local_jbytes << ffData;
@@ -36,15 +36,15 @@ MImage::ptr MAndrdImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffDa
     return nullptr;
 }
 
-MImage::ptr MAndrdImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitDat, int width, int height) {
+MImage::ptr MAndrdImageFactory::onDecodeBitmap(const MData::ptr &bitDat, int width, int height) {
     static jmethodID method = m_jenv->GetStaticMethodID(C(), __func__, "([III)Landroid/graphics/Bitmap;");
 
     //IMPORTANT: color byte order transform.
-    auto pixels = MVector<int>::create(); {
-        pixels->resize(width * height);
+    std::vector<int> pixels; {
+        pixels.resize(width * height);
 
-        auto src = (MColorRGBA *)bitDat->data();
-        auto dst = (MEarlyARGB *)pixels->data();
+        auto src = (MColorRGBA *)bitDat->bytes();
+        auto dst = (MEarlyARGB *)pixels.data();
         MColorTransform(src, dst, width * height);
     }
 
@@ -59,7 +59,7 @@ MImage::ptr MAndrdImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitD
     return nullptr;
 }
 
-MVector<uint8_t>::ptr MAndrdImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) {
+MData::ptr MAndrdImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) {
     static jmethodID method = m_jenv->GetStaticMethodID(C(), __func__, "(Landroid/graphics/Bitmap;C)[B");
 
     jchar jFormat = 0;
@@ -74,16 +74,16 @@ MVector<uint8_t>::ptr MAndrdImageFactory::onEncodeFFData(const MImage::ptr &imag
     return m_cpp_bytes << jFFData;
 }
 
-MVector<uint8_t>::ptr MAndrdImageFactory::onEncodeBitmap(const MImage::ptr &image) {
+MData::ptr MAndrdImageFactory::onEncodeBitmap(const MImage::ptr &image) {
     static jmethodID method = m_jenv->GetStaticMethodID(C(), __func__, "(Landroid/graphics/Bitmap;)[I");
 
     jobject jBitmap = ((MAndrdImage *)image.get())->mBitmap.get();
     jobject jBitDat = m_jenv->CallStaticObjectMethod(C(), method, jBitmap);
 
     //IMPORTANT: color byte order conversion.
-    MVector<uint8_t>::ptr bitDat = m_cpp_ints << jBitDat; {
-        auto pixels = (int *)bitDat->data();
-        auto count  = (int  )bitDat->size() / 4;
+    MData::ptr bitDat = m_cpp_ints << jBitDat; {
+        int *pixels = (int *)bitDat->bytes();
+        int  count  = bitDat->length() / 4;
         MColorTransform((MEarlyARGB *)pixels, (MColorRGBA *)pixels, count);
     }
 

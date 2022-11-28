@@ -38,13 +38,13 @@ std::shared_ptr<_jobject> _m_global_jobject_maker::operator<<(jobject ref) const
 
 //type conversion:
 
-jbyteArray _m_local_jbytes_maker::operator<<(const MVector<uint8_t>::ptr &bytes) const {
-    if (!bytes || bytes->empty()) {
+jbyteArray _m_local_jbytes_maker::operator<<(const MData::ptr &data) const {
+    if (!data || data->empty()) {
         return nullptr;
     }
 
-    auto byteBuf = (jbyte *)bytes->data();
-    auto byteNum = (jsize  )bytes->size();
+    auto byteBuf = (jbyte *)data->bytes ();
+    auto byteNum = (jsize  )data->length();
 
     jbyteArray jBytes = sEnv->NewByteArray(byteNum);
     sEnv->SetByteArrayRegion(jBytes, 0, byteNum, byteBuf);
@@ -52,13 +52,13 @@ jbyteArray _m_local_jbytes_maker::operator<<(const MVector<uint8_t>::ptr &bytes)
     return jBytes;
 }
 
-jintArray _m_local_jints_maker::operator<<(const MVector<int>::ptr &bytes) const {
-    if (!bytes || bytes->empty()) {
+jintArray _m_local_jints_maker::operator<<(const std::vector<int> &data) const {
+    if (data.empty()) {
         return nullptr;
     }
 
-    auto intBuf = (jint *)bytes->data();
-    auto intNum = (jsize )bytes->size();
+    auto intBuf = (jint *)data.data();
+    auto intNum = (jsize )data.size();
 
     jintArray jInts = sEnv->NewIntArray(intNum);
     sEnv->SetIntArrayRegion(jInts, 0, intNum, intBuf);
@@ -74,7 +74,7 @@ jstring _m_local_jstring_maker::operator<<(const std::string &str) const {
     return sEnv->NewStringUTF(str.c_str());
 }
 
-MVector<uint8_t>::ptr _m_cpp_bytes_maker::operator<<(jobject jObj) const {
+MData::ptr _m_cpp_bytes_maker::operator<<(jobject jObj) const {
     if (!jObj) {
         return nullptr;
     }
@@ -83,13 +83,13 @@ MVector<uint8_t>::ptr _m_cpp_bytes_maker::operator<<(jobject jObj) const {
     auto byteBuf = (uint8_t * )sEnv->GetByteArrayElements(jBytes, nullptr);
     auto byteNum = (size_t    )sEnv->GetArrayLength(jBytes);
 
-    auto bytes = MVector<uint8_t>::create(byteBuf, byteBuf + byteNum);
+    auto bytes = MData::create(byteBuf, byteBuf + byteNum);
     sEnv->ReleaseByteArrayElements(jBytes, (jbyte *)byteBuf, 0);
 
     return bytes;
 }
 
-MVector<uint8_t>::ptr _m_cpp_ints_maker::operator<<(jobject jObj) const {
+MData::ptr _m_cpp_ints_maker::operator<<(jobject jObj) const {
     if (!jObj) {
         return nullptr;
     }
@@ -99,7 +99,7 @@ MVector<uint8_t>::ptr _m_cpp_ints_maker::operator<<(jobject jObj) const {
     auto intNum  = (size_t   )sEnv->GetArrayLength(jInts);
     auto byteNum = intNum * sizeof(jint);
 
-    auto bytes = MVector<uint8_t>::create(byteBuf, byteBuf + byteNum);
+    auto bytes = MData::create(byteBuf, byteBuf + byteNum);
     sEnv->ReleaseIntArrayElements(jInts, (jint *)byteBuf, 0);
 
     return bytes;

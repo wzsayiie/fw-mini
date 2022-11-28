@@ -1,8 +1,7 @@
 #pragma once
 
 #include <jni.h>
-#include "mobject.h"
-#include "mcontainers.h"
+#include "mdata.h"
 
 //environment:
 
@@ -28,11 +27,11 @@ const _m_global_jobject_maker m_global_jobject;
 //type conversion:
 
 struct _m_local_jbytes_maker {
-    jbyteArray operator<<(const MVector<uint8_t>::ptr &bytes) const;
+    jbyteArray operator<<(const MData::ptr &data) const;
 };
 
 struct _m_local_jints_maker {
-    jintArray operator<<(const MVector<int>::ptr &bytes) const;
+    jintArray operator<<(const std::vector<int> &data) const;
 };
 
 struct _m_local_jstring_maker {
@@ -44,11 +43,11 @@ const _m_local_jints_maker   m_local_jints  ;
 const _m_local_jstring_maker m_local_jstring;
 
 struct _m_cpp_bytes_maker {
-    MVector<uint8_t>::ptr operator<<(jobject jObj) const;
+    MData::ptr operator<<(jobject jObj) const;
 };
 
 struct _m_cpp_ints_maker {
-    MVector<uint8_t>::ptr operator<<(jobject jObj) const;
+    MData::ptr operator<<(jobject jObj) const;
 };
 
 struct _m_cpp_string_maker {
