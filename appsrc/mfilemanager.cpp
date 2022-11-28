@@ -29,30 +29,30 @@ MFileManager *MFileManager::instance() {
 }
 
 define_reflectable_class_function(MFileManager, bytesFromBundle, "args:path")
-MVector<uint8_t>::ptr MFileManager::bytesFromBundle(const std::string &path) {
+MData::ptr MFileManager::bytesFromBundle(const std::string &path) {
     if (path.empty()) {
         return nullptr;
     }
 
-    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadResource(m_normal_path path);
-    if (!bytes || bytes->empty()) {
+    MData::ptr data = MBundle::instance()->loadResource(m_normal_path path);
+    if (!data || data->empty()) {
         return nullptr;
     }
 
-    return bytes;
+    return data;
 }
 
 define_reflectable_class_function(MFileManager, bytesFromFile)
-MVector<uint8_t>::ptr MFileManager::bytesFromFile(const std::string &path) {
-    auto bytes = MVector<uint8_t>::create();
+MData::ptr MFileManager::bytesFromFile(const std::string &path) {
+    auto data = MData::create();
     
     std::string nPath = m_normal_path path;
     dash::read_file(nPath.c_str(), [&](int size) {
-        bytes->resize((size_t)size);
-        return bytes->data();
+        data->resize(size);
+        return data->bytes();
     });
 
-    return bytes->empty() ? nullptr : bytes;
+    return data->empty() ? nullptr : data;
 }
 
 define_reflectable_class_function(MFileManager, u8stringFromBundle, "args:path")
@@ -61,13 +61,13 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
         return "";
     }
 
-    MVector<uint8_t>::ptr bytes = MBundle::instance()->loadResource(m_normal_path path);
-    if (!bytes || bytes->empty()) {
+    MData::ptr data = MBundle::instance()->loadResource(m_normal_path path);
+    if (!data || data->empty()) {
         return "";
     }
 
-    auto bgn = (char *)bytes->data();
-    auto end = (char *)bytes->data() + bytes->size();
+    auto bgn = (char *)data->bytes();
+    auto end = (char *)data->bytesEnd();
     return std::string(bgn, end);
 }
 
@@ -85,10 +85,10 @@ std::string MFileManager::u8stringFromFile(const std::string &path) {
 }
 
 define_reflectable_class_function(MFileManager, writeBytesToFile, "args:bytes,path")
-void MFileManager::writeBytesToFile(const MVector<uint8_t>::ptr &bytes, const std::string &path) {
+void MFileManager::writeBytesToFile(const MData::ptr &data, const std::string &path) {
     std::string nPath = m_normal_path path;
-    if (bytes) {
-        dash::write_file(nPath.c_str(), bytes->data(), (int)bytes->size());
+    if (data) {
+        dash::write_file(nPath.c_str(), data->bytes(), data->length());
     } else {
         //clear the file.
         dash::write_file(nPath.c_str(), nullptr, 0);
@@ -165,7 +165,7 @@ MBundle *MBundle::instance() {
 }
 
 define_reflectable_class_function(MBundle, loadResource, "args:path")
-MVector<uint8_t>::ptr MBundle::loadResource(const std::string &path) {
+MData::ptr MBundle::loadResource(const std::string &path) {
     if (!path.empty()) {
         return onLoadResource(path);
     }
@@ -184,7 +184,7 @@ std::string MBundle::temporaryDirectory() { _D(mTemporaryDirectory, onGetTempora
 
 #undef  _D
 
-MVector<uint8_t>::ptr MBundle::onLoadResource(const std::string &path) {
+MData::ptr MBundle::onLoadResource(const std::string &path) {
     return nullptr;
 }
 

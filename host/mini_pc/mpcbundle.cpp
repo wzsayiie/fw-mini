@@ -13,14 +13,14 @@ void MPCBundle::install() {
     setInstance(obj);
 }
 
-MVector<uint8_t>::ptr MPCBundle::onLoadResource(const std::string &path) {
+MData::ptr MPCBundle::onLoadResource(const std::string &path) {
     std::filesystem::path resPath = resBundleDirectory();
     resPath.append(path);
 
-    auto res = MVector<uint8_t>::create();
+    auto res = MData::create();
     dash::read_file(resPath.string().c_str(), [&](int size) {
-        res->resize((size_t)size);
-        return res->data();
+        res->resize(size);
+        return res->bytes();
     });
     return res;
 }

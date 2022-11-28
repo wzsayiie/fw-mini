@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mcontainers.h"
+#include "mdata.h"
 #include "mgeometry.h"
 #include "mgraphics.h" //bitmap processing will use color struct.
 
@@ -13,16 +13,16 @@ m_enum(MImageFileFormat) {
 
 m_class(MImage, MObject) {
 public:
-    static MImage::ptr fromBundle(const std::string &path);
-    static MImage::ptr fromFile  (const std::string &path);
-    static MImage::ptr fromFFData(const MVector<uint8_t>::ptr &ffData);
-    static MImage::ptr fromBitmap(const MVector<uint8_t>::ptr bitmap, int width, int height);
+    static MImage::ptr fromBundle(const std::string &path  );
+    static MImage::ptr fromFile  (const std::string &path  );
+    static MImage::ptr fromFFData(const MData::ptr  &ffData);
+    static MImage::ptr fromBitmap(const MData::ptr  &bitmap, int width, int height);
 
 public:
     void writeFile(const std::string &path, MImageFileFormat format);
 
-    MVector<uint8_t>::ptr copyFFData(MImageFileFormat format);
-    MVector<uint8_t>::ptr copyBitmap();
+    MData::ptr copyFFData(MImageFileFormat format);
+    MData::ptr copyBitmap();
 
     MSize::ptr pixelSize();
 };
@@ -35,26 +35,26 @@ public:
     static MImageFactory *instance();
 
 public:
-    MImage::ptr decodeFFData(const MVector<uint8_t>::ptr &ffData);
-    MImage::ptr decodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height);
+    MImage::ptr decodeFFData(const MData::ptr &ffData);
+    MImage::ptr decodeBitmap(const MData::ptr &bitmap, int width, int height);
 
-    MVector<uint8_t>::ptr encodeFFData(const MImage::ptr &image, MImageFileFormat format);
-    MVector<uint8_t>::ptr encodeBitmap(const MImage::ptr &image);
+    MData::ptr encodeFFData(const MImage::ptr &image, MImageFileFormat format);
+    MData::ptr encodeBitmap(const MImage::ptr &image);
 
     MSize::ptr getPixelSize(const MImage::ptr &image);
 
 protected:
     M_HOST_IMPL virtual
-        MImage::ptr onDecodeFFData(const MVector<uint8_t>::ptr &ffData);
+        MImage::ptr onDecodeFFData(const MData::ptr &ffData);
     
     M_HOST_IMPL virtual
-        MImage::ptr onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height);
+        MImage::ptr onDecodeBitmap(const MData::ptr &bitmap, int width, int height);
 
     M_HOST_IMPL virtual
-        MVector<uint8_t>::ptr onEncodeFFData(const MImage::ptr &image, MImageFileFormat format);
+        MData::ptr onEncodeFFData(const MImage::ptr &image, MImageFileFormat format);
     
     M_HOST_IMPL virtual
-        MVector<uint8_t>::ptr onEncodeBitmap(const MImage::ptr &image);
+        MData::ptr onEncodeBitmap(const MImage::ptr &image);
 
     M_HOST_IMPL virtual
         MSize::ptr onGetPixelSize(const MImage::ptr &image);

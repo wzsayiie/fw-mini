@@ -6,15 +6,15 @@ void MWin32ImageFactory::install()
     setInstance(obj);
 }
 
-MImage::ptr MWin32ImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData)
+MImage::ptr MWin32ImageFactory::onDecodeFFData(const MData::ptr &ffData)
 {
     //copy the memory data:
-    HGLOBAL memory = GlobalAlloc(GMEM_FIXED, (SIZE_T)ffData->size());
+    HGLOBAL memory = GlobalAlloc(GMEM_FIXED, (SIZE_T)ffData->length());
     d_defer { GlobalFree(memory); };
 
     if (void *bytes = GlobalLock(memory))
     {
-        memcpy(bytes, ffData->data(), ffData->size());
+        memcpy(bytes, ffData->bytes(), (size_t)ffData->length());
         GlobalUnlock(memory);
     }
     else
@@ -43,10 +43,10 @@ MImage::ptr MWin32ImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffDa
     return nullptr;
 }
 
-MImage::ptr MWin32ImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height)
+MImage::ptr MWin32ImageFactory::onDecodeBitmap(const MData::ptr &bitmap, int width, int height)
 {
     auto gdiImage = new Gdiplus::Bitmap(width, height, PixelFormat32bppARGB);
-    auto pixels   = (MColorRGBA *)bitmap->data();
+    auto pixels   = (MColorRGBA *)bitmap->bytes();
 
     for (int y = 0; y < height; ++y)
     {
@@ -64,7 +64,7 @@ MImage::ptr MWin32ImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitm
     return w32image;
 }
 
-MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format)
+MData::ptr MWin32ImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format)
 {
     //find the encoder:
     const WCHAR *encoderId = nullptr;
@@ -107,12 +107,12 @@ MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeFFData(const MImage::ptr &imag
     SIZE_T size = GlobalSize(memory);
 
     //copy the data:
-    auto ffData = MVector<uint8_t>::create();
-    ffData->resize(size);
+    auto ffData = MData::create();
+    ffData->resize((int)size);
 
     if (void *bytes = GlobalLock(memory))
     {
-        memcpy(ffData->data(), bytes, size);
+        memcpy(ffData->bytes(), bytes, size);
         GlobalUnlock(bytes);
 
         return ffData;
@@ -123,7 +123,7 @@ MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeFFData(const MImage::ptr &imag
     }
 }
 
-MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeBitmap(const MImage::ptr &image)
+MData::ptr MWin32ImageFactory::onEncodeBitmap(const MImage::ptr &image)
 {
     //draw the image on a bitmap context:
     MWin32Image::ptr w32image = std::static_pointer_cast<MWin32Image>(image);
@@ -136,10 +136,10 @@ MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeBitmap(const MImage::ptr &imag
     graphics->DrawImage(gdiImage, 0, 0, width, height);
 
     //copy bitmap bytes:
-    auto bytes = MVector<uint8_t>::create();
-    bytes->resize((size_t)(width * height * 4));
+    auto data = MData::create();
+    data->resize((int)(width * height * 4));
 
-    auto pixels = (MColorRGBA *)bytes->data();
+    auto pixels = (MColorRGBA *)data->bytes();
     for (UINT x = 0; x < width; ++x)
     {
         for (UINT y = 0; y < height; ++y)
@@ -155,7 +155,7 @@ MVector<uint8_t>::ptr MWin32ImageFactory::onEncodeBitmap(const MImage::ptr &imag
         }
     }
 
-    return bytes;
+    return data;
 }
 
 MSize::ptr MWin32ImageFactory::onGetPixelSize(const MImage::ptr &image)

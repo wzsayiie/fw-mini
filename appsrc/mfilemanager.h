@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mcontainers.h"
+#include "mdata.h"
 #include "mobject.h"
 
 //file manager:
@@ -11,14 +12,14 @@ public:
 
 public:
     //data read and write:
-    MVector<uint8_t>::ptr bytesFromBundle(const std::string &path);
-    MVector<uint8_t>::ptr bytesFromFile  (const std::string &path);
+    MData::ptr bytesFromBundle(const std::string &path);
+    MData::ptr bytesFromFile  (const std::string &path);
 
     std::string u8stringFromBundle(const std::string &path);
     std::string u8stringFromFile  (const std::string &path);
 
-    void writeBytesToFile   (const MVector<uint8_t>::ptr &bytes , const std::string &path);
-    void writeU8StringToFile(const std::string           &string, const std::string &path);
+    void writeBytesToFile   (const MData::ptr  &data  , const std::string &path);
+    void writeU8StringToFile(const std::string &string, const std::string &path);
 
     //path control:
     MVector<std::string>::ptr contentsOfDirectory(const std::string &path);
@@ -41,14 +42,14 @@ public:
     static MBundle *instance();
 
 public:
-    MVector<uint8_t>::ptr loadResource(const std::string &path);
+    MData::ptr loadResource(const std::string &path);
 
     std::string resBundleDirectory();
     std::string documentDirectory ();
     std::string temporaryDirectory();
 
 protected:
-    M_HOST_IMPL virtual MVector<uint8_t>::ptr onLoadResource(const std::string &path);
+    M_HOST_IMPL virtual MData::ptr onLoadResource(const std::string &path);
 
     M_HOST_IMPL virtual std::string onGetResBundleDirectory();
     M_HOST_IMPL virtual std::string onGetDocumentDirectory ();
