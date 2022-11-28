@@ -3,6 +3,7 @@
 #include "mapp.h"
 #include "mcontainers.h"
 #include "mcontext.h"
+#include "mdata.h"
 #include "mencode.h"
 #include "mevent.h"
 #include "mfilemanager.h"
