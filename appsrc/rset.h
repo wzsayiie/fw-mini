@@ -6,14 +6,14 @@ namespace reflect {
     
 //base set:
 
-class base_set;
+class generic_set;
 
-template<> struct typeids_of<base_set> {
-    static constexpr const void *value[] = { "base_set", nullptr };
+template<> struct typeids_of<generic_set> {
+    static constexpr const void *value[] = { "generic_set", nullptr };
 };
 
-class d_exportable base_set
-    : public extends<base_set, object>
+class d_exportable generic_set
+    : public extends<generic_set, object>
     , public std::set<any>
 {
 public:
@@ -70,7 +70,7 @@ template<class Value> struct typeids_of<set<Value>> {
     };
 };
 
-template<class Value> class set : public extends<set<Value>, base_set> {
+template<class Value> class set : public extends<set<Value>, generic_set> {
 public:
     typedef set_iterator<Value, typename std::set<any>::iterator> iterator;
 

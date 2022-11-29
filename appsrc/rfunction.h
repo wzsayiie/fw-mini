@@ -68,15 +68,15 @@ template<int Index, class Ret, class... Args> struct caller<Index, Index, Ret (A
     }
 };
 
-//base_function:
+//function:
 
-class base_function;
+class generic_function;
 
-template<> struct typeids_of<base_function> {
-    static constexpr const void *value[] = { "base_function", nullptr };
+template<> struct typeids_of<generic_function> {
+    static constexpr const void *value[] = { "generic_function", nullptr };
 };
 
-class d_exportable base_function : public extends<base_function, object> {
+class d_exportable generic_function : public extends<generic_function, object> {
 public:
     any call_with_args(const std::vector<any> &args) const;
 
@@ -106,7 +106,7 @@ template<class Ret> struct typeids_of<function<Ret ()>> {
 };
 
 template<class Ret, class... Args> class function<Ret (Args...)>
-    : public extends<function<Ret (Args...)>, base_function>
+    : public extends<function<Ret (Args...)>, generic_function>
 {
 public:
     function() {
@@ -163,7 +163,7 @@ template<class Ret, class... Args> struct pointer_cast_as<function<Ret (Args...)
     //function<...> has no additional virtual functions, can be converted to each others.
 
     static typename function<Ret (Args...)>::ptr from(const object::ptr &obj) {
-        auto is_func = std::dynamic_pointer_cast<base_function>(obj);
+        auto is_func = std::dynamic_pointer_cast<generic_function>(obj);
         if (is_func) {
             return std::static_pointer_cast<function<Ret (Args...)>>(obj);
         }

@@ -2,35 +2,35 @@
 
 //generic functions:
 
-static MBaseVector::ptr MVector_create(const std::string &vType) {
+static MGenericVector::ptr MVector_create(const std::string &vType) {
     if (vType == "number") { return MVector<double     >::create(); }
     if (vType == "string") { return MVector<std::string>::create(); }
     
     return nullptr;
 }
 
-static MBaseMap::ptr MMap_string_create(const std::string &vType) {
+static MGenericMap::ptr MMap_string_create(const std::string &vType) {
     if (vType == "number") { return MMap<std::string, double     >::create(); }
     if (vType == "string") { return MMap<std::string, std::string>::create(); }
     
     return nullptr;
 }
 
-static MBaseMap::ptr MMap_number_create(const std::string &vType) {
+static MGenericMap::ptr MMap_number_create(const std::string &vType) {
     if (vType == "number") { return MMap<double, double     >::create(); }
     if (vType == "string") { return MMap<double, std::string>::create(); }
     
     return nullptr;
 }
 
-static MBaseMap::ptr MMap_create(const std::string &kType, const std::string &vType) {
+static MGenericMap::ptr MMap_create(const std::string &kType, const std::string &vType) {
     if (kType == "string") { return MMap_string_create(vType); }
     if (kType == "number") { return MMap_number_create(vType); }
     
     return nullptr;
 }
 
-static MBaseSet::ptr MSet_create(const std::string &vType) {
+static MGenericSet::ptr MSet_create(const std::string &vType) {
     if (vType == "number") { return MSet<double     >::create(); }
     if (vType == "string") { return MSet<std::string>::create(); }
     
@@ -58,7 +58,7 @@ static std::string MGetObjectClassSymbol(const reflect::object::ptr &obj) {
 }
 
 static void MInjectClassFunction(
-    const char *clsName, const char *fcnName, const reflect::base_function::ptr &func)
+    const char *clsName, const char *fcnName, const reflect::generic_function::ptr &func)
 {
     reflect::inject(clsName, fcnName, func);
 }

@@ -39,7 +39,7 @@ private:
 
 //js function:
 
-m_class(MWin32JsFunction, MBaseFunction)
+m_class(MWin32JsFunction, MGenericFunction)
 {
 public:
     MWin32JsFunction(JsValueRef jsFunc);
@@ -64,7 +64,7 @@ public:
     ~MWin32JsVM();
 
 protected:
-    void onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) override;
+    void onRegisterFunction(const std::string &name, const MGenericFunction::ptr &func) override;
     void onEvaluate(const std::string &name, const std::string &script) override;
 
 private:
@@ -76,7 +76,7 @@ private:
         std::wstring *appended, const wchar_t *desc, JsValueRef obj, const wchar_t *keyName);
 
 private:
-    std::vector<MBaseFunction::ptr> mNativeFunctions;
+    std::vector<MGenericFunction::ptr> mNativeFunctions;
 
     JsRuntimeHandle mRuntime = JS_INVALID_RUNTIME_HANDLE;
     JsContextRef    mContext = JS_INVALID_REFERENCE;

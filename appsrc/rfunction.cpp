@@ -35,7 +35,7 @@ void return_value(const any &value) {
     }
 }
 
-any base_function::call_with_args(const std::vector<any> &args) const {
+any generic_function::call_with_args(const std::vector<any> &args) const {
     stack_frame frame = { args };
     s_frames->push_back(frame);
 

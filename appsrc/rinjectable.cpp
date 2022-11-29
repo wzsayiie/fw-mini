@@ -6,7 +6,7 @@ namespace reflect {
 
 static dash::lazy<std::map<symbol, function_table::ptr>> s_tables;
 
-void function_table::insert(const char *name, const base_function::ptr &func) {
+void function_table::insert(const char *name, const generic_function::ptr &func) {
     symbol sym = symbol::make(name);
     if (sym && func) {
         _functions.insert({ sym, func });
@@ -19,7 +19,7 @@ void function_table::append(const function_table::ptr &table) {
     }
 }
 
-base_function::ptr function_table::find(const char *name) {
+generic_function::ptr function_table::find(const char *name) {
     symbol sym = symbol::find(name);
     if (!sym) {
         return nullptr;
@@ -49,7 +49,7 @@ static function_table::ptr injected_table_of(const char *cls_name) {
     return inserted.first->second;
 }
 
-void inject(const char *cls_name, const char *fcn_name, const base_function::ptr &func) {
+void inject(const char *cls_name, const char *fcn_name, const generic_function::ptr &func) {
     function_table::ptr table = injected_table_of(cls_name);
     if (table) {
         table->insert(fcn_name, func);
@@ -65,7 +65,7 @@ void inject(const char *cls_name, const function_table::ptr &table) {
 
 //injectable:
 
-base_function::ptr injectable::find_injected(const char *name) {
+generic_function::ptr injectable::find_injected(const char *name) {
     auto it = s_tables->find(_cls_sym ? _cls_sym : class_symbol());
     if (it != s_tables->end()) {
         return it->second->find(name);

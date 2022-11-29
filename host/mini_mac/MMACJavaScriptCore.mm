@@ -244,11 +244,11 @@ JSContext *MMACJsVM::context() {
     return mContext;
 }
 
-void MMACJsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) {
+void MMACJsVM::onRegisterFunction(const std::string &name, const MGenericFunction::ptr &func) {
     NSString *key = @(name.c_str());
     
     //NOTE: let the block hold the object, not the pointer.
-    MBaseFunction::ptr strongFunc = func;
+    MGenericFunction::ptr strongFunc = func;
     
     //supports up to 4 parameters.
     mContext[key] = ^(JSValue *a, JSValue *b, JSValue *c, JSValue *d) {
@@ -263,7 +263,7 @@ void MMACJsVM::onEvaluate(const std::string &name, const std::string &script) {
     [mContext evaluateScript:scriptText withSourceURL:sourceURL];
 }
 
-JSValue *MMACJsVM::onCallNativeFunction(const MBaseFunction::ptr &func, NSArray<JSValue *> *jsArgs) {
+JSValue *MMACJsVM::onCallNativeFunction(const MGenericFunction::ptr &func, NSArray<JSValue *> *jsArgs) {
     std::vector<reflect::any> cppArgs;
     for (JSValue *jsArg in jsArgs) {
         reflect::any cppArg = [MMACJsObjectPool.instance cppValueFromJs:jsArg];

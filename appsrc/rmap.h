@@ -6,14 +6,14 @@ namespace reflect {
 
 //base map:
 
-class base_map;
+class generic_map;
 
-template<> struct typeids_of<base_map> {
-    static constexpr const void *value[] = { "base_map", nullptr };
+template<> struct typeids_of<generic_map> {
+    static constexpr const void *value[] = { "generic_map", nullptr };
 };
 
-class d_exportable base_map
-    : public extends<base_map, object>
+class d_exportable generic_map
+    : public extends<generic_map, object>
     , public std::map<any, any>
 {
 public:
@@ -99,7 +99,7 @@ template<class Key, class Value> struct typeids_of<map<Key, Value>> {
     };
 };
 
-template<class Key, class Value> class map : public extends<map<Key, Value>, base_map> {
+template<class Key, class Value> class map : public extends<map<Key, Value>, generic_map> {
 public:
     typedef map_iterator<Key, Value, typename std::map<any, any>::iterator> iterator;
 

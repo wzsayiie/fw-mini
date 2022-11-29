@@ -8,16 +8,16 @@ namespace reflect {
 
 class d_exportable function_table : public dash::extends<function_table, dash::object> {
 public:
-    void insert(const char *name, const base_function::ptr &func);
+    void insert(const char *name, const generic_function::ptr &func);
     void append(const function_table::ptr &table);
 
-    base_function::ptr find(const char *name);
+    generic_function::ptr find(const char *name);
 
 private:
-    std::map<symbol, base_function::ptr> _functions;
+    std::map<symbol, generic_function::ptr> _functions;
 };
 
-d_exportable void inject(const char *cls_name, const char *fcn_name, const base_function::ptr &func);
+d_exportable void inject(const char *cls_name, const char *fcn_name, const generic_function::ptr &func);
 d_exportable void inject(const char *cls_name, const function_table::ptr &table);
 
 //injectable:
@@ -28,7 +28,7 @@ template<> struct typeids_of<class injectable> {
 
 class d_exportable injectable : public extends<injectable, object> {
 public:
-    base_function::ptr find_injected(const char *name);
+    generic_function::ptr find_injected(const char *name);
     void set_class_symbol(const symbol &sym);
     
 private:

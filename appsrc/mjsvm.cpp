@@ -16,17 +16,17 @@ MJsVM *MJsVM::instance() {
 }
 
 define_reflectable_class_function(MJsVM, setExceptionListener, "setter;args:listener")
-void MJsVM::setExceptionListener(const MBaseFunction::ptr &listener) {
+void MJsVM::setExceptionListener(const MGenericFunction::ptr &listener) {
     mExceptionListener = listener;
 }
 
 define_reflectable_class_function(MJsVM, exceptionListener, "getter")
-MBaseFunction::ptr MJsVM::exceptionListener() {
+MGenericFunction::ptr MJsVM::exceptionListener() {
     return mExceptionListener;
 }
 
 define_reflectable_class_function(MJsVM, registerFunction, "args:name,func")
-void MJsVM::registerFunction(const std::string &name, const MBaseFunction::ptr &func) {
+void MJsVM::registerFunction(const std::string &name, const MGenericFunction::ptr &func) {
     if (!name.empty() && func) {
         onRegisterFunction(name, func);
     }
@@ -45,7 +45,7 @@ void MJsVM::onException(const std::string &message) {
     }
 }
 
-void MJsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) {
+void MJsVM::onRegisterFunction(const std::string &name, const MGenericFunction::ptr &func) {
 }
 
 void MJsVM::onEvaluate(const std::string &name, const std::string &script) {

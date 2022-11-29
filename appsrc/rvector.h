@@ -6,14 +6,14 @@ namespace reflect {
 
 //base vector:
 
-class base_vector;
+class generic_vector;
 
-template<> struct typeids_of<base_vector> {
-    static constexpr const void *value[] = { "base_vector", nullptr };
+template<> struct typeids_of<generic_vector> {
+    static constexpr const void *value[] = { "generic_vector", nullptr };
 };
 
-class d_exportable base_vector
-    : public extends<base_vector, object>
+class d_exportable generic_vector
+    : public extends<generic_vector, object>
     , public std::vector<any>
 {
 public:
@@ -90,7 +90,7 @@ template<class Value> struct typeids_of<vector<Value>> {
     };
 };
 
-template<class Value> class vector : public extends<vector<Value>, base_vector> {
+template<class Value> class vector : public extends<vector<Value>, generic_vector> {
 public:
     typedef vector_iterator<Value, typename std::vector<any>::iterator>         iterator;
     typedef vector_iterator<Value, typename std::vector<any>::reverse_iterator> reverse_iterator;

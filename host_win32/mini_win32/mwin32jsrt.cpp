@@ -268,7 +268,7 @@ MWin32JsVM::~MWin32JsVM()
     JsDisposeRuntime(mRuntime);
 }
 
-void MWin32JsVM::onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func)
+void MWin32JsVM::onRegisterFunction(const std::string &name, const MGenericFunction::ptr &func)
 {
     auto funcId = (intptr_t)mNativeFunctions.size();
     mNativeFunctions.push_back(func);
@@ -323,7 +323,7 @@ JsValueRef MWin32JsVM::onCallNativeFunction(
     //function.
     auto jsVM   = (MWin32JsVM *)instance();
     auto funcId = (intptr_t)custom;
-    MBaseFunction::ptr func = jsVM->mNativeFunctions[funcId];
+    MGenericFunction::ptr func = jsVM->mNativeFunctions[funcId];
 
     //build argument:
     std::vector<reflect::any> cppArgs;

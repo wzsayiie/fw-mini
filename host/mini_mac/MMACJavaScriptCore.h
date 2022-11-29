@@ -39,7 +39,7 @@
 //js function:
 class MMACJsVM;
 
-m_class(MMACJsFunction, MBaseFunction) {
+m_class(MMACJsFunction, MGenericFunction) {
 public:
     MMACJsFunction(JSValue *func);
     ~MMACJsFunction();
@@ -67,11 +67,11 @@ public:
     JSContext *context();
 
 protected:
-    void onRegisterFunction(const std::string &name, const MBaseFunction::ptr &func) override;
+    void onRegisterFunction(const std::string &name, const MGenericFunction::ptr &func) override;
     void onEvaluate(const std::string &name, const std::string &script) override;
     
 private:
-    JSValue *onCallNativeFunction(const MBaseFunction::ptr &func, NSArray<JSValue *> *args);
+    JSValue *onCallNativeFunction(const MGenericFunction::ptr &func, NSArray<JSValue *> *args);
     void onHandleException(JSValue *exception);
     
 private:
