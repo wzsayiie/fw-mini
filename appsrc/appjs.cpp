@@ -1,46 +1,5 @@
 #include "minikit.h"
 
-//generic functions:
-
-static MGenericVector::ptr MVector_create(const std::string &vType) {
-    if (vType == "number") { return MVector<double     >::create(); }
-    if (vType == "string") { return MVector<std::string>::create(); }
-    
-    return nullptr;
-}
-
-static MGenericMap::ptr MMap_string_create(const std::string &vType) {
-    if (vType == "number") { return MMap<std::string, double     >::create(); }
-    if (vType == "string") { return MMap<std::string, std::string>::create(); }
-    
-    return nullptr;
-}
-
-static MGenericMap::ptr MMap_number_create(const std::string &vType) {
-    if (vType == "number") { return MMap<double, double     >::create(); }
-    if (vType == "string") { return MMap<double, std::string>::create(); }
-    
-    return nullptr;
-}
-
-static MGenericMap::ptr MMap_create(const std::string &kType, const std::string &vType) {
-    if (kType == "string") { return MMap_string_create(vType); }
-    if (kType == "number") { return MMap_number_create(vType); }
-    
-    return nullptr;
-}
-
-static MGenericSet::ptr MSet_create(const std::string &vType) {
-    if (vType == "number") { return MSet<double     >::create(); }
-    if (vType == "string") { return MSet<std::string>::create(); }
-    
-    return nullptr;
-}
-
-define_reflectable_function(MVector_create, "ignore")
-define_reflectable_function(MMap_create   , "ignore")
-define_reflectable_function(MSet_create   , "ignore")
-
 //runtime functions:
 
 static void MSetObjectClassSymbol(const reflect::injectable::ptr &obj, const char *clsSym) {
@@ -68,13 +27,17 @@ static std::string MMetaJsonDescription() {
 }
 
 static std::string MGetOS() {
-    if (D_OS_ANDROID) { return "android"; }
-    if (D_OS_IOS    ) { return "ios"    ; }
-    if (D_OS_WIN32  ) { return "window" ; }
-    if (D_OS_OSX    ) { return "macos"  ; }
-    if (D_OS_LINUX  ) { return "linux"  ; }
-    
-    return "";
+#if   D_OS_ANDROID
+    return "android";
+#elif D_OS_IOS
+    return "ios";
+#elif D_OS_WIN32
+    return "windows";
+#elif D_OS_OSX
+    return "macos";
+#elif D_OS_LINUX
+    return "linux";
+#endif
 }
 
 define_reflectable_function(MSetObjectClassSymbol, "ignore")
