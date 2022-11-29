@@ -41,6 +41,19 @@ data_type any::preferred_type() const {
     return _type;
 }
 
+bool any::is_numeric_type() const {
+    switch (_type) {
+        case data_type::is_bool  :
+        case data_type::is_byte  :
+        case data_type::is_int   :
+        case data_type::is_int64 :
+        case data_type::is_float :
+        case data_type::is_double: return true;
+
+        default: return false;
+    }
+}
+
 bool any::as_bool() const {
     return !!as_int64() || !_string.empty() || (bool)_object;
 }
@@ -93,5 +106,47 @@ any::operator const char *() const { return as_chars        (); }
 any::operator std::string () const { return as_string       (); }
 any::operator object *    () const { return as_object_ptr   (); }
 any::operator object::ptr () const { return as_object_shared(); }
+
+int any::compare(const any &that) const {
+    if (_type == data_type::is_void) {
+        return that._type != data_type::is_void ? -1 : 0;
+    }
+
+    if (is_numeric_type()) {
+        if (that.is_numeric_type()) {
+            double a = this->as_double();
+            double b = that. as_double();
+            
+            if (a != b) {
+                return a < b ? -1 : 1;
+            }
+            return 0;
+
+        } else {
+            return -1;
+        }
+    }
+
+    if (_type == data_type::is_string) {
+        if (that._type == data_type::is_string) {
+            return _string.compare(that._string);
+        } else {
+            return -1;
+        }
+    }
+
+    //"this" and "that" both are objects.
+    if (_object != that._object) {
+        return _object < that._object ? -1 : 1;
+    }
+    return 0;
+}
+
+bool any::operator< (const any &that) const { return compare(that) <  0; }
+bool any::operator<=(const any &that) const { return compare(that) <= 0; }
+bool any::operator> (const any &that) const { return compare(that) >  0; }
+bool any::operator>=(const any &that) const { return compare(that) >= 0; }
+bool any::operator==(const any &that) const { return compare(that) == 0; }
+bool any::operator!=(const any &that) const { return compare(that) != 0; }
 
 } //end reflect.

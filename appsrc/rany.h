@@ -54,6 +54,7 @@ public:
     }
     
     data_type   preferred_type  () const;
+    bool        is_numeric_type () const;
     bool        as_bool         () const;
     uint8_t     as_byte         () const;
     int         as_int          () const;
@@ -93,6 +94,15 @@ public:
         static_assert(std::is_enum<Type>::value);
         return (Type)as_int();
     }
+
+    int compare(const any &that) const;
+
+    bool operator< (const any &that) const;
+    bool operator<=(const any &that) const;
+    bool operator> (const any &that) const;
+    bool operator>=(const any &that) const;
+    bool operator==(const any &that) const;
+    bool operator!=(const any &that) const;
     
 private:
     union data_word {
