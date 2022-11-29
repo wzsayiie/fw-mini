@@ -12,20 +12,75 @@ template<> struct typeids_of<base_vector> {
     static constexpr const void *value[] = { "base_vector", nullptr };
 };
 
-class d_exportable base_vector : public extends<base_vector, object> {
+class d_exportable base_vector
+    : public extends<base_vector, object>
+    , public std::vector<any>
+{
 public:
-    virtual void _insert   (int i, const any &v) = 0;
-    virtual void _erase    (int i)               = 0;
-    virtual void _push_back(const any &v)        = 0;
-    virtual void _pop_back ()                    = 0;
-    virtual void _clear    ()                    = 0;
+    void _insert(int index, const any &value) {
+        if (0 <= index && index <= (int)this->size()) {
+            this->insert(this->begin() + index, value);
+        }
+    }
     
-    virtual int _size ()      const = 0;
-    virtual any _at   (int i) const = 0;
-    virtual any _back ()      const = 0;
+    void _erase(int index) {
+        if (0 <= index && index < (int)this->size()) {
+            this->erase(this->begin() + index);
+        }
+    }
+
+    void _push_back(const any &value) {
+        this->push_back(value);
+    }
+
+    void _pop_back() {
+        if (!this->empty()) {
+            this->pop_back();
+        }
+    }
+
+    void _clear() {
+        this->clear();
+    }
+    
+    int _size() const {
+        return (int)this->size();
+    }
+
+    any _at(int index) const {
+        if (0 <= index && index < (int)this->size()) {
+            return this->at(index);
+        }
+        return nullptr;
+    }
+
+    any _back() const {
+        if (!this->empty()) {
+            return this->back();
+        }
+        return nullptr;
+    }
 };
 
 //vector:
+
+template<class Value, class Actual> class vector_iterator : public Actual {
+public:
+    vector_iterator() {
+    }
+
+    vector_iterator(const Actual &actual): Actual(actual) {
+    }
+
+public:
+    Value operator*() {
+        return take<Value>::from(this->Actual::operator*());
+    }
+
+    vector_iterator operator+(ptrdiff_t diff) {
+        return this->Actual::operator+(diff);
+    }
+};
 
 template<class> class vector;
 
@@ -35,58 +90,29 @@ template<class Value> struct typeids_of<vector<Value>> {
     };
 };
 
-template<class Value> class vector
-    : public extends<vector<Value>, base_vector>
-    , public std::vector<Value>
-{
+template<class Value> class vector : public extends<vector<Value>, base_vector> {
 public:
-    template<class... Args> vector(Args...args): std::vector<Value>(args...) {
-    }
+    typedef vector_iterator<Value, typename std::vector<any>::iterator>         iterator;
+    typedef vector_iterator<Value, typename std::vector<any>::reverse_iterator> reverse_iterator;
 
 public:
-    void _insert(int i, const any &v) override {
-        if (0 <= i && i <= (int)this->size()) {
-            this->insert(this->begin() + i, take<Value>::from(v));
-        }
-    }
-    
-    void _erase(int i) override {
-        if (0 <= i && i < (int)this->size()) {
-            this->erase(this->begin() + i);
-        }
-    }
+    iterator         begin () { return this->std::vector<any>::begin (); }
+    iterator         end   () { return this->std::vector<any>::end   (); }
+    reverse_iterator rbegin() { return this->std::vector<any>::rbegin(); }
+    reverse_iterator rend  () { return this->std::vector<any>::rend  (); }
 
-    void _push_back(const any &v) override {
-        this->push_back(take<Value>::from(v));
-    }
+    //do not overwrite the functions from std::vector,
+    //these functions are commonly used.
+    //
+    //void insert(index, value)
+    //void erase (index)
 
-    void _pop_back() override {
-        if (!this->empty()) {
-            this->pop_back();
-        }
-    }
-
-    void _clear() override {
-        this->clear();
-    }
-    
-    int _size() const override {
-        return (int)this->size();
-    }
-
-    any _at(int i) const override {
-        if (0 <= i && i < (int)this->size()) {
-            return this->at(i);
-        }
-        return nullptr;
-    }
-
-    any _back() const override {
-        if (!this->empty()) {
-            return this->back();
-        }
-        return nullptr;
-    }
+    void  push_back(const Value &value) { this->_push_back  (value); }
+    void  pop_back ()                   { this->_pop_back   ()     ; }
+    void  clear    ()                   { this->_clear      ()     ; }
+    int   size     ()          const    { return this->_size()     ; }
+    Value at       (int index) const    { return this->_at  (index); }
+    Value back     ()          const    { return this->_back()     ; }
 };
 
 } //end reflect.

@@ -12,24 +12,79 @@ template<> struct typeids_of<base_map> {
     static constexpr const void *value[] = { "base_map", nullptr };
 };
 
-class d_exportable base_map : public extends<base_map, object> {
+class d_exportable base_map
+    : public extends<base_map, object>
+    , public std::map<any, any>
+{
 public:
-    virtual void _insert(const any &k, const any &v) = 0;
-    virtual void _erase (const any &k)               = 0;
-    virtual void _clear ()                           = 0;
+    void _insert(const any &key, const any &value) {
+        this->insert(std::pair<any, any>(key, value));
+    }
+
+    void _erase(const any &key) {
+        this->erase(key);
+    }
+
+    void _clear() {
+        this->clear();
+    }
     
-    virtual bool _has (const any &k) const = 0;
-    virtual any  _get (const any &k) const = 0;
-    virtual int  _size()             const = 0;
+    bool _has(const any &key) const {
+        return this->find(key) != this->end();
+    }
+
+    any _at(const any &key) const {
+        auto it = this->find(key);
+        if (it != this->end()) {
+            return it->second;
+        }
+        return nullptr;
+    }
+
+    int _size() const {
+        return (int)this->size();
+    }
     
-    virtual void _begin() = 0;
-    virtual bool _on   () = 0;
-    virtual void _next () = 0;
-    virtual any  _key  () = 0;
-    virtual any  _value() = 0;
+    void _begin() { _iterator = this->begin();       }
+    bool _on   () { return _iterator != this->end(); }
+    void _next () { ++_iterator;                     }
+    any  _key  () { return _iterator->first;         }
+    any  _value() { return _iterator->second;        }
+    
+private:
+    typename std::map<any, any>::iterator _iterator;
 };
 
 //map:
+
+template<class Key, class Value, class Actual> class pair : public Actual {
+public:
+    pair() {
+    }
+
+    pair(const Actual &actual): Actual(actual) {
+        this->first  = take<Key  >::from(this->Actual::first );
+        this->second = take<Value>::from(this->Actual::second);
+    }
+
+public:
+    Key   first ;
+    Value second;
+};
+
+template<class Key, class Value, class Actual> class map_iterator : public Actual {
+public:
+    map_iterator() {
+    }
+
+    map_iterator(const Actual &actual): Actual(actual) {
+    }
+
+public:
+    pair<Key, Value, std::pair<const any, any>> operator*() {
+        return this->Actual::operator*();
+    }
+};
 
 template<class, class> class map;
 
@@ -44,51 +99,20 @@ template<class Key, class Value> struct typeids_of<map<Key, Value>> {
     };
 };
 
-template<class Key, class Value> class map
-    : public extends<map<Key, Value>, base_map>
-    , public std::map<Key, Value>
-{
+template<class Key, class Value> class map : public extends<map<Key, Value>, base_map> {
 public:
-    template<class... Args> map(Args... args): std::map<Key, Value>(args...) {
-    }
-    
+    typedef map_iterator<Key, Value, typename std::map<any, any>::iterator> iterator;
+
 public:
-    void _insert(const any &k, const any &v) override {
-        this->insert({ take<Key>::from(k), take<Value>::from(v) });
-    }
+    iterator begin() { return this->std::map<any, any>::begin(); }
+    iterator end  () { return this->std::map<any, any>::end  (); }
 
-    void _erase(const any &k) override {
-        this->erase(take<Key>::from(k));
-    }
-
-    void _clear() override {
-        this->clear();
-    }
-    
-    bool _has(const any &k) const override {
-        return this->find(take<Key>::from(k)) != this->end();
-    }
-
-    any _get(const any &k) const override {
-        auto it = this->find(take<Key>::from(k));
-        if (it != this->end()) {
-            return it->second;
-        }
-        return nullptr;
-    }
-
-    int _size() const override {
-        return (int)this->size();
-    }
-    
-    void _begin() override { _it = this->begin();       }
-    bool _on   () override { return _it != this->end(); }
-    void _next () override { ++_it;                     }
-    any  _key  () override { return _it->first;         }
-    any  _value() override { return _it->second;        }
-    
-private:
-    typename std::map<Key, Value>::iterator _it;
+    void  insert(const Key &key, const Value &value) { this->_insert(key, value); }
+    void  erase (const Key &key)                     { this->_erase (key)       ; }
+    void  clear ()                                   { this->_clear ()          ; }
+    bool  has   (const Key &key) const               { return this->_has (key)  ; }
+    Value at    (const Key &key) const               { return this->_at  (key)  ; }
+    int   size  ()               const               { return this->_size()     ; }
 };
 
 } //end reflect.
