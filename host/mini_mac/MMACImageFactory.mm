@@ -25,8 +25,8 @@ void MMACImageFactory::install() {
     setInstance(obj);
 }
 
-MImage::ptr MMACImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData) {
-    NSData   *nsData  = [NSData dataWithBytes:ffData->data() length:ffData->size()];
+MImage::ptr MMACImageFactory::onDecodeFFData(const MData::ptr &ffData) {
+    NSData   *nsData  = [NSData dataWithBytes:ffData->bytes() length:ffData->length()];
     _NSImage *nsImage = [[_NSImage alloc] initWithData:nsData];
     if (!nsImage) {
         return nullptr;
@@ -37,18 +37,18 @@ MImage::ptr MMACImageFactory::onDecodeFFData(const MVector<uint8_t>::ptr &ffData
     return image;
 }
 
-MImage::ptr MMACImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) {
-    auto pixels = MVector<uint8_t>::create(); {
+MImage::ptr MMACImageFactory::onDecodeBitmap(const MData::ptr &bitmap, int width, int height) {
+    auto pixels = MData::create(); {
         pixels->resize(width * height * 4);
         
         //IMPORTANT: color byte order transform.
-        auto src = (MColorRGBA   *)bitmap->data();
-        auto dst = (MClassicABGR *)pixels->data();
+        auto src = (MColorRGBA   *)bitmap->bytes();
+        auto dst = (MClassicABGR *)pixels->bytes();
         MColorTransform(src, dst, width * height);
     }
     
     _NSImage *nsImage = nil; {
-        CGContextRef context = CreateBitmapContext(pixels->data(), width, height);
+        CGContextRef context = CreateBitmapContext(pixels->bytes(), width, height);
         CGImageRef   cgImage = CGBitmapContextCreateImage(context);
 
     #if TARGET_OS_OSX
@@ -66,7 +66,7 @@ MImage::ptr MMACImageFactory::onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap
     return image;
 }
 
-MVector<uint8_t>::ptr MMACImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) {
+MData::ptr MMACImageFactory::onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) {
     _NSImage *nsImage = std::static_pointer_cast<MMACImage>(image)->mNSImage;
 
     NSData *nsData = nil; {
@@ -90,23 +90,23 @@ MVector<uint8_t>::ptr MMACImageFactory::onEncodeFFData(const MImage::ptr &image,
         return nullptr;
     }
 
-    auto ffData = MVector<uint8_t>::create();
-    ffData->insert(ffData->end(), (uint8_t *)nsData.bytes, (uint8_t *)nsData.bytes + nsData.length);
+    auto ffData = MData::create();
+    ffData->appendBytes((uint8_t *)nsData.bytes, (uint8_t *)nsData.bytes + nsData.length);
     return ffData;
 }
 
-MVector<uint8_t>::ptr MMACImageFactory::onEncodeBitmap(const MImage::ptr &image) {
+MData::ptr MMACImageFactory::onEncodeBitmap(const MImage::ptr &image) {
     //new bitmap space:
     _NSImage *nsImage = std::static_pointer_cast<MMACImage>(image)->mNSImage;
     
     auto width  = (int)nsImage.size.width ;
     auto height = (int)nsImage.size.height;
 
-    auto bitmap = MVector<uint8_t>::create();
+    auto bitmap = MData::create();
     bitmap->resize(width * height * 4);
 
     //draw image on the bitmap context:
-    CGContextRef context = CreateBitmapContext(bitmap->data(), width, height);
+    CGContextRef context = CreateBitmapContext(bitmap->bytes(), width, height);
     
 #if TARGET_OS_OSX
     NSGraphicsContext.currentContext = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
@@ -119,8 +119,8 @@ MVector<uint8_t>::ptr MMACImageFactory::onEncodeBitmap(const MImage::ptr &image)
     CGContextRelease(context);
 
     //IMPORTANT: color byte order transform.
-    auto src = (MClassicABGR *)bitmap->data();
-    auto dst = (MColorRGBA   *)bitmap->data();
+    auto src = (MClassicABGR *)bitmap->bytes();
+    auto dst = (MColorRGBA   *)bitmap->bytes();
     MColorTransform(src, dst, width * height);
 
     return bitmap;

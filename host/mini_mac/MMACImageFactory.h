@@ -21,11 +21,11 @@ public:
     static void install();
     
 public:
-    MImage::ptr onDecodeFFData(const MVector<uint8_t>::ptr &ffData) override;
-    MImage::ptr onDecodeBitmap(const MVector<uint8_t>::ptr &bitmap, int width, int height) override;
+    MImage::ptr onDecodeFFData(const MData::ptr &ffData) override;
+    MImage::ptr onDecodeBitmap(const MData::ptr &bitmap, int width, int height) override;
 
-    MVector<uint8_t>::ptr onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) override;
-    MVector<uint8_t>::ptr onEncodeBitmap(const MImage::ptr &image) override;
+    MData::ptr onEncodeFFData(const MImage::ptr &image, MImageFileFormat format) override;
+    MData::ptr onEncodeBitmap(const MImage::ptr &image) override;
 
     MSize::ptr onGetPixelSize(const MImage::ptr &image) override;
 };

@@ -5,7 +5,7 @@ void MMACBundle::install() {
     setInstance(obj);
 }
 
-MVector<uint8_t>::ptr MMACBundle::onLoadResource(const std::string &path) {
+MData::ptr MMACBundle::onLoadResource(const std::string &path) {
     if (!mResBundle) {
         std::string resBundle = resBundleDirectory();
         mResBundle = [NSBundle bundleWithPath:@(resBundle.c_str())];
@@ -14,8 +14,8 @@ MVector<uint8_t>::ptr MMACBundle::onLoadResource(const std::string &path) {
     NSString *file = [mResBundle pathForResource:@(path.c_str()) ofType:nil];
     NSData   *data = [NSData dataWithContentsOfFile:file];
     
-    auto content = MVector<uint8_t>::create();
-    content->insert(content->end(), (uint8_t *)data.bytes, (uint8_t *)data.bytes + data.length);
+    auto content = MData::create();
+    content->appendBytes((uint8_t *)data.bytes, (uint8_t *)data.bytes + data.length);
     return content;
 }
 

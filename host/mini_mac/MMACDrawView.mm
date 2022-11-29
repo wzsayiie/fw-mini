@@ -26,7 +26,7 @@
     CGFloat viewHeight = self.frame.size.height;
     
     MVector<MGraph::ptr> *graphs = MContextGetGraphs();
-    for (auto &graph : *graphs) {
+    for (const auto &graph : *graphs) {
         switch (graph->type()) {
             case MGraphType::Clip   : [self drawClip   :(MClipGraph    *)graph.get() withContext: context viewHeight:viewHeight]; break;
             case MGraphType::Polygon: [self drawPolygon:(MPolygonGraph *)graph.get() withContext: context viewHeight:viewHeight]; break;

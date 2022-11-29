@@ -6,7 +6,7 @@ public:
     static void install();
 
 public:
-    MVector<uint8_t>::ptr onLoadResource(const std::string &path) override;
+    MData::ptr onLoadResource(const std::string &path) override;
 
     std::string onGetResBundleDirectory() override;
     std::string onGetDocumentDirectory () override;
