@@ -4,8 +4,9 @@
 
 //pixel scale:
 
-M_HOST_CALL void MSetPixelScale(float scale);
-float MGetPixelScale();
+M_HOST_CALL
+d_exportable void  MSetPixelScale(float scale);
+d_exportable float MGetPixelScale();
 
 #define m_pt_from_px _MPointFromPixelCaster()<<
 #define m_px_from_pt _MPixelFromPointCaster()<<

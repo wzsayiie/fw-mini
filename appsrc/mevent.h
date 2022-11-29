@@ -129,14 +129,14 @@ private:
 
 //current events:
 
-void MResetCurrentTouch     (const MTouch::ptr      &evt);
-void MResetCurrentMouseMove (const MMouseMove::ptr  &evt);
-void MResetCurrentMouseWheel(const MMouseWheel::ptr &evt);
-void MResetCurrentKbKey     (const MKbKey::ptr      &evt);
-void MResetCurrentWriting   (const MWriting::ptr    &evt);
+d_exportable void MResetCurrentTouch     (const MTouch::ptr      &evt);
+d_exportable void MResetCurrentMouseMove (const MMouseMove::ptr  &evt);
+d_exportable void MResetCurrentMouseWheel(const MMouseWheel::ptr &evt);
+d_exportable void MResetCurrentKbKey     (const MKbKey::ptr      &evt);
+d_exportable void MResetCurrentWriting   (const MWriting::ptr    &evt);
 
-MTouch::ptr      MCurrentTouch     ();
-MMouseMove::ptr  MCurrentMouseMove ();
-MMouseWheel::ptr MCurrentMouseWheel();
-MKbKey::ptr      MCurrentKbKey     ();
-MWriting::ptr    MCurrentWriting   ();
+d_exportable MTouch::ptr      MCurrentTouch     ();
+d_exportable MMouseMove::ptr  MCurrentMouseMove ();
+d_exportable MMouseWheel::ptr MCurrentMouseWheel();
+d_exportable MKbKey::ptr      MCurrentKbKey     ();
+d_exportable MWriting::ptr    MCurrentWriting   ();

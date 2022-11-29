@@ -2,4 +2,4 @@
 
 #include "dash.h"
 
-void MPrint(const std::string &message);
+d_exportable void MPrint(const std::string &message);

@@ -5,31 +5,31 @@
 
 //draw function:
 
-void MContextSelectImage(const MImage::ptr &image);
-void MContextSelectText (const std::string &text );
+d_exportable void MContextSelectImage(const MImage::ptr &image);
+d_exportable void MContextSelectText (const std::string &text );
 
-void MContextSelectRGBA     (int     rgba );
-void MContextSelectLineWidth(float   width);
-void MContextSelectFontSize (float   size );
-void MContextSelectHAlign   (MHAlign align);
-void MContextSelectVAlign   (MVAlign align);
+d_exportable void MContextSelectRGBA     (int     rgba );
+d_exportable void MContextSelectLineWidth(float   width);
+d_exportable void MContextSelectFontSize (float   size );
+d_exportable void MContextSelectHAlign   (MHAlign align);
+d_exportable void MContextSelectVAlign   (MVAlign align);
 
-void MContextPushOffset(float x, float y);
-void MContextPopOffset ();
-void MContextPushClip  (float x, float y, float w, float h);
-void MContextPopClip   ();
+d_exportable void MContextPushOffset(float x, float y);
+d_exportable void MContextPopOffset ();
+d_exportable void MContextPushClip  (float x, float y, float w, float h);
+d_exportable void MContextPopClip   ();
 
-void MContextMoveToPoint(float x, float y);
-void MContextAddToPoint (float x, float y);
-void MContextDrawPolygon();
+d_exportable void MContextMoveToPoint(float x, float y);
+d_exportable void MContextAddToPoint (float x, float y);
+d_exportable void MContextDrawPolygon();
 
-void MContextDrawRect      (float x , float y , float w , float h );
-void MContextDrawEllipse   (float x , float y , float w , float h );
-void MContextDrawFlatLine  (float x0, float y0, float x1, float y1);
-void MContextDrawSquareLine(float x0, float y0, float x1, float y1);
-void MContextDrawRoundLine (float x0, float y0, float x1, float y1);
-void MContextDrawImage     (float x , float y , float w , float h );
-void MContextDrawText      (float x , float y , float w , float h );
+d_exportable void MContextDrawRect      (float x , float y , float w , float h );
+d_exportable void MContextDrawEllipse   (float x , float y , float w , float h );
+d_exportable void MContextDrawFlatLine  (float x0, float y0, float x1, float y1);
+d_exportable void MContextDrawSquareLine(float x0, float y0, float x1, float y1);
+d_exportable void MContextDrawRoundLine (float x0, float y0, float x1, float y1);
+d_exportable void MContextDrawImage     (float x , float y , float w , float h );
+d_exportable void MContextDrawText      (float x , float y , float w , float h );
 
 //graphs:
 
@@ -134,5 +134,5 @@ public:
 
 //host functions:
 
-M_HOST_CALL MVector<MGraph::ptr> *MContextGetGraphs();
-M_HOST_CALL void MContextReset();
+M_HOST_CALL d_exportable MVector<MGraph::ptr> *MContextGetGraphs();
+M_HOST_CALL d_exportable void MContextReset();
