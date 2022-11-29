@@ -208,7 +208,7 @@ bool CView::existResponder(const CResponder::ptr &responder) {
     }
 
     //check subviews.
-    for (auto &it : *mSubviews) {
+    for (const auto &it : *mSubviews) {
         if (it->existResponder(responder)) {
             return true;
         }
@@ -298,7 +298,7 @@ void CView::draw() {
         onDraw(width, height);
 
         MRect::ptr ownBounds = bounds();
-        for (auto &it : *mSubviews) {
+        for (const auto &it : *mSubviews) {
             //ignore out-of-bounds subviews.
             if (it->frame()->intersects(ownBounds)->none()) {
                 continue;

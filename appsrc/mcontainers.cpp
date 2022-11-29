@@ -24,7 +24,7 @@ static void MMap_insert(const MBaseMap::ptr &a, const any &k, const any &v) { a-
 static void MMap_erase (const MBaseMap::ptr &a, const any &k)               { a->_erase       (k)   ; }
 static void MMap_clear (const MBaseMap::ptr &a)                             { a->_clear       ( )   ; }
 static bool MMap_has   (const MBaseMap::ptr &a, const any &k)               { return a->_has  (k)   ; }
-static any  MMap_get   (const MBaseMap::ptr &a, const any &k)               { return a->_get  (k)   ; }
+static any  MMap_get   (const MBaseMap::ptr &a, const any &k)               { return a->_at   (k)   ; }
 static int  MMap_size  (const MBaseMap::ptr &a)                             { return a->_size ( )   ; }
 static void MMap_begin (const MBaseMap::ptr &a)                             { a->_begin       ( )   ; }
 static bool MMap_on    (const MBaseMap::ptr &a)                             { return a->_on   ( )   ; }

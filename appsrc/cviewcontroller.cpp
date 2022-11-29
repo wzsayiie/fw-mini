@@ -22,7 +22,7 @@ void CViewController::makeViewAppear() {
     
     mViewAppeared = true;
     onViewAppear();
-    for (auto &it : *mChildControllers) {
+    for (const auto &it : *mChildControllers) {
         it->makeViewAppear();
     }
 }
@@ -33,7 +33,7 @@ void CViewController::makeViewDisappear() {
         return;
     }
     
-    for (auto &it : *mChildControllers) {
+    for (const auto &it : *mChildControllers) {
         it->makeViewDisappear();
     }
     mViewAppeared = false;

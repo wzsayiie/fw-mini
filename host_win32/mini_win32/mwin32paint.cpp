@@ -91,7 +91,7 @@ void MWin32Paint(HDC dc)
     Gdiplus::Graphics pen(dc);
 
     MVector<MGraph::ptr> *graphs = MContextGetGraphs();
-    for (auto &graph : *graphs)
+    for (const auto &graph : *graphs)
     {
         switch (graph->type())
         {

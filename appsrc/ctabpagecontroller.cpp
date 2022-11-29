@@ -51,7 +51,7 @@ void CTabPageController::setPages(const MVector<CViewController::ptr>::ptr &page
         hidePage(page);
     }
 
-    for (auto &it : *mPages) {
+    for (const auto &it : *mPages) {
         it->setTabPageController(nullptr);
     }
     mPages->clear();
@@ -60,7 +60,7 @@ void CTabPageController::setPages(const MVector<CViewController::ptr>::ptr &page
     if (pages && !pages->empty()) {
         mPages->insert(mPages->end(), pages->begin(), pages->end());
 
-        for (auto &it : *mPages) {
+        for (const auto &it : *mPages) {
             it->setTabPageController(me());
         }
 
@@ -89,7 +89,7 @@ int CTabPageController::indexOfPage(const CViewController::ptr &page) {
 
 define_reflectable_class_function(CTabPageController, pageAtIndex, "args:index")
 CViewController::ptr CTabPageController::pageAtIndex(int index) {
-    if (0 <= index && index < (int)mPages->size()) {
+    if (0 <= index && index < mPages->size()) {
         return mPages->at(index);
     }
     return nullptr;
@@ -115,7 +115,7 @@ void CTabPageController::selectIndex(int index) {
     }
 
     //show new page.
-    if (0 <= index && index < (int)mPages->size()) {
+    if (0 <= index && index < mPages->size()) {
         CViewController::ptr page = mPages->at(index);
         mSelectedIndex = index;
         showPage(page);
