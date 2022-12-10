@@ -78,10 +78,7 @@ protected:
 
 } //end dash.
 
-#define d_encodable_object(cls, base, ...)                          \
-/**/    struct cls : base {                                         \
-/**/        cls() {                                                 \
-/**/            dash::encodable_object::collect(this, sizeof(cls)); \
-/**/        }                                                       \
-/**/        struct __VA_ARGS__;                                     \
+#define d_encodable_object(cls)                                 \
+/**/    cls() {                                                 \
+/**/        dash::encodable_object::collect(this, sizeof(cls)); \
 /**/    }

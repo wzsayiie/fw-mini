@@ -411,5 +411,4 @@ template<> struct json_cleaner<bool> {
 
 } //end dash.
 
-#define d_json_object(cls, ...) \
-/**/    d_encodable_object(cls, dash::json_object, __VA_ARGS__)
+#define d_json_object(cls) d_encodable_object(cls)
