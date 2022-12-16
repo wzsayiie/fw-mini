@@ -33,6 +33,18 @@ const std::string &encodable_field::key() const {
 
 //object:
 
+encodable_field_ptrdiff::encodable_field_ptrdiff() {
+    _value = 0;
+}
+
+encodable_field_ptrdiff::encodable_field_ptrdiff(size_t value) {
+    _value = value;
+}
+
+size_t encodable_field_ptrdiff::value() const {
+    return _value;
+}
+
 void encodable_object::collect(encodable_object *obj, size_t size) {
     auto bgn = (size_t)obj;
     auto end = (size_t)obj + size;
@@ -44,8 +56,9 @@ void encodable_object::collect(encodable_object *obj, size_t size) {
     for (auto it = s_ranges->begin(); it != s_ranges->end(); ) {
         if (fit(*it)) {
             //insert to the parent.
-            auto sub = (encodable_field *)it->first;
-            obj->insert({ sub->key(), sub });
+            auto field = (encodable_field *)it->first;
+            auto diff  = it->first - bgn;
+            obj->insert({ field->key(), diff });
 
             //remove from the pool.
             it = s_ranges->erase(it);
@@ -55,6 +68,10 @@ void encodable_object::collect(encodable_object *obj, size_t size) {
             ++it;
         }
     }
+}
+
+encodable_field *encodable_object::field_at(const encodable_field_ptrdiff &diff) const {
+    return (encodable_field *)((uint8_t *)this + diff.value());
 }
 
 } //end dash.

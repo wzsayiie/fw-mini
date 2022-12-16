@@ -7,7 +7,7 @@ namespace dash {
 
 std::string json_object::encode() const {
     json_encoding_ctx ctx;
-    json_encoder<json_object>::encode(&ctx, *this);
+    json_encoder<json_object>::encode(this, &ctx);
     return ctx.buffer;
 }
 
@@ -18,7 +18,7 @@ bool json_object::parse(const std::string &text) {
         json_parsing_ctx ctx;
         ctx.ptr = text.c_str();
         ctx.end = text.c_str() + text.size();
-        json_parser<json_object>::parse(&ctx, this);
+        json_parser<json_object>::parse(this, &ctx);
         
         return true;
         
@@ -29,8 +29,8 @@ bool json_object::parse(const std::string &text) {
 }
 
 void json_object::clear() {
-    for (auto &[key, field] : *this) {
-        field->on_clear();
+    for (auto &[_, diff] : *this) {
+        field_at(diff)->on_clear();
     }
 }
 
@@ -159,14 +159,14 @@ void json_parse_token(json_parsing_ctx *ctx, const char *target) noexcept(false)
     }
 }
 
-void json_parse_ignore(json_parsing_ctx *ctx, json_ignore *outer) noexcept(false) {
+void json_parse_ignore(json_parsing_ctx *ctx) noexcept(false) {
     char ch = json_will_read(ctx);
     
-    if (ch == 'n' || ch == '{') {
-        json_parser<std::map<std::string, json_ignore>>::parse(ctx, nullptr);
+    if (ch == 'n' /* null */ || ch == '{') {
+        json_parser<std::map<std::string, json_ignore>>::parse(nullptr, ctx);
         
-    } else if (ch == 'n' || ch == '[') {
-        json_parser<std::vector<json_ignore>>::parse(ctx, nullptr);
+    } else if (ch == 'n' /* null */ || ch == '[') {
+        json_parser<std::vector<json_ignore>>::parse(nullptr, ctx);
         
     } else if (ch == '\"') {
         json_parse_string(ctx, nullptr);

@@ -68,12 +68,30 @@ template<class Type> struct encodable
 
 //object:
 
+//record the offset of the contained field, not the pointer.
+//if objects are stored in containers,
+//they may change locations due to move constructions.
+class d_exportable encodable_field_ptrdiff {
+public:
+    encodable_field_ptrdiff();
+    encodable_field_ptrdiff(size_t value);
+
+public:
+    size_t value() const;
+
+private:
+    size_t _value;
+};
+
 class d_exportable encodable_object
     : public virtual_object
-    , public std::map<std::string, encodable_field *>
+    , public std::map<std::string, encodable_field_ptrdiff>
 {
 protected:
     static void collect(encodable_object *obj, size_t size);
+
+public:
+    encodable_field *field_at(const encodable_field_ptrdiff &diff) const;
 };
 
 } //end dash.
