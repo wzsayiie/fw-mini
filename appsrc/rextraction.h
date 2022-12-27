@@ -56,7 +56,7 @@ template<> struct arg_appender<void ()> {
 //function:
 
 template<class Ret, class... Args> struct extract<std::shared_ptr<function<Ret (Args...)>>> {
-    static symbol commit(const char *note = nullptr) {
+    static symbol commit() {
         auto type = symbol_of<function<Ret (Args...)>>::value();
         auto meta = (function_meta *)commit_type_meta(type, category::is_function);
         if (!meta) {
@@ -69,17 +69,14 @@ template<class Ret, class... Args> struct extract<std::shared_ptr<function<Ret (
         //returning.
         meta->ret_qual = qualifier_of<Ret>::value;
         meta->ret_type = extract<Ret>::commit();
-            
-        //note.
-        meta->note = note ? note : "";
         
         return type;
     }
 };
 
 template<class Ret, class... Args> struct extract<const std::shared_ptr<function<Ret (Args...)>> &> {
-    static symbol commit(const char *note = nullptr) {
-        return extract<typename function<Ret (Args...)>::ptr>::commit(note);
+    static symbol commit() {
+        return extract<typename function<Ret (Args...)>::ptr>::commit();
     }
 };
 

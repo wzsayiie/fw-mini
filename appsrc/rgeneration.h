@@ -62,9 +62,9 @@ public:
     template<class Ret, class... Args> generator(
         const char *name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
     {
-        symbol type = extract<typename function<Ret (Args...)>::ptr>::commit(note);
+        symbol type = extract<typename function<Ret (Args...)>::ptr>::commit();
         
-        commit_function(name, type, function<Ret (Args...)>::create([=](Args... args) {
+        commit_function(name, type, note, function<Ret (Args...)>::create([=](Args... args) {
             return fcn(args...);
         }));
     }
@@ -81,10 +81,10 @@ public:
         Class *, const char *name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
     {
         symbol cls_type = extract<typename Class::ptr>::commit();
-        symbol fcn_type = extract<typename function<Ret (Args...)>::ptr>::commit(note);
+        symbol fcn_type = extract<typename function<Ret (Args...)>::ptr>::commit();
         
         commit_class(cls_type.str(), cls_type);
-        commit_class_static_function(cls_type, name, fcn_type, function<Ret (Args...)>::create(
+        commit_class_static_function(cls_type, name, fcn_type, note, function<Ret (Args...)>::create(
             [=](Args... args) {
                 return fcn(args...);
             }
@@ -96,10 +96,10 @@ public:
         Class *, const char *name, Ret (Class::*fcn)(Args...), const char *note = nullptr) noexcept
     {
         symbol cls_type = extract<typename Class::ptr>::commit();
-        symbol fcn_type = extract<typename function<Ret (const typename Class::ptr &, Args...)>::ptr>::commit(note);
+        symbol fcn_type = extract<typename function<Ret (const typename Class::ptr &, Args...)>::ptr>::commit();
         
         commit_class(cls_type.str(), cls_type);
-        commit_class_inst_function(cls_type, name, fcn_type, function<Ret (const typename Class::ptr &, Args...)>::create(
+        commit_class_inst_function(cls_type, name, fcn_type, note, function<Ret (const typename Class::ptr &, Args...)>::create(
             [=](const typename Class::ptr &thisArg, Args... args) {
                 return (thisArg.get()->*fcn)(args...);
             }

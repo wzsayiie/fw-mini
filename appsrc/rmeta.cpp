@@ -38,8 +38,8 @@ void commit_variable(const std::string &name, const symbol &type, const any &val
     (*_variables)[name] = var;
 }
 
-void commit_function(const std::string &name, const symbol &type, const any &value) {
-    variable var = { type, value };
+void commit_function(const std::string &name, const symbol &type, const char *note, const any &value) {
+    variable var = { type, value, (note ? note : "") };
     (*_functions)[name] = var;
 }
 
@@ -64,21 +64,21 @@ void commit_class_static_variable(
 }
 
 void commit_class_static_function(
-    const symbol &cls, const std::string &name, const symbol &type, const any &value)
+    const symbol &cls, const std::string &name, const symbol &type, const char *note, const any &value)
 {
     auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
-        variable var = { type, value };
+        variable var = { type, value, (note ? note : "") };
         meta->static_functions[name] = var;
     }
 }
 
 void commit_class_inst_function(
-    const symbol &cls, const std::string &name, const symbol &type, const any &value)
+    const symbol &cls, const std::string &name, const symbol &type, const char *note, const any &value)
 {
     auto meta = (class_meta *)query_type_meta(cls, category::is_class);
     if (meta) {
-        variable var = { type, value };
+        variable var = { type, value, (note ? note : "") };
         meta->inst_functions[name] = var;
     }
 }
