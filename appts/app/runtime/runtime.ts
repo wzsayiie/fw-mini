@@ -43,12 +43,12 @@ export namespace runtime {
     export class BaseObject {
         private _native: object
 
-        public constructor(args?: any) {
+        public constructor() {
             if (_bindingNative) {
                 this._native = _bindingNative
                 _bindingNative = null
             } else {
-                this._native = this.createNative(args)
+                this._native = this.createNative()
             }
 
             if (!this._native) {
@@ -62,7 +62,7 @@ export namespace runtime {
         }
 
         //subclasses need to override this method.
-        protected createNative(args: any): object {
+        protected createNative(): object {
             return null
         }
     }
@@ -72,8 +72,8 @@ export namespace runtime {
     }
 
     export class Injectable extends BaseObject {
-        protected createNative(args: any): object {
-            let ntv = this.createInjectableNative(args)
+        protected createNative(): object {
+            let ntv = this.createInjectableNative()
             let sym = (<any> this.constructor).classSymbol
             if (ntv && sym) {
                 MSetObjectClassSymbol(ntv, sym)
@@ -85,7 +85,7 @@ export namespace runtime {
         protected static classSymbol: string
 
         //subclasses need to override this method.
-        protected createInjectableNative(args: any): object {
+        protected createInjectableNative(): object {
             return null
         }
     }
@@ -93,34 +93,53 @@ export namespace runtime {
 
 //MVector:
 
-declare function MVector_create   (vType : string): object
+declare function MVector_create   ()                                         : object
 declare function MVector_insert   (native: object, index: number, value: any): void
-declare function MVector_erase    (native: object, index: number): void
-declare function MVector_push_back(native: object, value: any   ): void
-declare function MVector_pop_back (native: object): void
-declare function MVector_clear    (native: object): void
-declare function MVector_size     (native: object): number
-declare function MVector_at       (native: object, index: number): any
-declare function MVector_back     (native: object): any
+declare function MVector_erase    (native: object, index: number)            : void
+declare function MVector_push_back(native: object, value: any   )            : void
+declare function MVector_pop_back (native: object)                           : void
+declare function MVector_clear    (native: object)                           : void
+declare function MVector_size     (native: object)                           : number
+declare function MVector_at       (native: object, index: number)            : any
+declare function MVector_back     (native: object)                           : any
 
 export namespace runtime {
-    export class MVector<T> extends BaseObject {
-        public constructor(vType: string) {
-            super({ vType: vType })
+    export class MVector<Value> extends BaseObject {
+        protected createNative(): object {
+            return MVector_create()
         }
     
-        protected createNative(args: { vType: string }): object {
-            return MVector_create(args.vType)
+        public insert(index: number, value: Value): void {
+            MVector_insert(this.native, index, value)
         }
-    
-        public insert   (i: number, v: T): void   { MVector_insert     (this.native, i, v) }
-        public erase    (i: number)      : void   { MVector_erase      (this.native, i)    }
-        public push_back(v: T)           : void   { MVector_push_back  (this.native, v)    }
-        public pop_back ()               : void   { MVector_pop_back   (this.native)       }
-        public clear    ()               : void   { MVector_clear      (this.native)       }
-        public get size ()               : number { return MVector_size(this.native)       }
-        public at       (i: number)      : T      { return MVector_at  (this.native, i)    }
-        public get back ()               : T      { return MVector_back(this.native)       }
+
+        public erase(index: number): void {
+            MVector_erase(this.native, index)
+        }
+        
+        public push_back(value: Value): void {
+            MVector_push_back(this.native, value)
+        }
+        
+        public pop_back(): void {
+            MVector_pop_back(this.native)
+        }
+        
+        public clear(): void {
+            MVector_clear(this.native)
+        }
+        
+        public get size(): number {
+            return MVector_size(this.native)
+        }
+        
+        public at(index: number): Value {
+            return MVector_at(this.native, index)
+        }
+
+        public get back(): Value {
+            return MVector_back(this.native)
+        }
     
         public *[Symbol.iterator]() {
             for (let i = 0; i < this.size; ++i) {
@@ -132,7 +151,7 @@ export namespace runtime {
 
 //MMap:
 
-declare function MMap_create(kType : string, vType: string)       : object
+declare function MMap_create()                                    : object
 declare function MMap_insert(native: object, key: any, value: any): void
 declare function MMap_erase (native: object, key: any)            : void
 declare function MMap_clear (native: object)                      : void
@@ -146,21 +165,34 @@ declare function MMap_key   (native: object)                      : any
 declare function MMap_value (native: object)                      : any
 
 export namespace runtime {
-    export class MMap<K, V> extends BaseObject {
-        public constructor(kType: string, vType: string) {
-            super({ kType: kType, vType: vType })
+    export class MMap<Key, Value> extends BaseObject {
+        protected createNative(): object {
+            return MMap_create()
         }
     
-        protected createNative(args: { kType: string, vType: string }): object {
-            return MMap_create(args.kType, args.vType)
+        public insert(key: Key, value: Value): void {
+            MMap_insert(this.native, key, value)
         }
-    
-        public insert  (k: K, v: K): void    { MMap_insert     (this.native, k, v) }
-        public erase   (k: K)      : void    { MMap_erase      (this.native, k)    }
-        public clear   ()          : void    { MMap_clear      (this.native)       }
-        public has     (k: K)      : boolean { return MMap_has (this.native, k)    }
-        public get     (k: K)      : V       { return MMap_get (this.native, k)    }
-        public get size()          : number  { return MMap_size(this.native)       }
+
+        public erase(key: Key): void {
+            MMap_erase(this.native, key)
+        }
+
+        public clear(): void {
+            MMap_clear(this.native)
+        }
+
+        public has(key: Key): boolean {
+            return MMap_has(this.native, key)
+        }
+
+        public get(key: Key): Value {
+            return MMap_get(this.native, key)
+        }
+
+        public get size(): number {
+            return MMap_size(this.native)
+        }
     
         public *[Symbol.iterator]() {
             let n = this.native
@@ -176,7 +208,7 @@ export namespace runtime {
 
 //MSet:
 
-declare function MSet_create(vType : string)            : object
+declare function MSet_create()                          : object
 declare function MSet_insert(native: object, value: any): void
 declare function MSet_erase (native: object, value: any): void
 declare function MSet_clear (native: object)            : void
@@ -188,20 +220,30 @@ declare function MSet_next  (native: object)            : void
 declare function MSet_value (native: object)            : any
 
 export namespace runtime {
-    export class MSet<T> extends BaseObject {
-        public constructor(vType: string) {
-            super({ vType: vType })
+    export class MSet<Value> extends BaseObject {
+        protected createNative(): object {
+            return MSet_create()
         }
     
-        protected createNative(args: { vType: string }): object {
-            return MSet_create(args.vType)
+        public insert(value: Value): void {
+            MSet_insert(this.native, value)
         }
-    
-        public insert  (v: T): void    { MSet_insert     (this.native, v) }
-        public erase   (v: T): void    { MSet_erase      (this.native, v) }
-        public clear   ()    : void    { MSet_clear      (this.native)    }
-        public has     (v: T): boolean { return MSet_has (this.native, v) }
-        public get size()    : number  { return MSet_size(this.native)    }
+
+        public erase(value: Value): void {
+            MSet_erase(this.native, value)
+        }
+
+        public clear(): void {
+            MSet_clear(this.native)
+        }
+
+        public has(value: Value): boolean {
+            return MSet_has(this.native, value)
+        }
+
+        public get size(): number {
+            return MSet_size(this.native)
+        }
     
         public *[Symbol.iterator]() {
             let n = this.native

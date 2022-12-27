@@ -115,4 +115,18 @@ public:
     Value back     ()          const    { return this->_back()     ; }
 };
 
+//cast:
+
+template<class Value> struct pointer_cast_as<vector<Value>> {
+    //vector<...> has no additional virtual functions, can be converted to each others.
+
+    static typename vector<Value>::ptr from(const object::ptr &obj) {
+        auto is_vector = std::dynamic_pointer_cast<generic_vector>(obj);
+        if (is_vector) {
+            return std::static_pointer_cast<vector<Value>>(obj);
+        }
+        return nullptr;
+    }
+};
+
 } //end reflect.

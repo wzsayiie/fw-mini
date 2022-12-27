@@ -115,4 +115,18 @@ public:
     int   size  ()               const               { return this->_size()     ; }
 };
 
+//cast:
+
+template<class Key, class Value> struct pointer_cast_as<map<Key, Value>> {
+    //map<...> has no additional virtual functions, can be converted to each others.
+
+    static typename map<Key, Value>::ptr from(const object::ptr &obj) {
+        auto is_map = std::dynamic_pointer_cast<generic_map>(obj);
+        if (is_map) {
+            return std::static_pointer_cast<map<Key, Value>>(obj);
+        }
+        return nullptr;
+    }
+};
+
 } //end reflect.

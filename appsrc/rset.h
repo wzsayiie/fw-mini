@@ -85,4 +85,18 @@ public:
     int  size  ()                   const { return this->_size()     ; }
 };
 
+//cast:
+
+template<class Value> struct pointer_cast_as<set<Value>> {
+    //set<...> has no additional virtual functions, can be converted to each others.
+
+    static typename set<Value>::ptr from(const object::ptr &obj) {
+        auto is_set = std::dynamic_pointer_cast<generic_set>(obj);
+        if (is_set) {
+            return std::static_pointer_cast<set<Value>>(obj);
+        }
+        return nullptr;
+    }
+};
+
 } //end reflect.
