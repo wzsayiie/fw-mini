@@ -26,25 +26,15 @@ static std::string MMetaJsonDescription() {
     return reflect::meta_json_description();
 }
 
-static std::string MGetOS() {
-#if   D_OS_ANDROID
-    return "android";
-#elif D_OS_IOS
-    return "ios";
-#elif D_OS_WIN32
-    return "windows";
-#elif D_OS_OSX
-    return "macos";
-#elif D_OS_LINUX
-    return "linux";
-#endif
+static void MWriteTextFile(const std::string &path, const std::string &content) {
+    MFileManager::instance()->writeU8StringToFile(content, path);
 }
 
 define_reflectable_function(MSetObjectClassSymbol, "ignore")
 define_reflectable_function(MGetObjectClassSymbol, "ignore")
 define_reflectable_function(MInjectClassFunction , "ignore")
 define_reflectable_function(MMetaJsonDescription , "ignore")
-define_reflectable_function(MGetOS               , "ignore")
+define_reflectable_function(MWriteTextFile       , "ignore")
 
 //virtual machine:
 
