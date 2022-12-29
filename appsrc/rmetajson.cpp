@@ -8,8 +8,8 @@ using std::map;
 using std::string;
 using std::vector;
 
-struct fnote_node : json_object {
-    d_json_object(fnote_node)
+struct fdesc_node : json_object {
+    d_json_object(fdesc_node)
 
     json<string> type {"type"};
     json<string> note {"note"};
@@ -22,8 +22,8 @@ struct class_node : json_object {
     json<bool>                    abstracted       {"abstracted"      };
     json<map<string, string>>     static_strings   {"static_strings"  };
     json<map<string, double>>     static_numbers   {"static_numbers"  };
-    json<map<string, fnote_node>> static_functions {"static_functions"};
-    json<map<string, fnote_node>> inst_functions   {"inst_functions"  };
+    json<map<string, fdesc_node>> static_functions {"static_functions"};
+    json<map<string, fdesc_node>> inst_functions   {"inst_functions"  };
 };
 
 struct function_node : json_object {
@@ -69,12 +69,13 @@ struct root_node : json_object {
     json<map<string, map_node>>      map_infos      {"map_infos"     };
     json<map<string, vector_node>>   vector_infos   {"vector_infos"  };
     json<map<string, set_node>>      set_infos      {"set_infos"     };
+    json<map<string, string>>        basic_infos    {"basic_infos"   };
 
     json<map<string, string>>     strings   {"strings"  };
     json<map<string, double>>     numbers   {"numbers"  };
-    json<map<string, fnote_node>> functions {"functions"};
-    json<map<string, string>>     classes   {"classes"  };
-    json<map<string, string>>     enums     {"enums"    };
+    json<map<string, fdesc_node>> functions {"functions"};
+    json<vector<string>>          classes   {"classes"  };
+    json<vector<string>>          enums     {"enums"    };
 };
 
 static string qualifer_string_of(reflect::qualifier qual) {
@@ -101,26 +102,26 @@ static void insert_class_info(root_node *root, const string &name, reflect::clas
         const reflect::any &value = pair.second.value;
 
         if (value.preferred_type() == reflect::data_type::is_string) {
-            root->strings[pair.first] = value.as_string();
+            info.static_strings[pair.first] = value.as_string();
         } else {
-            root->numbers[pair.first] = value.as_double();
+            info.static_numbers[pair.first] = value.as_double();
         }
     }
     
     for (auto &pair : meta->static_functions) {
-        fnote_node fnote;
-        fnote.type = pair.second.type.str();
-        fnote.note = pair.second.note;
+        fdesc_node desc;
+        desc.type = pair.second.type.str();
+        desc.note = pair.second.note;
 
-        info.static_functions[pair.first] = fnote;
+        info.static_functions[pair.first] = desc;
     }
 
     for (auto &pair : meta->inst_functions) {
-        fnote_node fnote;
-        fnote.type = pair.second.type.str();
-        fnote.note = pair.second.note;
+        fdesc_node desc;
+        desc.type = pair.second.type.str();
+        desc.note = pair.second.note;
 
-        info.inst_functions[pair.first] = fnote;
+        info.inst_functions[pair.first] = desc;
     }
 
     root->class_infos[name] = info;
@@ -173,6 +174,10 @@ static void insert_set_info(root_node *root, const string &name, reflect::set_me
     root->set_infos[name] = info;
 }
 
+static void insert_basic_info(root_node *root, const string &name) {
+    root->basic_infos[name] = name;
+}
+
 string reflect::meta_json_description() {
     root_node root;
 
@@ -188,6 +193,8 @@ string reflect::meta_json_description() {
             case category::is_map     : insert_map_info     (&root, t, (map_meta      *)m); break;
             case category::is_vector  : insert_vector_info  (&root, t, (vector_meta   *)m); break;
             case category::is_set     : insert_set_info     (&root, t, (set_meta      *)m); break;
+
+            default: insert_basic_info(&root, t);
         }
     }
 
@@ -204,21 +211,21 @@ string reflect::meta_json_description() {
 
     //global functions.
     for (auto &pair : *functions()) {
-        fnote_node fnote;
-        fnote.type = pair.second.type.str();
-        fnote.note = pair.second.note;
+        fdesc_node desc;
+        desc.type = pair.second.type.str();
+        desc.note = pair.second.note;
 
-        root.functions[pair.first] = fnote;
+        root.functions[pair.first] = desc;
     }
 
     //classes.
     for (auto &it : *classes()) {
-        root.classes[it.first] = it.second.type.str();
+        root.classes.push_back(it.second.type.str());
     }
 
     //enums.
     for (auto &it : *enums()) {
-        root.enums[it.first] = it.second.type.str();
+        root.enums.push_back(it.second.type.str());
     }
 
     return root.encode();
