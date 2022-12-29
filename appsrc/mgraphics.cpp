@@ -4,7 +4,7 @@
 
 static float sPixelScale = 1.0f;
 
-define_reflectable_function(MSetPixelScale)
+define_reflectable_function(MSetPixelScale, "args:scale")
 void MSetPixelScale(float scale) {
     sPixelScale = scale;
 }

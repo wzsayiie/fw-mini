@@ -25,7 +25,7 @@ CTabPageController::CTabPageController() {
     mPages = MVector<CViewController::ptr>::create();
 }
 
-define_reflectable_class_function(CTabPageController, setDelegation, "setter:args:delegation")
+define_reflectable_class_function(CTabPageController, setDelegation, "setter;args:delegation")
 void CTabPageController::setDelegation(const CTabPageControllerDelegation::ptr &delegation) {
     mDelegation = delegation;
 }

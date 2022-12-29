@@ -42,7 +42,7 @@ MData::ptr MFileManager::bytesFromBundle(const std::string &path) {
     return data;
 }
 
-define_reflectable_class_function(MFileManager, bytesFromFile)
+define_reflectable_class_function(MFileManager, bytesFromFile, "args:path")
 MData::ptr MFileManager::bytesFromFile(const std::string &path) {
     auto data = MData::create();
     

@@ -25,7 +25,7 @@ CNavigationController::CNavigationController() {
     mPages = MVector<CViewController::ptr>::create();
 }
 
-define_reflectable_class_function(CNavigationController, setDelegation, "setter:args:delegation")
+define_reflectable_class_function(CNavigationController, setDelegation, "setter;args:delegation")
 void CNavigationController::setDelegation(const CNavigationControllerDelegation::ptr &delegation) {
     mDelegation = delegation;
 }

@@ -63,7 +63,7 @@ void CScrollView::addContentSubview(const CView::ptr &subview) {
     contentView()->addSubview(subview);
 }
 
-define_reflectable_class_function(CScrollView, setContentOffset, "args:offset")
+define_reflectable_class_function(CScrollView, setContentOffset, "args:x,y")
 void CScrollView::setContentOffset(float x, float y) {
     //adjust content position:
     MRect::ptr content       = contentView()->frame();
@@ -84,7 +84,7 @@ void CScrollView::setContentOffset(float x, float y) {
     reduceScollingSender();
 }
 
-define_reflectable_class_function(CScrollView, setContentSize, "args:size")
+define_reflectable_class_function(CScrollView, setContentSize, "args:width,height")
 void CScrollView::setContentSize(float width, float height) {
     //adjust content position:
     MRect::ptr content   = contentView()->frame();
