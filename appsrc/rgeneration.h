@@ -80,9 +80,11 @@ public:
     template<class Ret, class Class, class... Args> generator(
         Class *, const char *name, Ret (*fcn)(Args...), const char *note = nullptr) noexcept
     {
+        symbol bas_type = extract<typename base_of<Class>::type>::commit();
         symbol cls_type = extract<typename Class::ptr>::commit();
         symbol fcn_type = extract<typename function<Ret (Args...)>::ptr>::commit();
         
+        commit_class(bas_type.str(), bas_type);
         commit_class(cls_type.str(), cls_type);
         commit_class_static_function(cls_type, name, fcn_type, note, function<Ret (Args...)>::create(
             [=](Args... args) {
@@ -95,9 +97,11 @@ public:
     template<class Ret, class Class, class... Args> generator(
         Class *, const char *name, Ret (Class::*fcn)(Args...), const char *note = nullptr) noexcept
     {
+        symbol bas_type = extract<typename base_of<Class>::type>::commit();
         symbol cls_type = extract<typename Class::ptr>::commit();
         symbol fcn_type = extract<typename function<Ret (const typename Class::ptr &, Args...)>::ptr>::commit();
         
+        commit_class(bas_type.str(), bas_type);
         commit_class(cls_type.str(), cls_type);
         commit_class_inst_function(cls_type, name, fcn_type, note, function<Ret (const typename Class::ptr &, Args...)>::create(
             [=](const typename Class::ptr &thisArg, Args... args) {
@@ -117,9 +121,11 @@ public:
     
 private:
     template<class Class, class Value> void cls_var(const char *name, const any &value) {
+        symbol bas_type = extract<typename base_of<Class>::type>::commit();
         symbol cls_type = extract<typename Class::ptr>::commit();
         symbol val_type = symbol_of<Value>::value();
 
+        commit_class(bas_type.str(), bas_type);
         commit_class(cls_type.str(), cls_type);
         commit_class_static_variable(cls_type, name, val_type, value);
     }
