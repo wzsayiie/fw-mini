@@ -15,7 +15,7 @@ void CButton::setTitle(const std::string &title) {
     titleLabel()->setText(title);
 }
 
-define_reflectable_class_function(CButton, title)
+define_reflectable_class_function(CButton, title, "getter")
 std::string CButton::title() {
     return titleLabel()->text();
 }
