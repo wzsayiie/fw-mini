@@ -419,7 +419,7 @@ function DefineClass(defined: Set<string>, name: string): void {
         //body.
         _out.push(` {\n        `)
         AppendFuncBody(`${name}_${field}`, desc, 0)
-        _out.push(`    \n    }\n\n`)
+        _out.push(`\n    }\n\n`)
     }
 
     //instance functions.
@@ -450,7 +450,7 @@ function DefineClass(defined: Set<string>, name: string): void {
         //body.
         _out.push(` {\n        `)
         AppendFuncBody(`${name}_${field}`, desc, 0)
-        _out.push(`    \n    }\n\n`)
+        _out.push(`\n    }\n\n`)
     }
 
     //end.
@@ -566,7 +566,7 @@ function Main(): void {
     _out = new Array<string>()
     Generate()
 
-    MWriteTextFile('d:/fw-mini/appts/app/@types/index.ts', _out.join(''))
+    //MWriteTextFile('file/path/to/write', _out.join(''))
 }
 
 Main()
