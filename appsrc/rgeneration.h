@@ -42,9 +42,15 @@
 /**/    );
 
 #define implement_injectable_function(Ret, ...)                             \
-/**/    if (auto f = find_injected(__func__)) {                             \
-/**/        auto r = f->call_with_args({ this, ##__VA_ARGS__ });            \
-/**/        return reflect::take<Ret>::from(r);                             \
+/**/    {                                                                   \
+/**/        static bool entrance = true;                                    \
+/**/        if (entrance) {                                                 \
+/**/        if (auto fcn = find_injected(__func__)) {                       \
+/**/            entrance = false;                                           \
+/**/            auto ret = fcn->call_with_args({ this, ##__VA_ARGS__ });    \
+/**/            entrance = true;                                            \
+/**/            return reflect::take<Ret>::from(ret);                       \
+/**/        }}                                                              \
 /**/    }
 
 namespace reflect {

@@ -2,18 +2,18 @@
 
 //runtime functions:
 
-static void MSetObjectClassSymbol(const reflect::injectable::ptr &obj, const char *clsSym) {
-    if (obj) {
-        reflect::symbol sym = reflect::symbol::make(clsSym);
-        obj->set_class_symbol(sym);
-    }
-}
-
 static std::string MGetObjectClassSymbol(const reflect::object::ptr &obj) {
     if (obj) {
         return obj->class_symbol().str();
     }
     return "";
+}
+
+static void MInjectObjectSymbol(const reflect::injectable::ptr &obj, const char *clsSym) {
+    if (obj) {
+        reflect::symbol sym = reflect::symbol::make(clsSym);
+        obj->set_injected_symbol(sym);
+    }
 }
 
 static void MInjectClassFunction(
@@ -22,8 +22,8 @@ static void MInjectClassFunction(
     reflect::inject(clsName, fcnName, func);
 }
 
-define_reflectable_function(MSetObjectClassSymbol, "ignore")
 define_reflectable_function(MGetObjectClassSymbol, "ignore")
+define_reflectable_function(MInjectObjectSymbol  , "ignore")
 define_reflectable_function(MInjectClassFunction , "ignore")
 
 //development environment functions:

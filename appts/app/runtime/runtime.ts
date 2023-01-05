@@ -1,7 +1,7 @@
 //BaseObject & Injectable:
 
-declare function MSetObjectClassSymbol(native: object, sym: string): void
 declare function MGetObjectClassSymbol(native: object): string
+declare function MInjectObjectSymbol  (native: object, sym: string): void
 declare function MInjectClassFunction (clsSym: string, fcnName: string, fcn: Function): void
 
 export namespace runtime {
@@ -76,7 +76,7 @@ export namespace runtime {
             let ntv = this.createInjectableNative()
             let sym = (<any> this.constructor).classSymbol
             if (ntv && sym) {
-                MSetObjectClassSymbol(ntv, sym)
+                MInjectObjectSymbol(ntv, sym)
             }
             return ntv
         }

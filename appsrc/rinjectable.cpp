@@ -66,16 +66,24 @@ void inject(const char *cls_name, const function_table::ptr &table) {
 //injectable:
 
 generic_function::ptr injectable::find_injected(const char *name) {
-    auto it = s_tables->find(_cls_sym ? _cls_sym : class_symbol());
-    if (it != s_tables->end()) {
-        return it->second->find(name);
+    if (!_injected_sym) {
+        return nullptr;
     }
 
-    return nullptr;
+    auto it = s_tables->find(_injected_sym);
+    if (it == s_tables->end()) {
+        return nullptr;
+    }
+
+    return it->second->find(name);
 }
 
-void injectable::set_class_symbol(const symbol &sym) {
-    _cls_sym = sym;
+void injectable::set_injected_symbol(const symbol &sym) {
+    _injected_sym = sym;
+}
+
+symbol injectable::injected_symbol() const {
+    return _injected_sym;
 }
 
 } //end reflect.

@@ -29,10 +29,12 @@ template<> struct typeids_of<class injectable> {
 class d_exportable injectable : public extends<injectable, object> {
 public:
     generic_function::ptr find_injected(const char *name);
-    void set_class_symbol(const symbol &sym);
+
+    void   set_injected_symbol(const symbol &sym);
+    symbol injected_symbol    () const;
     
 private:
-    symbol _cls_sym;
+    symbol _injected_sym;
 };
 
 } //end reflect.
