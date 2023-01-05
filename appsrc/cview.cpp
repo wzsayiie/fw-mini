@@ -139,12 +139,12 @@ void CView::removeFromSuperview() {
     mSuperview.reset();
 }
 
-define_reflectable_class_function(CView, subviews)
+define_reflectable_class_function(CView, subviews, "getter")
 MVector<CView::ptr>::ptr CView::subviews() {
     return mSubviews;
 }
 
-define_reflectable_class_function(CView, superview)
+define_reflectable_class_function(CView, superview, "getter")
 CView::ptr CView::superview() {
     return mSuperview.lock();
 }
