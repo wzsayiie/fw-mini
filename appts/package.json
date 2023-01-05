@@ -2,7 +2,7 @@
     "name": "fw-mini",
     "scripts": {
         "app": "webpack --config wp-app.js --watch",
-        "dev": "webpack --config wp-dev.js --watch"
+        "gen": "webpack --config wp-gen.js"
     },
     "devDependencies": {
         "webpack-cli": "*",

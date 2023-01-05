@@ -7,5 +7,5 @@
         "target": "ES2019"
     },
     "exclude": [ "node_modules" ],
-    "include": [ "dev" ]
+    "include": [ "gen" ]
 }
