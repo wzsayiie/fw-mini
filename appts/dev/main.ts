@@ -1,6 +1,6 @@
-//native meta:
+//meta description:
 
-declare function MMetaJsonDescription(): string
+declare function metaJsonDescription(): string
 
 class fdesc_node {
     type: string
@@ -50,7 +50,6 @@ class root_node {
     map_infos     : { [key: string]: map_node      }
     vector_infos  : { [key: string]: vector_node   }
     set_infos     : { [key: string]: set_node      }
-    basic_infos   : { [key: string]: string        }
 
     strings  : { [key: string]: string     }
     numbers  : { [key: string]: number     }
@@ -59,467 +58,20 @@ class root_node {
     enums    : string[]
 }
 
-//generate:
+//meta initialization:
 
-let _json: string
-let _meta: root_node
-let _out : string[]
-
-function AppendType(type: string, explicit: boolean): void {
-    let cls = _meta.class_infos[type]
-    if (cls) {
-        //special classes.
-        if /**/ (type == 'generic_function') { _out.push(explicit ? 'Function'    : 'Function') }
-        else if (type == 'generic_map'     ) { _out.push(explicit ? 'MMap<any>'   : 'any'     ) }
-        else if (type == 'generic_set'     ) { _out.push(explicit ? 'MSet<any>'   : 'any'     ) }
-        else if (type == 'generic_vector'  ) { _out.push(explicit ? 'Mvector<any>': 'any'     ) }
-        
-        else {
-            _out.push(explicit ? type : 'object')
-        }
-
-        return
-    }
-
-    let func = _meta.function_infos[type]
-    if (func) {
-        //arguments.
-        _out.push(`(`)
-        for (let i = 0; i < func.arg_types.length; ++i) {
-            if (i > 0) {
-                _out.push(`, `)
-            }
-            AppendType(func.arg_types[i], explicit)
-        }
-
-        //return value.
-        _out.push(`) => `)
-        AppendType(func.ret_type, explicit)
-
-        return
-    }
-
-    let enu = _meta.enum_infos[type]
-    if (enu) {
-        if (explicit) {
-            _out.push(type)
-        } else {
-            _out.push(`number`)
-        }
-
-        return
-    }
-
-    let map = _meta.map_infos[type]
-    if (map) {
-        if (explicit) {
-            _out.push(`MMap<`)
-            AppendType(map.key_type, explicit)
-            _out.push(`,`)
-            AppendType(map.val_type, explicit)
-            _out.push(`>`)
-        } else {
-            _out.push(`any`)
-        }
-
-        return
-    }
-
-    let vector = _meta.vector_infos[type]
-    if (vector) {
-        if (explicit) {
-            _out.push(`MVector<`)
-            AppendType(vector.val_type, explicit)
-            _out.push(`>`)
-        } else {
-            _out.push(`any`)
-        }
-
-        return
-    }
-
-    let set = _meta.set_infos[type]
-    if (set) {
-        if (explicit) {
-            _out.push(`MSet<`)
-            AppendType(set.val_type, explicit)
-            _out.push(`>`)
-        } else {
-            _out.push(`any`)
-        }
-
-        return
-    }
-
-    let basic = _meta.basic_infos[type]
-    if (basic) {
-        switch (type) {
-            case 'any'   : _out.push(`any`    ); break
-            case 'void'  : _out.push(`void`   ); break
-            case 'bool'  : _out.push(`boolean`); break
-            case 'char'  : _out.push(`number` ); break
-            case 'byte'  : _out.push(`number` ); break
-            case 'int'   : _out.push(`number` ); break
-            case 'int64' : _out.push(`number` ); break
-            case 'float' : _out.push(`number` ); break
-            case 'double': _out.push(`number` ); break
-            case 'string': _out.push(`string` ); break
-        }
-    }
-}
-
-function AppendFuncArguments(desc: fdesc_node, argBegin: number, explicit: boolean): void {
-    _out.push(`(`)
-
-    let func = _meta.function_infos[desc.type]
-    let args = desc.options['args']
-
-    for (let i = argBegin; i < func.arg_types.length; ++i) {
-        if (i > argBegin) {
-            _out.push(', ')
-        }
-
-        _out.push(`${args[i]}: `)
-        AppendType(func.arg_types[i], explicit)
-    }
-
-    _out.push(`)`)
-}
-
-function AppendFuncBody(name: string, desc: fdesc_node, argBegin: number): void {
-    let func = _meta.function_infos[desc.type]
-    let args = desc.options['args']
-
-    //name.
-    if (_meta.class_infos[func.ret_type] && func.ret_type != 'generic_function') {
-        _out.push(`return runtime.getObject(${name}(`)
-
-    } else if (func.ret_type != 'void') {
-        _out.push(`return ${name}(`)
-
-    } else {
-        _out.push(`${name}(`)
-    }
-
-    //arguments.
-    for (let i = argBegin; i < func.arg_types.length; ++i) {
-        if (i > argBegin) {
-            _out.push(', ')
-        }
-
-        let type = func.arg_types[i]
-        let name = args[i]
-
-        if (name == '_this') {
-            _out.push(`this.native`)
-        
-        } else if (_meta.class_infos[type] && type != 'generic_function') {
-            _out.push(`${name}.native`)
-
-        } else {
-            _out.push(name)
-        }
-    }
-
-    //end.
-    if (_meta.class_infos[func.ret_type] && func.ret_type != 'generic_function') {
-        _out.push(`))`)
-    } else {
-        _out.push(`)`)
-    }
-}
-
-function DeclareImport(): void {
-    _out.push(`import { runtime } from '../runtime/runtime'\n\n`)
-}
-
-function DeclareClassFunctions(): void {
-    for (let name of _meta.classes) {
-        let cls = _meta.class_infos[name]
-
-        for (let [field, desc] of Object.entries(cls.static_functions)) {
-            if (desc.options['ignore']) {
-                continue
-            }
-
-            //name.
-            _out.push(`declare function ${name}_${field}`)
-
-            //arguments.
-            AppendFuncArguments(desc, 0, false)
-
-            //return value.
-            _out.push(`: `)
-            AppendType(_meta.function_infos[desc.type].ret_type, false)
-            _out.push(`\n`)
-        }
-        _out.push('\n')
-
-        for (let [field, desc] of Object.entries(cls.inst_functions)) {
-            if (desc.options['ignore']) {
-                continue
-            }
-            
-            //name.
-            _out.push(`declare function ${name}_${field}`)
-
-            //arguments.
-            AppendFuncArguments(desc, 0, false)
-            
-            //return value.
-            _out.push(`: `)
-            AppendType(_meta.function_infos[desc.type].ret_type, false)
-            _out.push(`\n`)
-        }
-        _out.push('\n')
-    }
-}
-
-function DeclareGlobalFunctions(): void {
-    for (let [name, desc] of Object.entries(_meta.functions)) {
-        if (desc.options['ignore']) {
-            continue
-        }
-
-        //name.
-        _out.push(`declare function ${name}`)
-
-        //arguments.
-        AppendFuncArguments(desc, 0, false)
-        
-        //return value.
-        _out.push(`: `)
-        AppendType(_meta.function_infos[desc.type].ret_type, false)
-        _out.push(`\n`)
-    }
-    _out.push(`\n`)
-}
-
-function BeginNamespace(): void {
-    _out.push(`export namespace cc {\n`)
-    _out.push(`\n`)
-    _out.push(`export class MObject    extends runtime.Injectable {}\n`)
-    _out.push(`export class MVector<T> extends runtime.MVector<T> {}\n`)
-    _out.push(`export class MMap<K, T> extends runtime.MMap<K, T> {}\n`)
-    _out.push(`export class MSet<T>    extends runtime.MSet<T>    {}\n`)
-    _out.push(`\n`)
-}
-
-function EndNamespace(): void {
-    _out.push(`} // end namspace cc.\n`)
-}
-
-function DefineConstants(): void {
-    //strings.
-    for (let [name, value] of Object.entries(_meta.strings)) {
-        _out.push(`export const ${name} = '${value}'\n`)
-    }
-    _out.push(`\n`)
-
-    //numbers.
-    for (let [name, value] of Object.entries(_meta.strings)) {
-        _out.push(`export const ${name} = ${value}\n`)
-    }
-    _out.push(`\n`)
-}
-
-function DefineEnums(): void {
-    for (let name of _meta.enums) {
-        _out.push(`export enum ${name} {\n`)
-
-        let enu = _meta.enum_infos[name]
-        for (let [member, value] of Object.entries(enu.values)) {
-            _out.push(`    ${member} = ${value},\n`)
-        }
-
-        _out.push(`}\n\n`)
-    }
-}
-
-function SetterName(raw: string): string {
-    if (raw.length <= 3 || !raw.startsWith('set')) {
-        return raw
-    }
-
-    let head = raw.substring(3, 4)
-    let body = raw.substring(4)
-    return head.toLowerCase() + body
-}
-
-function DefineClass(defined: Set<string>, name: string): void {
-    if (defined.has(name)) {
-        return
-    }
-    defined.add(name)
-
-    //the base class is provided by the runtime.
-    if (name == 'MObject') {
-        return
-    }
-
-    let cls = _meta.class_infos[name]
-
-    //base class.
-    DefineClass(defined, cls.base_type)
-
-    //head:
-    _out.push(`export class ${name} extends ${cls.base_type} {\n`)
-    _out.push(`    protected static classSymbol = '${name}_js'\n`)
-    _out.push(`    \n`)
-    _out.push(`    static {\n`)
-    _out.push(`        runtime.register(this)\n`)
-    _out.push(`    }\n\n`)
-
-    if (!cls.abstracted) {
-        _out.push(`    protected createInjectableNative(): object {\n`)
-        _out.push(`        return ${name}_create()\n`)
-        _out.push(`    }\n\n`)
-    }
-
-    //static constants:
-    for (let [field, value] of Object.entries(cls.static_strings)) {
-        _out.push(`    static readonly ${field} = '${value}'\n`)
-    }
-    _out.push(`\n`)
-
-    for (let [field, value] of Object.entries(cls.static_numbers)) {
-        _out.push(`    static readonly ${field} = ${value}\n`)
-    }
-    _out.push(`\n`)
-
-    //static functions.
-    for (let [field, desc] of Object.entries(cls.static_functions)) {
-        if (desc.options['ignore']) {
-            continue
-        }
-
-        //ignore builtin "create" function.
-        if (field == 'create') {
-            continue
-        }
-
-        //name.
-        if (desc.options['setter']) {
-            _out.push(`    static set ${SetterName(field)}`)
-        } else if (desc.options['getter']) {
-            _out.push(`    static get ${field}`)
-        } else {
-            _out.push(`    static ${field}`)
-        }
-        
-        //arguments.
-        AppendFuncArguments(desc, 0, true)
-
-        //return value.
-        if (!desc.options['setter']) {
-            _out.push(`: `)
-            AppendType(_meta.function_infos[desc.type].ret_type, true)
-        }
-
-        //body.
-        _out.push(` {\n        `)
-        AppendFuncBody(`${name}_${field}`, desc, 0)
-        _out.push(`\n    }\n\n`)
-    }
-
-    //instance functions.
-    for (let [field, desc] of Object.entries(cls.inst_functions)) {
-        if (desc.options['ignore']) {
-            continue
-        }
-
-        //name.
-        if (desc.options['setter']) {
-            _out.push(`    set ${SetterName(field)}`)
-        } else if (desc.options['getter']) {
-            _out.push(`    get ${field}`)
-        } else {
-            _out.push(`    ${field}`)
-        }
-        
-        //arguments.
-        AppendFuncArguments(desc, 1, true)
-
-        //return value.
-        if (!desc.options['setter']) {
-            _out.push(`: `)
-            let ret = _meta.function_infos[desc.type].ret_type
-            AppendType(ret, true)
-        }
-
-        //body.
-        _out.push(` {\n        `)
-        AppendFuncBody(`${name}_${field}`, desc, 0)
-        _out.push(`\n    }\n\n`)
-    }
-
-    //end.
-    _out.push(`}\n\n`)
-}
-
-function DefineClasses(): void {
-    let defined = new Set<string>()
-
-    for (let name of _meta.classes) {
-        DefineClass(defined, name)
-    }
-}
-
-function DefineFunctions(): void {
-    for (let [name, desc] of Object.entries(_meta.functions)) {
-        if (desc.options['ignore']) {
-            continue
-        }
-
-        let func = _meta.function_infos[desc.type]
-
-        //name.
-        _out.push(`export function ${name}`)
-
-        //arguments.
-        AppendFuncArguments(desc, 0, true)
-        
-        //return value.
-        _out.push(`: `)
-        AppendType(func.ret_type, true)
-
-        //body.
-        _out.push(` {\n    `)
-        AppendFuncBody(`global.${name}`, desc, 0)
-        _out.push(`\n}\n\n`)
-    }
-}
-
-function Generate(): void {
-    DeclareImport()
-
-    DeclareClassFunctions ()
-    DeclareGlobalFunctions()
-
-    BeginNamespace ()
-    DefineConstants()
-    DefineEnums    ()
-    DefineClasses  ()
-    DefineFunctions()
-    EndNamespace   ()
-}
-
-//main:
-
-declare function MWriteTextFile(path: string, content: string): void
-
-function ParseFuncNote(note: string): { [key: string]: string[] } {
+function parseFunctionNote(note: string): { [key: string]: string[] } {
     let options = {}
 
     if (!note) {
         return options
     }
-    for (let segment of note.split(';')) {
-        let sep = segment.indexOf(':')
+    for (let segment of note.split(";")) {
+        let sep = segment.indexOf(":")
         if (sep != -1) {
             let name = segment.substring(0, sep)
             let args = segment.substring(sep + 1)
-            options[name] = args.split(',')
+            options[name] = args.split(",")
 
         } else {
             //only option name, no arguments.
@@ -530,43 +82,717 @@ function ParseFuncNote(note: string): { [key: string]: string[] } {
     return options
 }
 
-function FillFuncOptions(meta: root_node): void {
+function fillFunctionOptions(meta: root_node): root_node {
     //class functions.
     for (let name of meta.classes) {
         let cls = meta.class_infos[name]
 
         for (let desc of Object.values(cls.inst_functions)) {
-            desc.options = ParseFuncNote(desc.note)
+            desc.options = parseFunctionNote(desc.note)
 
             //the first argument is implied "this".
-            let args = desc.options['args']
+            let args = desc.options["args"]
             if (args) {
-                desc.options['args'] = [ '_this', ...args]
+                desc.options["args"] = [ "_this", ...args]
             } else {
-                desc.options['args'] = [ '_this' ]
+                desc.options["args"] = [ "_this" ]
             }
         }
 
         for (let desc of Object.values(cls.static_functions)) {
-            desc.options = ParseFuncNote(desc.note)
+            desc.options = parseFunctionNote(desc.note)
+
+            //make sure that "args" exsists.
+            let args = desc.options["args"]
+            if (!args) {
+                desc.options["args"] = []
+            }
         }
     }
 
     //global functions.
     for (let desc of Object.values(meta.functions)) {
-        desc.options = ParseFuncNote(desc.note)
+        desc.options = parseFunctionNote(desc.note)
+
+        let args = desc.options["args"]
+        if (!args) {
+            desc.options["args"] = []
+        }
+    }
+
+    return meta
+}
+
+const _meta = (function (): root_node {
+    let json = metaJsonDescription()
+    let meta = JSON.parse(json)
+
+    fillFunctionOptions(meta)
+
+    return meta
+})()
+
+//generator:
+
+const _buffer = new Array<string>()
+
+function generateLine(parts: string[], args: { [key: string]: any }): void {
+    for (let i = 0; i < parts.length; ) {
+        if (parts[i] == "[[") {
+            let intent = parts[i + 1]
+            let holder = args[intent]
+
+            if (typeof(holder) == "number") {
+                _buffer.push(String(holder))
+
+            } else if (typeof(holder) == "string") {
+                _buffer.push(holder)
+
+            } else if (typeof(holder) == "function") {
+                holder()
+            }
+
+            i += 3
+
+        } else {
+            _buffer.push(parts[i])
+            i += 1
+        }
     }
 }
 
-function Main(): void {
-    _json = MMetaJsonDescription()
-    _meta = JSON.parse(_json)
-    FillFuncOptions(_meta)
+function generate(lines: string[], args: { [key: string]: any }): void {
+    for (let line of lines) {
+        let parts = line.split(/(\[\[|\]\])/)
+        generateLine(parts, args)
 
-    _out = new Array<string>()
-    Generate()
-
-    //MWriteTextFile('file/path/to/write', _out.join(''))
+        _buffer.push("\n")
+    }
 }
 
-Main()
+function template(lines: string[]): { generate: (args: { [key: string]: any }) => void } {
+    return {
+        generate: (args: { [key: string]: any }) => {
+            generate(lines, args)
+        }
+    }
+}
+
+function descriptType(type: string): string {
+    let cls = _meta.class_infos[type]
+    if (cls) {
+        switch (type) {
+            //special classes.
+            case "generic_function": return "Function"
+            case "generic_map"     : return "any"
+            case "generic_set"     : return "any"
+            case "generic_vector"  : return "any"
+
+            default: return type
+        }
+    }
+
+    let fcn = _meta.function_infos[type]
+    if (fcn) {
+        let buf = new Array<string>()
+
+        //arguments.
+        buf.push("(")
+        for (let i = 0; i < fcn.arg_types.length; ++i) {
+            if (i > 0) {
+                buf.push(", ")
+            }
+            buf.push(descriptType(fcn.arg_types[i]))
+        }
+        //return value.
+        buf.push(`) => ${descriptType(fcn.ret_type)}`)
+
+        return buf.join("")
+    }
+
+    let enu = _meta.enum_infos[type]
+    if (enu) {
+        return type
+    }
+
+    let map = _meta.map_infos[type]
+    if (map) {
+        return `MSet<${descriptType(map.key_type)}, ${descriptType(map.val_type)}>`
+    }
+
+    let vector = _meta.vector_infos[type]
+    if (vector) {
+        return `MSet<${descriptType(vector.val_type)}>`
+    }
+
+    let set = _meta.set_infos[type]
+    if (set) {
+        return `MSet<${descriptType(set.val_type)}>`
+    }
+
+    switch (type) {
+        case "any"   : return "any"
+        case "void"  : return "void"
+        case "bool"  : return "boolean"
+        case "char"  : return "number"
+        case "byte"  : return "number"
+        case "int"   : return "number"
+        case "int64" : return "number"
+        case "float" : return "number"
+        case "double": return "number"
+        case "string": return "string"
+
+        default: return "ERROR"
+    }
+}
+
+function isNeedCast(type: string): boolean {
+    return _meta.class_infos[type] && type != "generic_function"
+}
+
+function SetterName(raw: string): string {
+    if (raw.length <= 3 || !raw.startsWith("set")) {
+        return raw
+    }
+
+    let head = raw.substring(3, 4)
+    let body = raw.substring(4)
+    return head.toLowerCase() + body
+}
+
+function appendNamedArgs(
+    argNames: string[], argTypes: string[], cast: (type: string) => string): void
+{
+    for (let i = 0; i < argNames.length; ++i) {
+        if (i > 0) {
+            _buffer.push(", ")
+        }
+
+        _buffer.push(`${argNames[i]}: ${cast(argTypes[i])}`)
+    }
+}
+
+function appendCalledArgs(
+    argNames: string[], argTypes: string[], cast: (src: string) => string): void
+{
+    for (let i = 0; i < argNames.length; ++i) {
+        if (i > 0) {
+            _buffer.push(", ")
+        }
+
+        if (isNeedCast(argTypes[i])) {
+            _buffer.push(cast(argNames[i]))
+        } else {
+            _buffer.push(argNames[i])
+        }
+    }
+}
+
+function declareGlobals(): void {
+    for (let clsName of _meta.classes) {
+        if (clsName == "MObject") { continue } //the base class is provided by runtime.
+        
+        let cls = _meta.class_infos[clsName]
+
+        //class static functions.
+        for (let [fcnName, desc] of Object.entries(cls.static_functions)) {
+            if (desc.options["ignore"]) { continue }
+
+            template([
+                "declare function [[cls]]_[[name]]([[args]]): any"
+            ])
+            .generate({
+                "cls" : clsName,
+                "name": fcnName,
+                "args": () => {
+                    appendNamedArgs(desc.options["args"], [], _ => "any")
+                },
+            })
+        }
+
+        //class instance functions.
+        for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
+            if (desc.options["ignore" ]) { continue }
+            if (desc.options["virtual"]) { continue }
+
+            template([
+                "declare function [[cls]]_[[name]]([[args]]): any"
+            ])
+            .generate({
+                "cls" : clsName,
+                "name": fcnName,
+                "args": () => {
+                    appendNamedArgs(desc.options["args"], [], _ => "any")
+                },
+            })
+        }
+    }
+
+    //global functions.
+    for (let [fcnName, desc] of Object.entries(_meta.functions)) {
+        if (desc.options["ignore"]) { continue }
+
+        template([
+            "declare function [[name]]([[args]]): any"
+        ])
+        .generate({
+            "name": fcnName,
+            "args": () => {
+                appendNamedArgs(desc.options["args"], [], _ => "any")
+            },
+        })
+    }
+}
+
+function defineConstants(): void {
+    //constant strings.
+    for (let [name, value] of Object.entries(_meta.strings)) {
+        template([
+            "    const [[name]] = '[[value]]'"
+        ])
+        .generate({
+            "name" : name ,
+            "value": value,
+        })
+    }
+
+    //constant numbers.
+    for (let [name, value] of Object.entries(_meta.numbers)) {
+        template([
+            "    export const [[name]] = [[value]]"
+        ])
+        .generate({
+            "name" : name ,
+            "value": value,
+        })
+    }
+}
+
+function defineEnumMember(enu: enum_node): void {
+    for (let [member, value] of Object.entries(enu.values)) {
+        template([
+            "        [[member]] = [[value]],",
+        ])
+        .generate({
+            "member": member,
+            "value" : value ,
+        })
+    }
+}
+
+function defineEnums(): void {
+    for (let enumName of _meta.enums) {
+        let enu = _meta.enum_infos[enumName]
+
+        template([
+            "    export enum [[enumName]] {",
+            "[[members]]",
+            "    }",
+            "",
+        ])
+        .generate({
+            "enumName": enumName,
+            "members" : () => defineEnumMember(enu),
+        })
+    }
+}
+
+function defineClassStaticFunctions(cls: class_node, clsName: string): void {
+    for (let [fcnName, desc] of Object.entries(cls.static_functions)) {
+        if (desc.options["ignore"]) { continue }
+        if (fcnName == "create"   ) { continue } //ignore builtin "create".
+
+        let fcn = _meta.function_infos[desc.type]
+
+        let argNames = desc.options["args"]
+        let argTypes = fcn.arg_types
+
+        if (desc.options["setter"]) {
+            template([
+                "    static set [[setName]](value: [[argType]]) {",
+                "        global.[[clsName]]_[[fcnName]](",
+                "            [[argCast]] runtime.getNative(",
+                "                value",
+                "            [[argCast]] )",
+                "        )",
+                "    }",
+                "",
+            ])
+            .generate({
+                "clsName": clsName,
+                "setName": SetterName(fcnName),
+                "fcnName": fcnName,
+                "argType": descriptType(fcn.arg_types[0]),
+                "argCast": isNeedCast(fcn.arg_types[0]) ? "/**/" : "//",
+            })
+
+        } else if (desc.options["getter"]) {
+            template([
+                "    static get [[fcnName]](): [[retType]] {",
+                "        return (",
+                "        [[retCast]] runtime.getObject(",
+                "            global.[[clsName]]_[[fcnName]]()",
+                "        [[retCast]] )",
+                "        )",
+                "    }",
+                "",
+            ])
+            .generate({
+                "clsName": clsName,
+                "fcnName": fcnName,
+                "retType": descriptType(fcn.ret_type),
+                "retCast": isNeedCast(fcn.ret_type) ? "/**/" : "//",
+            })
+
+        } else {
+            template([
+                "    static [[fcnName]]([[argNames]]): [[retType]] {",
+                "        return (",
+                "        [[retCast]] runtime.getObject(",
+                "            global.[[clsName]]_[[fcnName]]([[argCalls]])",
+                "        [[retCast]] )",
+                "        )",
+                "    }",
+                "",
+            ])
+            .generate({
+                "clsName" : clsName,
+                "fcnName" : fcnName,
+                "retType" : descriptType(fcn.ret_type),
+                "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
+
+                "argNames": () => {
+                    appendNamedArgs(argNames, argTypes, descriptType)
+                },
+
+                "argCalls": () => {
+                    appendCalledArgs(argNames, argTypes, v => `runtime.getNative(${v})`)
+                },
+            })
+        }
+    }
+}
+
+function defineClassInstFunctions(cls: class_node, clsName: string): void {
+    for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
+        if (desc.options["ignore"]) { continue }
+
+        let fcn      = _meta.function_infos[desc.type]
+        let argNames = desc.options["args"]
+        let argTypes = fcn.arg_types
+
+        if (desc.options["virtual"]) {
+            template([
+                "    [[fcnName]]([[argNames]]): [[retType]] {",
+                "        return undefined",
+                "    }",
+                "",
+            ])
+            .generate({
+                "fcnName" : fcnName,
+                "retType" : descriptType(fcn.ret_type),
+
+                "argNames": () => {
+                    appendNamedArgs(argNames.slice(1), argTypes.slice(1), descriptType)
+                },
+            })
+
+        } else if (desc.options["setter"]) {
+            template([
+                "    set [[setName]](value: [[argType]]) {",
+                "        global.[[clsName]]_[[fcnName]](",
+                "            this.native,",
+                "            [[argCast]] runtime.getNative(",
+                "                value",
+                "            [[argCast]] )",
+                "        )",
+                "    }",
+                "",
+            ])
+            .generate({
+                "clsName": clsName,
+                "setName": SetterName(fcnName),
+                "fcnName": fcnName,
+                "argType": descriptType(fcn.arg_types[1]),
+                "argCast": isNeedCast(fcn.arg_types[1]) ? "/**/" : "//",
+            })
+
+        } else if (desc.options["getter"]) {
+            template([
+                "    get [[fcnName]](): [[retType]] {",
+                "        return (",
+                "        [[retCast]] runtime.getObject(",
+                "            global.[[clsName]]_[[fcnName]](this.native)",
+                "        [[retCast]] )",
+                "        )",
+                "    }",
+                "",
+            ])
+            .generate({
+                "clsName": clsName,
+                "fcnName": fcnName,
+                "retType": descriptType(fcn.ret_type),
+                "retCast": isNeedCast(fcn.ret_type) ? "/**/" : "//",
+            })
+
+        } else {
+            template([
+                "    [[fcnName]]([[argNames]]): [[retType]] {",
+                "        return (",
+                "        [[retCast]] runtime.getObject(",
+                "            global.[[clsName]]_[[fcnName]](this.native [[comma]] [[argCalls]])",
+                "        [[retCast]] )",
+                "        )",
+                "    }",
+                "",
+            ])
+            .generate({
+                "clsName" : clsName,
+                "fcnName" : fcnName,
+                "retType" : descriptType(fcn.ret_type),
+                "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
+                "comma"   : argTypes.length > 1 ? "," : "",
+
+                "argNames": () => {
+                    appendNamedArgs(
+                        argNames.slice(1), argTypes.slice(1), descriptType
+                    )
+                },
+
+                "argCalls": () => {
+                    appendCalledArgs(
+                        argNames.slice(1), argTypes.slice(1), v => `runtime.getNative(${v})`
+                    )
+                },
+            })
+        }
+    }
+}
+
+function defineClassConstantFields(cls: class_node): void {
+    //constant strings.
+    for (let [field, value] of Object.entries(cls.static_strings)) {
+        template([
+            "    static readonly [[field]] = '[[value]]'"
+        ])
+        .generate({
+            "field": field,
+            "value": value,
+        })
+    }
+
+    //constant numbers.
+    for (let [field, value] of Object.entries(cls.static_numbers)) {
+        template([
+            "    static readonly [[field]] = [[value]]"
+        ])
+        .generate({
+            "field": field,
+            "value": value,
+        })
+    }
+}
+
+function defineClassBlockVirtuals(cls: class_node, clsName: string): void {
+    for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
+        if ( desc.options["ignore" ]) { continue }
+        if (!desc.options["virtual"]) { continue }
+
+        template([
+            "        runtime.inject('[[clsName]]', '[[fcnName]]', this.js_[[clsName]]_[[fcnName]])"
+        ])
+        .generate({
+            "clsName": clsName,
+            "fcnName": fcnName,
+        })
+    }
+}
+
+function defineClassBlock(cls: class_node, clsName: string): void {
+    template([
+        "    static {",
+        "        runtime.register(this)",
+        "",
+        "[[virtuals]]",
+        "    }",
+        "",
+    ])
+    .generate({
+        "virtuals": () => defineClassBlockVirtuals(cls, clsName)
+    })
+}
+
+function defineClassStaticVirtuals(cls: class_node, clsName: string): void {
+    for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
+        if ( desc.options["ignore" ]) { continue }
+        if (!desc.options["virtual"]) { continue }
+
+        let fcn      = _meta.function_infos[desc.type]
+        let argNames = desc.options["args"]
+        let argTypes = fcn.arg_types
+
+        template([
+            "    private static js_[[clsName]]_[[fcnName]]([[argNames]]): [[retType]] {",
+            "        return runtime.getObject(_this).[[fcnName]]([[argCalls]])",
+            "    }",
+            "",
+        ])
+        .generate({
+            "clsName" : clsName,
+            "fcnName" : fcnName,
+            "retType" : descriptType(fcn.ret_type),
+
+            "argNames": () => {
+                appendNamedArgs(argNames, argTypes, descriptType)
+            },
+
+            "argCalls": () => {
+                appendCalledArgs(
+                    argNames.slice(1), argTypes.slice(1), v => `runtime.getObject(${v})`
+                )
+            },
+        })
+    }
+}
+
+function defineClass(defined: Set<string>, clsName: string): void {
+    if (defined.has(clsName)) {
+        return
+    }
+    defined.add(clsName)
+
+    //the base class is provided by runtime.
+    if (clsName == "MObject") { return }
+
+    let cls = _meta.class_infos[clsName]
+
+    //IMPORTANT: define base class firstly.
+    defineClass(defined, cls.base_type)
+
+    template([
+        "export class [[clsName]] extends [[baseName]] {",
+        "    protected static classSymbol = 'js_[[clsName]]'",
+        "",
+        "[[constants_fields]]",
+        "",
+        "[[static_virtuals]]",
+        "",
+        "[[static_block]]",
+        "",
+        "[[static_functions]]",
+        "",
+        "    [[newable]] protected createInjectableNative(): object {",
+        "    [[newable]]     return [[clsName]]_create()",
+        "    [[newable]] }",
+        "",
+        "[[inst_functions]]",
+        "}",
+    ])
+    .generate({
+        "clsName" : clsName,
+        "baseName": cls.base_type,
+        "newable" : !cls.abstracted ? "/**/" : "//",
+
+        "constants_fields": () => defineClassConstantFields (cls),
+        "static_virtuals" : () => defineClassStaticVirtuals (cls, clsName),
+        "static_block"    : () => defineClassBlock          (cls, clsName),
+        "static_functions": () => defineClassStaticFunctions(cls, clsName),
+        "inst_functions"  : () => defineClassInstFunctions  (cls, clsName),
+    })
+}
+
+function defineClasses(): void {
+    let defined = new Set<string>()
+    for (let name of _meta.classes) {
+        defineClass(defined, name)
+    }
+}
+
+function defineFunctions(): void {
+    for (let [fcnName, desc] of Object.entries(_meta.functions)) {
+        if (desc.options["ignore"]) { continue }
+
+        let fcn      = _meta.function_infos[desc.type]
+        let argNames = desc.options["args"]
+        let argTypes = fcn.arg_types
+
+        template([
+            "export function [[fcnName]]([[argNames]]): [[retType]] {",
+            "    return (",
+            "    [[retCast]] runtime.getObject(",
+            "        global.[[fcnName]]([[argCalls]])",
+            "    [[retCast]] )",
+            "    )",
+            "}",
+            "",
+        ])
+        .generate({
+            "fcnName" : fcnName,
+            "retType" : descriptType(fcn.ret_type),
+            "retCast" :  isNeedCast(fcn.ret_type) ? "/**/" : "//",
+
+            "argNames": () => {
+                appendNamedArgs(argNames, argTypes, descriptType)
+            },
+
+            "argCalls": () => {
+                appendCalledArgs(argNames, argTypes, v => `runtime.getNative(${v})`)
+            },
+        })
+    }
+}
+
+function defineNamespace(): void {
+    template([
+        "export namespace cc {",
+        "",
+        "    export class MObject    extends runtime.Injectable {}",
+        "    export class MVector<T> extends runtime.MVector<T> {}",
+        "    export class MMap<K, T> extends runtime.MMap<K, T> {}",
+        "    export class MSet<T>    extends runtime.MSet<T>    {}",
+        "",
+        "[[constants]]",
+        "",
+        "[[enums]]",
+        "",
+        "[[classes]]",
+        "",
+        "[[functions]]",
+        "}",
+        "",
+    ])
+    .generate({
+        "constants": () => defineConstants(),
+        "enums"    : () => defineEnums    (),
+        "classes"  : () => defineClasses  (),
+        "functions": () => defineFunctions(),
+    })
+}
+
+function makeDTS(): void {
+    template([
+        "import { runtime } from '../runtime/runtime'",
+        "",
+        "[[globals]]",
+        "",
+        "[[namespace]]",
+        "",
+    ])
+    .generate({
+        "globals"  : () => declareGlobals (),
+        "namespace": () => defineNamespace(),
+    })
+}
+
+//main:
+
+declare function writeTextFile(path: string, content: string): void
+
+function main(): void {
+    makeDTS()
+
+    // let path = "the_project_directory/appts/app/@types/index.ts"
+    // writeTextFile(path, _buffer.join(""))
+}
+
+main()
