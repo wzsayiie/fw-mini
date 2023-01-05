@@ -2,7 +2,7 @@
 
 declare function MSetObjectClassSymbol(native: object, sym: string): void
 declare function MGetObjectClassSymbol(native: object): string
-declare function MInjectClassFunction (clsSym: string, funcName: string, func: Function): void
+declare function MInjectClassFunction (clsSym: string, fcnName: string, fcn: Function): void
 
 export namespace runtime {
     let _mappedClasses = new Map<string, { new(): BaseObject }>()
@@ -67,8 +67,8 @@ export namespace runtime {
         }
     }
 
-    export function inject(clsSym: string, funcName: string, func: Function): void {
-        MInjectClassFunction(clsSym, funcName, func)
+    export function inject(clsSym: string, fcnName: string, fcn: Function): void {
+        MInjectClassFunction(clsSym, fcnName, fcn)
     }
 
     export class Injectable extends BaseObject {
