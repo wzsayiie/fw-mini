@@ -22,19 +22,22 @@ static void MInjectClassFunction(
     reflect::inject(clsName, fcnName, func);
 }
 
-static std::string MMetaJsonDescription() {
-    return reflect::meta_json_description();
-}
-
-static void MWriteTextFile(const std::string &path, const std::string &content) {
-    MFileManager::instance()->writeU8StringToFile(content, path);
-}
-
 define_reflectable_function(MSetObjectClassSymbol, "ignore")
 define_reflectable_function(MGetObjectClassSymbol, "ignore")
 define_reflectable_function(MInjectClassFunction , "ignore")
-define_reflectable_function(MMetaJsonDescription , "ignore")
-define_reflectable_function(MWriteTextFile       , "ignore")
+
+//development environment functions:
+
+static std::string metaJsonDescription() {
+    return reflect::meta_json_description();
+}
+
+static void writeTextFile(const std::string &path, const std::string &content) {
+    MFileManager::instance()->writeU8StringToFile(content, path);
+}
+
+define_reflectable_function(metaJsonDescription, "ignore")
+define_reflectable_function(writeTextFile      , "ignore")
 
 //virtual machine:
 
