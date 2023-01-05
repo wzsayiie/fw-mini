@@ -599,7 +599,7 @@ function defineClassBlockVirtuals(cls: class_node, clsName: string): void {
         if (!desc.options["virtual"]) { continue }
 
         template([
-            "        runtime.inject('[[clsName]]', '[[fcnName]]', this.js_[[clsName]]_[[fcnName]])"
+            "        runtime.inject(this.classSymbol, '[[fcnName]]', this.js_[[clsName]]_[[fcnName]])"
         ])
         .generate({
             "clsName": clsName,
