@@ -69,7 +69,6 @@ struct root_node : json_object {
     json<map<string, map_node>>      map_infos      {"map_infos"     };
     json<map<string, vector_node>>   vector_infos   {"vector_infos"  };
     json<map<string, set_node>>      set_infos      {"set_infos"     };
-    json<map<string, string>>        basic_infos    {"basic_infos"   };
 
     json<map<string, string>>     strings   {"strings"  };
     json<map<string, double>>     numbers   {"numbers"  };
@@ -174,10 +173,6 @@ static void insert_set_info(root_node *root, const string &name, reflect::set_me
     root->set_infos[name] = info;
 }
 
-static void insert_basic_info(root_node *root, const string &name) {
-    root->basic_infos[name] = name;
-}
-
 string reflect::meta_json_description() {
     root_node root;
 
@@ -194,7 +189,7 @@ string reflect::meta_json_description() {
             case category::is_vector  : insert_vector_info  (&root, t, (vector_meta   *)m); break;
             case category::is_set     : insert_set_info     (&root, t, (set_meta      *)m); break;
 
-            default: insert_basic_info(&root, t);
+            default:;
         }
     }
 
