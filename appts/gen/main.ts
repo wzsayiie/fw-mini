@@ -312,8 +312,7 @@ function declareGlobals(): void {
 
         //class instance functions.
         for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
-            if (desc.options["ignore" ]) { continue }
-            if (desc.options["virtual"]) { continue }
+            if (desc.options["ignore"]) { continue }
 
             template([
                 "declare function [[cls]]_[[name]]([[args]]): any"
@@ -481,23 +480,7 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
         let argNames = desc.options["args"]
         let argTypes = fcn.arg_types
 
-        if (desc.options["virtual"]) {
-            template([
-                "    [[fcnName]]([[argNames]]): [[retType]] {",
-                "        return undefined",
-                "    }",
-                "",
-            ])
-            .generate({
-                "fcnName" : fcnName,
-                "retType" : descriptType(fcn.ret_type),
-
-                "argNames": () => {
-                    appendNamedArgs(argNames.slice(1), argTypes.slice(1), descriptType)
-                },
-            })
-
-        } else if (desc.options["setter"]) {
+        if (desc.options["setter"]) {
             template([
                 "    set [[setName]](value: [[argType]]) {",
                 "        global.[[clsName]]_[[fcnName]](",
@@ -632,18 +615,22 @@ function defineClassStaticVirtuals(cls: class_node, clsName: string): void {
         let argTypes = fcn.arg_types
 
         template([
-            "    private static js_[[clsName]]_[[fcnName]]([[argNames]]): [[retType]] {",
-            "        return runtime.getObject(_this).[[fcnName]]([[argCalls]])",
+            "    private static js_[[clsName]]_[[fcnName]]([[argNames]]): any {",
+            "        return (",
+            "        [[retCast]] runtime.getNative(",
+            "            runtime.getObject(_this).[[fcnName]]([[argCalls]])",
+            "        [[retCast]] )",
+            "        )",
             "    }",
             "",
         ])
         .generate({
             "clsName" : clsName,
             "fcnName" : fcnName,
-            "retType" : descriptType(fcn.ret_type),
+            "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
 
             "argNames": () => {
-                appendNamedArgs(argNames, argTypes, descriptType)
+                appendNamedArgs(argNames, argTypes, _ => "any")
             },
 
             "argCalls": () => {
@@ -791,8 +778,7 @@ declare function writeTextFile(path: string, content: string): void
 function main(): void {
     makeDTS()
 
-    // let path = "the_project_directory/appts/app/@types/index.ts"
-    // writeTextFile(path, _buffer.join(""))
+    // writeTextFile(".../appts/app/@types/index.ts", _buffer.join(""))
 }
 
 main()
