@@ -2,7 +2,7 @@
     "compilerOptions": {
         "typeRoots": [
             "./node_modules/@types",
-            "./app/@types"
+            "./app/host"
         ],
         "moduleResolution": "node",
         "target": "ES2019"
