@@ -3,28 +3,15 @@
 
 //object pool:
 
-MWin32JsObjectPool::ptr MWin32JsObjectPool::sInstance;
-
 MWin32JsObjectPool *MWin32JsObjectPool::instance()
 {
-    if (!sInstance)
-    {
-        sInstance = MWin32JsObjectPool::create();
-    }
-    return sInstance.get();
-}
-
-void MWin32JsObjectPool::clearInstance()
-{
-    sInstance.reset();
-}
-
-MWin32JsObjectPool::~MWin32JsObjectPool()
-{
-    mCppObjects.clear();
-    mCppHolders.clear();
-    mJsObjects .clear();
-    mJsHolders .clear();
+    //IMPORTANT: new a pointer object.
+    //at the end of the program, static smart pointers will automatically destruct,
+    //and other objects may call this function when they are destructing.
+    static auto obj = new MWin32JsObjectPool::ptr(
+        MWin32JsObjectPool::create()
+    );
+    return obj->get();
 }
 
 JsValueRef MWin32JsObjectPool::getJsValue(const reflect::any &cppValue)
@@ -262,8 +249,6 @@ MWin32JsVM::MWin32JsVM()
 
 MWin32JsVM::~MWin32JsVM()
 {
-    MWin32JsObjectPool::clearInstance();
-    
     JsRelease(mContext, nullptr);
     JsDisposeRuntime(mRuntime);
 }

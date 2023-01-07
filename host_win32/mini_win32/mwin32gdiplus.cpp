@@ -10,6 +10,9 @@ void MWin32GdiplusStartup()
 
 void MWin32GdiplusShutdown()
 {
+    //NOTE: do not shotdown gdi+ manually.
+    //some objects may hold gdi+ objects, until destruct at the end of program.
+    //
     //Gdiplus::GdiplusShutdown(sGdiplusToken);
     //sGdiplusToken = 0;
 }

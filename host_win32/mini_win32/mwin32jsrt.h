@@ -11,19 +11,12 @@ m_class(MWin32JsObjectPool, MObject)
 {
 public:
     static MWin32JsObjectPool *instance();
-    static void clearInstance();
-
-public:
-    ~MWin32JsObjectPool();
 
 public:
     JsValueRef   getJsValue (const reflect::any &cppValue);
     reflect::any getCppValue(JsValueRef jsValue);
 
     void collectCppObject(reflect::object *obj);
-
-private:
-    static MWin32JsObjectPool::ptr sInstance;
 
 private:
     static void CALLBACK onCollectJsObject(JsRef value, void *custom);
