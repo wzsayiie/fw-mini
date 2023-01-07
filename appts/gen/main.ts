@@ -775,12 +775,17 @@ function makeDTS(): void {
 
 //main:
 
+declare function temporaryDirectory(): string
 declare function writeTextFile(path: string, content: string): void
 
-function main(): void {
+(function () {
     makeDTS()
 
-    // writeTextFile(".../appts/app/host/native.ts", _buffer.join(""))
-}
-
-main()
+    let file = ''
+    // file = ".../fw-mini/appts/app/host/native.ts"
+    // file = `${temporaryDirectory()}/native.ts`
+    if (file) {
+        writeTextFile(file, _buffer.join(""))
+        console.log(`output: ${file}`)
+    }
+})()

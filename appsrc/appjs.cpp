@@ -32,11 +32,16 @@ static std::string metaJsonDescription() {
     return reflect::meta_json_description();
 }
 
+static std::string temporaryDirectory() {
+    return MBundle::instance()->temporaryDirectory();
+}
+
 static void writeTextFile(const std::string &path, const std::string &content) {
     MFileManager::instance()->writeU8StringToFile(content, path);
 }
 
 define_reflectable_function(metaJsonDescription, "ignore")
+define_reflectable_function(temporaryDirectory , "ignore")
 define_reflectable_function(writeTextFile      , "ignore")
 
 //virtual machine:
