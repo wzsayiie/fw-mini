@@ -217,6 +217,11 @@ static void OnDestroy(HWND wnd, WPARAM wParam, LPARAM lParam)
     KillTimer(wnd, AppUpdateTimerId);
     MWin32GdiplusShutdown();
 
+    //IMPORTANT: emit a "hide" event.
+    //ensuring the lifecycle order of "load", to "show", to "hide".
+    MWindow *window = MWindow::mainWindow();
+    window->hide();
+
     PostQuitMessage(0);
 }
 
