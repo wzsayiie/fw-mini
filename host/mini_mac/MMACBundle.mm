@@ -55,6 +55,12 @@ std::string MMACBundle::onGetDocumentDirectory() {
 }
 
 std::string MMACBundle::onGetTemporaryDirectory() {
-    NSString *path = NSTemporaryDirectory();
-    return path.UTF8String;
+    NSString  *path = NSTemporaryDirectory();
+    NSUInteger last = path.length - 1;
+
+    if ([path characterAtIndex:last] == '/') {
+        return [path substringToIndex:last].UTF8String;
+    } else {
+        return path.UTF8String;
+    }
 }
