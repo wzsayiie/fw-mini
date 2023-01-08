@@ -2,9 +2,9 @@
 
 //object pool:
 
-@implementation MMACCppObjectHolder
+@implementation MMACCppJsWrapper
 
-- (instancetype)initWithCppValue:(const reflect::object::ptr &)cppObject {
+- (instancetype)initWithCppObject:(const reflect::object::ptr &)cppObject {
     if (self = [super init]) {
         self.cppObject = cppObject;
     }
@@ -12,14 +12,15 @@
 }
 
 - (void)dealloc {
-    [MMACJsObjectPool.instance collectJsObject:@(self.hash)];
+    MMACCppPtr *cppPtr = @((intptr_t)self.cppObject.get());
+    [MMACJsObjectPool.instance whenCollectJs:cppPtr];
 }
 
 @end
 
-@implementation MMACJsObjectWeakRef
+@implementation MMACJsWeak
 
-- (instancetype)initWithJsValue:(JSValue *)jsObject {
+- (instancetype)initWithJsObject:(MMACCppJsWrapper *)jsObject {
     if (self = [super init]) {
         self.jsObject = jsObject;
     }
@@ -28,27 +29,18 @@
 
 @end
 
-static MMACJsObjectPool *sSharedJsObjectPool = nil;
-
 @implementation MMACJsObjectPool
 
 + (instancetype)instance {
-    if (!sSharedJsObjectPool) {
-        sSharedJsObjectPool = [[self alloc] init];
-    }
-    return sSharedJsObjectPool;
-}
-
-+ (void)clearInstance {
-    sSharedJsObjectPool = nil;
+    static MMACJsObjectPool *obj = [[self alloc] init];
+    return obj;
 }
 
 - (instancetype)init {
     if (self = [super init]) {
-        self.cppObjects = [NSMutableDictionary dictionary];
-        self.cppHolders = [NSMutableDictionary dictionary];
-        self.jsObjects  = [NSMutableDictionary dictionary];
-        self.jsHolders  = [NSMutableDictionary dictionary];
+        self.cppJsHolders = [NSMutableDictionary dictionary];
+        self.jsObjects    = [NSMutableDictionary dictionary];
+        self.jsCppHolders = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -58,8 +50,8 @@ static MMACJsObjectPool *sSharedJsObjectPool = nil;
     
     switch (cppValue.preferred_type()) {
         case reflect::data_type::is_object: {
-            reflect::object::ptr  cppObject  = cppValue.as_object_shared();
-            MMACCppObjectPointer *cppPointer = @((intptr_t)cppObject.get());
+            reflect::object::ptr cppObject = cppValue.as_object_shared();
+            MMACCppPtr          *cppPtr    = @((intptr_t)cppObject.get());
             
             //null.
             if (!cppObject) {
@@ -68,27 +60,26 @@ static MMACJsObjectPool *sSharedJsObjectPool = nil;
             
             //query from cache:
             {
-                MMACJsObjectWeakRef *holder = self.cppHolders[cppPointer];
+                MMACJsWeak *holder = self.cppJsHolders[cppPtr];
                 if (holder) {
-                    return holder.jsObject;
+                    return [JSValue valueWithObject:holder.jsObject inContext:context];
                 }
                 
-                JSValue *held = self.jsObjects[cppPointer];
+                JSValue *held = self.jsObjects[cppPtr];
                 if (held) {
                     return held;
                 }
             }
             
             //new object.
-            MMACCppObjectHolder     *cppHolder  = [[MMACCppObjectHolder alloc] initWithCppValue:cppObject];
-            MMACCppObjectHolderHash *holderHash = @(cppHolder.hash);
-            JSValue                 *jsObject   = [JSValue valueWithObject:cppHolder inContext:context];
-            MMACJsObjectWeakRef     *jsWeak     = [[MMACJsObjectWeakRef alloc] initWithJsValue:jsObject];
+            MMACCppJsWrapper *jsObject = [[MMACCppJsWrapper alloc] initWithCppObject:cppObject];
+            MMACJsWeak       *jsWeak   = [[MMACJsWeak alloc] initWithJsObject:jsObject];
             
-            self.cppObjects[holderHash] = cppHolder;
-            self.cppHolders[cppPointer] = jsWeak   ;
+            //IMPORTANT: store "MMACCppJsWrapper", instead of "JSValue".
+            //a "JSValue" may released, and pass the held object to other "JSValue".
+            self.cppJsHolders[cppPtr] = jsWeak;
             
-            return jsObject;
+            return [JSValue valueWithObject:jsObject inContext:context];;
         }
         
         case reflect::data_type::is_string: {
@@ -115,28 +106,28 @@ static MMACJsObjectPool *sSharedJsObjectPool = nil;
 
 - (reflect::any)cppValueFromJs:(JSValue *)jsValue {
     if (jsValue.isObject) {
-        MMACCppObjectHolderHash *holderHash = @([jsValue.toObject hash]);
+        MMACJsHash *jsHash = @(jsValue.hash);
         
         //query from cache:
         {
-            MMACCppObjectPointer *cppPointer = self.jsHolders[holderHash];
-            if (cppPointer) {
-                return ((reflect::object *)cppPointer.longLongValue);
+            MMACCppPtr *holder = self.jsCppHolders[jsHash];
+            if (holder) {
+                return ((reflect::object *)holder.longLongValue)->me();
             }
             
-            MMACCppObjectHolder *cppHolder = self.cppObjects[holderHash];
-            if (cppHolder) {
-                return cppHolder.cppObject;
+            MMACCppJsWrapper *held = jsValue.toObject;
+            if ([held isMemberOfClass:MMACCppJsWrapper.class]) {
+                return held.cppObject;
             }
         }
         
         //new object if the value is a function.
         if (MMACJsVM::instance()->isFunction(jsValue)) {
-            reflect::object::ptr  cppObject  = MMACJsFunction::create(jsValue);
-            MMACCppObjectPointer *cppPointer = @((intptr_t)cppObject.get());
+            reflect::object::ptr cppObject = MMACJsFunction::create(jsValue);
+            MMACCppPtr          *cppPtr    = @((intptr_t)cppObject.get());
             
-            self.jsObjects[cppPointer] = jsValue   ;
-            self.jsHolders[holderHash] = cppPointer;
+            self.jsObjects   [cppPtr] = jsValue;
+            self.jsCppHolders[jsHash] = cppPtr ;
             
             return cppObject;
         }
@@ -157,20 +148,16 @@ static MMACJsObjectPool *sSharedJsObjectPool = nil;
     }
 }
 
-- (void)collectCppObject:(MMACCppObjectPointer *)cppPointer {
-    JSValue *jsValue = self.jsObjects[cppPointer];
-    MMACCppObjectHolderHash *holderHash = @([jsValue.toObject hash]);
+- (void)whenCollectCpp:(MMACCppPtr *)cppPtr {
+    JSValue    *jsObject = self.jsObjects[cppPtr];
+    MMACJsHash *jsHash   = @(jsObject.hash);
     
-    [self.jsObjects removeObjectForKey:cppPointer];
-    [self.jsHolders removeObjectForKey:holderHash];
+    [self.jsObjects    removeObjectForKey:cppPtr];
+    [self.jsCppHolders removeObjectForKey:jsHash];
 }
 
-- (void)collectJsObject:(MMACCppObjectHolderHash *)holderHash {
-    MMACCppObjectHolder  *cppHolder  = self.cppObjects[holderHash];
-    MMACCppObjectPointer *cppPointer = @((intptr_t)cppHolder.cppObject.get());
-    
-    [self.cppObjects removeObjectForKey:holderHash];
-    [self.cppHolders removeObjectForKey:cppPointer];
+- (void)whenCollectJs:(MMACCppPtr *)cppPtr {
+    [self.cppJsHolders removeObjectForKey:cppPtr];
 }
 
 @end
@@ -182,24 +169,25 @@ MMACJsFunction::MMACJsFunction(JSValue *func) {
 }
 
 MMACJsFunction::~MMACJsFunction() {
-    [MMACJsObjectPool.instance collectCppObject:@((intptr_t)this)];
+    MMACCppPtr *cppPtr = @((intptr_t)this);
+    [MMACJsObjectPool.instance whenCollectCpp:cppPtr];
 }
 
 void MMACJsFunction::on_call() const {
     //argument:
     NSMutableArray *jsArgs = [NSMutableArray array];
-        
+    
     int count = reflect::get_arg_count();
     for (int i = 0; i < count; ++i) {
         reflect::any cppArg = reflect::get_arg_value(i);
         JSValue *jsArg = [MMACJsObjectPool.instance jsValueFromCpp:cppArg];
-            
+        
         [jsArgs addObject:jsArg];
     }
-        
+    
     //call.
     JSValue *jsRet = [mFunc callWithArguments:jsArgs];
-        
+    
     //return.
     reflect::any cppRet = [MMACJsObjectPool.instance cppValueFromJs:jsRet];
     reflect::return_value(cppRet);
@@ -230,10 +218,6 @@ MMACJsVM::MMACJsVM() {
     mIsFunction = ^(JSValue *value) {
         return [isFunc callWithArguments:@[ value ]].toBool;
     };
-}
-
-MMACJsVM::~MMACJsVM() {
-    [MMACJsObjectPool clearInstance];
 }
 
 bool MMACJsVM::isFunction(JSValue *value) {

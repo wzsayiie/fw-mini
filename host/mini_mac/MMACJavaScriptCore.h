@@ -3,36 +3,34 @@
 
 //object pool:
 
-@compatibility_alias MMACCppObjectHolderHash NSNumber;
-@compatibility_alias MMACCppObjectPointer    NSNumber;
+@compatibility_alias MMACJsHash NSNumber;
+@compatibility_alias MMACCppPtr NSNumber;
 
-@interface MMACCppObjectHolder : NSObject
-- (instancetype)initWithCppValue:(const reflect::object::ptr &)cppObject;
+@interface MMACCppJsWrapper : NSObject
+- (instancetype)initWithCppObject:(const reflect::object::ptr &)cppObject;
 @property (nonatomic) reflect::object::ptr cppObject;
 @end
 
-@interface MMACJsObjectWeakRef : NSObject
-- (instancetype)initWithJsValue:(JSValue *)jsObject;
-@property (nonatomic, weak) JSValue *jsObject;
+@interface MMACJsWeak : NSObject
+- (instancetype)initWithJsObject:(MMACCppJsWrapper *)jsObject;
+@property (nonatomic, weak) MMACCppJsWrapper *jsObject;
 @end
 
 @interface MMACJsObjectPool : NSObject
 
 + (instancetype)instance;
-+ (void)clearInstance;
 
 //js hold cpp objects.
-@property (nonatomic) NSMutableDictionary<MMACCppObjectHolderHash *, MMACCppObjectHolder *> *cppObjects;
-@property (nonatomic) NSMutableDictionary<MMACCppObjectPointer    *, MMACJsObjectWeakRef *> *cppHolders;
+@property (nonatomic) NSMutableDictionary<MMACCppPtr *, MMACJsWeak *> *cppJsHolders;
 //cpp hold js objects.
-@property (nonatomic) NSMutableDictionary<MMACCppObjectPointer    *, JSValue              *> *jsObjects;
-@property (nonatomic) NSMutableDictionary<MMACCppObjectHolderHash *, MMACCppObjectPointer *> *jsHolders;
+@property (nonatomic) NSMutableDictionary<MMACCppPtr *, JSValue    *> *jsObjects   ;
+@property (nonatomic) NSMutableDictionary<MMACJsHash *, MMACCppPtr *> *jsCppHolders;
 
 - (JSValue    *)jsValueFromCpp:(const reflect::any &)cppValue;
 - (reflect::any)cppValueFromJs:(JSValue            *)jsValue ;
 
-- (void)collectCppObject:(MMACCppObjectPointer    *)cppPointer;
-- (void)collectJsObject :(MMACCppObjectHolderHash *)holderHash;
+- (void)whenCollectCpp:(MMACCppPtr *)cppPtr;
+- (void)whenCollectJs :(MMACCppPtr *)cppPtr;
 
 @end
 
@@ -60,7 +58,6 @@ public:
     
 public:
     MMACJsVM();
-    ~MMACJsVM();
 
 public:
     bool isFunction(JSValue *value);
