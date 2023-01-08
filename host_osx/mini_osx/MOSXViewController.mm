@@ -71,6 +71,7 @@ const CGFloat TextFieldHeight   =  20;
     NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
     [center addObserver:self selector:@selector(windowDidBecomeKey)   name:NSWindowDidBecomeKeyNotification   object:nil];
     [center addObserver:self selector:@selector(windowDidMiniaturize) name:NSWindowDidMiniaturizeNotification object:nil];
+    [center addObserver:self selector:@selector(windowWillClose)      name:NSWindowWillCloseNotification      object:nil];
     [center addObserver:self selector:@selector(windowDidResize)      name:NSWindowDidResizeNotification      object:nil];
     
     //NOTE: the monitor will intercept ALL key down events.
@@ -84,6 +85,12 @@ const CGFloat TextFieldHeight   =  20;
 }
 
 - (void)windowDidMiniaturize {
+    self.window->hide();
+}
+
+- (void)windowWillClose {
+    //IMPORTANT: emit a "hide" event.
+    //ensuring the lifecycle order of "load", to "show", to "hide".
     self.window->hide();
 }
 
