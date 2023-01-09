@@ -31,8 +31,8 @@ JsValueRef MWin32JsObjectPool::getJsValue(const reflect::any &cppValue)
             }
 
             //query from cache:
-            auto holder = mCppHolders.find(cppObject);
-            if (holder != mCppHolders.end())
+            auto holder = mCppJsHolders.find(cppObject);
+            if (holder != mCppJsHolders.end())
             {
                 return holder->second;
             }
@@ -47,9 +47,9 @@ JsValueRef MWin32JsObjectPool::getJsValue(const reflect::any &cppValue)
             JsValueRef jsObject = JS_INVALID_REFERENCE;
             JsCreateObject(&jsObject);
 
-            JsSetObjectBeforeCollectCallback(jsObject, this, onCollectJsObject);
-            mCppObjects[jsObject] = cppObject;
-            mCppHolders[cppObject] = jsObject;
+            JsSetObjectBeforeCollectCallback(jsObject, this, whenCollectJs);
+            mCppObjects  [jsObject ] = cppObject;
+            mCppJsHolders[cppObject] = jsObject;
 
             return jsObject;
         }
@@ -99,8 +99,8 @@ reflect::any MWin32JsObjectPool::getCppValue(JsValueRef jsValue)
         case JsFunction:
         {
             //query from cache:
-            auto holder = mJsHolders.find(jsValue);
-            if (holder != mJsHolders.end())
+            auto holder = mJsCppHolders.find(jsValue);
+            if (holder != mJsCppHolders.end())
             {
                 return holder->second;
             }
@@ -113,8 +113,8 @@ reflect::any MWin32JsObjectPool::getCppValue(JsValueRef jsValue)
 
             //new object:
             auto cppObject = MWin32JsFunction::create(jsValue);
-            mJsObjects[cppObject.get()] = jsValue;
-            mJsHolders[jsValue] = cppObject.get();
+            mJsObjects   [cppObject.get()] = jsValue;
+            mJsCppHolders[jsValue        ] = cppObject.get();
 
             //NOTE: add reference count.
             JsAddRef(jsValue, nullptr);
@@ -124,8 +124,8 @@ reflect::any MWin32JsObjectPool::getCppValue(JsValueRef jsValue)
 
         case JsObject:
         {
-            auto holder = mJsHolders.find(jsValue);
-            if (holder != mJsHolders.end())
+            auto holder = mJsCppHolders.find(jsValue);
+            if (holder != mJsCppHolders.end())
             {
                 return holder->second;
             }
@@ -168,7 +168,7 @@ reflect::any MWin32JsObjectPool::getCppValue(JsValueRef jsValue)
     }
 }
 
-void MWin32JsObjectPool::collectCppObject(reflect::object *obj)
+void MWin32JsObjectPool::whenCollectCpp(reflect::object *obj)
 {
     auto held = mJsObjects.find(obj);
     if (held != mJsObjects.end())
@@ -176,19 +176,19 @@ void MWin32JsObjectPool::collectCppObject(reflect::object *obj)
         //NOTE: release reference count.
         JsRelease(held->second, nullptr);
 
-        mJsHolders.erase(held->second);
-        mJsObjects.erase(obj);
+        mJsCppHolders.erase(held->second);
+        mJsObjects   .erase(obj);
     }
 }
 
-void MWin32JsObjectPool::onCollectJsObject(JsRef value, void *custom)
+void MWin32JsObjectPool::whenCollectJs(JsRef value, void *custom)
 {
     auto pool = (MWin32JsObjectPool *)custom;
     auto held = pool->mCppObjects.find(value);
     if (held != pool->mCppObjects.end())
     {
-        pool->mCppHolders.erase(held->second);
-        pool->mCppObjects.erase(value);
+        pool->mCppJsHolders.erase(held->second);
+        pool->mCppObjects  .erase(value);
     }
 }
 
@@ -201,7 +201,7 @@ MWin32JsFunction::MWin32JsFunction(JsValueRef jsFunc)
 
 MWin32JsFunction::~MWin32JsFunction()
 {
-    MWin32JsObjectPool::instance()->collectCppObject(this);
+    MWin32JsObjectPool::instance()->whenCollectCpp(this);
 }
 
 void MWin32JsFunction::on_call() const

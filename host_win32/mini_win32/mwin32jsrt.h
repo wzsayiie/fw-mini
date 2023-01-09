@@ -16,18 +16,18 @@ public:
     JsValueRef   getJsValue (const reflect::any &cppValue);
     reflect::any getCppValue(JsValueRef jsValue);
 
-    void collectCppObject(reflect::object *obj);
+    void whenCollectCpp(reflect::object *obj);
 
 private:
-    static void CALLBACK onCollectJsObject(JsRef value, void *custom);
+    static void CALLBACK whenCollectJs(JsRef value, void *custom);
 
 private:
     //js hold cpp objects.
-    std::map<JsValueRef          , reflect::object::ptr> mCppObjects;
-    std::map<reflect::object::ptr, JsValueRef          > mCppHolders;
+    std::map<JsValueRef          , reflect::object::ptr> mCppObjects  ;
+    std::map<reflect::object::ptr, JsValueRef          > mCppJsHolders;
     //cpp hold js objects.
-    std::map<reflect::object *   , JsValueRef          > mJsObjects ;
-    std::map<JsValueRef          , reflect::object *   > mJsHolders ;
+    std::map<reflect::object *   , JsValueRef          > mJsObjects   ;
+    std::map<JsValueRef          , reflect::object *   > mJsCppHolders;
 };
 
 //js function:
