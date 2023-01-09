@@ -1,6 +1,6 @@
 //meta description:
 
-declare function metaJsonDescription(): string
+declare function native_metaJsonDescription(): string
 
 class fdesc_node {
     type: string
@@ -124,7 +124,7 @@ function fillFunctionOptions(meta: root_node): root_node {
 }
 
 const _meta = (function (): root_node {
-    let json = metaJsonDescription()
+    let json = native_metaJsonDescription()
     let meta = JSON.parse(json)
 
     fillFunctionOptions(meta)
@@ -288,7 +288,7 @@ function appendCalledArgs(
     }
 }
 
-function declareGlobals(): void {
+function declareNatives(): void {
     for (let clsName of _meta.classes) {
         if (clsName == "MObject") { continue } //the base class is provided by runtime.
         
@@ -299,7 +299,7 @@ function declareGlobals(): void {
             if (desc.options["ignore"]) { continue }
 
             template([
-                "declare function [[cls]]_[[name]]([[args]]): any"
+                "declare function native_[[cls]]_[[name]]([[args]]): any"
             ])
             .generate({
                 "cls" : clsName,
@@ -315,7 +315,7 @@ function declareGlobals(): void {
             if (desc.options["ignore"]) { continue }
 
             template([
-                "declare function [[cls]]_[[name]]([[args]]): any"
+                "declare function native_[[cls]]_[[name]]([[args]]): any"
             ])
             .generate({
                 "cls" : clsName,
@@ -332,7 +332,7 @@ function declareGlobals(): void {
         if (desc.options["ignore"]) { continue }
 
         template([
-            "declare function [[name]]([[args]]): any"
+            "declare function native_[[name]]([[args]]): any"
         ])
         .generate({
             "name": fcnName,
@@ -347,7 +347,7 @@ function defineConstants(): void {
     //constant strings.
     for (let [name, value] of Object.entries(_meta.strings)) {
         template([
-            "    const [[name]] = '[[value]]'"
+            "export const [[name]] = '[[value]]'"
         ])
         .generate({
             "name" : name ,
@@ -358,7 +358,7 @@ function defineConstants(): void {
     //constant numbers.
     for (let [name, value] of Object.entries(_meta.numbers)) {
         template([
-            "    export const [[name]] = [[value]]"
+            "export const [[name]] = [[value]]"
         ])
         .generate({
             "name" : name ,
@@ -370,7 +370,7 @@ function defineConstants(): void {
 function defineEnumMember(enu: enum_node): void {
     for (let [member, value] of Object.entries(enu.values)) {
         template([
-            "        [[member]] = [[value]],",
+            "    [[member]] = [[value]],",
         ])
         .generate({
             "member": member,
@@ -384,9 +384,9 @@ function defineEnums(): void {
         let enu = _meta.enum_infos[enumName]
 
         template([
-            "    export enum [[enumName]] {",
+            "export enum [[enumName]] {",
             "[[members]]",
-            "    }",
+            "}",
             "",
         ])
         .generate({
@@ -409,7 +409,7 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
         if (desc.options["setter"]) {
             template([
                 "    static set [[setName]](value: [[argType]]) {",
-                "        global.[[clsName]]_[[fcnName]](",
+                "        native_[[clsName]]_[[fcnName]](",
                 "            [[argCast]] runtime.getNative(",
                 "                value",
                 "            [[argCast]] )",
@@ -430,7 +430,7 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
                 "    static get [[fcnName]](): [[retType]] {",
                 "        return (",
                 "        [[retCast]] runtime.getObject(",
-                "            global.[[clsName]]_[[fcnName]]()",
+                "            native_[[clsName]]_[[fcnName]]()",
                 "        [[retCast]] )",
                 "        )",
                 "    }",
@@ -448,7 +448,7 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
                 "    static [[fcnName]]([[argNames]]): [[retType]] {",
                 "        return (",
                 "        [[retCast]] runtime.getObject(",
-                "            global.[[clsName]]_[[fcnName]]([[argCalls]])",
+                "            native_[[clsName]]_[[fcnName]]([[argCalls]])",
                 "        [[retCast]] )",
                 "        )",
                 "    }",
@@ -483,7 +483,7 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
         if (desc.options["setter"]) {
             template([
                 "    set [[setName]](value: [[argType]]) {",
-                "        global.[[clsName]]_[[fcnName]](",
+                "        native_[[clsName]]_[[fcnName]](",
                 "            this.native,",
                 "            [[argCast]] runtime.getNative(",
                 "                value",
@@ -505,7 +505,7 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
                 "    get [[fcnName]](): [[retType]] {",
                 "        return (",
                 "        [[retCast]] runtime.getObject(",
-                "            global.[[clsName]]_[[fcnName]](this.native)",
+                "            native_[[clsName]]_[[fcnName]](this.native)",
                 "        [[retCast]] )",
                 "        )",
                 "    }",
@@ -523,7 +523,7 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
                 "    [[fcnName]]([[argNames]]): [[retType]] {",
                 "        return (",
                 "        [[retCast]] runtime.getObject(",
-                "            global.[[clsName]]_[[fcnName]](this.native [[comma]] [[argCalls]])",
+                "            native_[[clsName]]_[[fcnName]](this.native [[comma]] [[argCalls]])",
                 "        [[retCast]] )",
                 "        )",
                 "    }",
@@ -669,11 +669,12 @@ function defineClass(defined: Set<string>, clsName: string): void {
         "[[static_functions]]",
         "",
         "    [[newable]] protected createInjectableNative(): object {",
-        "    [[newable]]     return [[clsName]]_create()",
+        "    [[newable]]     return native_[[clsName]]_create()",
         "    [[newable]] }",
         "",
         "[[inst_functions]]",
         "}",
+        "",
     ])
     .generate({
         "clsName" : clsName,
@@ -707,7 +708,7 @@ function defineFunctions(): void {
             "export function [[fcnName]]([[argNames]]): [[retType]] {",
             "    return (",
             "    [[retCast]] runtime.getObject(",
-            "        global.[[fcnName]]([[argCalls]])",
+            "        native_[[fcnName]]([[argCalls]])",
             "    [[retCast]] )",
             "    )",
             "}",
@@ -729,14 +730,12 @@ function defineFunctions(): void {
     }
 }
 
-function defineNamespace(): void {
+function defineScripts(): void {
     template([
-        "export namespace cc {",
-        "",
-        "    export class MObject    extends runtime.Injectable {}",
-        "    export class MVector<T> extends runtime.MVector<T> {}",
-        "    export class MMap<K, T> extends runtime.MMap<K, T> {}",
-        "    export class MSet<T>    extends runtime.MSet<T>    {}",
+        "export class MObject    extends runtime.Injectable {}",
+        "export class MVector<T> extends runtime.MVector<T> {}",
+        "export class MMap<K, T> extends runtime.MMap<K, T> {}",
+        "export class MSet<T>    extends runtime.MSet<T>    {}",
         "",
         "[[constants]]",
         "",
@@ -745,7 +744,6 @@ function defineNamespace(): void {
         "[[classes]]",
         "",
         "[[functions]]",
-        "}",
         "",
     ])
     .generate({
@@ -762,30 +760,30 @@ function makeDTS(): void {
         "",
         "import { runtime } from './runtime'",
         "",
-        "[[globals]]",
+        "[[natives]]",
         "",
-        "[[namespace]]",
+        "[[scripts]]",
         "",
     ])
     .generate({
-        "globals"  : () => declareGlobals (),
-        "namespace": () => defineNamespace(),
+        "natives": () => declareNatives(),
+        "scripts": () => defineScripts (),
     })
 }
 
 //main:
 
-declare function temporaryDirectory(): string
-declare function writeTextFile(path: string, content: string): void
+declare function native_temporaryDirectory(): string
+declare function native_writeTextFile(path: string, content: string): void
 
 (function () {
     makeDTS()
 
     let file = ''
     // file = ".../fw-mini/appts/app/host/native.ts"
-    // file = `${temporaryDirectory()}/native.ts`
+    // file = `${native_temporaryDirectory()}/native.ts`
     if (file) {
-        writeTextFile(file, _buffer.join(""))
+        native_writeTextFile(file, _buffer.join(""))
         console.log(`output: ${file}`)
     }
 })()

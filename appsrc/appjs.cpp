@@ -54,7 +54,7 @@ static void EnrollClassFunctions(
     MJsVM *vm, const std::string &clsName, const std::map<std::string, reflect::variable> &funcs)
 {
     for (auto &[fcnName, fcnImpl] : funcs) {
-        std::string fullName = clsName + "_" + fcnName;
+        std::string fullName = "native_" + clsName + "_" + fcnName;
         vm->registerFunction(fullName, fcnImpl.value);
     }
 }
@@ -70,7 +70,8 @@ static void RegisterNativeFunctions(MJsVM *vm) {
 
     //global functions.
     for (auto &[fcnName, fcnImpl] : *reflect::functions()) {
-        vm->registerFunction(fcnName, fcnImpl.value);
+        std::string fullName = "native_" + fcnName;
+        vm->registerFunction(fullName, fcnImpl.value);
     }
 }
 
@@ -81,7 +82,7 @@ static void RegisterBuiltinScript(MJsVM *vm) {
     JS_(
         class console {
             static log(message) {
-                MPrint(String(message))
+                native_MPrint(String(message))
             }
         }
     );
