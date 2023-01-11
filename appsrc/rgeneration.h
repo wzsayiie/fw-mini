@@ -45,7 +45,7 @@
 /**/    {                                                                   \
 /**/        static bool entrance = true;                                    \
 /**/        if (entrance) {                                                 \
-/**/        if (auto fcn = find_injected(__func__)) {                       \
+/**/        if (auto fcn = find_injected_function(__func__)) {              \
 /**/            entrance = false;                                           \
 /**/            auto ret = fcn->call_with_args({ this, ##__VA_ARGS__ });    \
 /**/            entrance = true;                                            \

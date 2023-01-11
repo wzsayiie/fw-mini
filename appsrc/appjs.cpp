@@ -19,12 +19,17 @@ static void MInjectObjectSymbol(const reflect::injectable::ptr &obj, const char 
 static void MInjectClassFunction(
     const char *clsName, const char *fcnName, const reflect::generic_function::ptr &func)
 {
-    reflect::inject(clsName, fcnName, func);
+    reflect::inject_function(clsName, fcnName, func);
+}
+
+static void MEraseClassFunctions(const char *clsName) {
+    reflect::erase_functions(clsName);
 }
 
 define_reflectable_function(MGetObjectClassSymbol, "ignore")
 define_reflectable_function(MInjectObjectSymbol  , "ignore")
 define_reflectable_function(MInjectClassFunction , "ignore")
+define_reflectable_function(MEraseClassFunctions , "ignore")
 
 //development environment functions:
 
