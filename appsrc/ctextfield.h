@@ -31,7 +31,7 @@ private:
 
 m_class(CTextField, CControl) {
 public:
-    using upper::upper;
+    using super::super;
 
 public:
     void setDelegation(const CTextFieldDelegation::ptr &delegation);

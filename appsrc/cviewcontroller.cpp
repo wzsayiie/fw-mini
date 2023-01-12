@@ -226,7 +226,7 @@ void CViewController::onViewAppear   () { implement_injectable_function(void) }
 void CViewController::onViewDisappear() { implement_injectable_function(void) }
 
 void CViewController::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     for (const auto &it : *mChildControllers) {
         it->dispose();

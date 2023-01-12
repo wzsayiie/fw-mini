@@ -5,7 +5,7 @@
 
 m_class(CButton, CControl) {
 public:
-    using upper::upper;
+    using super::super;
 
 public:
     CLabel::ptr titleLabel();

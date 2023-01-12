@@ -27,7 +27,7 @@ void CTextFieldDelegation::textChange  () { if (mTextChangeTarget  ) { mTextChan
 void CTextFieldDelegation::editingEnd  () { if (mEditingEndTarget  ) { mEditingEndTarget  ->call(); } }
 
 void CTextFieldDelegation::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     mEditingBeginTarget = nullptr;
     mTextChangeTarget   = nullptr;
@@ -182,7 +182,7 @@ void CTextField::reduceEditingSender() {
 }
 
 void CTextField::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     if (mDelegation) {
         mDelegation->dispose();

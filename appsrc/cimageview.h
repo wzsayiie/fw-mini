@@ -4,7 +4,7 @@
 
 m_class(CImageView, CView) {
 public:
-    using upper::upper;
+    using super::super;
 
 public:
     void setImage(const MImage::ptr &image);

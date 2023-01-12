@@ -27,7 +27,7 @@ void CScrollViewDelegation::scrolling     () { if (mScrollingTarget     ) { mScr
 void CScrollViewDelegation::scrollingEnd  () { if (mScrollingEndTarget  ) { mScrollingEndTarget  ->call(); } }
 
 void CScrollViewDelegation::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     mScrollingBeginTarget = nullptr;
     mScrollingTarget      = nullptr;
@@ -238,7 +238,7 @@ void CScrollView::reduceScollingSender() {
 }
 
 void CScrollView::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     if (mDelegation ) { mDelegation ->dispose(); }
     if (mContentView) { mContentView->dispose(); }

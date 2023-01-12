@@ -20,7 +20,7 @@ void CTabPageControllerDelegation::pagesChange() {
 }
 
 void CTabPageControllerDelegation::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     mPagesChangeTarget = nullptr;
 }
@@ -170,7 +170,7 @@ void CTabPageController::hidePage(const CViewController::ptr &page) {
 }
 
 void CTabPageController::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     if (mDelegation) {
         mDelegation->dispose();

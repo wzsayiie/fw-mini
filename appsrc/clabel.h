@@ -4,7 +4,7 @@
 
 m_class(CLabel, CView) {
 public:
-    using upper::upper;
+    using super::super;
 
 public:
     void setText     (const std::string &text );

@@ -77,7 +77,7 @@ void CButton::onDrawForeground(float width, float height) {
 }
 
 void CButton::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     if (mTitleLabel) {
         mTitleLabel->dispose();

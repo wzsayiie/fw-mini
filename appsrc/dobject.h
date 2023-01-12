@@ -34,12 +34,12 @@ protected:
     std::weak_ptr<object> _weak;
 };
 
-template<class Class, class Super> class d_exportable extends : public Super {
+template<class Class, class Base> class d_exportable extends : public Base {
 public:
     typedef std::shared_ptr<Class> ptr;
     
-    typedef extends<Class, Super> upper;
-    typedef Super                 base ;
+    typedef extends<Class, Base> super;
+    typedef Base                 base ;
 
 public:
     template<class... Args> static ptr create(Args... args) {
@@ -49,7 +49,7 @@ public:
     }
 
 public:
-    using Super::Super;
+    using Base::Base;
 
 public:
     ptr me() const {

@@ -349,7 +349,7 @@ void CView::layoutSubviews() {
 }
 
 void CView::on_dispose() {
-    upper::dispose();
+    super::dispose();
 
     if (mLayoutDelegation) {
         mLayoutDelegation = nullptr;

@@ -19,12 +19,12 @@ public:
 
 //extends:
 
-template<class Class, class Super> class d_exportable extends : public dash::extends<Class, Super> {
+template<class Class, class Base> class d_exportable extends : public dash::extends<Class, Base> {
 public:
-    typedef extends<Class, Super> upper;
+    typedef extends<Class, Base> super;
 
 public:
-    using _middle = dash::extends<Class, Super>;
+    using _middle = dash::extends<Class, Base>;
     using _middle::_middle;
     
 public:
