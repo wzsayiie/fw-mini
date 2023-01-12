@@ -26,6 +26,14 @@ void CTextFieldDelegation::editingBegin() { if (mEditingBeginTarget) { mEditingB
 void CTextFieldDelegation::textChange  () { if (mTextChangeTarget  ) { mTextChangeTarget  ->call(); } }
 void CTextFieldDelegation::editingEnd  () { if (mEditingEndTarget  ) { mEditingEndTarget  ->call(); } }
 
+void CTextFieldDelegation::on_dispose() {
+    upper::dispose();
+
+    mEditingBeginTarget = nullptr;
+    mTextChangeTarget   = nullptr;
+    mEditingEndTarget   = nullptr;
+}
+
 //text field:
 
 define_reflectable_class_function(CTextField, setDelegation, "setter;args:delegation")
@@ -170,5 +178,13 @@ void CTextField::reduceEditingSender() {
 
     if (mEditingSenders == 0) {
         delegation()->editingEnd();
+    }
+}
+
+void CTextField::on_dispose() {
+    upper::dispose();
+
+    if (mDelegation) {
+        mDelegation->dispose();
     }
 }

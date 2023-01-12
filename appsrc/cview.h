@@ -55,6 +55,9 @@ private:
     void layoutSubviews();
 
 private:
+    void on_dispose() override;
+
+private:
     std::weak_ptr<CViewController> mViewController  ;
     bool                           mInteractive     = false;
     bool                           mVisible         = true;

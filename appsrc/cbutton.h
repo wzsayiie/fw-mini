@@ -27,6 +27,9 @@ protected:
     void onDrawForeground(float width, float height) override;
 
 private:
+    void on_dispose() override;
+
+private:
     CLabel::ptr mTitleLabel;
     MFunction<void ()>::ptr mClickTarget;
     

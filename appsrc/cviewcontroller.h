@@ -49,6 +49,9 @@ protected: public:
     virtual void onViewDisappear();
     
 private:
+    void on_dispose() override;
+
+private:
     MVector<CViewController::ptr>::ptr mChildControllers;
     std::weak_ptr<CViewController>     mParentController;
     

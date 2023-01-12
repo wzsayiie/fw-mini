@@ -27,6 +27,9 @@ protected:
     void onWriting   (const std::string &text)       override;
     
 private:
+    void on_dispose() override;
+
+private:
     CViewController::ptr mRootViewController  ;
     CResponder::ptr      mTouchingResponder   ;
     CResponder::ptr      mMouseMovingResponder;

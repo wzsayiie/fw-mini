@@ -152,3 +152,11 @@ void CWindow::onWriting(const std::string &text) {
     
     responder->onWriting(text);
 }
+
+void CWindow::on_dispose() {
+    upper::dispose();
+
+    if (mRootViewController  ) { mRootViewController  ->dispose(); }
+    if (mTouchingResponder   ) { mTouchingResponder   ->dispose(); }
+    if (mMouseMovingResponder) { mMouseMovingResponder->dispose(); }
+}

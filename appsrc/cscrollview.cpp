@@ -26,6 +26,14 @@ void CScrollViewDelegation::scrollingBegin() { if (mScrollingBeginTarget) { mScr
 void CScrollViewDelegation::scrolling     () { if (mScrollingTarget     ) { mScrollingTarget     ->call(); } }
 void CScrollViewDelegation::scrollingEnd  () { if (mScrollingEndTarget  ) { mScrollingEndTarget  ->call(); } }
 
+void CScrollViewDelegation::on_dispose() {
+    upper::dispose();
+
+    mScrollingBeginTarget = nullptr;
+    mScrollingTarget      = nullptr;
+    mScrollingEndTarget   = nullptr;
+}
+
 //assist:
 
 inline float range(float min, float value, float max) {
@@ -227,4 +235,11 @@ void CScrollView::reduceScollingSender() {
         delegation()->scrollingEnd();
         mScrollingBegan = false;
     }
+}
+
+void CScrollView::on_dispose() {
+    upper::dispose();
+
+    if (mDelegation ) { mDelegation ->dispose(); }
+    if (mContentView) { mContentView->dispose(); }
 }

@@ -19,6 +19,9 @@ public:
     void scrollingEnd  ();
 
 private:
+    void on_dispose() override;
+
+private:
     MFunction<void ()>::ptr mScrollingBeginTarget;
     MFunction<void ()>::ptr mScrollingTarget     ;
     MFunction<void ()>::ptr mScrollingEndTarget  ;
@@ -56,6 +59,9 @@ private:
     void increaseScollingSender();
     void sendScrolling();
     void reduceScollingSender();
+
+private:
+    void on_dispose() override;
 
 private:
     CScrollViewDelegation::ptr mDelegation;

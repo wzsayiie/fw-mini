@@ -19,6 +19,12 @@ void CTabPageControllerDelegation::pagesChange() {
     }
 }
 
+void CTabPageControllerDelegation::on_dispose() {
+    upper::dispose();
+
+    mPagesChangeTarget = nullptr;
+}
+
 //tab page controller:
 
 CTabPageController::CTabPageController() {
@@ -161,4 +167,15 @@ void CTabPageController::hidePage(const CViewController::ptr &page) {
     }
 
     page->removeFromParentController();
+}
+
+void CTabPageController::on_dispose() {
+    upper::dispose();
+
+    if (mDelegation) {
+        mDelegation->dispose();
+    }
+    for (const auto &it : *mPages) {
+        it->dispose();
+    }
 }

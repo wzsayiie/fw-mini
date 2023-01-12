@@ -75,3 +75,12 @@ void CButton::onDrawForeground(float width, float height) {
         MContextDrawRect(0, 0, width, height);
     }
 }
+
+void CButton::on_dispose() {
+    upper::dispose();
+
+    if (mTitleLabel) {
+        mTitleLabel->dispose();
+    }
+    mClickTarget = nullptr;
+}

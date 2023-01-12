@@ -12,6 +12,9 @@ public:
     void pagesChange();
     
 private:
+    void on_dispose() override;
+
+private:
     MFunction<void ()>::ptr mPagesChangeTarget;
 };
 
@@ -38,6 +41,9 @@ private:
     void layoutPages();
     void showPage(const CViewController::ptr &page);
     void hidePage(const CViewController::ptr &page);
+
+private:
+    void on_dispose() override;
 
 private:
     CNavigationControllerDelegation::ptr mDelegation;

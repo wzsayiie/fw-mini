@@ -19,6 +19,9 @@ public:
     void editingEnd  ();
 
 private:
+    void on_dispose() override;
+
+private:
     MFunction<void ()>::ptr mEditingBeginTarget;
     MFunction<void ()>::ptr mTextChangeTarget  ;
     MFunction<void ()>::ptr mEditingEndTarget  ;
@@ -61,6 +64,9 @@ private:
     void increaseEditingSender();
     void sendEditing();
     void reduceEditingSender();
+
+private:
+    void on_dispose() override;
 
 private:
     CTextFieldDelegation::ptr mDelegation;

@@ -39,10 +39,11 @@ public:
     void   set_injected_symbol(const symbol &sym);
     symbol injected_symbol    () const;
 
+public:
     //delete resources manually.
     //avoid circular references for cross-language calls.
-public:
     void dispose();
+
 private:
     virtual void on_dispose();
     

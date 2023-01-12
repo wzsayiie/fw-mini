@@ -347,3 +347,14 @@ void CView::layoutSubviews() {
         onLayoutSubviews(space->width(), space->height());
     }
 }
+
+void CView::on_dispose() {
+    upper::dispose();
+
+    if (mLayoutDelegation) {
+        mLayoutDelegation = nullptr;
+    }
+    for (const auto &it : *mSubviews) {
+        it->dispose();
+    }
+}
