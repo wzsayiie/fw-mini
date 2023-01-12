@@ -40,7 +40,7 @@ generic_function::ptr function_table::find(const char *name) {
     return it->second;
 }
 
-void inject_function(
+void inject_class_function(
     const char *cls_name, const char *fcn_name, const generic_function::ptr &func)
 {
     if (!func) {
@@ -65,7 +65,7 @@ void inject_function(
     table->insert(fcn_name, func);
 }
 
-void erase_function(const char *cls_name, const char *fcn_name) {
+void erase_class_function(const char *cls_name, const char *fcn_name) {
     symbol cls_sym = symbol::find(cls_name);
     if (!cls_sym) {
         return;
@@ -79,7 +79,7 @@ void erase_function(const char *cls_name, const char *fcn_name) {
     table->second->erase(fcn_name);
 }
 
-void erase_functions(const char *cls_name) {
+void erase_class_functions(const char *cls_name) {
     symbol sym = symbol::find(cls_name);
     if (sym) {
         s_tables->erase(sym);
@@ -89,19 +89,37 @@ void erase_functions(const char *cls_name) {
 //injectable:
 
 generic_function::ptr injectable::find_injected_function(const char *name) {
+    //find own injected object functions firstly.
+    if (_injected_fcns) {
+        generic_function::ptr func = _injected_fcns->find(name);
+        if (func) {
+            return func;
+        }
+    }
+    
+    //find injected class functions.
     //NOTE: it is also necessary to consider the class symbol.
     symbol cls_sym = _injected_sym ? _injected_sym : class_symbol();
 
-    if (!cls_sym) {
-        return nullptr;
-    }
-
     auto pair = s_tables->find(cls_sym);
-    if (pair == s_tables->end()) {
-        return nullptr;
+    if (pair != s_tables->end()) {
+        return pair->second->find(name);
     }
 
-    return pair->second->find(name);
+    return nullptr;
+}
+
+void injectable::inject_function(const char *name, const generic_function::ptr &func) {
+    if (!_injected_fcns) {
+        _injected_fcns = function_table::create();
+    }
+    _injected_fcns->insert(name, func);
+}
+
+void injectable::erase_function(const char *name) {
+    if (_injected_fcns) {
+        _injected_fcns->erase(name);
+    }
 }
 
 void injectable::set_injected_symbol(const symbol &sym) {
@@ -110,6 +128,17 @@ void injectable::set_injected_symbol(const symbol &sym) {
 
 symbol injectable::injected_symbol() const {
     return _injected_sym;
+}
+
+void injectable::dispose() {
+    if (!_disposed) {
+        _disposed = true;
+        on_dispose();
+    }
+}
+
+void injectable::on_dispose() {
+    _injected_fcns = nullptr;
 }
 
 } //end reflect.

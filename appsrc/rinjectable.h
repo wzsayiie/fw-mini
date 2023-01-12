@@ -17,11 +17,11 @@ private:
     std::map<symbol, generic_function::ptr> _functions;
 };
 
-d_exportable void inject_function(
+d_exportable void inject_class_function(
     const char *cls_name, const char *fcn_name, const generic_function::ptr &func);
 
-d_exportable void erase_function (const char *cls_name, const char *fcn_name);
-d_exportable void erase_functions(const char *cls_name);
+d_exportable void erase_class_function (const char *cls_name, const char *fcn_name);
+d_exportable void erase_class_functions(const char *cls_name);
 
 //injectable:
 
@@ -33,11 +33,24 @@ class d_exportable injectable : public extends<injectable, object> {
 public:
     generic_function::ptr find_injected_function(const char *name);
 
+    void inject_function(const char *name, const generic_function::ptr &func);
+    void erase_function (const char *name);
+
     void   set_injected_symbol(const symbol &sym);
     symbol injected_symbol    () const;
+
+    //delete resources manually.
+    //avoid circular references for cross-language calls.
+public:
+    void dispose();
+private:
+    virtual void on_dispose();
     
 private:
-    symbol _injected_sym;
+    function_table::ptr _injected_fcns;
+    symbol              _injected_sym ;
+
+    bool _disposed = false;
 };
 
 } //end reflect.
