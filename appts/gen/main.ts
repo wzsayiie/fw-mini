@@ -396,13 +396,36 @@ function defineEnums(): void {
     }
 }
 
+function defineClassConstantFields(cls: class_node): void {
+    //constant strings.
+    for (let [field, value] of Object.entries(cls.static_strings)) {
+        template([
+            "    static readonly [[field]] = '[[value]]'"
+        ])
+        .generate({
+            "field": field,
+            "value": value,
+        })
+    }
+
+    //constant numbers.
+    for (let [field, value] of Object.entries(cls.static_numbers)) {
+        template([
+            "    static readonly [[field]] = [[value]]"
+        ])
+        .generate({
+            "field": field,
+            "value": value,
+        })
+    }
+}
+
 function defineClassStaticFunctions(cls: class_node, clsName: string): void {
     for (let [fcnName, desc] of Object.entries(cls.static_functions)) {
         if (desc.options["ignore"]) { continue }
         if (fcnName == "create"   ) { continue } //ignore builtin "create".
 
-        let fcn = _meta.function_infos[desc.type]
-
+        let fcn      = _meta.function_infos[desc.type]
         let argNames = desc.options["args"]
         let argTypes = fcn.arg_types
 
@@ -421,8 +444,8 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
                 "clsName": clsName,
                 "setName": SetterName(fcnName),
                 "fcnName": fcnName,
-                "argType": descriptType(fcn.arg_types[0]),
-                "argCast": isNeedCast(fcn.arg_types[0]) ? "/**/" : "//",
+                "argType": descriptType(argTypes[0]),
+                "argCast": isNeedCast(argTypes[0]) ? "/**/" : "//",
             })
 
         } else if (desc.options["getter"]) {
@@ -472,6 +495,92 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
     }
 }
 
+function defineNativeInjecting(cls: class_node): void {
+    for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
+        if ( desc.options["ignore" ]) { continue }
+        if (!desc.options["virtual"]) { continue }
+
+        let fcn      = _meta.function_infos[desc.type]
+        let argNames = desc.options["args"]
+        let argTypes = fcn.arg_types
+
+        if (desc.options["setter"]) {
+            template([
+                "        this.injectFunction(native, '[[fcnName]]', (value: [[argType]]) => {",
+                "            this.[[fcnName]] = value",
+                "        })",
+                "",
+            ])
+            .generate({
+                "fcnName": fcnName,
+                "argType": descriptType(argTypes[1]),
+            })
+
+        } else if (desc.options["getter"]) {
+            template([
+                "        this.injectFunction(native, '[[fcnName]]', () => {",
+                "            return (",
+                "            [[retCast]] runtime.getNative(",
+                "                this.[[fcnName]]",
+                "            [[retCast]] )",
+                "            )",
+                "        })",
+                "",
+            ])
+            .generate({
+                "fcnName": fcnName,
+                "retCast": isNeedCast(fcn.ret_type) ? "/**/" : "//",
+            })
+
+        } else {
+            template([
+                "        this.injectFunction(native, '[[fcnName]]', ([[argNames]]) => {",
+                "            return (",
+                "            [[retCast]] runtime.getNative(",
+                "                this.[[fcnName]]([[argCalls]])",
+                "            [[retCast]] )",
+                "            )",
+                "        })",
+                "",
+            ])
+            .generate({
+                "fcnName" : fcnName,
+                "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
+
+                "argNames": () => {
+                    appendNamedArgs(argNames, argTypes, _ => "any")
+                },
+
+                "argCalls": () => {
+                    appendCalledArgs(
+                        argNames.slice(1), argTypes.slice(1), v => `runtime.getObject(${v})`
+                    )
+                },
+            })
+        }
+    }
+}
+
+function defineNativeCreating(cls: class_node, clsName: string): void {
+    if (cls.abstracted) {
+        return
+    }
+
+    template([
+        "    protected createNative(): object {",
+        "        let native = native_[[clsName]]_create()",
+        "",
+        "[[injecting]]",
+        "",
+        "        return native",
+        "    }",
+    ])
+    .generate({
+        "clsName"  : clsName,
+        "injecting": () => defineNativeInjecting(cls),
+    })
+}
+
 function defineClassInstFunctions(cls: class_node, clsName: string): void {
     for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
         if (desc.options["ignore"]) { continue }
@@ -496,8 +605,8 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
                 "clsName": clsName,
                 "setName": SetterName(fcnName),
                 "fcnName": fcnName,
-                "argType": descriptType(fcn.arg_types[1]),
-                "argCast": isNeedCast(fcn.arg_types[1]) ? "/**/" : "//",
+                "argType": descriptType(argTypes[1]),
+                "argCast": isNeedCast(argTypes[1]) ? "/**/" : "//",
             })
 
         } else if (desc.options["getter"]) {
@@ -552,96 +661,6 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
     }
 }
 
-function defineClassConstantFields(cls: class_node): void {
-    //constant strings.
-    for (let [field, value] of Object.entries(cls.static_strings)) {
-        template([
-            "    static readonly [[field]] = '[[value]]'"
-        ])
-        .generate({
-            "field": field,
-            "value": value,
-        })
-    }
-
-    //constant numbers.
-    for (let [field, value] of Object.entries(cls.static_numbers)) {
-        template([
-            "    static readonly [[field]] = [[value]]"
-        ])
-        .generate({
-            "field": field,
-            "value": value,
-        })
-    }
-}
-
-function defineClassBlockVirtuals(cls: class_node, clsName: string): void {
-    for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
-        if ( desc.options["ignore" ]) { continue }
-        if (!desc.options["virtual"]) { continue }
-
-        template([
-            "        runtime.inject(this.classSymbol, '[[fcnName]]', this.js_[[clsName]]_[[fcnName]])"
-        ])
-        .generate({
-            "clsName": clsName,
-            "fcnName": fcnName,
-        })
-    }
-}
-
-function defineClassBlock(cls: class_node, clsName: string): void {
-    template([
-        "    static {",
-        "        runtime.register(this)",
-        "",
-        "[[virtuals]]",
-        "    }",
-        "",
-    ])
-    .generate({
-        "virtuals": () => defineClassBlockVirtuals(cls, clsName)
-    })
-}
-
-function defineClassStaticVirtuals(cls: class_node, clsName: string): void {
-    for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
-        if ( desc.options["ignore" ]) { continue }
-        if (!desc.options["virtual"]) { continue }
-
-        let fcn      = _meta.function_infos[desc.type]
-        let argNames = desc.options["args"]
-        let argTypes = fcn.arg_types
-
-        template([
-            "    private static js_[[clsName]]_[[fcnName]]([[argNames]]): any {",
-            "        return (",
-            "        [[retCast]] runtime.getNative(",
-            "            runtime.getObject(_this).[[fcnName]]([[argCalls]])",
-            "        [[retCast]] )",
-            "        )",
-            "    }",
-            "",
-        ])
-        .generate({
-            "clsName" : clsName,
-            "fcnName" : fcnName,
-            "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
-
-            "argNames": () => {
-                appendNamedArgs(argNames, argTypes, _ => "any")
-            },
-
-            "argCalls": () => {
-                appendCalledArgs(
-                    argNames.slice(1), argTypes.slice(1), v => `runtime.getObject(${v})`
-                )
-            },
-        })
-    }
-}
-
 function defineClass(defined: Set<string>, clsName: string): void {
     if (defined.has(clsName)) {
         return
@@ -658,21 +677,18 @@ function defineClass(defined: Set<string>, clsName: string): void {
 
     template([
         "export class [[clsName]] extends [[baseName]] {",
-        "    protected static classSymbol = 'js_[[clsName]]'",
         "",
-        "[[constants_fields]]",
+        "[[constantFields]]",
         "",
-        "[[static_virtuals]]",
+        "[[staticFunctions]]",
         "",
-        "[[static_block]]",
+        "    static {",
+        "        runtime.register(this)",
+        "    }",
         "",
-        "[[static_functions]]",
+        "[[nativeCreating]]",
         "",
-        "    [[newable]] protected createInjectableNative(): object {",
-        "    [[newable]]     return native_[[clsName]]_create()",
-        "    [[newable]] }",
-        "",
-        "[[inst_functions]]",
+        "[[instFunctions]]",
         "}",
         "",
     ])
@@ -681,11 +697,10 @@ function defineClass(defined: Set<string>, clsName: string): void {
         "baseName": cls.base_type,
         "newable" : !cls.abstracted ? "/**/" : "//",
 
-        "constants_fields": () => defineClassConstantFields (cls),
-        "static_virtuals" : () => defineClassStaticVirtuals (cls, clsName),
-        "static_block"    : () => defineClassBlock          (cls, clsName),
-        "static_functions": () => defineClassStaticFunctions(cls, clsName),
-        "inst_functions"  : () => defineClassInstFunctions  (cls, clsName),
+        "constantFields" : () => defineClassConstantFields (cls),
+        "staticFunctions": () => defineClassStaticFunctions(cls, clsName),
+        "nativeCreating" : () => defineNativeCreating      (cls, clsName),
+        "instFunctions"  : () => defineClassInstFunctions  (cls, clsName),
     })
 }
 
@@ -779,7 +794,7 @@ declare function native_writeTextFile(path: string, content: string): void
 (function () {
     makeDTS()
 
-    let file = ''
+    let file = ""
     // file = ".../fw-mini/appts/app/host/native.ts"
     // file = `${native_temporaryDirectory()}/native.ts`
     if (file) {

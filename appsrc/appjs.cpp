@@ -3,33 +3,24 @@
 //runtime functions:
 
 static std::string MGetObjectClassSymbol(const reflect::object::ptr &obj) {
-    if (obj) {
-        return obj->class_symbol().str();
-    }
-    return "";
+    return obj->class_symbol().str();
 }
 
-static void MInjectObjectSymbol(const reflect::injectable::ptr &obj, const char *clsSym) {
-    if (obj) {
-        reflect::symbol sym = reflect::symbol::make(clsSym);
-        obj->set_injected_symbol(sym);
-    }
-}
-
-static void MInjectClassFunction(
-    const char *clsName, const char *fcnName, const reflect::generic_function::ptr &func)
+static void MInjectObjectFunction(
+    const reflect::injectable::ptr       &obj ,
+    const char                           *name,
+    const reflect::generic_function::ptr &func)
 {
-    reflect::inject_function(clsName, fcnName, func);
+    obj->inject_function(name, func);
 }
 
-static void MEraseClassFunctions(const char *clsName) {
-    reflect::erase_functions(clsName);
+static void MDisposeObject(const reflect::injectable::ptr &obj) {
+    obj->dispose();
 }
 
 define_reflectable_function(MGetObjectClassSymbol, "ignore")
-define_reflectable_function(MInjectObjectSymbol  , "ignore")
-define_reflectable_function(MInjectClassFunction , "ignore")
-define_reflectable_function(MEraseClassFunctions , "ignore")
+define_reflectable_function(MInjectObjectFunction, "ignore")
+define_reflectable_function(MDisposeObject       , "ignore")
 
 //development environment functions:
 
