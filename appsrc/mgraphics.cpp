@@ -22,7 +22,7 @@ float _MPixelFromPointCaster::operator<<(float pt) {
     return pt * sPixelScale;
 }
 
-//alignment:
+//alignments:
 
 define_reflectable_enum_const(MHAlign, Left  )
 define_reflectable_enum_const(MHAlign, Center)
@@ -31,6 +31,12 @@ define_reflectable_enum_const(MHAlign, Right )
 define_reflectable_enum_const(MVAlign, Top   )
 define_reflectable_enum_const(MVAlign, Middle)
 define_reflectable_enum_const(MVAlign, Bottom)
+
+//content mode.
+define_reflectable_enum_const(MFillMode, OriginalSize)
+define_reflectable_enum_const(MFillMode, CoverAllArea)
+define_reflectable_enum_const(MFillMode, MatchWidth  )
+define_reflectable_enum_const(MFillMode, MatchHeight )
 
 //color:
 

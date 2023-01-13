@@ -14,7 +14,7 @@ d_exportable float MGetPixelScale();
 struct _MPointFromPixelCaster { float operator<<(float px); };
 struct _MPixelFromPointCaster { float operator<<(float pt); };
 
-//alignment:
+//alignments:
 
 m_enum(MHAlign) {
     Left   = 1,
@@ -26,6 +26,14 @@ m_enum(MVAlign) {
     Top    = 1,
     Middle = 2,
     Bottom = 3,
+};
+
+//fill mode.
+m_enum(MFillMode) {
+    OriginalSize = 1,
+    CoverAllArea = 2,
+    MatchWidth   = 3,
+    MatchHeight  = 4,
 };
 
 //color:
@@ -114,7 +122,9 @@ public:
     static MColor::ptr clearColor    ();
 
 public:
-    static MColor::ptr fromComs(float redCom, float greenCom, float blueCom, float alphaCom);
+    static MColor::ptr fromComs(
+        float redCom, float greenCom, float blueCom, float alphaCom);
+
     static MColor::ptr fromRGBA(int rgba);
 
 public:
