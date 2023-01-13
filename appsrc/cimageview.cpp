@@ -31,10 +31,23 @@ void CImageView::onDraw(float aw, float ah) {
     float w = 0;
     float h = 0;
     switch (mFillMode) {
-        case MFillMode::OriginalSize: w = iw      ; h = ih      ; break;
-        case MFillMode::CoverAllArea: w = aw      ; h = ah      ; break;
-        case MFillMode::MatchWidth  : w = aw      ; h = ih/iw*aw; break;
-        case MFillMode::MatchHeight : w = iw/ih*ah; h = ah      ; break;
+        case MFillMode::CoverByAspectRatio: {
+            //try match space width.
+            {
+                w = aw;
+                h = ih / iw * aw;
+            }
+            //try match space height.
+            if (h < ah) {
+                w = iw / ih * ah;
+                h = ah;
+            }
+            break;
+        }
+        case MFillMode::CoverByStretch  : w = aw      ; h = ah      ; break;
+        case MFillMode::KeepOriginalSize: w = iw      ; h = ih      ; break;
+        case MFillMode::MatchSpaceWidth : w = aw      ; h = ih/iw*aw; break;
+        case MFillMode::MatchSpaceHeight: w = iw/ih*ah; h = ah      ; break;
         default:;
     }
 

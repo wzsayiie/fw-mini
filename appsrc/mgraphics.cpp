@@ -33,10 +33,11 @@ define_reflectable_enum_const(MVAlign, Middle)
 define_reflectable_enum_const(MVAlign, Bottom)
 
 //content mode.
-define_reflectable_enum_const(MFillMode, OriginalSize)
-define_reflectable_enum_const(MFillMode, CoverAllArea)
-define_reflectable_enum_const(MFillMode, MatchWidth  )
-define_reflectable_enum_const(MFillMode, MatchHeight )
+define_reflectable_enum_const(MFillMode, CoverByAspectRatio)
+define_reflectable_enum_const(MFillMode, CoverByStretch    )
+define_reflectable_enum_const(MFillMode, KeepOriginalSize  )
+define_reflectable_enum_const(MFillMode, MatchSpaceWidth   )
+define_reflectable_enum_const(MFillMode, MatchSpaceHeight  )
 
 //color:
 

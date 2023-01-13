@@ -30,10 +30,11 @@ m_enum(MVAlign) {
 
 //fill mode.
 m_enum(MFillMode) {
-    OriginalSize = 1,
-    CoverAllArea = 2,
-    MatchWidth   = 3,
-    MatchHeight  = 4,
+    CoverByAspectRatio = 1,
+    CoverByStretch     = 2,
+    KeepOriginalSize   = 3,
+    MatchSpaceWidth    = 4,
+    MatchSpaceHeight   = 5,
 };
 
 //color:

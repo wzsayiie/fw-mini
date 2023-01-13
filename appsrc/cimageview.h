@@ -22,7 +22,7 @@ protected:
 
 private:
     MImage::ptr mImage    ;
-    MFillMode   mFillMode = MFillMode::OriginalSize;
+    MFillMode   mFillMode = MFillMode::CoverByAspectRatio;
     MHAlign     mHAlign   = MHAlign::Center;
     MVAlign     mVAlign   = MVAlign::Middle;
 };
