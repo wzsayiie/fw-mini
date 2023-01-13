@@ -2,11 +2,29 @@
 
 //runtime functions:
 
-static std::string MGetObjectClassSymbol(const reflect::object::ptr &obj) {
-    return obj->class_symbol().str();
+static std::string MGetObjectClass(const reflect::object::ptr &obj) {
+    //os-related implementation classes have no meta data.
+    //need map to recognizable types.
+    static std::map<reflect::symbol, reflect::symbol> converts = {
+        { "MPCBundle"         , "MBundle"       },
+        { "MMACBundle"        , "MBundle"       },
+        { "MWin32ImageFactory", "MImageFactory" },
+        { "MMACImageFactory"  , "MImageFactory" },
+        { "MWin32Image"       , "MImage"        },
+        { "MMACImage"         , "MImage"        },
+    };
+
+    reflect::symbol sym = obj->class_symbol();
+
+    auto pair = converts.find(sym);
+    if (pair != converts.end()) {
+        return pair->second.str();
+    } else {
+        return sym.str();
+    }
 }
 
-static void MInjectObjectFunction(
+static void MInjectFunction(
     const reflect::injectable::ptr       &obj ,
     const char                           *name,
     const reflect::generic_function::ptr &func)
@@ -18,9 +36,9 @@ static void MDisposeObject(const reflect::injectable::ptr &obj) {
     obj->dispose();
 }
 
-define_reflectable_function(MGetObjectClassSymbol, "ignore")
-define_reflectable_function(MInjectObjectFunction, "ignore")
-define_reflectable_function(MDisposeObject       , "ignore")
+define_reflectable_function(MGetObjectClass, "ignore")
+define_reflectable_function(MInjectFunction, "ignore")
+define_reflectable_function(MDisposeObject , "ignore")
 
 //development environment functions:
 

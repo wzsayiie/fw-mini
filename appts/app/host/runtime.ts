@@ -1,8 +1,8 @@
 //BaseObject & Injectable:
 
-declare function native_MGetObjectClassSymbol(native: object): string
-declare function native_MInjectObjectFunction(native: object, name: string, func: Function): void
-declare function native_MDisposeObject       (native: object): void
+declare function native_MGetObjectClass(native: object): string
+declare function native_MInjectFunction(native: object, name: string, func: Function): void
+declare function native_MDisposeObject (native: object): void
 
 export namespace runtime {
     let _mappedClasses = new Map<string, { new(): BaseObject }>()
@@ -26,7 +26,7 @@ export namespace runtime {
         }
 
         //new object.
-        let sym = native_MGetObjectClassSymbol(native)
+        let sym = native_MGetObjectClass(native)
         let cls = _mappedClasses.get(sym)
         if (cls) {
             _bindingNative = native
@@ -69,7 +69,7 @@ export namespace runtime {
     export class Injectable extends BaseObject {
 
         protected injectFunction(native: object, name: string, func: Function): void {
-            native_MInjectObjectFunction(native, name, func)
+            native_MInjectFunction(native, name, func)
         }
 
         public dispose(): void {
