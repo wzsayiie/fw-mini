@@ -1,15 +1,12 @@
 import {
     CNavigationController,
-    CViewController,
     CWindow,
     MWindow,
 } from "./host/native"
 
-class MainViewController extends CViewController {
-
-    onViewLoad(): void {
-    }
-}
+import {
+    MainViewController,
+} from "./MainViewController"
 
 (function () {
     let mainWindow = <CWindow> MWindow.mainWindow

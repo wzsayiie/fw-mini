@@ -12,7 +12,7 @@ module.exports = {
         rules: [
             {
                 loader : 'ts-loader',
-                test   : /\.ts$/,
+                test   : /\.tsx?$/,
                 options: {
                     configFile: '',
                 },
@@ -20,7 +20,7 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.tsx' ],
     },
 
     externals: {
