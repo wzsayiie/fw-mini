@@ -10,12 +10,13 @@
 #include "mwin32paint.h"
 #include "mwindow.h"
 
-const POINT    ConsoleOrigin       = {   20, 100 };
-const POINT    WindowOrigin        = { 1000, 100 };
-const SIZE     WindowSize          = {  376, 679 };
+const char *const PlacementFileName = "window_placement";
+
 const UINT_PTR AppUpdateTimerId    = 1;
 const UINT_PTR WindowUpdateTimerId = 2;
 
+const  int     EditMaxWidth     = 300;
+const  int     EditHeight       =  20;
 static HWND    sEditWnd         = nullptr;
 static WNDPROC sEditDefaultProc = nullptr;
 static bool    sLButtonDowned   = false;
@@ -47,7 +48,7 @@ static void OpenConsole(void)
     }
 
     //move the console window.
-    SetWindowPos(wnd, HWND_TOP, ConsoleOrigin.x, ConsoleOrigin.y, 0, 0, SWP_NOSIZE);
+    SetWindowPos(wnd, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE);
 
     //disable the close button of console window.
     //clicking it will cause the program to exit abnormally.
@@ -127,15 +128,14 @@ static void CreateEditWithParent(HWND parent)
 
 static void UpdateEditFrameWithSpace(int spaceWidth, int spaceHeight)
 {
-    const int EditWidth  = 300;
-    const int EditHeight =  20;
+    int width = spaceWidth > EditMaxWidth ? EditMaxWidth : spaceWidth;
 
     SetWindowPos(
         /* wnd    */ sEditWnd,
         /* insert */ nullptr,
-        /* x      */ (spaceWidth  - EditWidth ) / 2,
+        /* x      */ (spaceWidth  - width     ) / 2,
         /* y      */ (spaceHeight - EditHeight) / 2,
-        /* width  */ EditWidth,
+        /* width  */ width,
         /* height */ EditHeight,
         /* flags  */ 0
     );
@@ -168,16 +168,48 @@ static void UpdateEditState()
     }
 }
 
+static std::string GetPlacementFilePath() {
+    std::string path = MBundle::instance()->temporaryDirectory();
+    return path + "\\" + PlacementFileName;
+}
+
+static void RestorePlacement(HWND wnd) {
+    std::string path = GetPlacementFilePath();
+    if (!MFileManager::instance()->fileExistsAt(path)) {
+        return;
+    }
+
+    //read.
+    WINDOWPLACEMENT placement = { (UINT)sizeof(WINDOWPLACEMENT) };
+    dash::read_file(path.c_str(), [&](int) { return &placement; });
+
+    //set.
+    SetWindowPlacement(wnd, &placement);
+}
+
+static void SavePlacement(HWND wnd) {
+    //get.
+    WINDOWPLACEMENT placement = { (UINT)sizeof(WINDOWPLACEMENT) };
+    GetWindowPlacement(wnd, &placement);
+
+    //write.
+    std::string path = GetPlacementFilePath();
+    dash::write_file(path.c_str(), &placement, (int)sizeof(placement));
+}
+
 static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
-    SIZE clientSize = GetClientSize(wnd);
-
     //components initialization.
     OpenConsole();
     MWin32GdiplusStartup();
     MPCBundle::install();
     MWin32ImageFactory::install();
     MWin32JsVM::install();
+
+    //window configuration:
+    RestorePlacement(wnd);
+
+    SIZE clientSize = GetClientSize(wnd);
 
     //create edit.
     CreateEditWithParent(wnd);
@@ -222,6 +254,7 @@ static void OnDestroy(HWND wnd, WPARAM wParam, LPARAM lParam)
     MWindow *window = MWindow::mainWindow();
     window->hide();
 
+    SavePlacement(wnd);
     PostQuitMessage(0);
 }
 
@@ -446,10 +479,10 @@ extern "C" d_exportable void MAppMain()
         /* lpClassName  */ className,
         /* lpWindowName */ (LPCWSTR)title.c_str(),
         /* dwStyle      */ WS_OVERLAPPEDWINDOW,
-        /* x            */ WindowOrigin.x,
-        /* y            */ WindowOrigin.y,
-        /* width        */ WindowSize.cx,
-        /* height       */ WindowSize.cy,
+        /* x            */ CW_USEDEFAULT,
+        /* y            */ CW_USEDEFAULT,
+        /* width        */ CW_USEDEFAULT,
+        /* height       */ CW_USEDEFAULT,
         /* hWndParent   */ nullptr,
         /* hMenu        */ nullptr,
         /* hInstance    */ instance,
