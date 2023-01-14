@@ -13,6 +13,15 @@ export namespace runtime {
         _mappedClasses.set(cls.name, cls)
     }
 
+    export function newObject(clsName: string): any {
+        let cls = _mappedClasses.get(clsName)
+        if (cls) {
+            return new cls()
+        } else {
+            return null
+        }
+    }
+
     export function getObject(native: object): any {
         //null.
         if (!native) {
