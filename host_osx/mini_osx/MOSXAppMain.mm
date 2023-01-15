@@ -1,3 +1,4 @@
+#import "MOSXFrameSaver.h"
 #import "MOSXViewController.h"
 
 #pragma mark - window
@@ -23,7 +24,8 @@
 
 + (NSWindowController *)windowController {
     //only assign the origin, the size will be taken care of by content view.
-    NSRect rect = NSMakeRect(1000, 200, 0, 0);
+    NSRect rect = NSZeroRect;
+    rect.origin = MOSXFrameSaver.sharedSaver.windowOrigin;
     
     NSWindowStyleMask  style   = self.windowStyle;
     NSBackingStoreType backing = NSBackingStoreBuffered;

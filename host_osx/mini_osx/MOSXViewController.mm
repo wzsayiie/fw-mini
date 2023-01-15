@@ -1,24 +1,24 @@
 #import "MOSXViewController.h"
+#import <Carbon/Carbon.h>
 #import "MMACBundle.h"
 #import "MMACDrawView.h"
 #import "MMACImageFactory.h"
 #import "MMACJavaScriptCore.h"
-#import <Carbon/Carbon.h>
+#import "MOSXFrameSaver.h"
 
-const CGFloat ViewContentWidth  = 360;
-const CGFloat ViewContentHeight = 640;
-const CGFloat TextFieldWidth    = 300;
+const CGFloat TextFieldMaxWidth = 300;
 const CGFloat TextFieldHeight   =  20;
 
 @implementation MOSXViewController
 
 - (NSTextField *)textField {
     if (!_textField) {
-        _textField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, TextFieldWidth, TextFieldHeight)];
+        _textField = [[NSTextField alloc] init];
         _textField.delegate = self;
         _textField.hidden = YES;
         
         [self.view addSubview:_textField];
+        [self updateTextFieldFrame];
     }
     return _textField;
 }
@@ -39,7 +39,11 @@ const CGFloat TextFieldHeight   =  20;
 
 - (void)loadView {
     //NOTE: don't call [super loadView], that will try to unarchive a nib.
-    self.view = [[MMACDrawView alloc] initWithFrame:NSMakeRect(0, 0, ViewContentWidth, ViewContentHeight)];
+    
+    NSRect frame = NSZeroRect;
+    frame.size = MOSXFrameSaver.sharedSaver.contentSize;
+    
+    self.view = [[MMACDrawView alloc] initWithFrame:frame];
 }
 
 - (void)viewDidLoad {
@@ -73,6 +77,7 @@ const CGFloat TextFieldHeight   =  20;
     [center addObserver:self selector:@selector(windowDidMiniaturize) name:NSWindowDidMiniaturizeNotification object:nil];
     [center addObserver:self selector:@selector(windowWillClose)      name:NSWindowWillCloseNotification      object:nil];
     [center addObserver:self selector:@selector(windowDidResize)      name:NSWindowDidResizeNotification      object:nil];
+    [center addObserver:self selector:@selector(windowDidMove)        name:NSWindowDidMoveNotification        object:nil];
     
     //NOTE: the monitor will intercept ALL key down events.
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *(NSEvent *event) {
@@ -92,6 +97,8 @@ const CGFloat TextFieldHeight   =  20;
     //IMPORTANT: emit a "hide" event.
     //ensuring the lifecycle order of "load", to "show", to "hide".
     self.window->hide();
+    
+    [MOSXFrameSaver.sharedSaver save];
 }
 
 - (void)windowDidResize {
@@ -99,6 +106,13 @@ const CGFloat TextFieldHeight   =  20;
     
     NSSize size = self.view.frame.size;
     self.window->resizePixel(size.width, size.height);
+    
+    MOSXFrameSaver.sharedSaver.contentSize = size;
+}
+
+- (void)windowDidMove {
+    NSPoint origin = NSApplication.sharedApplication.keyWindow.frame.origin;
+    MOSXFrameSaver.sharedSaver.windowOrigin = origin;
 }
 
 - (void)handleMouse:(NSEvent *)event step:(char)step {
@@ -215,10 +229,12 @@ const CGFloat TextFieldHeight   =  20;
 
 - (void)updateTextFieldFrame {
     NSSize space = self.view.frame.size;
-    NSRect frame = self.textField.frame;
+    NSRect frame = NSZeroRect;
     
-    frame.origin.x = (space.width  - frame.size.width ) / 2;
-    frame.origin.y = (space.height - frame.size.height) / 2;
+    frame.size.width  = space.width > TextFieldMaxWidth ? TextFieldMaxWidth : space.width;
+    frame.size.height = TextFieldHeight;
+    frame.origin.x    = (space.width  - frame.size.width ) / 2;
+    frame.origin.y    = (space.height - frame.size.height) / 2;
     
     self.textField.frame = frame;
 }
