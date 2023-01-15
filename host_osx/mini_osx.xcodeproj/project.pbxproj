@@ -17,6 +17,7 @@
 		CE1FC5BE280C5438005215EC /* MMACImageFactory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1FC5BB280C5438005215EC /* MMACImageFactory.mm */; };
 		CE30706D284E3EA0007C8FEB /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE30706C284E3EA0007C8FEB /* JavaScriptCore.framework */; };
 		CE30706F284E3EA9007C8FEB /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE30706E284E3EA9007C8FEB /* AppKit.framework */; };
+		CE379AA02973E1AF006C9E07 /* MOSXFrameSaver.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE379A9F2973E1AE006C9E07 /* MOSXFrameSaver.mm */; };
 		CEE269352854BE050007B0C2 /* MMACJavaScriptCore.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEE269342854BE050007B0C2 /* MMACJavaScriptCore.mm */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,8 @@
 		CE1FC5BB280C5438005215EC /* MMACImageFactory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACImageFactory.mm; sourceTree = "<group>"; };
 		CE30706C284E3EA0007C8FEB /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		CE30706E284E3EA9007C8FEB /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		CE379A9E2973E1AE006C9E07 /* MOSXFrameSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MOSXFrameSaver.h; sourceTree = "<group>"; };
+		CE379A9F2973E1AE006C9E07 /* MOSXFrameSaver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MOSXFrameSaver.mm; sourceTree = "<group>"; };
 		CEE269332854BE050007B0C2 /* MMACJavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMACJavaScriptCore.h; sourceTree = "<group>"; };
 		CEE269342854BE050007B0C2 /* MMACJavaScriptCore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MMACJavaScriptCore.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,6 +85,8 @@
 				CE107D8D2674C5EA00823730 /* Info.plist */,
 				CE107D902674C5EA00823730 /* mini.entitlements */,
 				CE107D8E2674C5EA00823730 /* MOSXAppMain.mm */,
+				CE379A9E2973E1AE006C9E07 /* MOSXFrameSaver.h */,
+				CE379A9F2973E1AE006C9E07 /* MOSXFrameSaver.mm */,
 				CE107D9B2674C6A400823730 /* MOSXViewController.h */,
 				CE107D992674C6A400823730 /* MOSXViewController.mm */,
 			);
@@ -203,6 +208,7 @@
 				CE107D9E2674C6A400823730 /* MOSXViewController.mm in Sources */,
 				CE107D8F2674C5EA00823730 /* MOSXAppMain.mm in Sources */,
 				CE1FC5BD280C5438005215EC /* MMACBundle.mm in Sources */,
+				CE379AA02973E1AF006C9E07 /* MOSXFrameSaver.mm in Sources */,
 				CE107DA82674C77C00823730 /* README.cpp in Sources */,
 				CEE269352854BE050007B0C2 /* MMACJavaScriptCore.mm in Sources */,
 				CE1FC5BE280C5438005215EC /* MMACImageFactory.mm in Sources */,
