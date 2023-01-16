@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cview.h"
+#include "mimage.h"
 
 m_class(CImageView, CView) {
 public:

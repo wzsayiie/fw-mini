@@ -1,6 +1,7 @@
 #include "mscheduler.h"
 #include <chrono>
 #include "mapp.h"
+#include "rdefine.h"
 
 define_reflectable_class_function(MScheduler, instance, "getter")
 MScheduler *MScheduler::instance() {

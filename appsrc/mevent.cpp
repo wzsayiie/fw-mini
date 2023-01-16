@@ -1,5 +1,7 @@
 #include "mevent.h"
+#include "dlazy.h"
 #include "mgraphics.h"
+#include "rdefine.h"
 
 //event:
 

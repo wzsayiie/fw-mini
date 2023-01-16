@@ -1,4 +1,5 @@
 #include "djson.h"
+#include <cstring>
 #include "dprint.h"
 
 namespace dash {

@@ -1,5 +1,6 @@
 #include "mwindow.h"
 #include "mgraphics.h"
+#include "rdefine.h"
 
 define_reflectable_class_const(MWindow, UpdateEverySeconds)
 define_reflectable_class_const(MWindow, TitleName)

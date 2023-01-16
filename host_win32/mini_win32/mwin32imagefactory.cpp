@@ -1,4 +1,6 @@
 #include "mwin32imagefactory.h"
+#include "ddefer.h"
+#include "mgraphics.h"
 
 void MWin32ImageFactory::install()
 {

@@ -1,5 +1,5 @@
 #pragma once
 
-#include "dash.h"
+#include "dexport.h"
 
-d_exportable void MPrint(const std::string &message);
+d_exportable void MPrint(const char *message);

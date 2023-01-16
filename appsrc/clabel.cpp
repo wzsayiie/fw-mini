@@ -1,4 +1,6 @@
 #include "clabel.h"
+#include "mcontext.h"
+#include "rdefine.h"
 
 define_reflectable_class_function(CLabel, setText     , "setter;args:text" )
 define_reflectable_class_function(CLabel, setTextColor, "setter;args:color")

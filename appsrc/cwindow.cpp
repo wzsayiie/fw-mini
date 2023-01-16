@@ -1,4 +1,5 @@
 #include "cwindow.h"
+#include "rdefine.h"
 
 define_reflectable_class_function(CWindow, setRootViewController, "setter;args:viewController")
 void CWindow::setRootViewController(const CViewController::ptr &viewController) {

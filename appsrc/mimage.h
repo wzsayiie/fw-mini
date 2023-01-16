@@ -2,7 +2,6 @@
 
 #include "mdata.h"
 #include "mgeometry.h"
-#include "mgraphics.h" //bitmap processing will use color struct.
 
 //image:
 

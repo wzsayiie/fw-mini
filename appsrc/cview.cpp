@@ -1,5 +1,7 @@
 #include "cview.h"
 #include "cviewcontroller.h"
+#include "mcontext.h"
+#include "rdefine.h"
 
 CView::CView() {
     mSubviews = MVector<CView::ptr>::create();

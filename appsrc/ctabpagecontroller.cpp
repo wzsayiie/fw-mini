@@ -1,4 +1,5 @@
 #include "ctabpagecontroller.h"
+#include "rdefine.h"
 
 //tab page controller delegation:
 

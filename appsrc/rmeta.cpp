@@ -1,4 +1,5 @@
 #include "rmeta.h"
+#include "dlazy.h"
 
 namespace reflect {
 

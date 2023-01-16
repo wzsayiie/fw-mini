@@ -1,4 +1,6 @@
-#include "centui.h"
+#include "cnavigationcontroller.h"
+#include "cwindow.h"
+#include "mapp.h"
 
 m_class(MainViewController, CViewController) {
 protected:

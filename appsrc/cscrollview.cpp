@@ -1,4 +1,6 @@
 #include "cscrollview.h"
+#include "mcontext.h"
+#include "rdefine.h"
 
 //scroll view delegation:
 

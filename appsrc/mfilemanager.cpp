@@ -1,4 +1,7 @@
 #include "mfilemanager.h"
+#include <filesystem>
+#include "dfile.h"
+#include "rdefine.h"
 
 //normal path:
 

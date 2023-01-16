@@ -1,4 +1,7 @@
 #include "ccontrol.h"
+#include "dlazy.h"
+#include "mcontext.h"
+#include "rdefine.h"
 
 static dash::lazy<std::map<std::string, CControl *>> sMap;
 static dash::lazy<std::set<CControl *>> sSet;

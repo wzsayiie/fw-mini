@@ -1,6 +1,8 @@
 #pragma once
 
 #include "cresponder.h"
+#include "mgeneric.h"
+#include "mgraphics.h"
 
 class CViewController;
 

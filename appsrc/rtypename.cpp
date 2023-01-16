@@ -1,4 +1,5 @@
 #include "rtypename.h"
+#include <cstring>
 #include <sstream>
 
 namespace reflect {

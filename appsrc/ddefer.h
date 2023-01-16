@@ -1,7 +1,7 @@
 #pragma once
 
+#include <functional>
 #include "dname.h"
-#include "dstd.h"
 
 namespace dash {
 

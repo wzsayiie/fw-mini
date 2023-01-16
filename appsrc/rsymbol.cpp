@@ -1,4 +1,6 @@
 #include "rsymbol.h"
+#include <set>
+#include "dlazy.h"
 
 namespace reflect {
 

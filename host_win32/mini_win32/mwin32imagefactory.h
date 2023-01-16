@@ -1,7 +1,8 @@
 #pragma once
 
+#include <Windows.h> //"gdiplus.h" need.
+#include <gdiplus.h>
 #include "mimage.h"
-#include "mwin32gdiplus.h"
 
 m_class(MWin32Image, MImage)
 {

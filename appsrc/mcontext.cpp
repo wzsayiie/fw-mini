@@ -1,4 +1,6 @@
 #include "mcontext.h"
+#include "dlazy.h"
+#include "rdefine.h"
 
 //context data:
 

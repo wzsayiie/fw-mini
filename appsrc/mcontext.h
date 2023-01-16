@@ -1,6 +1,7 @@
 #pragma once
 
-#include "mcontainers.h"
+#include "mgeneric.h"
+#include "mgraphics.h"
 #include "mimage.h"
 
 //draw function:

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "dencodable.h"
 
 namespace dash {

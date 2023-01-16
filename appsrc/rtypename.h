@@ -1,6 +1,8 @@
 #pragma once
 
-#include "dash.h"
+#include <memory>
+#include <string>
+#include "dexport.h"
 
 namespace reflect {
 

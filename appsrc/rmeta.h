@@ -1,6 +1,10 @@
 #pragma once
 
-#include "rfunction.h"
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+#include "rany.h"
 
 namespace reflect {
 

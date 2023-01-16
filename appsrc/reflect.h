@@ -1,9 +1,10 @@
 #pragma once
 
 #include "rany.h"
-#include "rextraction.h"
+#include "rdeclare.h"
+#include "rdefine.h"
+#include "rextract.h"
 #include "rfunction.h"
-#include "rgeneration.h"
 #include "rinjectable.h"
 #include "rmap.h"
 #include "rmeta.h"

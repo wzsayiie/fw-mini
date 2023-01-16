@@ -1,4 +1,7 @@
 #include "mpcbundle.h"
+#include <filesystem>
+#include "dbuffer.h"
+#include "dfile.h"
 
 #if D_OS_WIN32
     #include <ShlObj.h>

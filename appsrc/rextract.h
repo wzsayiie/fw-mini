@@ -1,5 +1,6 @@
 #pragma once
 
+#include "rfunction.h"
 #include "rmap.h"
 #include "rmeta.h"
 #include "rset.h"

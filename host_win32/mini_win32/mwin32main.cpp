@@ -1,10 +1,13 @@
 ﻿#include <clocale>
 #include <io.h>
 #include <windowsx.h>
+#include "dbuffer.h"
+#include "dfile.h"
 #include "mapp.h"
 #include "mcontext.h"
 #include "mencode.h"
 #include "mpcbundle.h"
+#include "mwin32gdiplus.h"
 #include "mwin32imagefactory.h"
 #include "mwin32jsrt.h"
 #include "mwin32paint.h"

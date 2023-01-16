@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cviewcontroller.h"
+#include "mwindow.h"
 
 m_class(CWindow, MWindow) {
 public:

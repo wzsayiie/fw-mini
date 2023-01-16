@@ -1,4 +1,5 @@
 #include "mjsvm.h"
+#include "rdefine.h"
 
 MJsVM::ptr MJsVM::sIntance;
 

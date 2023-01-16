@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include "rany.h"
 
 namespace reflect {

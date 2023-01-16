@@ -1,7 +1,8 @@
 #include "mprint.h"
-#include "reflect.h"
+#include "dprint.h"
+#include "rdefine.h"
 
 define_reflectable_function(MPrint, "args:message")
-void MPrint(const std::string &message) {
+void MPrint(const char *message) {
     dash::print(message);
 }

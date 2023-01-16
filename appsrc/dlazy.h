@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dstd.h"
+#include <memory>
 
 namespace dash {
 

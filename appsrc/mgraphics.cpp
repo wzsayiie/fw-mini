@@ -1,4 +1,5 @@
 #include "mgraphics.h"
+#include "rdefine.h"
 
 //pixel scale:
 

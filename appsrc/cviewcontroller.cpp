@@ -1,6 +1,7 @@
 #include "cviewcontroller.h"
 #include "cnavigationcontroller.h"
 #include "ctabpagecontroller.h"
+#include "rdefine.h"
 
 CViewController::CViewController() {
     mChildControllers = MVector<CViewController::ptr>::create();

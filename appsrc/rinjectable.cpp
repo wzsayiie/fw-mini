@@ -1,4 +1,5 @@
 #include "rinjectable.h"
+#include "dlazy.h"
 
 namespace reflect {
 

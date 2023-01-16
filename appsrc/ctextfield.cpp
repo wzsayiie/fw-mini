@@ -1,4 +1,8 @@
 #include "ctextfield.h"
+#include "mcontext.h"
+#include "mscheduler.h"
+#include "mwindow.h"
+#include "rdefine.h"
 
 //text field delegation:
 

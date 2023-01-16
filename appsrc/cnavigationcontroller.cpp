@@ -1,4 +1,5 @@
 #include "cnavigationcontroller.h"
+#include "rdefine.h"
 
 //navigation controller delegation:
 

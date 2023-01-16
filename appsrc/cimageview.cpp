@@ -1,4 +1,6 @@
 #include "cimageview.h"
+#include "mcontext.h"
+#include "rdefine.h"
 
 define_reflectable_class_function(CImageView, setImage   , "setter;args:image")
 define_reflectable_class_function(CImageView, setFillMode, "setter;args:mode" )

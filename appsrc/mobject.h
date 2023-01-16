@@ -1,6 +1,7 @@
 #pragma once
 
-#include "reflect.h"
+#include "rdeclare.h"
+#include "rinjectable.h"
 
 declare_reflectable_class(MObject)
 class d_exportable MObject : public reflect::extends<MObject, reflect::injectable> {

@@ -1,5 +1,6 @@
 #include "mimage.h"
 #include "mfilemanager.h"
+#include "rdefine.h"
 
 //file format:
 

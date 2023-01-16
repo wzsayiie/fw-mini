@@ -1,6 +1,9 @@
 #pragma once
 
-#include "mobject.h"
+#include "rfunction.h"
+#include "rmap.h"
+#include "rset.h"
+#include "rvector.h"
 
 //function:
 template<class F> using MFunction = reflect::function<F>;

@@ -1,4 +1,5 @@
 #include "rfunction.h"
+#include "dlazy.h"
 
 namespace reflect {
 

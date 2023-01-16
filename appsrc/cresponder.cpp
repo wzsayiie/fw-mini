@@ -1,4 +1,5 @@
 #include "cresponder.h"
+#include "rdefine.h"
 
 CResponder::ptr CResponder::sFocusResponder;
 

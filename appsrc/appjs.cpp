@@ -1,4 +1,9 @@
-#include "minikit.h"
+#include "mapp.h"
+#include "mfilemanager.h"
+#include "mjsvm.h"
+#include "mprint.h"
+#include "rdefine.h"
+#include "rmetajson.h"
 
 //runtime functions:
 
@@ -6,12 +11,17 @@ static std::string MGetObjectClass(const reflect::object::ptr &obj) {
     //os-related implementation classes have no meta data.
     //need map to recognizable types.
     static std::map<reflect::symbol, reflect::symbol> converts = {
-        { "MPCBundle"         , "MBundle"       },
+        { "MAndrdBundle"      , "MBundle"       },
         { "MMACBundle"        , "MBundle"       },
-        { "MWin32ImageFactory", "MImageFactory" },
+        { "MPCBundle"         , "MBundle"       },
+
+        { "MAndrdImageFactory", "MImageFactory" },
         { "MMACImageFactory"  , "MImageFactory" },
-        { "MWin32Image"       , "MImage"        },
+        { "MWin32ImageFactory", "MImageFactory" },
+
+        { "MAndrdImage"       , "MImage"        },
         { "MMACImage"         , "MImage"        },
+        { "MWin32Image"       , "MImage"        },
     };
 
     reflect::symbol sym = obj->class_symbol();
@@ -61,7 +71,7 @@ define_reflectable_function(writeTextFile      , "ignore")
 //virtual machine:
 
 static void OnException(const std::string &message) {
-    MPrint(message);
+    MPrint(message.c_str());
 }
 
 static void EnrollClassFunctions(

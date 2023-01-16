@@ -1,4 +1,7 @@
 #include "cbutton.h"
+#include "mcontext.h"
+#include "mscheduler.h"
+#include "rdefine.h"
 
 define_reflectable_class_function(CButton, titleLabel, "getter")
 CLabel::ptr CButton::titleLabel() {

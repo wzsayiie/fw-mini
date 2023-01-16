@@ -1,7 +1,7 @@
 #pragma once
 
+#include <functional>
 #include "dexport.h"
-#include "dstd.h"
 
 namespace dash {
 

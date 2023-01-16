@@ -1,4 +1,6 @@
 #include "mwin32gdiplus.h"
+#include <Windows.h> //"gdiplus.h" need.
+#include <gdiplus.h>
 
 static ULONG_PTR sGdiplusToken = 0;
 

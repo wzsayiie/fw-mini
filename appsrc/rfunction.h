@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+#include <vector>
 #include "rany.h"
 
 namespace reflect {

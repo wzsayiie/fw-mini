@@ -1,6 +1,8 @@
 #pragma once
 
 #include "cobject.h"
+#include "mevent.h"
+#include "mgeometry.h"
 
 m_class(CResponder, CObject) {
 public:

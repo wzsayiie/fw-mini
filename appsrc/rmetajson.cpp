@@ -1,4 +1,5 @@
 #include "rmetajson.h"
+#include "djson.h"
 #include "rmeta.h"
 
 using dash::json;

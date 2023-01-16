@@ -1,5 +1,6 @@
 #pragma once
 
+#include "dobject.h"
 #include "rsymbol.h"
 
 namespace reflect {

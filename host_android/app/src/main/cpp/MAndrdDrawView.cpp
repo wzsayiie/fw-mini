@@ -1,5 +1,6 @@
 #include "MAndrdImageFactory.h"
 #include "mcontext.h"
+#include "mjnihelper.h"
 #include "mwindow.h"
 
 static MGraph        *sGraph   = nullptr;
