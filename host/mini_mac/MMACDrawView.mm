@@ -19,19 +19,19 @@
     MWindow::mainWindow()->draw();
     
 #if TARGET_OS_OSX
-    CGContextRef context = NSGraphicsContext.currentContext.CGContext;
+    CGContextRef ctx = NSGraphicsContext.currentContext.CGContext;
 #elif TARGET_OS_IOS
-    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
 #endif
-    CGFloat viewHeight = self.frame.size.height;
+    CGFloat height = self.frame.size.height;
     
     MVector<MGraph::ptr> *graphs = MContextGetGraphs();
-    for (const auto &graph : *graphs) {
-        switch (graph->type()) {
-            case MGraphType::Clip   : [self drawClip   :(MClipGraph    *)graph.get() withContext: context viewHeight:viewHeight]; break;
-            case MGraphType::Polygon: [self drawPolygon:(MPolygonGraph *)graph.get() withContext: context viewHeight:viewHeight]; break;
-            case MGraphType::Image  : [self drawImage  :(MImageGraph   *)graph.get() withContext: context viewHeight:viewHeight]; break;
-            case MGraphType::Text   : [self drawText   :(MTextGraph    *)graph.get() withContext: context viewHeight:viewHeight]; break;
+    for (const auto &g : *graphs) {
+        switch (g->type()) {
+            case MGraphType::Clip   : [self drawClip   :(MClipGraph    *)g.get() withContext:ctx viewHeight:height]; break;
+            case MGraphType::Polygon: [self drawPolygon:(MPolygonGraph *)g.get() withContext:ctx viewHeight:height]; break;
+            case MGraphType::Image  : [self drawImage  :(MImageGraph   *)g.get() withContext:ctx viewHeight:height]; break;
+            case MGraphType::Text   : [self drawText   :(MTextGraph    *)g.get() withContext:ctx viewHeight:height]; break;
         }
     }
     

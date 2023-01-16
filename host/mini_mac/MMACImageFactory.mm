@@ -1,4 +1,5 @@
 #import "MMACImageFactory.h"
+#import "mgraphics.h"
 
 //bitmap context:
 

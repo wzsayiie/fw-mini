@@ -4,17 +4,21 @@
 #import "MMACImageFactory.h"
 #import "MMACJavaScriptCore.h"
 
+const CGFloat TextFieldWidth  = 300;
+const CGFloat TextFieldHeight =  20;
+
 @implementation MIOSViewController
 
 - (UITextField *)textField {
     if (!_textField) {
-        _textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 300, 30)];
+        _textField = [[UITextField alloc] init];
         _textField.layer.masksToBounds = YES;
-        _textField.layer.cornerRadius = 5;
-        _textField.layer.borderWidth = 1;
+        _textField.layer.cornerRadius  = 5;
+        _textField.layer.borderWidth   = 1;
         _textField.delegate = self;
-        _textField.hidden = YES;
+        _textField.hidden   = YES;
         
+        [self updateTextFieldFrameWithSpace:self.view.frame.size keyboardHeight:0];
         [self.view addSubview:_textField];
     }
     return _textField;
@@ -64,12 +68,15 @@
     }];
     
     //notifications listening:
-    NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
-    [center addObserver:self selector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
-    [center addObserver:self selector:@selector(applicationWillResignActive)    name:UIApplicationWillResignActiveNotification    object:nil];
+    [self addSelector:@selector(applicationWillEnterForeground) name:UIApplicationWillEnterForegroundNotification];
+    [self addSelector:@selector(applicationWillResignActive)    name:UIApplicationWillResignActiveNotification   ];
     
-    [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [center addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [self addSelector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification];
+    [self addSelector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification];
+}
+
+- (void)addSelector:(SEL)sel name:(NSNotificationName)name {
+    [NSNotificationCenter.defaultCenter addObserver:self selector:sel name:name object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -88,7 +95,9 @@
     self.window->hide();
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+- (void)  viewWillTransitionToSize:(CGSize)size
+    /**/ withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
     [self updateTextFieldFrameWithSpace:size keyboardHeight:0];
     self.window->resizePixel(size.width, size.height);
 }
@@ -122,9 +131,11 @@
 - (void)updateTextFieldFrameWithSpace:(CGSize)space keyboardHeight:(CGFloat)keyboardHeight {
     space.height -= keyboardHeight;
     
-    CGRect frame = self.textField.frame;
-    frame.origin.x = (space.width  - frame.size.width ) / 2;
-    frame.origin.y = (space.height - frame.size.height) / 2;
+    CGRect frame = CGRectZero;
+    frame.origin.x    = (space.width  - TextFieldWidth ) / 2;
+    frame.origin.y    = (space.height - TextFieldHeight) / 2;
+    frame.size.width  = TextFieldWidth ;
+    frame.size.height = TextFieldHeight;
     
     self.textField.frame = frame;
 }

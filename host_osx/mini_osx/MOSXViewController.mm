@@ -72,17 +72,20 @@ const CGFloat TextFieldHeight   =  20;
     }];
     
     //notifications listening:
-    NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
-    [center addObserver:self selector:@selector(windowDidBecomeKey)   name:NSWindowDidBecomeKeyNotification   object:nil];
-    [center addObserver:self selector:@selector(windowDidMiniaturize) name:NSWindowDidMiniaturizeNotification object:nil];
-    [center addObserver:self selector:@selector(windowWillClose)      name:NSWindowWillCloseNotification      object:nil];
-    [center addObserver:self selector:@selector(windowDidResize)      name:NSWindowDidResizeNotification      object:nil];
-    [center addObserver:self selector:@selector(windowDidMove)        name:NSWindowDidMoveNotification        object:nil];
+    [self addSelector:@selector(windowDidBecomeKey)   name:NSWindowDidBecomeKeyNotification  ];
+    [self addSelector:@selector(windowDidMiniaturize) name:NSWindowDidMiniaturizeNotification];
+    [self addSelector:@selector(windowWillClose)      name:NSWindowWillCloseNotification     ];
+    [self addSelector:@selector(windowDidResize)      name:NSWindowDidResizeNotification     ];
+    [self addSelector:@selector(windowDidMove)        name:NSWindowDidMoveNotification       ];
     
     //NOTE: the monitor will intercept ALL key down events.
     [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent *(NSEvent *event) {
         return [self keyboardKeyDown:event];
     }];
+}
+
+- (void)addSelector:(SEL)sel name:(NSNotificationName)name {
+    [NSNotificationCenter.defaultCenter addObserver:self selector:sel name:name object:nil];
 }
 
 - (void)windowDidBecomeKey {
