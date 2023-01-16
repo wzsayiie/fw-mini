@@ -36,7 +36,7 @@ function add_obj_make() {
     local obj=$1
     local cxx=$2
 
-    write_makefile " `c++ $_inc -MM     -MT $obj $cxx`\n"
+    write_makefile  "`c++ $_inc -MM     -MT $obj $cxx`\n"
     write_makefile "\tc++ $_inc $_flg -c -o $obj $cxx \n"
 }
 
@@ -49,8 +49,8 @@ function for_every_csrc() {
 }
 
 function main() {
-    rm makefile
-    rm -rf $_objdir
+    rm -f  makefile
+    rm -fr $_objdir
     mkdir  $_objdir
 
     # final target:
