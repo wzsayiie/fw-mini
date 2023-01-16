@@ -4,14 +4,14 @@ plugins {
 
 android {
     //sdk version.
-    compileSdkVersion 32
+    compileSdkVersion 33
     ndkVersion "25.1.8937393"
 
     //compile configuration.
     defaultConfig {
         applicationId "domain.corp.store.flavor.app"
-        minSdkVersion 21 //android 5.
-        targetSdkVersion 32 //android 12.
+        minSdkVersion 29 //android 10.
+        targetSdkVersion 33 //android 13.
         versionCode 1
         versionName "1.0"
         ndk {
@@ -43,5 +43,5 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
 }
