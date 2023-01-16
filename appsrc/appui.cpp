@@ -1,6 +1,5 @@
-#include "cnavigationcontroller.h"
-#include "cwindow.h"
-#include "mapp.h"
+#include "centui.h"
+#include "minikit.h"
 
 m_class(MainViewController, CViewController) {
 protected:
