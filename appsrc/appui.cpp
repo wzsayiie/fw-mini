@@ -1,4 +1,5 @@
 #include "centui.h"
+#include "dash.h"
 #include "minikit.h"
 
 m_class(MainViewController, CViewController) {
