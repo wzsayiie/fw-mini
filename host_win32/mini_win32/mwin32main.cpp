@@ -26,8 +26,13 @@ static HWND    sEditWnd         = nullptr;
 static WNDPROC sEditDefaultProc = nullptr;
 static bool    sLButtonDowned   = false;
 
-static void OpenConsole(void)
+static void ShowConsole(void)
 {
+    if (!mp_show_console)
+    {
+        return;
+    }
+
     //is there a console?
     if (_isatty(_fileno(stdout)))
     {
@@ -202,7 +207,7 @@ static void SavePlacement(HWND wnd)
 static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
 {
     //components initialization.
-    OpenConsole();
+    ShowConsole();
     MWin32GdiplusStartup();
     MPCBundle::install();
     MWin32ImageFactory::install();
