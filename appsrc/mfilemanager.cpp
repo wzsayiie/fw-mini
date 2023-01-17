@@ -3,26 +3,6 @@
 #include "dfile.h"
 #include "rdefine.h"
 
-//normal path:
-
-//on windows platform, "\" and "/" are both path separators.
-//but for unix and its derivatives, "\" can be included in filename.
-//use normalized paths to avoid ambiguity.
-
-struct PathNormalizer {
-    std::string operator<<(const std::string &path) {
-        std::string normal = path;
-        for (auto it = normal.begin(); it != normal.end(); ++it) {
-            if (*it == '\\') {
-                *it = '/';
-            }
-        }
-        return normal;
-    }
-};
-
-#define m_normal_path PathNormalizer()<<
-
 //file manager:
 
 define_reflectable_class_function(MFileManager, instance, "getter")
@@ -37,7 +17,7 @@ MData::ptr MFileManager::bytesFromBundle(const std::string &path) {
         return nullptr;
     }
 
-    MData::ptr data = MBundle::instance()->loadResource(m_normal_path path);
+    MData::ptr data = MBundle::instance()->loadResource(path);
     if (!data || data->empty()) {
         return nullptr;
     }
@@ -49,8 +29,7 @@ define_reflectable_class_function(MFileManager, bytesFromFile, "args:path")
 MData::ptr MFileManager::bytesFromFile(const std::string &path) {
     auto data = MData::create();
     
-    std::string nPath = m_normal_path path;
-    dash::read_file(nPath.c_str(), [&](int size) {
+    dash::read_file(path.c_str(), [&](int size) {
         data->resize(size);
         return data->bytes();
     });
@@ -64,7 +43,7 @@ std::string MFileManager::u8stringFromBundle(const std::string &path) {
         return "";
     }
 
-    MData::ptr data = MBundle::instance()->loadResource(m_normal_path path);
+    MData::ptr data = MBundle::instance()->loadResource(path);
     if (!data || data->empty()) {
         return "";
     }
@@ -78,8 +57,7 @@ define_reflectable_class_function(MFileManager, u8stringFromFile, "args:path")
 std::string MFileManager::u8stringFromFile(const std::string &path) {
     std::string str;
 
-    std::string nPath = m_normal_path path;
-    dash::read_file(nPath.c_str(), [&](int size) {
+    dash::read_file(path.c_str(), [&](int size) {
         str.resize((size_t)(size + 1));
         return str.data();
     });
@@ -89,29 +67,27 @@ std::string MFileManager::u8stringFromFile(const std::string &path) {
 
 define_reflectable_class_function(MFileManager, writeBytesToFile, "args:bytes,path")
 void MFileManager::writeBytesToFile(const MData::ptr &data, const std::string &path) {
-    std::string nPath = m_normal_path path;
     if (data) {
-        dash::write_file(nPath.c_str(), data->bytes(), data->length());
+        dash::write_file(path.c_str(), data->bytes(), data->length());
     } else {
         //clear the file.
-        dash::write_file(nPath.c_str(), nullptr, 0);
+        dash::write_file(path.c_str(), nullptr, 0);
     }
 }
 
 define_reflectable_class_function(MFileManager, writeU8StringToFile, "args:str,path")
 void MFileManager::writeU8StringToFile(const std::string &string, const std::string &path) {
-    std::string nPath = m_normal_path path;
-    dash::write_file(nPath.c_str(), string.c_str(), (int)string.size());
+    dash::write_file(path.c_str(), string.c_str(), (int)string.size());
 }
 
 define_reflectable_class_function(MFileManager, contentsOfDirectory, "args:path")
 MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &path) {
     auto contents = MVector<std::string>::create();
 
-    std::filesystem::directory_iterator iterator(m_normal_path path);
+    std::filesystem::directory_iterator iterator(path);
     for (auto &entry : iterator) {
         std::string item = entry.path().string();
-        contents->push_back(m_normal_path item);
+        contents->push_back(item);
     }
 
     return contents;
@@ -120,7 +96,7 @@ MVector<std::string>::ptr MFileManager::contentsOfDirectory(const std::string &p
 define_reflectable_class_function(MFileManager, fileExistsAt, "args:path")
 bool MFileManager::fileExistsAt(const std::string &path) {
     if (!path.empty()) {
-        return std::filesystem::exists(m_normal_path path);
+        return std::filesystem::exists(path);
     }
     return false;
 }
@@ -128,7 +104,7 @@ bool MFileManager::fileExistsAt(const std::string &path) {
 define_reflectable_class_function(MFileManager, directoryExistsAt, "args:path")
 bool MFileManager::directoryExistsAt(const std::string &path) {
     if (!path.empty()) {
-        return std::filesystem::is_directory(m_normal_path path);
+        return std::filesystem::is_directory(path);
     }
     return false;
 }
@@ -136,14 +112,14 @@ bool MFileManager::directoryExistsAt(const std::string &path) {
 define_reflectable_class_function(MFileManager, createDirectory, "args:path")
 void MFileManager::createDirectory(const std::string &path) {
     if (!path.empty()) {
-        std::filesystem::create_directories(m_normal_path path);
+        std::filesystem::create_directories(path);
     }
 }
 
 define_reflectable_class_function(MFileManager, removePath, "args:path")
 void MFileManager::removePath(const std::string &path) {
     if (!path.empty()) {
-        std::filesystem::remove_all(m_normal_path path);
+        std::filesystem::remove_all(path);
     }
 }
 
@@ -167,6 +143,25 @@ MBundle *MBundle::instance() {
     return sInstance.get();
 }
 
+define_reflectable_class_function(MBundle, getDocumentFilePath , "args:filename")
+define_reflectable_class_function(MBundle, getTemporaryFilePath, "args:filename")
+
+static std::string GetP(const std::string &dir, const std::string &file) {
+    const char *item = file.c_str();
+    while (*item == '\\' || *item == '/') {
+        item += 1;
+    }
+
+    if (*item) {
+        return dir + '/' + item;
+    } else {
+        return "";
+    }
+}
+
+std::string MBundle::getDocumentFilePath (const std::string &n) { return GetP(documentDirectory (), n); }
+std::string MBundle::getTemporaryFilePath(const std::string &n) { return GetP(temporaryDirectory(), n); }
+
 define_reflectable_class_function(MBundle, loadResource, "args:path")
 MData::ptr MBundle::loadResource(const std::string &path) {
     if (!path.empty()) {
@@ -179,13 +174,16 @@ define_reflectable_class_function(MBundle, resBundleDirectory, "getter")
 define_reflectable_class_function(MBundle, documentDirectory , "getter")
 define_reflectable_class_function(MBundle, temporaryDirectory, "getter")
 
-#define _D(var, getter) if (var.empty()) { var = getter(); } return var;
+static std::string GetD(MBundle *_this, std::string *dir, std::string (MBundle::*getter)()) {
+    if (dir->empty()) {
+        *dir = (_this->*getter)();
+    }
+    return *dir;
+}
 
-std::string MBundle::resBundleDirectory() { _D(mResBundleDirectory, onGetResBundleDirectory) }
-std::string MBundle::documentDirectory () { _D(mDocumentDirectory , onGetDocumentDirectory ) }
-std::string MBundle::temporaryDirectory() { _D(mTemporaryDirectory, onGetTemporaryDirectory) }
-
-#undef  _D
+std::string MBundle::resBundleDirectory() { return GetD(this, &mResBundleDirectory, &MBundle::onGetResBundleDirectory); }
+std::string MBundle::documentDirectory () { return GetD(this, &mDocumentDirectory , &MBundle::onGetDocumentDirectory ); }
+std::string MBundle::temporaryDirectory() { return GetD(this, &mTemporaryDirectory, &MBundle::onGetTemporaryDirectory); }
 
 MData::ptr MBundle::onLoadResource(const std::string &path) {
     return nullptr;

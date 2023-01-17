@@ -41,6 +41,9 @@ public:
     static MBundle *instance();
 
 public:
+    std::string getDocumentFilePath (const std::string &fileName);
+    std::string getTemporaryFilePath(const std::string &fileName);
+
     MData::ptr loadResource(const std::string &path);
 
     std::string resBundleDirectory();
