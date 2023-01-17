@@ -1,4 +1,4 @@
-#include "mfilemanager.h"
+#include "mbundle.h"
 #include "mjnihelper.h"
 
 m_class(MAndrdBundle, MBundle) {

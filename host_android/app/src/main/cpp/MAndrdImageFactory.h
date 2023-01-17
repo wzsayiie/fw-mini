@@ -1,7 +1,7 @@
 #pragma once
 
 #include <jni.h>
-#include "mimage.h"
+#include "mimagefactory.h"
 
 m_class(MAndrdImage, MImage) {
 public:

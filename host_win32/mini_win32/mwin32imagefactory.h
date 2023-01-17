@@ -2,7 +2,7 @@
 
 #include <Windows.h> //"gdiplus.h" need.
 #include <gdiplus.h>
-#include "mimage.h"
+#include "mimagefactory.h"
 
 m_class(MWin32Image, MImage)
 {

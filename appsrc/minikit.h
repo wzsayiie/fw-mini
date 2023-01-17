@@ -11,6 +11,7 @@
 #include "mgeometry.h"
 #include "mgraphics.h"
 #include "mimage.h"
+#include "mimagefactory.h"
 #include "mjsvm.h"
 #include "mobject.h"
 #include "mprint.h"
