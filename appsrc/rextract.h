@@ -32,6 +32,7 @@ template<> struct extract<int                > { static symbol commit() { return
 template<> struct extract<int64_t            > { static symbol commit() { return symbol_of<int64_t    >::value(); } };
 template<> struct extract<float              > { static symbol commit() { return symbol_of<float      >::value(); } };
 template<> struct extract<double             > { static symbol commit() { return symbol_of<double     >::value(); } };
+template<> struct extract<char               > { static symbol commit() { return symbol_of<char       >::value(); } };
 template<> struct extract<const char        *> { static symbol commit() { return symbol_of<char       >::value(); } };
 template<> struct extract<std::string        > { static symbol commit() { return symbol_of<std::string>::value(); } };
 template<> struct extract<const std::string &> { static symbol commit() { return symbol_of<std::string>::value(); } };
@@ -92,6 +93,8 @@ template<class Value> struct extract<std::shared_ptr<vector<Value>>> {
         }
         
         meta->value_type = extract<Value>::commit();
+        meta->value_qual = qualifier_of<Value>::value;
+
         return type;
     }
 };
@@ -114,6 +117,9 @@ template<class Key, class Value> struct extract<std::shared_ptr<map<Key, Value>>
         
         meta->key_type   = extract<Key  >::commit();
         meta->value_type = extract<Value>::commit();
+        meta->key_qual   = qualifier_of<Key  >::value;
+        meta->value_qual = qualifier_of<Value>::value;
+
         return type;
     }
 };
@@ -135,6 +141,8 @@ template<class Value> struct extract<std::shared_ptr<set<Value>>> {
         }
         
         meta->value_type = extract<Value>::commit();
+        meta->value_qual = qualifier_of<Value>::value;
+
         return type;
     }
 };

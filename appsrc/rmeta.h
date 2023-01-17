@@ -76,16 +76,20 @@ struct function_meta : type_meta {
 };
 
 struct vector_meta : type_meta {
-    symbol value_type;
+    symbol    value_type;
+    qualifier value_qual;
 };
 
 struct map_meta : type_meta {
-    symbol key_type  ;
-    symbol value_type;
+    symbol    key_type  ;
+    qualifier key_qual  ;
+    symbol    value_type;
+    qualifier value_qual;
 };
 
 struct set_meta : type_meta {
-    symbol value_type;
+    symbol    value_type;
+    qualifier value_qual;
 };
 
 struct class_meta : type_meta {

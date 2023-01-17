@@ -9,31 +9,36 @@ using std::map;
 using std::string;
 using std::vector;
 
-struct fdesc_node : json_object {
-    d_json_object(fdesc_node)
+struct fcndesc_node : json_object {
+    d_json_object(fcndesc_node)
 
     json<string> type {"type"};
     json<string> note {"note"};
 };
 
+struct typedesc_node : json_object {
+    d_json_object(typedesc_node)
+
+    json<string> type {"type"};
+    json<string> qual {"qual"};
+};
+
 struct class_node : json_object {
     d_json_object(class_node)
 
-    json<string>                  base_type        {"base_type"       };
-    json<bool>                    abstracted       {"abstracted"      };
-    json<map<string, string>>     static_strings   {"static_strings"  };
-    json<map<string, double>>     static_numbers   {"static_numbers"  };
-    json<map<string, fdesc_node>> static_functions {"static_functions"};
-    json<map<string, fdesc_node>> inst_functions   {"inst_functions"  };
+    json<string>                    base_type        {"base_type"       };
+    json<bool>                      abstracted       {"abstracted"      };
+    json<map<string, string>>       static_strings   {"static_strings"  };
+    json<map<string, double>>       static_numbers   {"static_numbers"  };
+    json<map<string, fcndesc_node>> static_functions {"static_functions"};
+    json<map<string, fcndesc_node>> inst_functions   {"inst_functions"  };
 };
 
 struct function_node : json_object {
     d_json_object(function_node)
 
-    json<vector<string>> arg_qualifiers {"arg_qualifiers"};
-    json<vector<string>> arg_types      {"arg_types"     };
-    json<string>         ret_qualifier  {"ret_qualifier" };
-    json<string>         ret_type       {"ret_type"      };
+    json<vector<typedesc_node>> args {"args"};
+    json<typedesc_node>         ret  {"ret" };
 };
 
 struct enum_node : json_object {
@@ -45,20 +50,20 @@ struct enum_node : json_object {
 struct map_node : json_object {
     d_json_object(map_node)
 
-    json<string> key_type {"key_type"};
-    json<string> val_type {"val_type"};
+    json<typedesc_node> key {"key"};
+    json<typedesc_node> val {"val"};
 };
 
 struct vector_node : json_object {
     d_json_object(vector_node)
 
-    json<string> val_type {"val_type"};
+    json<typedesc_node> val {"val"};
 };
 
 struct set_node : json_object {
     d_json_object(set_node)
 
-    json<string> val_type {"val_type"};
+    json<typedesc_node> val {"val"};
 };
 
 struct root_node : json_object {
@@ -71,11 +76,11 @@ struct root_node : json_object {
     json<map<string, vector_node>>   vector_infos   {"vector_infos"  };
     json<map<string, set_node>>      set_infos      {"set_infos"     };
 
-    json<map<string, string>>     strings   {"strings"  };
-    json<map<string, double>>     numbers   {"numbers"  };
-    json<map<string, fdesc_node>> functions {"functions"};
-    json<vector<string>>          classes   {"classes"  };
-    json<vector<string>>          enums     {"enums"    };
+    json<map<string, string>>       strings   {"strings"  };
+    json<map<string, double>>       numbers   {"numbers"  };
+    json<map<string, fcndesc_node>> functions {"functions"};
+    json<vector<string>>            classes   {"classes"  };
+    json<vector<string>>            enums     {"enums"    };
 };
 
 static string qualifer_string_of(reflect::qualifier qual) {
@@ -109,7 +114,7 @@ static void insert_class_info(root_node *root, const string &name, reflect::clas
     }
     
     for (auto &pair : meta->static_functions) {
-        fdesc_node desc;
+        fcndesc_node desc;
         desc.type = pair.second.type.str();
         desc.note = pair.second.note;
 
@@ -117,7 +122,7 @@ static void insert_class_info(root_node *root, const string &name, reflect::clas
     }
 
     for (auto &pair : meta->inst_functions) {
-        fdesc_node desc;
+        fcndesc_node desc;
         desc.type = pair.second.type.str();
         desc.note = pair.second.note;
 
@@ -129,16 +134,17 @@ static void insert_class_info(root_node *root, const string &name, reflect::clas
 
 static void insert_function_info(root_node *root, const string &name, reflect::function_meta *meta) {
     function_node info;
-    
-    for (auto &it : meta->arg_quals) {
-        info.arg_qualifiers.push_back(qualifer_string_of(it));
-    }
-    for (auto &it : meta->arg_types) {
-        info.arg_types.push_back(it.str());
+
+    for (size_t i = 0; i < meta->arg_types.size(); ++i) {
+        typedesc_node desc;
+        desc.type = meta->arg_types[i].str();
+        desc.qual = qualifer_string_of(meta->arg_quals[i]);
+
+        info.args.push_back(desc);
     }
 
-    info.ret_qualifier = qualifer_string_of(meta->ret_qual);
-    info.ret_type = meta->ret_type.str();
+    info.ret.type = meta->ret_type.str();
+    info.ret.qual = qualifer_string_of(meta->ret_qual);
 
     root->function_infos[name] = info;
 }
@@ -156,21 +162,29 @@ static void insert_enum_info(root_node *root, const string &name, reflect::enum_
 static void insert_map_info(root_node *root, const string &name, reflect::map_meta *meta) {
     map_node info;
 
-    info.key_type = meta->key_type  .str();
-    info.val_type = meta->value_type.str();
+    info.key.type = meta->key_type  .str();
+    info.val.type = meta->value_type.str();
+    info.key.qual = qualifer_string_of(meta->key_qual  );
+    info.val.qual = qualifer_string_of(meta->value_qual);
 
     root->map_infos[name] = info;
 }
 
 static void insert_vector_info(root_node *root, const string &name, reflect::vector_meta *meta) {
     vector_node info;
-    info.val_type = meta->value_type.str();
+
+    info.val.type = meta->value_type.str();
+    info.val.qual = qualifer_string_of(meta->value_qual);
+
     root->vector_infos[name] = info;
 }
 
 static void insert_set_info(root_node *root, const string &name, reflect::set_meta *meta) {
     set_node info;
-    info.val_type = meta->value_type.str();
+
+    info.val.type = meta->value_type.str();
+    info.val.qual = qualifer_string_of(meta->value_qual);
+
     root->set_infos[name] = info;
 }
 
@@ -207,7 +221,7 @@ string reflect::meta_json_description() {
 
     //global functions.
     for (auto &pair : *functions()) {
-        fdesc_node desc;
+        fcndesc_node desc;
         desc.type = pair.second.type.str();
         desc.note = pair.second.note;
 

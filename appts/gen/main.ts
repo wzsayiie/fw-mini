@@ -2,7 +2,7 @@
 
 declare function native_metaJsonDescription(): string
 
-class fdesc_node {
+class fcndesc_node {
     type: string
     note: string
 
@@ -10,20 +10,23 @@ class fdesc_node {
     options: { [key: string]: string[] }
 }
 
+class typedesc_node {
+    type: string
+    qual: string
+}
+
 class class_node {
     base_type       : string
     abstracted      : boolean
     static_strings  : { [key: string]: string }
     static_numbers  : { [key: string]: number }
-    static_functions: { [key: string]: fdesc_node }
-    inst_functions  : { [key: string]: fdesc_node }
+    static_functions: { [key: string]: fcndesc_node }
+    inst_functions  : { [key: string]: fcndesc_node }
 }
 
 class function_node {
-    arg_qualifiers: string[]
-    arg_types     : string[]
-    ret_qualifier : string
-    ret_type      : string
+    args: typedesc_node[]
+    ret : typedesc_node
 }
 
 class enum_node {
@@ -31,16 +34,16 @@ class enum_node {
 }
 
 class map_node {
-    key_type: string
-    val_type: string
+    key: typedesc_node
+    val: typedesc_node
 }
 
 class vector_node {
-    val_type: string
+    val: typedesc_node
 }
 
 class set_node {
-    val_type: string
+    val: typedesc_node
 }
 
 class root_node {
@@ -51,9 +54,9 @@ class root_node {
     vector_infos  : { [key: string]: vector_node   }
     set_infos     : { [key: string]: set_node      }
 
-    strings  : { [key: string]: string     }
-    numbers  : { [key: string]: number     }
-    functions: { [key: string]: fdesc_node }
+    strings  : { [key: string]: string       }
+    numbers  : { [key: string]: number       }
+    functions: { [key: string]: fcndesc_node }
     classes  : string[]
     enums    : string[]
 }
@@ -178,59 +181,63 @@ function template(lines: string[]): { generate: (args: { [key: string]: any }) =
     }
 }
 
-function descriptType(type: string): string {
-    let cls = _meta.class_infos[type]
+function descriptType(desc: typedesc_node): string {
+    let cls = _meta.class_infos[desc.type]
     if (cls) {
-        switch (type) {
+        switch (desc.type) {
             //special classes.
             case "generic_function": return "Function"
             case "generic_map"     : return "any"
             case "generic_set"     : return "any"
             case "generic_vector"  : return "any"
 
-            default: return type
+            default: return desc.type
         }
     }
 
-    let fcn = _meta.function_infos[type]
+    let fcn = _meta.function_infos[desc.type]
     if (fcn) {
         let buf = new Array<string>()
 
         //arguments.
         buf.push("(")
-        for (let i = 0; i < fcn.arg_types.length; ++i) {
+        for (let i = 0; i < fcn.args.length; ++i) {
             if (i > 0) {
                 buf.push(", ")
             }
-            buf.push(descriptType(fcn.arg_types[i]))
+            buf.push(descriptType(fcn.args[i]))
         }
         //return value.
-        buf.push(`) => ${descriptType(fcn.ret_type)}`)
+        buf.push(`) => ${descriptType(fcn.ret)}`)
 
         return buf.join("")
     }
 
-    let enu = _meta.enum_infos[type]
+    let enu = _meta.enum_infos[desc.type]
     if (enu) {
-        return type
+        return desc.type
     }
 
-    let map = _meta.map_infos[type]
+    let map = _meta.map_infos[desc.type]
     if (map) {
-        return `MSet<${descriptType(map.key_type)}, ${descriptType(map.val_type)}>`
+        return `MMap<${descriptType(map.key)}, ${descriptType(map.val)}>`
     }
 
-    let vector = _meta.vector_infos[type]
+    let vector = _meta.vector_infos[desc.type]
     if (vector) {
-        return `MSet<${descriptType(vector.val_type)}>`
+        return `MSet<${descriptType(vector.val)}>`
     }
 
-    let set = _meta.set_infos[type]
+    let set = _meta.set_infos[desc.type]
     if (set) {
-        return `MSet<${descriptType(set.val_type)}>`
+        return `MSet<${descriptType(set.val)}>`
     }
 
-    switch (type) {
+    if (desc.type == 'char' && desc.qual == 'const_ptr') {
+        return "string"
+    }
+
+    switch (desc.type) {
         case "any"   : return "any"
         case "void"  : return "void"
         case "bool"  : return "boolean"
@@ -246,8 +253,8 @@ function descriptType(type: string): string {
     }
 }
 
-function isNeedCast(type: string): boolean {
-    return _meta.class_infos[type] && type != "generic_function"
+function isNeedCast(desc: typedesc_node): boolean {
+    return _meta.class_infos[desc.type] && desc.type != "generic_function"
 }
 
 function SetterName(raw: string): string {
@@ -261,7 +268,7 @@ function SetterName(raw: string): string {
 }
 
 function appendNamedArgs(
-    argNames: string[], argTypes: string[], cast: (type: string) => string): void
+    argNames: string[], argTypes: typedesc_node[], cast: (type: typedesc_node) => string): void
 {
     for (let i = 0; i < argNames.length; ++i) {
         if (i > 0) {
@@ -273,7 +280,7 @@ function appendNamedArgs(
 }
 
 function appendCalledArgs(
-    argNames: string[], argTypes: string[], cast: (src: string) => string): void
+    argNames: string[], argTypes: typedesc_node[], cast: (src: string) => string): void
 {
     for (let i = 0; i < argNames.length; ++i) {
         if (i > 0) {
@@ -425,9 +432,8 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
         if (desc.options["ignore"]) { continue }
         if (fcnName == "create"   ) { continue } //ignore builtin "create".
 
-        let fcn      = _meta.function_infos[desc.type]
+        let fcn = _meta.function_infos[desc.type]
         let argNames = desc.options["args"]
-        let argTypes = fcn.arg_types
 
         if (desc.options["setter"]) {
             template([
@@ -444,8 +450,8 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
                 "clsName": clsName,
                 "setName": SetterName(fcnName),
                 "fcnName": fcnName,
-                "argType": descriptType(argTypes[0]),
-                "argCast": isNeedCast(argTypes[0]) ? "/**/" : "//",
+                "argType": descriptType(fcn.args[0]),
+                "argCast": isNeedCast(fcn.args[0]) ? "/**/" : "//",
             })
 
         } else if (desc.options["getter"]) {
@@ -462,8 +468,8 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
             .generate({
                 "clsName": clsName,
                 "fcnName": fcnName,
-                "retType": descriptType(fcn.ret_type),
-                "retCast": isNeedCast(fcn.ret_type) ? "/**/" : "//",
+                "retType": descriptType(fcn.ret),
+                "retCast": isNeedCast(fcn.ret) ? "/**/" : "//",
             })
 
         } else {
@@ -480,15 +486,15 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
             .generate({
                 "clsName" : clsName,
                 "fcnName" : fcnName,
-                "retType" : descriptType(fcn.ret_type),
-                "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
+                "retType" : descriptType(fcn.ret),
+                "retCast" : isNeedCast(fcn.ret) ? "/**/" : "//",
 
                 "argNames": () => {
-                    appendNamedArgs(argNames, argTypes, descriptType)
+                    appendNamedArgs(argNames, fcn.args, descriptType)
                 },
 
                 "argCalls": () => {
-                    appendCalledArgs(argNames, argTypes, v => `runtime.getNative(${v})`)
+                    appendCalledArgs(argNames, fcn.args, v => `runtime.getNative(${v})`)
                 },
             })
         }
@@ -500,9 +506,8 @@ function defineNativeInjecting(cls: class_node): void {
         if ( desc.options["ignore" ]) { continue }
         if (!desc.options["virtual"]) { continue }
 
-        let fcn      = _meta.function_infos[desc.type]
+        let fcn = _meta.function_infos[desc.type]
         let argNames = desc.options["args"]
-        let argTypes = fcn.arg_types
 
         if (desc.options["setter"]) {
             template([
@@ -513,7 +518,7 @@ function defineNativeInjecting(cls: class_node): void {
             ])
             .generate({
                 "fcnName": fcnName,
-                "argType": descriptType(argTypes[1]),
+                "argType": descriptType(fcn.args[1]),
             })
 
         } else if (desc.options["getter"]) {
@@ -529,7 +534,7 @@ function defineNativeInjecting(cls: class_node): void {
             ])
             .generate({
                 "fcnName": fcnName,
-                "retCast": isNeedCast(fcn.ret_type) ? "/**/" : "//",
+                "retCast": isNeedCast(fcn.ret) ? "/**/" : "//",
             })
 
         } else {
@@ -545,15 +550,15 @@ function defineNativeInjecting(cls: class_node): void {
             ])
             .generate({
                 "fcnName" : fcnName,
-                "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
+                "retCast" : isNeedCast(fcn.ret) ? "/**/" : "//",
 
                 "argNames": () => {
-                    appendNamedArgs(argNames, argTypes, _ => "any")
+                    appendNamedArgs(argNames, fcn.args, _ => "any")
                 },
 
                 "argCalls": () => {
                     appendCalledArgs(
-                        argNames.slice(1), argTypes.slice(1), v => `runtime.getObject(${v})`
+                        argNames.slice(1), fcn.args.slice(1), v => `runtime.getObject(${v})`
                     )
                 },
             })
@@ -585,9 +590,8 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
     for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
         if (desc.options["ignore"]) { continue }
 
-        let fcn      = _meta.function_infos[desc.type]
+        let fcn = _meta.function_infos[desc.type]
         let argNames = desc.options["args"]
-        let argTypes = fcn.arg_types
 
         if (desc.options["setter"]) {
             template([
@@ -605,8 +609,8 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
                 "clsName": clsName,
                 "setName": SetterName(fcnName),
                 "fcnName": fcnName,
-                "argType": descriptType(argTypes[1]),
-                "argCast": isNeedCast(argTypes[1]) ? "/**/" : "//",
+                "argType": descriptType(fcn.args[1]),
+                "argCast": isNeedCast(fcn.args[1]) ? "/**/" : "//",
             })
 
         } else if (desc.options["getter"]) {
@@ -623,8 +627,8 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
             .generate({
                 "clsName": clsName,
                 "fcnName": fcnName,
-                "retType": descriptType(fcn.ret_type),
-                "retCast": isNeedCast(fcn.ret_type) ? "/**/" : "//",
+                "retType": descriptType(fcn.ret),
+                "retCast": isNeedCast(fcn.ret) ? "/**/" : "//",
             })
 
         } else {
@@ -641,19 +645,19 @@ function defineClassInstFunctions(cls: class_node, clsName: string): void {
             .generate({
                 "clsName" : clsName,
                 "fcnName" : fcnName,
-                "retType" : descriptType(fcn.ret_type),
-                "retCast" : isNeedCast(fcn.ret_type) ? "/**/" : "//",
-                "comma"   : argTypes.length > 1 ? "," : "",
+                "retType" : descriptType(fcn.ret),
+                "retCast" : isNeedCast(fcn.ret) ? "/**/" : "//",
+                "comma"   : fcn.args.length > 1 ? "," : "",
 
                 "argNames": () => {
                     appendNamedArgs(
-                        argNames.slice(1), argTypes.slice(1), descriptType
+                        argNames.slice(1), fcn.args.slice(1), descriptType
                     )
                 },
 
                 "argCalls": () => {
                     appendCalledArgs(
-                        argNames.slice(1), argTypes.slice(1), v => `runtime.getNative(${v})`
+                        argNames.slice(1), fcn.args.slice(1), v => `runtime.getNative(${v})`
                     )
                 },
             })
@@ -715,9 +719,8 @@ function defineFunctions(): void {
     for (let [fcnName, desc] of Object.entries(_meta.functions)) {
         if (desc.options["ignore"]) { continue }
 
-        let fcn      = _meta.function_infos[desc.type]
+        let fcn = _meta.function_infos[desc.type]
         let argNames = desc.options["args"]
-        let argTypes = fcn.arg_types
 
         template([
             "export function [[fcnName]]([[argNames]]): [[retType]] {",
@@ -731,15 +734,15 @@ function defineFunctions(): void {
         ])
         .generate({
             "fcnName" : fcnName,
-            "retType" : descriptType(fcn.ret_type),
-            "retCast" :  isNeedCast(fcn.ret_type) ? "/**/" : "//",
+            "retType" : descriptType(fcn.ret),
+            "retCast" :  isNeedCast(fcn.ret) ? "/**/" : "//",
 
             "argNames": () => {
-                appendNamedArgs(argNames, argTypes, descriptType)
+                appendNamedArgs(argNames, fcn.args, descriptType)
             },
 
             "argCalls": () => {
-                appendCalledArgs(argNames, argTypes, v => `runtime.getNative(${v})`)
+                appendCalledArgs(argNames, fcn.args, v => `runtime.getNative(${v})`)
             },
         })
     }
