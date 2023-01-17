@@ -213,9 +213,6 @@ static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     MWin32ImageFactory::install();
     MWin32JsVM::install();
 
-    //window configuration:
-    RestorePlacement(wnd);
-
     SIZE clientSize = GetClientSize(wnd);
 
     //create edit.
@@ -233,6 +230,9 @@ static void OnCreate(HWND wnd, WPARAM wParam, LPARAM lParam)
     window->load();
 
     SetTimer(wnd, WindowUpdateTimerId, (UINT)(1000 * MWindow::UpdateEverySeconds), nullptr);
+
+    //NOTE: restore window location will trigger a WM_SIZE message.
+    RestorePlacement(wnd);
 }
 
 static void OnShowWindow(HWND wnd, WPARAM wParam, LPARAM lParam)
