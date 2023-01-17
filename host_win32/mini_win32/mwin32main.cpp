@@ -1,6 +1,7 @@
 ﻿#include <clocale>
 #include <io.h>
 #include <windowsx.h>
+#include "MPROFILE.h"
 #include "dbuffer.h"
 #include "dfile.h"
 #include "mapp.h"
@@ -474,7 +475,7 @@ extern "C" d_exportable void MAppMain()
     RegisterClassW(&wndClass);
 
     //show window:
-    std::u16string title = MU16StringFromU8(MWindow::TitleName);
+    std::u16string title = MU16StringFromU8(mp_window_title);
     HWND wnd = CreateWindowExW(
         /* dwExStyle    */ 0,
         /* lpClassName  */ className,

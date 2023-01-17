@@ -1,9 +1,6 @@
 #include "mbundle.h"
 #include "rdefine.h"
 
-define_reflectable_class_const(MBundle, PrivateDirectoryName  )
-define_reflectable_class_const(MBundle, ResBundleDirectoryName)
-
 MBundle::ptr MBundle::sInstance;
 
 define_reflectable_class_function(MBundle, setInstance, "setter;args:obj")

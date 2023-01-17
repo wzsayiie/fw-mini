@@ -1,3 +1,4 @@
+#include "MPROFILE.h"
 #include "mbundle.h"
 #include "mjnihelper.h"
 
@@ -23,7 +24,7 @@ Java_src_app_mini_MAndrdBundle_installNative(JNIEnv *, jclass) {
 
 extern "C" JNIEXPORT JNICALL jstring
 Java_src_app_mini_MAndrdBundle_resBundleName(JNIEnv *, jclass) {
-    return m_local_jstring << MBundle::ResBundleDirectoryName;
+    return m_local_jstring << mp_resbundle_folder_name;
 }
 
 MData::ptr MAndrdBundle::onLoadResource(const std::string &path) {

@@ -6,7 +6,6 @@
 m_class(MWindow, MObject) {
 public:
     static constexpr float UpdateEverySeconds = 0.1f;
-    static constexpr const char *TitleName = "Mini";
 
 public:
     static void setMainWindow(const MWindow::ptr &window);

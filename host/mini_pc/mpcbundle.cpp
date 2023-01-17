@@ -1,5 +1,6 @@
 #include "mpcbundle.h"
 #include <filesystem>
+#include "MPROFILE.h"
 #include "dbuffer.h"
 #include "dfile.h"
 
@@ -48,7 +49,7 @@ std::string MPCBundle::onGetResBundleDirectory() {
             break;
         }
     }
-    directory.append(MBundle::ResBundleDirectoryName);
+    directory.append(mp_resbundle_folder_name);
 
     return directory.string();
 }
@@ -63,7 +64,7 @@ std::string MPCBundle::onGetDocumentDirectory() {
     std::filesystem::path directory = pw->pw_dir;
 #endif
 
-    directory.append(MBundle::PrivateDirectoryName);
+    directory.append(mp_document_folder_name);
     std::filesystem::create_directory(directory);
 
     return directory.string();
@@ -81,7 +82,7 @@ std::string MPCBundle::onGetTemporaryDirectory() {
     std::filesystem::path directory = std::filesystem::temp_directory_path();
 #endif
 
-    directory.append(MBundle::PrivateDirectoryName);
+    directory.append(mp_temporary_folder_name);
     std::filesystem::create_directory(directory);
 
     return directory.string();

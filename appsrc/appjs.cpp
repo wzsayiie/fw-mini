@@ -1,3 +1,4 @@
+#include "MPROFILE.h"
 #include "mapp.h"
 #include "mbundle.h"
 #include "mfilemanager.h"
@@ -118,6 +119,10 @@ static void RegisterBuiltinScript(MJsVM *vm) {
 }
 
 static void launch() m_app_launch(launch, 10) {
+    if (!mp_enable_javascript) {
+        return;
+    }
+
     //exception process.
     MJsVM *vm = MJsVM::instance();
     vm->setExceptionListener(MF(OnException));
