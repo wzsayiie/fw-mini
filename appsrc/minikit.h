@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mapp.h"
+#include "mbundle.h"
 #include "mcontext.h"
 #include "mdata.h"
 #include "mencode.h"

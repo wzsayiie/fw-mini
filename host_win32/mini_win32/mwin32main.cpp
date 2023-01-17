@@ -6,6 +6,7 @@
 #include "mapp.h"
 #include "mcontext.h"
 #include "mencode.h"
+#include "mfilemanager.h"
 #include "mpcbundle.h"
 #include "mwin32gdiplus.h"
 #include "mwin32imagefactory.h"
@@ -171,13 +172,9 @@ static void UpdateEditState()
     }
 }
 
-static std::string GetPlacementFilePath() {
-    std::string path = MBundle::instance()->temporaryDirectory();
-    return path + "\\" + PlacementFileName;
-}
-
-static void RestorePlacement(HWND wnd) {
-    std::string path = GetPlacementFilePath();
+static void RestorePlacement(HWND wnd)
+{
+    std::string path = MBundle::instance()->getTemporaryFilePath(PlacementFileName);
     if (!MFileManager::instance()->fileExistsAt(path)) {
         return;
     }
@@ -190,13 +187,14 @@ static void RestorePlacement(HWND wnd) {
     SetWindowPlacement(wnd, &placement);
 }
 
-static void SavePlacement(HWND wnd) {
+static void SavePlacement(HWND wnd)
+{
     //get.
     WINDOWPLACEMENT placement = { (UINT)sizeof(WINDOWPLACEMENT) };
     GetWindowPlacement(wnd, &placement);
 
     //write.
-    std::string path = GetPlacementFilePath();
+    std::string path = MBundle::instance()->getTemporaryFilePath(PlacementFileName);
     dash::write_file(path.c_str(), &placement, (int)sizeof(placement));
 }
 

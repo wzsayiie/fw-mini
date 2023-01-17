@@ -1,4 +1,5 @@
 #include "mapp.h"
+#include "mbundle.h"
 #include "mfilemanager.h"
 #include "mjsvm.h"
 #include "mprint.h"
