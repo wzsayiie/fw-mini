@@ -1,4 +1,5 @@
 #import "MMACBundle.h"
+#import "MPROFILE.h"
 
 void MMACBundle::install() {
     auto obj = MMACBundle::create();
@@ -29,14 +30,14 @@ std::string MMACBundle::onGetResBundleDirectory() {
         NSString *projectDirectory = [mainBundle substringToIndex:NSMaxRange(projectName)];
         
         NSString *resBundle = [NSString stringWithFormat:
-            @"%@/appres/%s", projectDirectory, MBundle::ResBundleDirectoryName];
+            @"%@/appres/%s", projectDirectory, mp_resbundle_folder_name];
         
         return resBundle.UTF8String;
     }
     
     //the resource bundle in a app bundle:
     NSString *resBundle = [NSString stringWithFormat:
-        @"%@/Contents/Resources/%s", mainBundle, MBundle::ResBundleDirectoryName];
+        @"%@/Contents/Resources/%s", mainBundle, mp_resbundle_folder_name];
 
     if ([NSFileManager.defaultManager fileExistsAtPath:resBundle]) {
         return resBundle.UTF8String;
@@ -44,13 +45,13 @@ std::string MMACBundle::onGetResBundleDirectory() {
     
     //in the same path as the executable:
     resBundle = [NSString stringWithFormat:
-        @"%@/%s", mainBundle, MBundle::ResBundleDirectoryName];
+        @"%@/%s", mainBundle, mp_resbundle_folder_name];
     
     return resBundle.UTF8String;
     
 #elif TARGET_OS_IOS
     NSString *resBundle = [NSString stringWithFormat:
-        @"%@/%s", mainBundle, MBundle::ResBundleDirectoryName];
+        @"%@/%s", mainBundle, mp_resbundle_folder_name];
     
     return resBundle.UTF8String;
     

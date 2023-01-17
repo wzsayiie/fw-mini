@@ -1,5 +1,5 @@
 #import <TargetConditionals.h>
-#import "mimage.h"
+#import "mimagefactory.h"
 
 #if TARGET_OS_OSX
     #import <AppKit/AppKit.h>

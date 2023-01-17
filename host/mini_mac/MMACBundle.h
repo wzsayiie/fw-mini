@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "mfilemanager.h"
+#import "mbundle.h"
 
 m_class(MMACBundle, MBundle) {
 public:

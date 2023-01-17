@@ -1,5 +1,6 @@
 #import "MOSXFrameSaver.h"
 #import "MOSXViewController.h"
+#import "MPROFILE.h"
 
 #pragma mark - window
 
@@ -33,7 +34,7 @@
     NSWindow *window = [[MOSXWindow alloc] initWithContentRect:rect styleMask:style backing:backing defer:NO];
     window.contentViewController = [[MOSXViewController alloc] init];
     window.acceptsMouseMovedEvents = YES;
-    window.title = @(MWindow::TitleName);
+    window.title = @(mp_window_title);
     
     return [[MOSXWindowController alloc] initWithWindow:window];
 }
