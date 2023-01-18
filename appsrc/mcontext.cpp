@@ -1,4 +1,8 @@
+#define _USE_MATH_DEFINES
+
 #include "mcontext.h"
+#include <algorithm>
+#include <cmath>
 #include "dlazy.h"
 #include "rdefine.h"
 
@@ -150,22 +154,128 @@ void MContextDrawRect(float x, float y, float w, float h) {
 
 define_reflectable_function(MContextDrawEllipse, "args:x,y,w,h")
 void MContextDrawEllipse(float x, float y, float w, float h) {
-    //TODO.
+    if (sRGBA.rgba == 0) {
+        return;
+    }
+    if (w <= 0 || h <= 0) {
+        return;
+    }
+
+    //if the ellipse is small, draw a rectangle.
+    if (w <= 2 || h <= 2) {
+        MContextDrawRect(x, y, w, h);
+        return;
+    }
+
+    int   vnum = std::clamp((int)fminf(w, h) / 2, 4, 64);
+    float step = (float)M_PI * 2.f / vnum;
+    float wsem = w / 2.f;
+    float hsem = h / 2.f;
+
+    for (int i = 0; i < vnum; ++i) {
+        float xpt = x + wsem + wsem * cosf(step * i);
+        float ypt = y + hsem + hsem * sinf(step * i);
+
+        if (i == 0) {
+            MContextMoveToPoint(xpt, ypt);
+        } else {
+            MContextAddToPoint (xpt, ypt);
+        }
+    }
+    MContextDrawPolygon();
 }
 
 define_reflectable_function(MContextDrawFlatLine, "args:x0,y0,x1,y1")
 void MContextDrawFlatLine(float x0, float y0, float x1, float y1) {
-    //TODO.
+    if (sRGBA.rgba == 0) {
+        return;
+    }
+    if (sLineWidth <= 0) {
+        return;
+    }
+    if (x0 == x1 && y0 == y1) {
+        return;
+    }
+
+    float sem = sLineWidth / 2.f;
+
+    //a vertical line.
+    if (x0 == x1) {
+        MContextDrawRect(
+            x0 - sem  , fminf(y0,  y1),
+            sLineWidth, fabsf(y0 - y1)
+        );
+        return;
+    }
+
+    //a slash line:
+    float slope = atanf((y0 - y1) / (x0 - x1));
+    float pi_2  = (float)M_PI_2;
+
+    MContextMoveToPoint(x0 + sem * cosf(slope + pi_2  ), y0 + sem * sinf(slope + pi_2  ));
+    MContextAddToPoint (x0 + sem * cosf(slope + pi_2*3), y0 + sem * sinf(slope + pi_2*3));
+    MContextAddToPoint (x1 + sem * cosf(slope + pi_2*3), y1 + sem * sinf(slope + pi_2*3));
+    MContextAddToPoint (x1 + sem * cosf(slope + pi_2  ), y1 + sem * sinf(slope + pi_2  ));
+    MContextDrawPolygon();
 }
 
 define_reflectable_function(MContextDrawSquareLine, "args:x0,y0,x1,y1")
 void MContextDrawSquareLine(float x0, float y0, float x1, float y1) {
-    //TODO.
+    if (sRGBA.rgba == 0) {
+        return;
+    }
+    if (sLineWidth <= 0) {
+        return;
+    }
+
+    float sem = sLineWidth / 2.f;
+
+    //if the start point is the same as the end point, draw a square.
+    if (x0 == x1 && y0 == y1) {
+        MContextDrawRect(x0 - sem, y0 - sem, sLineWidth, sLineWidth);
+        return;
+    }
+
+    //a vertical line.
+    if (x0 == x1) {
+        MContextDrawFlatLine(
+            x0, fminf(y0, y1) - sem,
+            x0, fmaxf(y0, y1) + sem
+        );
+        return;
+    }
+
+    //a slash line:
+    float slope = atanf((y0 - y1) / (x0 - x1));
+    float cosv  = fabsf(sem * cosf(slope));
+    float sinv  = fabsf(sem * sinf(slope));
+
+    MContextDrawFlatLine(
+        x0 + (x0 < x1 ? -1.f : 1.f) * cosv, y0 + (y0 < y1 ? -1.f : 1.f) * sinv,
+        x1 + (x1 < x0 ? -1.f : 1.f) * cosv, y1 + (y1 < y0 ? -1.f : 1.f) * sinv
+    );
 }
 
 define_reflectable_function(MContextDrawRoundLine, "args:x0,y0,x1,y1")
 void MContextDrawRoundLine(float x0, float y0, float x1, float y1) {
-    //TODO.
+    if (sRGBA.rgba == 0) {
+        return;
+    }
+    if (sLineWidth <= 0) {
+        return;
+    }
+
+    float sem = sLineWidth / 2.f;
+
+    //if the start point is the same as the end point, draw a circle.
+    if (x0 == x1 && y0 == y1) {
+        MContextDrawEllipse(x0 - sem, y0 - sem, sLineWidth, sLineWidth);
+        return;
+    }
+
+    MContextDrawFlatLine(x0, y0, x1, y1);
+    MContextDrawEllipse(x0 - sem, y0 - sem, sLineWidth, sLineWidth);
+    MContextDrawEllipse(x1 - sem, y1 - sem, sLineWidth, sLineWidth);
 }
 
 define_reflectable_function(MContextDrawImage, "args:x,y,w,h")
