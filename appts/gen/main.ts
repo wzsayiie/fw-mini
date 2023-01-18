@@ -403,7 +403,7 @@ function defineEnums(): void {
     }
 }
 
-function defineClassConstantFields(cls: class_node): void {
+function defineClassConstants(cls: class_node): void {
     //constant strings.
     for (let [field, value] of Object.entries(cls.static_strings)) {
         template([
@@ -427,7 +427,7 @@ function defineClassConstantFields(cls: class_node): void {
     }
 }
 
-function defineClassStaticFunctions(cls: class_node, clsName: string): void {
+function defineStaticFunctions(cls: class_node, clsName: string): void {
     for (let [fcnName, desc] of Object.entries(cls.static_functions)) {
         if (desc.options["ignore"]) { continue }
         if (fcnName == "create"   ) { continue } //ignore builtin "create".
@@ -501,72 +501,88 @@ function defineClassStaticFunctions(cls: class_node, clsName: string): void {
     }
 }
 
-function defineNativeInjecting(cls: class_node): void {
-    for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
-        if ( desc.options["ignore" ]) { continue }
-        if (!desc.options["virtual"]) { continue }
+function defineNativeInject(fcnName: string, desc: fcndesc_node): void {
+    let fcn = _meta.function_infos[desc.type]
+    let argNames = desc.options["args"]
 
-        let fcn = _meta.function_infos[desc.type]
-        let argNames = desc.options["args"]
+    if (desc.options["setter"]) {
+        template([
+            "        this.injectFunction(native, '[[fcnName]]', (value: [[argType]]) => {",
+            "            this.[[fcnName]] = value",
+            "        })",
+            "",
+        ])
+        .generate({
+            "fcnName": fcnName,
+            "argType": descriptType(fcn.args[1]),
+        })
 
-        if (desc.options["setter"]) {
-            template([
-                "        this.injectFunction(native, '[[fcnName]]', (value: [[argType]]) => {",
-                "            this.[[fcnName]] = value",
-                "        })",
-                "",
-            ])
-            .generate({
-                "fcnName": fcnName,
-                "argType": descriptType(fcn.args[1]),
-            })
+    } else if (desc.options["getter"]) {
+        template([
+            "        this.injectFunction(native, '[[fcnName]]', () => {",
+            "            return (",
+            "            [[retCast]] runtime.getNative(",
+            "                this.[[fcnName]]",
+            "            [[retCast]] )",
+            "            )",
+            "        })",
+            "",
+        ])
+        .generate({
+            "fcnName": fcnName,
+            "retCast": isNeedCast(fcn.ret) ? "/**/" : "//",
+        })
 
-        } else if (desc.options["getter"]) {
-            template([
-                "        this.injectFunction(native, '[[fcnName]]', () => {",
-                "            return (",
-                "            [[retCast]] runtime.getNative(",
-                "                this.[[fcnName]]",
-                "            [[retCast]] )",
-                "            )",
-                "        })",
-                "",
-            ])
-            .generate({
-                "fcnName": fcnName,
-                "retCast": isNeedCast(fcn.ret) ? "/**/" : "//",
-            })
+    } else {
+        template([
+            "        this.injectFunction(native, '[[fcnName]]', ([[argNames]]) => {",
+            "            return (",
+            "            [[retCast]] runtime.getNative(",
+            "                this.[[fcnName]]([[argCalls]])",
+            "            [[retCast]] )",
+            "            )",
+            "        })",
+            "",
+        ])
+        .generate({
+            "fcnName" : fcnName,
+            "retCast" : isNeedCast(fcn.ret) ? "/**/" : "//",
 
-        } else {
-            template([
-                "        this.injectFunction(native, '[[fcnName]]', ([[argNames]]) => {",
-                "            return (",
-                "            [[retCast]] runtime.getNative(",
-                "                this.[[fcnName]]([[argCalls]])",
-                "            [[retCast]] )",
-                "            )",
-                "        })",
-                "",
-            ])
-            .generate({
-                "fcnName" : fcnName,
-                "retCast" : isNeedCast(fcn.ret) ? "/**/" : "//",
+            "argNames": () => {
+                appendNamedArgs(argNames, fcn.args, _ => "any")
+            },
 
-                "argNames": () => {
-                    appendNamedArgs(argNames, fcn.args, _ => "any")
-                },
-
-                "argCalls": () => {
-                    appendCalledArgs(
-                        argNames.slice(1), fcn.args.slice(1), v => `runtime.getObject(${v})`
-                    )
-                },
-            })
-        }
+            "argCalls": () => {
+                appendCalledArgs(
+                    argNames.slice(1), fcn.args.slice(1), v => `runtime.getObject(${v})`
+                )
+            },
+        })
     }
 }
 
-function defineNativeCreating(cls: class_node, clsName: string): void {
+function defineNativeInjects(clsName: string): void {
+    let definedFcns = new Set<string>()
+
+    //IMPORTANT: need traversing super class virtual functions.
+    while (clsName != "MObject") {
+        let cls = _meta.class_infos[clsName]
+
+        for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
+            if ( desc.options["ignore" ] ) { continue }
+            if (!desc.options["virtual"] ) { continue }
+            if ( definedFcns.has(fcnName)) { continue }
+
+            definedFcns.add(fcnName)
+
+            defineNativeInject(fcnName, desc)
+        }
+
+        clsName = cls.base_type
+    }
+}
+
+function defineNativeCreator(cls: class_node, clsName: string): void {
     if (cls.abstracted) {
         return
     }
@@ -582,11 +598,11 @@ function defineNativeCreating(cls: class_node, clsName: string): void {
     ])
     .generate({
         "clsName"  : clsName,
-        "injecting": () => defineNativeInjecting(cls),
+        "injecting": () => defineNativeInjects(clsName),
     })
 }
 
-function defineClassInstFunctions(cls: class_node, clsName: string): void {
+function defineInstFunctions(cls: class_node, clsName: string): void {
     for (let [fcnName, desc] of Object.entries(cls.inst_functions)) {
         if (desc.options["ignore"]) { continue }
 
@@ -682,7 +698,7 @@ function defineClass(defined: Set<string>, clsName: string): void {
     template([
         "export class [[clsName]] extends [[baseName]] {",
         "",
-        "[[constantFields]]",
+        "[[classConstants]]",
         "",
         "[[staticFunctions]]",
         "",
@@ -690,7 +706,7 @@ function defineClass(defined: Set<string>, clsName: string): void {
         "        runtime.register(this)",
         "    }",
         "",
-        "[[nativeCreating]]",
+        "[[nativeCreator]]",
         "",
         "[[instFunctions]]",
         "}",
@@ -701,10 +717,10 @@ function defineClass(defined: Set<string>, clsName: string): void {
         "baseName": cls.base_type,
         "newable" : !cls.abstracted ? "/**/" : "//",
 
-        "constantFields" : () => defineClassConstantFields (cls),
-        "staticFunctions": () => defineClassStaticFunctions(cls, clsName),
-        "nativeCreating" : () => defineNativeCreating      (cls, clsName),
-        "instFunctions"  : () => defineClassInstFunctions  (cls, clsName),
+        "classConstants" : () => defineClassConstants (cls),
+        "staticFunctions": () => defineStaticFunctions(cls, clsName),
+        "nativeCreator"  : () => defineNativeCreator  (cls, clsName),
+        "instFunctions"  : () => defineInstFunctions  (cls, clsName),
     })
 }
 
