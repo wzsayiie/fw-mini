@@ -234,7 +234,7 @@ MPoint::ptr CView::responseOffset() {
     return MPoint::from(x, y);
 }
 
-define_reflectable_class_function(CView, canBecomeFocusResponder)
+define_reflectable_class_function(CView, canBecomeFocusResponder, "virtual")
 bool CView::canBecomeFocusResponder() {
     implement_injectable_function(bool)
 
@@ -262,14 +262,14 @@ bool CView::canRespondMouseWheel(const MPoint::ptr &pt) {
     return mInteractive && mVisible && bounds()->contains(pt);
 }
 
-define_reflectable_class_function(CView, canRespondKbKey)
+define_reflectable_class_function(CView, canRespondKbKey, "virtual")
 bool CView::canRespondKbKey() {
     implement_injectable_function(bool)
 
     return mInteractive && mVisible;
 }
 
-define_reflectable_class_function(CView, canRespondWriting)
+define_reflectable_class_function(CView, canRespondWriting, "virtual")
 bool CView::canRespondWriting() {
     implement_injectable_function(bool)
 

@@ -170,7 +170,7 @@ MPoint::ptr CViewController::responseOffset()  {
     return view()->responseOffset();
 }
 
-define_reflectable_class_function(CViewController, canBecomeFocusResponder)
+define_reflectable_class_function(CViewController, canBecomeFocusResponder, "virtual")
 bool CViewController::canBecomeFocusResponder() {
     implement_injectable_function(bool)
 
