@@ -5,7 +5,7 @@ export class BaseNode {
     elem: JSXElem = null
 
     protected getBoolean(key: string, callback: (v: boolean) => void): void {
-        let str = this.elem.props[key]
+        let str: string = this.elem.props[key]
         if (str === undefined) {
             return
         }
@@ -15,7 +15,7 @@ export class BaseNode {
     }
 
     protected getNumber(key: string, callback: (v: number) => void): void {
-        let str = this.elem.props[key]
+        let str: string = this.elem.props[key]
         if (str === undefined) {
             return
         }
@@ -25,7 +25,7 @@ export class BaseNode {
     }
 
     protected getString(key: string, callback: (v: string) => void): void {
-        let str = this.elem.props[key]
+        let str: string = this.elem.props[key]
         if (str === undefined) {
             return
         }
