@@ -53,7 +53,13 @@ CTextFieldDelegation::ptr CTextField::delegation() {
     return mDelegation;
 }
 
-define_reflectable_class_function(CTextField, setText, "setter;args:text")
+define_reflectable_class_function(CTextField, setText     , "setter;args:text"  )
+define_reflectable_class_function(CTextField, setPrompt   , "setter;args:prompt")
+define_reflectable_class_function(CTextField, setTextColor, "setter;args:color" )
+define_reflectable_class_function(CTextField, setFontSize , "setter;args:size"  )
+define_reflectable_class_function(CTextField, setHAlign   , "setter;args:align" )
+define_reflectable_class_function(CTextField, setVAlign   , "setter;args:align" )
+
 void CTextField::setText(const std::string &text) {
     mText = text;
 
@@ -62,17 +68,14 @@ void CTextField::setText(const std::string &text) {
     reduceEditingSender();
 }
 
-define_reflectable_class_function(CTextField, setTextColor, "setter;args:color")
-define_reflectable_class_function(CTextField, setFontSize , "setter;args:size" )
-define_reflectable_class_function(CTextField, setHAlign   , "setter;args:align")
-define_reflectable_class_function(CTextField, setVAlign   , "setter;args:align")
-
-void CTextField::setTextColor(const MColor::ptr &color) { mTextColor = color; }
-void CTextField::setFontSize (float              size ) { mFontSize  = size ; }
-void CTextField::setHAlign   (MHAlign            align) { mHAlign    = align; }
-void CTextField::setVAlign   (MVAlign            align) { mVAlign    = align; }
+void CTextField::setPrompt   (const std::string &prompt) { mPrompt    = prompt; }
+void CTextField::setTextColor(const MColor::ptr &color ) { mTextColor = color ; }
+void CTextField::setFontSize (float              size  ) { mFontSize  = size  ; }
+void CTextField::setHAlign   (MHAlign            align ) { mHAlign    = align ; }
+void CTextField::setVAlign   (MVAlign            align ) { mVAlign    = align ; }
 
 define_reflectable_class_function(CTextField, text     , "getter")
+define_reflectable_class_function(CTextField, prompt   , "getter")
 define_reflectable_class_function(CTextField, textColor, "getter")
 define_reflectable_class_function(CTextField, fontSize , "getter")
 define_reflectable_class_function(CTextField, hAlign   , "getter")
@@ -80,6 +83,7 @@ define_reflectable_class_function(CTextField, vAlign   , "getter")
 define_reflectable_class_function(CTextField, entered  , "getter")
 
 std::string CTextField::text     () { return mText    ; }
+std::string CTextField::prompt   () { return mPrompt  ; }
 MColor::ptr CTextField::textColor() { return mTextColor ? mTextColor : MColor::clearColor(); }
 float       CTextField::fontSize () { return mFontSize; }
 MHAlign     CTextField::hAlign   () { return mHAlign  ; }
@@ -117,23 +121,24 @@ void CTextField::onDrawForeground(float width, float height) {
 }
 
 void CTextField::onDraw(float width, float height) {
-    if (!mTextColor || mTextColor->none()) {
+    int textRGBA = mTextColor ? mTextColor->rgba() : 0;
+    if (!textRGBA) {
         return;
     }
 
     //draw cursor.
-    float interval = 0.6f;
-    float thick    = 2.0f;
-
     if (mCursorBeginTick) {
+        float interval  = 0.6f;
+        float thick     = 2.0f;
+        
         double now      = MScheduler::instance()->secondsTick();
         double duration = now - mCursorBeginTick;
         auto   count    = (int64_t)(duration * 1000) / (int64_t)(interval * 1000);
 
         if (count % 2) {
-            MContextSelectRGBA(mTextColor->rgba() & 0xFFffFF40);
+            MContextSelectRGBA(textRGBA & 0xFFffFF40);
         } else {
-            MContextSelectRGBA(mTextColor->rgba());
+            MContextSelectRGBA(textRGBA);
         }
         
         MContextDrawRect(0,              0, width, thick ); //top.
@@ -142,11 +147,14 @@ void CTextField::onDraw(float width, float height) {
         MContextDrawRect(width - thick,  0, thick, height); //right.
     }
 
-    //draw text.
-    if (!mText.empty() && mFontSize > 0) {
+    //draw text:
+    auto text = !mText.empty() ? mText    : mPrompt  ;
+    int  rgba = !mText.empty() ? textRGBA : textRGBA & 0xFFffFF40;
 
-        MContextSelectText    (mText    );
-        MContextSelectRGBA    (mTextColor->rgba());
+    if (!text.empty() && mFontSize > 0) {
+
+        MContextSelectText    (text     );
+        MContextSelectRGBA    (rgba     );
         MContextSelectFontSize(mFontSize);
         MContextSelectHAlign  (mHAlign  );
         MContextSelectVAlign  (mVAlign  );

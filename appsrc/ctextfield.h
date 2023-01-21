@@ -37,13 +37,15 @@ public:
     void setDelegation(const CTextFieldDelegation::ptr &delegation);
     CTextFieldDelegation::ptr delegation();
 
-    void setText     (const std::string &text );
-    void setTextColor(const MColor::ptr &color);
-    void setFontSize (float              size );
-    void setHAlign   (MHAlign            align);
-    void setVAlign   (MVAlign            align);
+    void setText     (const std::string &text  );
+    void setPrompt   (const std::string &prompt);
+    void setTextColor(const MColor::ptr &color );
+    void setFontSize (float              size  );
+    void setHAlign   (MHAlign            align );
+    void setVAlign   (MVAlign            align );
 
     std::string text     ();
+    std::string prompt   ();
     MColor::ptr textColor();
     float       fontSize ();
     MHAlign     hAlign   ();
@@ -72,11 +74,12 @@ private:
     CTextFieldDelegation::ptr mDelegation;
     
     std::string mText      ;
-    bool        mEntered   = false;
+    std::string mPrompt    ;
     MColor::ptr mTextColor = MColor::blackColor();
     float       mFontSize  = 16;
     MHAlign     mHAlign    = MHAlign::Left;
     MVAlign     mVAlign    = MVAlign::Middle;
+    bool        mEntered   = false;
 
     std::string mLastText        ;
     int         mEditingSenders  = 0;
