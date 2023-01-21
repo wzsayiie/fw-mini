@@ -30,12 +30,10 @@ protected: public:
     virtual void onControlKbKey(MKbKeyCode code);
     
 private:
-    void      attachControl(CControl **target, const std::string &iden);
-    CControl *checkControl (CControl **target);
+    CControl::ptr checkoutControl(const std::string &iden);
     
 private:
-    std::string mControlId;
-    
-    CControl *mPreviousControl = nullptr;
-    CControl *mNextControl     = nullptr;
+    std::string mControlId      ;
+    std::string mPreviousControl;
+    std::string mNextControl    ;
 };

@@ -4,13 +4,11 @@
 #include "rdefine.h"
 
 static dash::lazy<std::map<std::string, CControl *>> sMap;
-static dash::lazy<std::set<CControl *>> sSet;
 static int sIdCount = 0;
 
 CControl::CControl() {
     mControlId = std::to_string(++sIdCount);
     sMap->insert({ mControlId, this });
-    sSet->insert(this);
     
     setInteractive(true);
 }
@@ -21,11 +19,11 @@ CControl::CControl(float x, float y, float width, float height): CControl() {
 
 CControl::~CControl() {
     sMap->erase(mControlId);
-    sSet->erase(this);
 }
 
 define_reflectable_class_function(CControl, setControlId, "setter;args:iden")
 void CControl::setControlId(const std::string &iden) {
+    //own control id should not be empty.
     if (iden.empty()) {
         return;
     }
@@ -42,44 +40,36 @@ std::string CControl::controlId() {
 
 define_reflectable_class_function(CControl, setPreviousControl, "setter;args:iden")
 void CControl::setPreviousControl(const std::string &iden) {
-    attachControl(&mPreviousControl, iden);
+    mPreviousControl = iden;
 }
 
 define_reflectable_class_function(CControl, setNextControl, "setter;args:iden")
 void CControl::setNextControl(const std::string &iden) {
-    attachControl(&mNextControl, iden);
+    mNextControl = iden;
 }
 
 define_reflectable_class_function(CControl, previousControl, "getter")
 std::string CControl::previousControl() {
-    CControl *control = checkControl(&mPreviousControl);
-    if (control) {
-        return control->controlId();
-    }
-    return "";
+    return mPreviousControl;
 }
 
 define_reflectable_class_function(CControl, nextControl, "getter")
 std::string CControl::nextControl() {
-    CControl *control = checkControl(&mNextControl);
-    if (control) {
-        return control->controlId();
-    }
-    return "";
+    return mNextControl;
 }
 
 define_reflectable_class_function(CControl, transferFocusToPrevious)
 void CControl::transferFocusToPrevious() {
-    CControl *previous = checkControl(&mPreviousControl);
-    if (previous) {
+    CControl::ptr previous = checkoutControl(mPreviousControl);
+    if (previous && previous.get() != this) {
         previous->becomeFocusResponder();
     }
 }
 
 define_reflectable_class_function(CControl, transferFocusToNext)
 void CControl::transferFocusToNext() {
-    CControl *next = checkControl(&mNextControl);
-    if (next) {
+    CControl::ptr next = checkoutControl(mNextControl);
+    if (next && next.get() != this) {
         next->becomeFocusResponder();
     }
 }
@@ -87,21 +77,23 @@ void CControl::transferFocusToNext() {
 define_reflectable_class_function(CControl, transferFocusToAny)
 void CControl::transferFocusToAny() {
     //try transferring to next.
-    CControl *next = checkControl(&mNextControl);
-    if (next) {
+    CControl::ptr next = checkoutControl(mNextControl);
+    if (next && next.get() != this) {
         next->becomeFocusResponder();
-    }
-    if (next && next->isFocusResponder()) {
-        return;
+        
+        if (next->isFocusResponder()) {
+            return;
+        }
     }
 
     //try transferring to previous.
-    CControl *previous = checkControl(&mPreviousControl);
-    if (previous) {
+    CControl::ptr previous = checkoutControl(mPreviousControl);
+    if (previous && previous.get() != this) {
         previous->becomeFocusResponder();
-    }
-    if (previous && previous->isFocusResponder()) {
-        return;
+        
+        if (previous->isFocusResponder()) {
+            return;
+        }
     }
     
     //discard focus.
@@ -144,26 +136,15 @@ void CControl::onControlKbKey(MKbKeyCode code) {
     implement_injectable_function(void, code)
 }
 
-void CControl::attachControl(CControl **target, const std::string &iden) {
-    auto it = sMap->find(iden);
-
-    //NOTE: record the reference to the control instead of id. because id may changes.
-    if (it != sMap->end() && it->second != this) {
-        *target = it->second;
-    } else {
-        *target = nullptr;
-    }
-}
-
-CControl *CControl::checkControl(CControl **target) {
-    if (!*target) {
+CControl::ptr CControl::checkoutControl(const std::string &iden) {
+    if (iden.empty()) {
         return nullptr;
     }
 
-    //the control has been released.
-    if (sSet->find(*target) == sSet->end()) {
-        *target = nullptr;
+    auto target = sMap->find(iden);
+    if (target == sMap->end()) {
+        return nullptr;
     }
-
-    return *target;
+    
+    return target->second->me();
 }
