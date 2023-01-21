@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Layout = (
+export const layout = (
 <stack>
 </stack>
 )

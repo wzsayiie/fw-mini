@@ -1,13 +1,15 @@
+import { LayoutableController } from "./layout/LayoutableController"
+import { layout } from './MainViewLayout'
+
 import {
-    CViewController,
+    CButton,
 } from "./host/native"
 
-import {
-    Layout,
-} from './MainViewLayout'
+export class MainViewController extends LayoutableController {
 
-export class MainViewController extends CViewController {
+    private _button: CButton
 
     onViewLoad(): void {
+        this.setLayout(layout)
     }
 }
