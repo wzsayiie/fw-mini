@@ -90,17 +90,19 @@ MColor::ptr MColor::purpleColor   () { static auto a = MColor::fromRGBA(PurpleRG
 MColor::ptr MColor::brownColor    () { static auto a = MColor::fromRGBA(BrownRGBA    ); return a; }
 MColor::ptr MColor::clearColor    () { static auto a = MColor::fromRGBA(ClearRGBA    ); return a; }
 
-MColor::ptr MColor::fromComs(float redCom, float greenCom, float blueCom, float alphaCom) {
+define_reflectable_class_function(MColor, fromComs, "args:red,green,blue,alpha")
+MColor::ptr MColor::fromComs(float red, float green, float blue, float alpha) {
     auto obj = MColor::create();
     
-    obj->mRGBA.red   = (uint8_t)(redCom   * 255.f);
-    obj->mRGBA.green = (uint8_t)(greenCom * 255.f);
-    obj->mRGBA.blue  = (uint8_t)(blueCom  * 255.f);
-    obj->mRGBA.alpha = (uint8_t)(alphaCom * 255.f);
+    obj->mRGBA.red   = (uint8_t)(red   * 255.f);
+    obj->mRGBA.green = (uint8_t)(green * 255.f);
+    obj->mRGBA.blue  = (uint8_t)(blue  * 255.f);
+    obj->mRGBA.alpha = (uint8_t)(alpha * 255.f);
     
     return obj;
 }
 
+define_reflectable_class_function(MColor, fromRGBA, "args:rgba")
 MColor::ptr MColor::fromRGBA(int rgba) {
     auto obj = MColor::create();
     obj->mRGBA.rgba = rgba;

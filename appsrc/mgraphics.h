@@ -123,9 +123,7 @@ public:
     static MColor::ptr clearColor    ();
 
 public:
-    static MColor::ptr fromComs(
-        float redCom, float greenCom, float blueCom, float alphaCom);
-
+    static MColor::ptr fromComs(float red, float green, float blue, float alpha);
     static MColor::ptr fromRGBA(int rgba);
 
 public:
