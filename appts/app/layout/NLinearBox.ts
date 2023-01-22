@@ -1,13 +1,13 @@
-import { ContainerNode } from './Nodes'
+import { NContainer } from './Nodes'
 
 export class NLinearRange {
     loc: number
     len: number
 }
 
-export class NLinearBox extends ContainerNode {
+export class NLinearBox extends NContainer {
     protected calcLayout(total: number, aspect: string): Array<NLinearRange> {
-        if (this.children.length == 0) {
+        if (!this.children) {
             return []
         }
 

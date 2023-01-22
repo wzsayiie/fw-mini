@@ -1,36 +1,63 @@
-import { CViewController } from '../host/native'
-import { JSXElem         } from './JSXObjects'
+import { JSXElem } from './JSXObjects'
 
-export class BaseNode {
+import {
+    CViewController,
+    MColor,
+    MFillMode,
+    MHAlign,
+    MVAlign,
+} from '../host/native'
+
+export class NBase {
     elem: JSXElem = null
 
     protected getBoolean(key: string, callback: (v: boolean) => void): void {
-        let str: string = this.elem.props[key]
-        if (str === undefined) {
-            return
+        let value: boolean = this.elem.props[key]
+        if (typeof(value) == 'boolean') {
+            callback(value)
         }
-        
-        let bol = Boolean(str)
-        callback(bol)
     }
 
     protected getNumber(key: string, callback: (v: number) => void): void {
-        let str: string = this.elem.props[key]
-        if (str === undefined) {
-            return
+        let value: number = this.elem.props[key]
+        if (typeof(value) == 'number') {
+            callback(value)
         }
-        
-        let num = Number(str)
-        callback(!isNaN(num) ? num : 0)
     }
 
     protected getString(key: string, callback: (v: string) => void): void {
-        let str: string = this.elem.props[key]
-        if (str === undefined) {
-            return
+        let value: string = this.elem.props[key]
+        if (typeof(value) == 'string') {
+            callback(value)
         }
-        
-        callback(str)
+    }
+
+    protected getColor(key: string, callback: (v: MColor) => void): void {
+        let value: MColor = this.elem.props[key]
+        if (value instanceof MColor) {
+            callback(value)
+        }
+    }
+
+    protected getHAlign(key: string, callback: (v: MHAlign) => void): void {
+        let value: MHAlign = this.elem.props[key]
+        if (typeof(value) == 'number') {
+            callback(value)
+        }
+    }
+
+    protected getVAlign(key: string, callback: (v: MVAlign) => void): void {
+        let value: MVAlign = this.elem.props[key]
+        if (typeof(value) == 'number') {
+            callback(value)
+        }
+    }
+
+    protected getFillMode(key: string, callback: (v: MFillMode) => void): void {
+        let value: MFillMode = this.elem.props[key]
+        if (typeof(value) == 'number') {
+            callback(value)
+        }
     }
 
     //need subclasses to override:
@@ -51,17 +78,17 @@ export class BaseNode {
         if (this.height < 0) { this.height = 0 }
     }
 
-    addChild(_child: BaseNode): void {
+    addChild(_child: NBase): void {
     }
 
     layout(_x: number, _y: number, _w: number, _h: number): void {
     }
 }
 
-export class ContainerNode extends BaseNode {
-    children: BaseNode[] = null
+export class NContainer extends NBase {
+    children: NBase[] = null
 
-    addChild(child: BaseNode): void {
+    addChild(child: NBase): void {
         super.addChild(child)
         
         if (!this.children) {
@@ -71,7 +98,7 @@ export class ContainerNode extends BaseNode {
     }
 }
 
-export class EntityNode extends BaseNode {
+export class NEntity extends NBase {
     name   = ''
     entity = null
 

@@ -1,6 +1,6 @@
-import { ContainerNode } from './Nodes'
+import { NContainer } from './Nodes'
 
-export class NStackBox extends ContainerNode {
+export class NStackBox extends NContainer {
     layout(x: number, y: number, w: number, h: number): void {
         for (let child of this.children) {
             let left : number

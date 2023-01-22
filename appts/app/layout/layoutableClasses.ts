@@ -24,8 +24,8 @@ import {
 } from '../host/native'
 
 import {
-    BaseNode,
-    EntityNode,
+    NBase,
+    NEntity,
 } from './Nodes'
 
 function isDerived(derived: { new(): object }, base: { new(): object }): boolean {
@@ -33,15 +33,15 @@ function isDerived(derived: { new(): object }, base: { new(): object }): boolean
 }
 
 export class ClassInfo {
-    nodeClass  : { new(): BaseNode }
-    entityClass: { new(): object   }
+    nodeClass  : { new(): NBase  }
+    entityClass: { new(): object }
 }
 
 let _classes = new Map<string, ClassInfo>()
 
 export const layoutableClasses = {
     register: function(
-        type: string, entity: { new(): object }, node?: { new(): BaseNode }): void
+        type: string, entity: { new(): object }, node?: { new(): NBase }): void
     {
         if (!entity && !node) {
             return
@@ -79,16 +79,16 @@ export const layoutableClasses = {
 layoutableClasses.register('horizon' , null, NHorizonBox )
 layoutableClasses.register('vertical', null, NVerticalBox)
 layoutableClasses.register('stack'   , null, NStackBox   )
-layoutableClasses.register('stretch' , null, EntityNode  )
+layoutableClasses.register('stretch' , null, NEntity     )
 
-layoutableClasses.register('viewController'      , CViewController      )
-layoutableClasses.register('navigationController', CNavigationController)
-layoutableClasses.register('tabPageController'   , CTabPageController   )
+layoutableClasses.register('cViewController'      , CViewController      )
+layoutableClasses.register('cNavigationController', CNavigationController)
+layoutableClasses.register('cTabPageController'   , CTabPageController   )
 
-layoutableClasses.register('view'      , CView      )
-layoutableClasses.register('imageView' , CImageView )
-layoutableClasses.register('label'     , CLabel     )
-layoutableClasses.register('scrollView', CScrollView)
-layoutableClasses.register('control'   , CControl   )
-layoutableClasses.register('button'    , CButton    )
-layoutableClasses.register('textField' , CTextField )
+layoutableClasses.register('cView'      , CView      )
+layoutableClasses.register('cImageView' , CImageView )
+layoutableClasses.register('cLabel'     , CLabel     )
+layoutableClasses.register('cScrollView', CScrollView)
+layoutableClasses.register('cControl'   , CControl   )
+layoutableClasses.register('cButton'    , CButton    )
+layoutableClasses.register('cTextField' , CTextField )

@@ -1,5 +1,5 @@
-import { BaseNode          } from './Nodes'
 import { JSXElem           } from './JSXObjects'
+import { NBase             } from './Nodes'
 import { layoutableClasses } from './layoutableClasses'
 
 import {
@@ -9,7 +9,7 @@ import {
 
 export class LayoutableController extends CViewController {
 
-    private _rootNode: BaseNode
+    private _rootNode: NBase
 
     loadView(): CView {
         let view = super.loadView()
@@ -22,7 +22,7 @@ export class LayoutableController extends CViewController {
         this.layoutNodes()
     }
 
-    private makeTree(elem: JSXElem): BaseNode {
+    private makeTree(elem: JSXElem): NBase {
         let info = layoutableClasses.find(elem.type)
         if (!info) {
             return null

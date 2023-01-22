@@ -1,12 +1,12 @@
-import { JSXElem    } from './JSXObjects'
-import { NResponder } from './NResponder'
+import { JSXElem } from './JSXObjects'
+import { NEntity } from './Nodes'
 
 import {
     CViewController,
     MRect,
 } from '../host/native'
 
-export class NViewController extends NResponder {
+export class NViewController extends NEntity {
     attach(elem: JSXElem, entity: object, controller: CViewController): void {
         super.attach(elem, entity, controller)
 
