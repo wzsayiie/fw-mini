@@ -7,10 +7,10 @@ import {
 } from '../host/native'
 
 export class NControl extends NView {
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
 
-        let control = <CControl> entity
+        let control = <CControl> this.entity
 
         this.getString('controlId'      , v => control.controlId       = v)
         this.getString('previousControl', v => control.previousControl = v)

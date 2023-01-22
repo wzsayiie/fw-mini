@@ -1,4 +1,5 @@
-import { JSXElem } from './JSXObjects'
+import { JSXElem           } from './JSXObjects'
+import { layoutableClasses } from './layoutableClasses'
 
 import {
     CViewController,
@@ -28,6 +29,13 @@ export class NBase {
     protected getString(key: string, callback: (v: string) => void): void {
         let value: string = this.elem.props[key]
         if (typeof(value) == 'string') {
+            callback(value)
+        }
+    }
+
+    protected getObject(key: string, callback: (v: object) => void): void {
+        let value: object = this.elem.props[key]
+        if (typeof(value) == 'object') {
             callback(value)
         }
     }
@@ -66,7 +74,7 @@ export class NBase {
     width  = 0
     height = 0
 
-    attach(elem: JSXElem, _entity: object, _controller: CViewController): void {
+    attach(elem: JSXElem, _controller: CViewController): void {
         this.elem = elem
 
         this.getNumber('ratio' , v => this.ratio  = v)
@@ -99,17 +107,27 @@ export class NContainer extends NBase {
 }
 
 export class NEntity extends NBase {
-    name   = ''
     entity = null
+    name   = ''
 
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
+
+        let entityClass = layoutableClasses.entityClassOf(elem.type)
+        if (entityClass) {
+            let customObject = null
+            this.getObject('customObject', v => customObject = v)
+
+            if (customObject && customObject instanceof entityClass) {
+                this.entity = customObject
+            } else {
+                this.entity = new entityClass()
+            }
+        }
 
         this.getString('name', v => this.name = v)
-        this.entity = entity
-
-        if (this.name && entity) {
-            controller[this.name] = entity
+        if (this.name && this.entity) {
+            controller[this.name] = this.entity
         }
     }
 }

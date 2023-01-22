@@ -7,10 +7,10 @@ import {
 } from '../host/native'
 
 export class NViewController extends NEntity {
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
 
-        let ctrl = <CViewController> entity
+        let ctrl = <CViewController> this.entity
         controller.addChildController(ctrl)
 
         this.getColor('backgroundColor', v => ctrl.view.backgroundColor = v)

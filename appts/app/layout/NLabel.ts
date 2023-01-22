@@ -7,10 +7,10 @@ import {
 } from '../host/native'
 
 export class NLabel extends NView {
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
 
-        let label = <CLabel> entity
+        let label = <CLabel> this.entity
 
         this.getString('text'     , v => label.text      = v)
         this.getColor ('textColor', v => label.textColor = v)

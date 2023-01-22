@@ -8,10 +8,10 @@ import {
 } from '../host/native'
 
 export class NImageView extends NView {
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
 
-        let imageView = <CImageView> entity
+        let imageView = <CImageView> this.entity
 
         this.getFillMode('fillMode', v => imageView.fillMode = v)
         this.getHAlign  ('hAlign'  , v => imageView.hAlign   = v)

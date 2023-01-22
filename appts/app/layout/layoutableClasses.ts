@@ -28,67 +28,42 @@ import {
     NEntity,
 } from './Nodes'
 
-function isDerived(derived: { new(): object }, base: { new(): object }): boolean {
-    return derived == base || derived.prototype instanceof base;
-}
-
-export class ClassInfo {
-    nodeClass  : { new(): NBase  }
-    entityClass: { new(): object }
-}
-
-let _classes = new Map<string, ClassInfo>()
+let _nodeClasses   = new Map<string, { new(): NBase  }>()
+let _entityClasses = new Map<string, { new(): object }>()
 
 export const layoutableClasses = {
     register: function(
-        type: string, entity: { new(): object }, node?: { new(): NBase }): void
+        type: string, nodeClass: { new(): NBase }, entityClass: { new(): object }): void
     {
-        if (!entity && !node) {
-            return
-        }
+        _nodeClasses.set(type, nodeClass)
 
-        //speculate the node type.
-        if (!node) {
-            if /**/ (isDerived(entity, CNavigationController)) { node = NViewController }
-            else if (isDerived(entity, CTabPageController   )) { node = NViewController }
-            else if (isDerived(entity, CViewController      )) { node = NViewController }
-
-            else if (isDerived(entity, CButton    )) { node = NButton     }
-            else if (isDerived(entity, CTextField )) { node = NTextField  }
-            else if (isDerived(entity, CControl   )) { node = NControl    }
-            else if (isDerived(entity, CImageView )) { node = NImageView  }
-            else if (isDerived(entity, CLabel     )) { node = NLabel      }
-            else if (isDerived(entity, CScrollView)) { node = NScrollView }
-            else if (isDerived(entity, CView      )) { node = NView       }
-        }
-
-        if (node) {
-            let info: ClassInfo = {
-                entityClass: entity,
-                nodeClass  : node  ,
-            }
-            _classes.set(type, info)
+        if (entityClass) {
+            _entityClasses.set(type, entityClass)
         }
     },
 
-    find: function (type: string): ClassInfo {
-        return _classes.get(type)
+    nodeClassOf: function (type: string): { new(): NBase } {
+        return _nodeClasses.get(type)
+    },
+
+    entityClassOf: function (type: string): { new(): object } {
+        return _entityClasses.get(type)
     },
 }
 
-layoutableClasses.register('horizon' , null, NHorizonBox )
-layoutableClasses.register('vertical', null, NVerticalBox)
-layoutableClasses.register('stack'   , null, NStackBox   )
-layoutableClasses.register('stretch' , null, NEntity     )
+layoutableClasses.register('horizon' , NHorizonBox , null)
+layoutableClasses.register('vertical', NVerticalBox, null)
+layoutableClasses.register('stack'   , NStackBox   , null)
+layoutableClasses.register('stretch' , NEntity     , null)
 
-layoutableClasses.register('cViewController'      , CViewController      )
-layoutableClasses.register('cNavigationController', CNavigationController)
-layoutableClasses.register('cTabPageController'   , CTabPageController   )
+layoutableClasses.register('cViewController'      , NViewController, CViewController      )
+layoutableClasses.register('cNavigationController', NViewController, CNavigationController)
+layoutableClasses.register('cTabPageController'   , NViewController, CTabPageController   )
 
-layoutableClasses.register('cView'      , CView      )
-layoutableClasses.register('cImageView' , CImageView )
-layoutableClasses.register('cLabel'     , CLabel     )
-layoutableClasses.register('cScrollView', CScrollView)
-layoutableClasses.register('cControl'   , CControl   )
-layoutableClasses.register('cButton'    , CButton    )
-layoutableClasses.register('cTextField' , CTextField )
+layoutableClasses.register('cView'      , NView      , CView      )
+layoutableClasses.register('cImageView' , NImageView , CImageView )
+layoutableClasses.register('cLabel'     , NLabel     , CLabel     )
+layoutableClasses.register('cScrollView', NScrollView, CScrollView)
+layoutableClasses.register('cControl'   , NControl   , CControl   )
+layoutableClasses.register('cButton'    , NButton    , CButton    )
+layoutableClasses.register('cTextField' , NTextField , CTextField )

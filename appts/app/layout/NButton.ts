@@ -7,10 +7,10 @@ import {
 } from '../host/native'
 
 export class NButton extends NControl {
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
 
-        let button = <CButton> entity
+        let button = <CButton> this.entity
 
         this.getString('title'    , v => button.title                = v)
         this.getString('text'     , v => button.titleLabel.text      = v)

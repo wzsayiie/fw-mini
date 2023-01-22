@@ -8,10 +8,10 @@ import {
 } from '../host/native'
 
 export class NView extends NEntity {
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
 
-        let view = <CView> entity
+        let view = <CView> this.entity
         controller.view.addSubview(view)
 
         this.getBoolean('interactive'    , v => view.interactive     = v)

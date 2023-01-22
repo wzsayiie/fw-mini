@@ -48,12 +48,16 @@ interface _Base {
     height?: number
 }
 
-interface _ViewController extends _Base {
+interface _Entity extends _Base {
+    customObject?: object
+}
+
+interface _ViewController extends _Entity {
     name?           : string
     backgroundColor?: MColor
 }
 
-interface _View extends _Base {
+interface _View extends _Entity {
     name?           : string
     backgroundColor?: MColor
 }

@@ -7,10 +7,10 @@ import {
 } from '../host/native'
 
 export class NScrollView extends NView {
-    attach(elem: JSXElem, entity: object, controller: CViewController): void {
-        super.attach(elem, entity, controller)
+    attach(elem: JSXElem, controller: CViewController): void {
+        super.attach(elem, controller)
 
-        let scrollView = <CScrollView> entity
+        let scrollView = <CScrollView> this.entity
 
         let contentWidth  = 0
         let contentHeight = 0

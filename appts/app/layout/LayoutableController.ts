@@ -23,20 +23,14 @@ export class LayoutableController extends CViewController {
     }
 
     private makeTree(elem: JSXElem): NBase {
-        let info = layoutableClasses.find(elem.type)
-        if (!info) {
+        //node:
+        let nodeClass = layoutableClasses.nodeClassOf(elem.type)
+        if (!nodeClass) {
             return null
         }
 
-        //entity.
-        let entity = null
-        if (info.entityClass) {
-            entity = new info.entityClass()
-        }
-
-        //node.
-        let node = new info.nodeClass()
-        node.attach(elem, entity, this)
+        let node = new nodeClass()
+        node.attach(elem, this)
 
         //children.
         let subElems = elem.props.children
