@@ -9,6 +9,7 @@
         "webpack": "*",
         "typescript": "*",
         "ts-loader": "*",
+        "@types/react": "*",
         "react": "*"
     }
 }
