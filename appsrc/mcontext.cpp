@@ -138,7 +138,7 @@ void MContextDrawPolygon() {
 
 define_reflectable_function(MContextDrawRect, "args:x,y,w,h")
 void MContextDrawRect(float x, float y, float w, float h) {
-    if (sRGBA.rgba == 0) {
+    if (sRGBA.alpha == 0) {
         return;
     }
     if (w <= 0 || h <= 0) {
@@ -154,7 +154,7 @@ void MContextDrawRect(float x, float y, float w, float h) {
 
 define_reflectable_function(MContextDrawEllipse, "args:x,y,w,h")
 void MContextDrawEllipse(float x, float y, float w, float h) {
-    if (sRGBA.rgba == 0) {
+    if (sRGBA.alpha == 0) {
         return;
     }
     if (w <= 0 || h <= 0) {
@@ -187,7 +187,7 @@ void MContextDrawEllipse(float x, float y, float w, float h) {
 
 define_reflectable_function(MContextDrawFlatLine, "args:x0,y0,x1,y1")
 void MContextDrawFlatLine(float x0, float y0, float x1, float y1) {
-    if (sRGBA.rgba == 0) {
+    if (sRGBA.alpha == 0) {
         return;
     }
     if (sLineWidth <= 0) {
@@ -221,7 +221,7 @@ void MContextDrawFlatLine(float x0, float y0, float x1, float y1) {
 
 define_reflectable_function(MContextDrawSquareLine, "args:x0,y0,x1,y1")
 void MContextDrawSquareLine(float x0, float y0, float x1, float y1) {
-    if (sRGBA.rgba == 0) {
+    if (sRGBA.alpha == 0) {
         return;
     }
     if (sLineWidth <= 0) {
@@ -258,7 +258,7 @@ void MContextDrawSquareLine(float x0, float y0, float x1, float y1) {
 
 define_reflectable_function(MContextDrawRoundLine, "args:x0,y0,x1,y1")
 void MContextDrawRoundLine(float x0, float y0, float x1, float y1) {
-    if (sRGBA.rgba == 0) {
+    if (sRGBA.alpha == 0) {
         return;
     }
     if (sLineWidth <= 0) {
