@@ -33,16 +33,35 @@ static void PaintPolygon(Gdiplus::Graphics *pen, MPolygonGraph *graph)
 
 static void PaintImage(Gdiplus::Graphics *pen, MImageGraph *graph)
 {
+    //image.
     MImage::ptr      image    = graph->image();
     MWin32Image::ptr w32image = std::static_pointer_cast<MWin32Image>(image);
     Gdiplus::Image  *gdiImage = w32image->mGdiImage.get();
 
-    Gdiplus::RectF rect(
+    //alpha:
+    float A = graph->alpha();
+    Gdiplus::ColorMatrix colorMatrix = {
+        1, 0, 0, 0, 0,
+        0, 1, 0, 0, 0,
+        0, 0, 1, 0, 0,
+        0, 0, 0, A, 0,
+        0, 0, 0, 0, 1,
+    };
+
+    Gdiplus::ImageAttributes attributes;
+    attributes.SetColorMatrix(&colorMatrix);
+
+    //area:
+    Gdiplus::RectF dstRect(
         graph->pixelX(), graph->pixelY(),
         graph->pixelW(), graph->pixelH()
     );
 
-    pen->DrawImage(gdiImage, rect);
+    Gdiplus::REAL iw = image->pixelSize()->width ();
+    Gdiplus::REAL ih = image->pixelSize()->height();
+
+    //draw.
+    pen->DrawImage(gdiImage, dstRect, 0, 0, iw, ih, Gdiplus::UnitPixel, &attributes);
 }
 
 static void PaintText(Gdiplus::Graphics *pen, MTextGraph *graph)

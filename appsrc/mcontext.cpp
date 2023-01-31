@@ -283,12 +283,16 @@ void MContextDrawImage(float x, float y, float w, float h) {
     if (sImage == nullptr) {
         return;
     }
+    if (sRGBA.alpha == 0) {
+        return;
+    }
     if (w <= 0 || h <= 0) {
         return;
     }
 
     auto graph = MImageGraph::create();
     graph->mImage = sImage;
+    graph->mAlpha = sRGBA.alpha / 255.f;
     graph->mX     = sOffsetX + x;
     graph->mY     = sOffsetY + y;
     graph->mW     = w;
@@ -380,6 +384,11 @@ MGraphType MImageGraph::type() {
 define_reflectable_class_function(MImageGraph, image, "getter")
 MImage::ptr MImageGraph::image() {
     return mImage;
+}
+
+define_reflectable_class_function(MImageGraph, alpha, "getter")
+float MImageGraph::alpha() {
+    return mAlpha;
 }
 
 define_reflectable_class_function(MImageGraph, pixelX, "getter")

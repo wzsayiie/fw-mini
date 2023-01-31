@@ -96,6 +96,11 @@ Java_src_app_mini_MAndrdDrawView_imageObject(JNIEnv *, jclass) {
 }
 
 extern "C" JNIEXPORT JNICALL jfloat
+Java_src_app_mini_MAndrdDrawView_imageAlpha(JNIEnv *, jclass) {
+    return sImage->alpha();
+}
+
+extern "C" JNIEXPORT JNICALL jfloat
 Java_src_app_mini_MAndrdDrawView_imageX(JNIEnv *, jclass) {
     return sImage->pixelX();
 }

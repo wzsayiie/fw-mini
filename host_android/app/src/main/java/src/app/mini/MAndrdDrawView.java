@@ -81,6 +81,10 @@ public class MAndrdDrawView extends View {
         //image.
         Bitmap image = imageObject();
 
+        //alpha.
+        Paint paint = new Paint();
+        paint.setAlpha((int)(imageAlpha() * 255.f));
+
         //area:
         int x = (int) imageX     ();
         int y = (int) imageY     ();
@@ -91,7 +95,7 @@ public class MAndrdDrawView extends View {
         Rect targetRect   = new Rect(x, y, x + w, y + h);
 
         //draw.
-        canvas.drawBitmap(image, samplingRect, targetRect, null);
+        canvas.drawBitmap(image, samplingRect, targetRect, paint);
     }
 
     private void drawText(Canvas canvas) {
@@ -154,6 +158,7 @@ public class MAndrdDrawView extends View {
     private static native int    polygonARGB  ();
 
     private static native Bitmap imageObject  ();
+    private static native float  imageAlpha   ();
     private static native float  imageX       ();
     private static native float  imageY       ();
     private static native float  imageWidth   ();

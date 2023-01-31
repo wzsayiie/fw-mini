@@ -70,5 +70,6 @@ void CImageView::onDraw(float aw, float ah) {
     }
 
     MContextSelectImage(mImage);
-    MContextDrawImage(x, y, w, h);
+    MContextSelectRGBA (0xFFffFFff);
+    MContextDrawImage  (x, y, w, h);
 }

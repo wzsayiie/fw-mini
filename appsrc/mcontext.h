@@ -88,6 +88,7 @@ public:
     MGraphType type() override;
 
     MImage::ptr image();
+    float alpha();
 
     float pixelX();
     float pixelY();
@@ -97,6 +98,7 @@ public:
 public:
     MImage::ptr mImage;
 
+    float mAlpha = 1;
     float mX = 0;
     float mY = 0;
     float mW = 0;
