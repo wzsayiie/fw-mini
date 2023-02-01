@@ -2,6 +2,10 @@ import { NContainer } from './Nodes'
 
 export class NStackBox extends NContainer {
     layout(x: number, y: number, w: number, h: number): void {
+        if (!this.children) {
+            return
+        }
+
         for (let child of this.children) {
             let left : number
             let width: number
