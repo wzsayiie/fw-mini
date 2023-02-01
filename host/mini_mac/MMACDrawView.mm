@@ -89,16 +89,27 @@
 - (void)drawImage:(MImageGraph *)graph withContext:(CGContextRef)context viewHeight:(CGFloat)viewHeight {
     _NSImage *nsImage = std::static_pointer_cast<MMACImage>(graph->image())->mNSImage;
     
-    CGFloat w = graph->pixelW();
-    CGFloat h = graph->pixelH();
-    CGFloat x = graph->pixelX();
-#if TARGET_OS_OSX
-    CGFloat y = viewHeight - h - graph->pixelY();
-#elif TARGET_OS_IOS
-    CGFloat y = graph->pixelY();
-#endif
+    CGFloat alpha = graph->alpha ();
+    CGFloat w     = graph->pixelW();
+    CGFloat h     = graph->pixelH();
+    CGFloat x     = graph->pixelX();
     
-    [nsImage drawInRect:CGRectMake(x, y, w, h)];
+#if TARGET_OS_OSX
+    CGFloat y     = viewHeight - h - graph->pixelY();
+    CGRect  dRect = CGRectMake(x, y, w, h);
+    CGRect  sRect = CGRectMake(0, 0, nsImage.size.width, nsImage.size.height);
+    
+    NSCompositingOperation op = NSCompositingOperationSourceOver;
+    [nsImage drawInRect:dRect fromRect:sRect operation:op fraction:alpha];
+    
+#elif TARGET_OS_IOS
+    CGFloat y     = graph->pixelY();
+    CGRect  dRect = CGRectMake(x, y, w, h);
+    
+    CGBlendMode mode = kCGBlendModeSourceAtop;
+    [nsImage drawInRect:dRect blendMode:mode alpha:alpha];
+    
+#endif
 }
 
 - (void)drawText:(MTextGraph *)graph withContext:(CGContextRef)context viewHeight:(CGFloat)viewHeight {
