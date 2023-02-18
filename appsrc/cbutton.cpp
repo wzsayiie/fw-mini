@@ -80,7 +80,7 @@ void CButton::onDrawCover(float width, float height) {
 }
 
 void CButton::on_dispose() {
-    super::dispose();
+    base::dispose();
 
     if (mTitleLabel) {
         mTitleLabel->dispose();

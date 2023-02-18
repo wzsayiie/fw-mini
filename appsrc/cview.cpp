@@ -328,7 +328,7 @@ void CView::layoutSubviews() {
 }
 
 void CView::on_dispose() {
-    super::dispose();
+    base::dispose();
 
     mLayouter = nullptr;
     mLayer->dispose();

@@ -155,7 +155,7 @@ void CWindow::onWriting(const std::string &text) {
 }
 
 void CWindow::on_dispose() {
-    super::dispose();
+    base::dispose();
 
     if (mRootViewController  ) { mRootViewController  ->dispose(); }
     if (mTouchingResponder   ) { mTouchingResponder   ->dispose(); }

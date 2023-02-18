@@ -21,7 +21,7 @@ void CNavigationControllerDelegation::pagesChange() {
 }
 
 void CNavigationControllerDelegation::on_dispose() {
-    super::dispose();
+    base::dispose();
 
     mPagesChangeTarget = nullptr;
 }
@@ -153,7 +153,7 @@ void CNavigationController::hidePage(const CViewController::ptr &page) {
 }
 
 void CNavigationController::on_dispose() {
-    super::dispose();
+    base::dispose();
 
     if (mDelegation) {
         mDelegation->dispose();

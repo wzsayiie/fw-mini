@@ -253,7 +253,7 @@ void CLayer::drawAt(const DrawBuffer &buffer, double tick) {
 }
 
 void CLayer::on_dispose() {
-    super::dispose();
+    base::dispose();
     
     mDrawer = nullptr;
     mCoverDrawer = nullptr;
