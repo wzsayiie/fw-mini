@@ -146,7 +146,7 @@ int CTabPageController::selectedIndex() {
 }
 
 void CTabPageController::onViewLoad() {
-    view()->setLayoutDelegation(MF(this, &CTabPageController::layoutPages));
+    view()->setLayouter(MF(this, &CTabPageController::layoutPages));
 }
 
 void CTabPageController::layoutPages() {

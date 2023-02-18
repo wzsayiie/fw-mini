@@ -128,7 +128,7 @@ CViewController::ptr CNavigationController::topPage() {
 }
 
 void CNavigationController::onViewLoad() {
-    view()->setLayoutDelegation(MF(this, &CNavigationController::layoutPages));
+    view()->setLayouter(MF(this, &CNavigationController::layoutPages));
 }
 
 void CNavigationController::layoutPages() {

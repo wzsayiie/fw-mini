@@ -63,6 +63,7 @@ void CViewController::addChildController(const CViewController::ptr &childContro
             brothers->end()
         );
     }
+    
     //add to new parent:
     view()->addSubview(childController->view());
     
