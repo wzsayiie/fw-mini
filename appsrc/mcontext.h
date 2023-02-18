@@ -6,19 +6,18 @@
 
 //draw function:
 
+d_exportable void MContextSetOffset(float x, float y);
+d_exportable void MContextSetClip  (float x, float y, float w, float h);
+d_exportable void MContextSetAlpha (float alpha);
+
 d_exportable void MContextSelectImage(const MImage::ptr &image);
 d_exportable void MContextSelectText (const std::string &text );
 
-d_exportable void MContextSelectRGBA     (int     rgba );
 d_exportable void MContextSelectLineWidth(float   width);
 d_exportable void MContextSelectFontSize (float   size );
 d_exportable void MContextSelectHAlign   (MHAlign align);
 d_exportable void MContextSelectVAlign   (MVAlign align);
-
-d_exportable void MContextPushOffset(float x, float y);
-d_exportable void MContextPopOffset ();
-d_exportable void MContextPushClip  (float x, float y, float w, float h);
-d_exportable void MContextPopClip   ();
+d_exportable void MContextSelectRGBA     (int     rgba );
 
 d_exportable void MContextMoveToPoint(float x, float y);
 d_exportable void MContextAddToPoint (float x, float y);

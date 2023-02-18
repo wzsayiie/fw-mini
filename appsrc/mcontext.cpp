@@ -10,10 +10,9 @@
 
 static dash::lazy<MVector<MGraph::ptr>> sGraphs;
 
-static dash::lazy<MVector<MRect ::ptr>> sClipStack;
-static dash::lazy<MVector<MPoint::ptr>> sOffsetStack;
 static float sOffsetX = 0;
 static float sOffsetY = 0;
+static float sAlpha   = 1;
 
 static dash::lazy<MImage::ptr> sImage;
 static dash::lazy<std::string> sText;
@@ -28,9 +27,36 @@ static dash::lazy<MPolygonGraph::ptr> sPolygon;
 
 //draw function:
 
+define_reflectable_function(MContextSetOffset, "args:x,y")
+void MContextSetOffset(float x, float y) {
+    sOffsetX = x;
+    sOffsetY = y;
+}
+
+define_reflectable_function(MContextSetClip, "args:x,y,w,h")
+void MContextSetClip(float x, float y, float w, float h) {
+    auto graph = MClipGraph::create();
+    graph->mX = x;
+    graph->mY = y;
+    graph->mW = w;
+    graph->mH = h;
+
+    sGraphs->push_back(graph);
+}
+
+define_reflectable_function(MContextSetAlpha, "args:alpha")
+void MContextSetAlpha(float alpha) {
+    if (alpha < 0) {
+        alpha = 0;
+    } else if (alpha > 1) {
+        alpha = 1;
+    }
+    
+    sAlpha = alpha;
+}
+
 define_reflectable_function(MContextSelectImage    , "args:image")
 define_reflectable_function(MContextSelectText     , "args:text" )
-define_reflectable_function(MContextSelectRGBA     , "args:rgba" )
 define_reflectable_function(MContextSelectLineWidth, "args:width")
 define_reflectable_function(MContextSelectFontSize , "args:size" )
 define_reflectable_function(MContextSelectHAlign   , "args:align")
@@ -39,73 +65,15 @@ define_reflectable_function(MContextSelectVAlign   , "args:align")
 void MContextSelectImage(const MImage::ptr &image) { sImage = image; }
 void MContextSelectText (const std::string &text ) { sText  = text ; }
 
-void MContextSelectRGBA     (int     rgba ) { sRGBA.rgba = rgba ; }
 void MContextSelectLineWidth(float   width) { sLineWidth = width; }
 void MContextSelectFontSize (float   size ) { sFontSize  = size ; }
 void MContextSelectHAlign   (MHAlign align) { sHAlign    = align; }
 void MContextSelectVAlign   (MVAlign align) { sVAlign    = align; }
 
-define_reflectable_function(MContextPushOffset, "args:x,y")
-void MContextPushOffset(float x, float y) {
-    auto current = MPoint::from(sOffsetX, sOffsetY);
-    sOffsetStack->push_back(current);
-    
-    sOffsetX += x;
-    sOffsetY += y;
-}
-
-define_reflectable_function(MContextPopOffset)
-void MContextPopOffset() {
-    auto last = MPoint::zero();
-
-    if (!sOffsetStack->empty()) {
-        last = sOffsetStack->back();
-        sOffsetStack->pop_back();
-    }
-
-    sOffsetX = last->x();
-    sOffsetY = last->y();
-}
-
-define_reflectable_function(MContextPushClip, "args:x,y,w,h")
-void MContextPushClip(float x, float y, float w, float h) {
-    //push the clip:
-    auto clip = MRect::from(sOffsetX + x, sOffsetY + y, w, h);
-    if (!sClipStack->empty()) {
-        MRect::ptr last = sClipStack->back();
-        clip = clip->intersects(last);
-    }
-
-    sClipStack->push_back(clip);
-
-    //create the graph:
-    auto graph = MClipGraph::create();
-    graph->mX = clip->x();
-    graph->mY = clip->y();
-    graph->mW = clip->width ();
-    graph->mH = clip->height();
-
-    sGraphs->push_back(graph);
-}
-
-define_reflectable_function(MContextPopClip)
-void MContextPopClip() {
-    if (sClipStack->empty()) {
-        return;
-    }
-
-    //pop the clip.
-    MRect::ptr clip = sClipStack->back();
-    sClipStack->pop_back();
-
-    //create the graph:
-    auto graph = MClipGraph::create();
-    graph->mX = clip->x();
-    graph->mY = clip->y();
-    graph->mW = clip->width ();
-    graph->mH = clip->height();
-
-    sGraphs->push_back(graph);
+define_reflectable_function(MContextSelectRGBA, "args:rgba")
+void MContextSelectRGBA(int rgba) {
+    sRGBA.rgba = rgba;
+    sRGBA.alpha *= sAlpha;
 }
 
 define_reflectable_function(MContextMoveToPoint, "args:x,y")
