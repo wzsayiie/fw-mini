@@ -6,15 +6,14 @@
 static dash::lazy<std::map<std::string, CControl *>> sMap;
 static int sIdCount = 0;
 
-CControl::CControl() {
+CControl::CControl(): CControl(0, 0, 0, 0) {
+}
+
+CControl::CControl(float x, float y, float width, float height): super(x, y, width, height) {
     mControlId = std::to_string(++sIdCount);
     sMap->insert({ mControlId, this });
     
     setInteractive(true);
-}
-
-CControl::CControl(float x, float y, float width, float height): CControl() {
-    setFrame(MRect::from(x, y, width, height));
 }
 
 CControl::~CControl() {
@@ -100,7 +99,7 @@ void CControl::transferFocusToAny() {
     resignFocusResponder();
 }
 
-void CControl::onDrawForeground(float width, float height) {
+void CControl::onDrawCover(float width, float height) {
     if (!isFocusResponder()) {
         return;
     }

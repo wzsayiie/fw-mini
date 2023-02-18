@@ -47,12 +47,11 @@ const float IndicatorWidth = 4;
 
 //scroll view:
 
-CScrollView::CScrollView() {
-    setInteractive(true);
+CScrollView::CScrollView(): CScrollView(0, 0, 0, 0) {
 }
 
-CScrollView::CScrollView(float x, float y, float width, float height): CScrollView() {
-    setFrame(MRect::from(x, y, width, height));
+CScrollView::CScrollView(float x, float y, float width, float height): super(x, y, width, height) {
+    setInteractive(true);
 }
 
 define_reflectable_class_function(CScrollView, setDelegation, "setter;args:delegation")
@@ -178,7 +177,7 @@ void CScrollView::onLayoutSubviews(float width, float height) {
     setContentOffset(offset->x(), offset->y());
 }
 
-void CScrollView::onDrawForeground(float width, float height) {
+void CScrollView::onDrawCover(float width, float height) {
     float contentHeight = contentSize()->height();
     float contentWidth  = contentSize()->width ();
 

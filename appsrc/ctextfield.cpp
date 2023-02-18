@@ -116,7 +116,7 @@ void CTextField::onControlKbKey(MKbKeyCode code) {
     }
 }
 
-void CTextField::onDrawForeground(float width, float height) {
+void CTextField::onDrawCover(float width, float height) {
     //block the focus frame of the focused control.
 }
 

@@ -23,7 +23,7 @@ public:
     void transferFocusToAny     ();
     
 protected:
-    void onDrawForeground(float width, float height) override;
+    void onDrawCover(float width, float height) override;
     void onKbKey(MKbKeyCode code) override final;
     
 protected: public:

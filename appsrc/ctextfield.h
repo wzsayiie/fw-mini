@@ -59,8 +59,8 @@ protected:
     void onWriting     (const std::string &text) override;
     void onControlKbKey(MKbKeyCode         code) override;
 
-    void onDrawForeground(float width, float height) override;
-    void onDraw          (float width, float height) override;
+    void onDrawCover(float width, float height) override;
+    void onDraw     (float width, float height) override;
 
 private:
     void increaseEditingSender();

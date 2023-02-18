@@ -24,7 +24,7 @@ protected:
     void onControlKbKey(MKbKeyCode code) override;
 
     void onLayoutSubviews(float width, float height) override;
-    void onDrawForeground(float width, float height) override;
+    void onDrawCover     (float width, float height) override;
 
 private:
     void on_dispose() override;

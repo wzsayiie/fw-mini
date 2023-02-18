@@ -53,7 +53,7 @@ protected:
     void onMouseWheel(float x, float y, float delta) override;
 
     void onLayoutSubviews(float width, float height) override;
-    void onDrawForeground(float width, float height) override;
+    void onDrawCover     (float width, float height) override;
 
 private:
     void increaseScollingSender();

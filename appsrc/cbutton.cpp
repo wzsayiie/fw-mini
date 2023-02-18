@@ -62,9 +62,9 @@ void CButton::onLayoutSubviews(float width, float height) {
     titleLabel()->setFrame(MRect::from(0, 0, width, height));
 }
 
-void CButton::onDrawForeground(float width, float height) {
+void CButton::onDrawCover(float width, float height) {
     //NOTE: reserve focus frame drawn by control.
-    base::onDrawForeground(width, height);
+    base::onDrawCover(width, height);
     
     double now = MScheduler::instance()->secondsTick();
     if (mCurrentTouched || now < mTouchMaskStamp) {
