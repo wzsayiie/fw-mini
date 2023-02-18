@@ -1,8 +1,7 @@
 #pragma once
 
+#include "clayer.h"
 #include "cresponder.h"
-#include "mgeneric.h"
-#include "mgraphics.h"
 
 class CViewController;
 
@@ -12,20 +11,25 @@ public:
     CView(float x, float y, float width, float height);
     
 public:
-    void setViewController  (const std::shared_ptr<CViewController> &controller );
-    void setInteractive     (bool                                    interactive);
-    void setVisible         (bool                                    visible    );
-    void setBackgroundColor (const MColor::ptr                      &color      );
-    void setLayoutDelegation(const MFunction<void ()>::ptr          &delegation );
-    void setFrame           (const MRect::ptr                       &frame      );
+    void setViewController (const std::shared_ptr<CViewController> &controller );
+    void setInteractive    (bool                                    interactive);
+    void setLayouter       (const MFunction<void ()>::ptr          &layer      );
+    void setVisible        (bool                                    visible    );
+    void setFrame          (const MRect::ptr                       &frame      );
+    void setBackgroundColor(const MColor::ptr                      &color      );
+    void setAlpha          (float                                   alpha      );
 
-    std::shared_ptr<CViewController> viewController  ();
-    bool                             interactive     ();
-    bool                             visible         ();
-    MColor::ptr                      backgroundColor ();
-    MFunction<void ()>::ptr          layoutDelegation();
-    MRect::ptr                       bounds          ();
-    MRect::ptr                       frame           ();
+    std::shared_ptr<CViewController> viewController ();
+    bool                             interactive    ();
+    MFunction<void ()>::ptr          layouter       ();
+    CLayer::ptr                      layer          ();
+    bool                             visible        ();
+    MRect::ptr                       frame          ();
+    MRect::ptr                       bounds         ();
+    MColor::ptr                      backgroundColor();
+    float                            alpha          ();
+    
+    void animate(double duration, const MFunction<void ()>::ptr &nextAction);
     
     void addSubview(const CView::ptr &subview);
     void removeFromSuperview();
@@ -44,14 +48,11 @@ public:
     bool canRespondKbKey     ()                      override;
     bool canRespondWriting   ()                      override;
     
-    void draw();
-    
 protected: public:
     virtual void onLayoutSubviews(float width, float height);
 
-    virtual void onDrawBackground(float width, float height);
-    virtual void onDraw          (float width, float height);
-    virtual void onDrawForeground(float width, float height);
+    virtual void onDraw     (float width, float height);
+    virtual void onDrawCover(float width, float height);
     
 private:
     void layoutSubviews();
@@ -60,12 +61,10 @@ private:
     void on_dispose() override;
 
 private:
-    std::weak_ptr<CViewController> mViewController  ;
-    bool                           mInteractive     = false;
-    bool                           mVisible         = true;
-    MColor::ptr                    mBackgroundColor ;
-    MFunction<void ()>::ptr        mLayoutDelegation;
-    MRect::ptr                     mFrame           ;
+    std::weak_ptr<CViewController> mViewController;
+    bool                           mInteractive   = false;
+    MFunction<void ()>::ptr        mLayouter      ;
+    CLayer::ptr                    mLayer         ;
     
     MVector<CView::ptr>::ptr mSubviews ;
     std::weak_ptr<CView>     mSuperview;

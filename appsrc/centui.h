@@ -4,6 +4,7 @@
 #include "ccontrol.h"
 #include "cimageview.h"
 #include "clabel.h"
+#include "clayer.h"
 #include "cnavigationcontroller.h"
 #include "cobject.h"
 #include "cresponder.h"

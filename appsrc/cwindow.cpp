@@ -44,7 +44,7 @@ void CWindow::onResize(float width, float height) {
 }
 
 void CWindow::onDraw(float width, float height) {
-    rootViewController()->view()->draw();
+    rootViewController()->view()->layer()->draw();
 }
 
 void CWindow::onTouchBegin(float x, float y) {
