@@ -205,6 +205,7 @@ function descriptType(desc: typedesc_node): string {
             if (i > 0) {
                 buf.push(", ")
             }
+            buf.push(`_${i}: `)
             buf.push(descriptType(fcn.args[i]))
         }
         //return value.

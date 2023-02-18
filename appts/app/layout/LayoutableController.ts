@@ -13,7 +13,7 @@ export class LayoutableController extends CViewController {
 
     loadView(): CView {
         let view = super.loadView()
-        view.layoutDelegation = () => this.layoutNodes()
+        view.layouter = () => this.layoutNodes()
         return view
     }
 
