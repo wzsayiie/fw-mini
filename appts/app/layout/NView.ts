@@ -17,6 +17,7 @@ export class NView extends NEntity {
         this.getBoolean('interactive'    , v => view.interactive     = v)
         this.getBoolean('visible'        , v => view.visible         = v)
         this.getColor  ('backgroundColor', v => view.backgroundColor = v)
+        this.getNumber ('alpha'          , v => view.alpha           = v)
     }
 
     layout(x: number, y: number, w: number, h: number): void {

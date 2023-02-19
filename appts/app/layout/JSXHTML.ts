@@ -59,7 +59,10 @@ interface _ViewController extends _Entity {
 
 interface _View extends _Entity {
     name?           : string
+    interactive?    : boolean
+    visible?        : boolean
     backgroundColor?: MColor
+    alpha?          : number
 }
 
 interface _ImageView extends _View {
