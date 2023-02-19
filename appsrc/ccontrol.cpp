@@ -1,6 +1,7 @@
 #include "ccontrol.h"
 #include "dlazy.h"
 #include "mcontext.h"
+#include "mscheduler.h"
 #include "rdefine.h"
 
 static dash::lazy<std::map<std::string, CControl *>> sMap;
@@ -99,19 +100,40 @@ void CControl::transferFocusToAny() {
     resignFocusResponder();
 }
 
-void CControl::onDrawCover(float width, float height) {
+void CControl::onDrawCover(float w, float h) {
     if (!isFocusResponder()) {
         return;
     }
     
-    //draw focus frame:
-    MContextSelectRGBA(MColor::BlackRGBA);
-    const float thick = 2.0f;
+    //draw the blinking cursor:
+    int64_t n = (int64_t)MScheduler::instance()->secondsTick();
+    if (n % 2 == 0) {
+        return;
+    }
     
-    MContextDrawRect(0,              0, width, thick ); //top.
-    MContextDrawRect(0, height - thick, width, thick ); //bottom.
-    MContextDrawRect(0,              0, thick, height); //left.
-    MContextDrawRect(width - thick,  0, thick, height); //right.
+    MContextSelectRGBA(MColor::BlackRGBA);
+    const float t = 10.f;
+    
+    //upper left.
+    MContextMoveToPoint(0, 0);
+    MContextAddToPoint (t, 0);
+    MContextAddToPoint (0, t);
+    MContextDrawPolygon();
+    //upper right.
+    MContextMoveToPoint(w  , 0);
+    MContextAddToPoint (w  , t);
+    MContextAddToPoint (w-t, 0);
+    MContextDrawPolygon();
+    //lower right.
+    MContextMoveToPoint(w  , h  );
+    MContextAddToPoint (w-t, h  );
+    MContextAddToPoint (w  , h-t);
+    MContextDrawPolygon();
+    //lower left.
+    MContextMoveToPoint(0, h  );
+    MContextAddToPoint (0, h-t);
+    MContextAddToPoint (t, h  );
+    MContextDrawPolygon();
 }
 
 void CControl::onKbKey(MKbKeyCode code) {

@@ -59,8 +59,7 @@ protected:
     void onWriting     (const std::string &text) override;
     void onControlKbKey(MKbKeyCode         code) override;
 
-    void onDrawCover(float width, float height) override;
-    void onDraw     (float width, float height) override;
+    void onDraw(float width, float height) override;
 
 private:
     void increaseEditingSender();
@@ -81,7 +80,6 @@ private:
     MVAlign     mVAlign    = MVAlign::Middle;
     bool        mEntered   = false;
 
-    std::string mLastText        ;
-    int         mEditingSenders  = 0;
-    double      mCursorBeginTick = 0;
+    std::string mLastText       ;
+    int         mEditingSenders = 0;
 };

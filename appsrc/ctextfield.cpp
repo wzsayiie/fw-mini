@@ -1,6 +1,5 @@
 #include "ctextfield.h"
 #include "mcontext.h"
-#include "mscheduler.h"
 #include "mwindow.h"
 #include "rdefine.h"
 
@@ -92,16 +91,12 @@ bool        CTextField::entered  () { return mEntered ; }
 
 void CTextField::onBecomeFocusResponder() {
     increaseEditingSender();
-
     MWindow::mainWindow()->setWritingEnabled(true, mText);
-    mCursorBeginTick = MScheduler::instance()->secondsTick();
 }
 
 void CTextField::onResignFocusResponder() {
     reduceEditingSender();
-
     MWindow::mainWindow()->setWritingEnabled(false, "");
-    mCursorBeginTick = 0;
 }
 
 void CTextField::onWriting(const std::string &text) {
@@ -116,51 +111,29 @@ void CTextField::onControlKbKey(MKbKeyCode code) {
     }
 }
 
-void CTextField::onDrawCover(float width, float height) {
-    //block the focus frame of the focused control.
-}
-
 void CTextField::onDraw(float width, float height) {
-    int textRGBA = mTextColor ? mTextColor->rgba() : 0;
-    if (!textRGBA) {
+    if (!mTextColor || mTextColor->alphaCom() == 0) {
         return;
     }
-
-    //draw cursor.
-    if (mCursorBeginTick) {
-        float interval  = 0.6f;
-        float thick     = 2.0f;
-        
-        double now      = MScheduler::instance()->secondsTick();
-        double duration = now - mCursorBeginTick;
-        auto   count    = (int64_t)(duration * 1000) / (int64_t)(interval * 1000);
-
-        if (count % 2) {
-            MContextSelectRGBA(textRGBA & 0xFFffFF40);
-        } else {
-            MContextSelectRGBA(textRGBA);
-        }
-        
-        MContextDrawRect(0,              0, width, thick ); //top.
-        MContextDrawRect(0, height - thick, width, thick ); //bottom.
-        MContextDrawRect(0,              0, thick, height); //left.
-        MContextDrawRect(width - thick,  0, thick, height); //right.
+    if (mFontSize <= 0) {
+        return;
     }
-
-    //draw text:
-    auto text = !mText.empty() ? mText    : mPrompt  ;
-    int  rgba = !mText.empty() ? textRGBA : textRGBA & 0xFFffFF40;
-
-    if (!text.empty() && mFontSize > 0) {
-
-        MContextSelectText    (text     );
-        MContextSelectRGBA    (rgba     );
-        MContextSelectFontSize(mFontSize);
-        MContextSelectHAlign  (mHAlign  );
-        MContextSelectVAlign  (mVAlign  );
-
-        MContextDrawText(0, 0, width, height);
+    
+    auto text = mText;
+    int  rgba = mTextColor->rgba();
+    
+    if (text.empty()) {
+        text = mPrompt;
+        rgba = rgba & 0xFFffFF40;
     }
+    
+    MContextSelectText    (text     );
+    MContextSelectRGBA    (rgba     );
+    MContextSelectFontSize(mFontSize);
+    MContextSelectHAlign  (mHAlign  );
+    MContextSelectVAlign  (mVAlign  );
+    
+    MContextDrawText(0, 0, width, height);
 }
 
 void CTextField::increaseEditingSender() {
