@@ -72,8 +72,8 @@ void MContextSelectVAlign   (MVAlign align) { sVAlign    = align; }
 
 define_reflectable_function(MContextSelectRGBA, "args:rgba")
 void MContextSelectRGBA(int rgba) {
-    sRGBA.rgba = rgba;
-    sRGBA.alpha *= sAlpha;
+    sRGBA.rgba  = rgba;
+    sRGBA.alpha = (uint8_t)(sRGBA.alpha * sAlpha);
 }
 
 define_reflectable_function(MContextMoveToPoint, "args:x,y")

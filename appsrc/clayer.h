@@ -61,7 +61,7 @@ public:
         
         double scale = inc / stage->duration;
         for (int i = 0; i < N; ++i) {
-            _anim->cur.v[i] = begin.v[i] + (stage->end.v[i] - begin.v[i]) * scale;
+            _anim->cur.v[i] = (Type)(begin.v[i] + (stage->end.v[i] - begin.v[i]) * scale);
         }
         return _anim->cur.v;
     }
