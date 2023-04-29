@@ -8,10 +8,11 @@ android {
     ndkVersion "25.1.8937393"
 
     //compile configuration.
+    namespace "domain.corp.store.flavor.app"
     defaultConfig {
         applicationId "domain.corp.store.flavor.app"
-        minSdkVersion 29 //android 10.
-        targetSdkVersion 33 //android 13.
+        minSdkVersion    29 //android 10. released on 2019.09.03.
+        targetSdkVersion 33 //android 13. released on 2022.08.15.
         versionCode 1
         versionName "1.0"
         ndk {
